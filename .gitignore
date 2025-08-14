@@ -211,3 +211,5 @@ tp00-retomando_impulso/.DS_Store
 .DS_Store
 tp00-retomando_impulso/data/raw/badata_ecobici_recorridos_realizados_2024.csv
 tp00-retomando_impulso/data/raw/usuarios_ecobici_2024.csv
+tp00-retomando_impulso/data/processed/recorridos_usuarios_3meses.csv
+tp00-retomando_impulso/data/interim/recorridos_3meses.csv
