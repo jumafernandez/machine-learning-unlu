@@ -1,3 +1,3 @@
-# Processed
+# data/processed
 
-Aquí se almacenan los datos listos post-procesamiento para su análisis.
+Contiene los datos finales, listos para su análisis o modelado. Estos datos han pasado por todas las etapas de limpieza y transformación necesarias.

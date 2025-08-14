@@ -1,3 +1,3 @@
-# interim
+# data/interim
 
-Aquí se guardan archivos vinculados a los datos con procesamientos intermedios.
+Aquí se guardan los datos intermedios, que han sido parcialmente procesados o transformados antes de su procesamiento final.

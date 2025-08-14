@@ -1,4 +1,3 @@
-# TP00: Retomando impulso
+# tp00-retomando_impulso
 
-En este repositorio se almacena la solución para el TP00:
-https://docs.google.com/document/d/1RRjLHJRenAYbfBe4vV97VnDAXqUjUChkrzyU5A0iFoo/edit?usp=sharing
+Este proyecto de machine learning incluye estructuras para organizar datos, código, notebooks y reportes. El archivo README principal describe el propósito general del proyecto y del equipo, mientras que cada subdirectorio contiene su propio README con una descripción específica.

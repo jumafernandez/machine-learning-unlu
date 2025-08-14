@@ -1,0 +1,2 @@
+# Dependencias del proyecto
+# Lista de paquetes requeridos para reproducir el entorno de desarrollo y ejecución.
