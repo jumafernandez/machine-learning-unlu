@@ -1,0 +1,1001 @@
+age,gender,subscription_type,watch_hours,last_login_days,region,device,monthly_fee,churned,payment_method,number_of_profiles,avg_watch_time_per_day,favorite_genre
+57,Male,Premium,14.69,12,Africa,Desktop,17.99,0,Crypto,5,1.13,Sci-Fi
+70,Male,Basic,2.22,12,Asia,Laptop,8.99,1,PayPal,3,0.17,Romance
+46,Other,Standard,0.83,12,South America,Mobile,13.99,1,Crypto,4,0.06,Comedy
+67,Female,Premium,0.61,12,Oceania,Tablet,17.99,1,Crypto,3,0.05,Documentary
+38,Female,Standard,32.31,11,Oceania,Mobile,13.99,0,PayPal,3,2.69,Horror
+24,Other,Premium,2.98,11,Europe,TV,17.99,1,PayPal,2,0.25,Drama
+46,Male,Premium,3.18,11,North America,TV,17.99,1,Crypto,4,0.27,Sci-Fi
+63,Female,Basic,22.9,11,Europe,TV,8.99,0,Credit Card,1,1.91,Romance
+18,Male,Premium,28.08,11,Oceania,Laptop,17.99,0,Gift Card,2,2.34,Romance
+38,Male,Basic,15.01,11,South America,TV,8.99,0,Debit Card,3,1.25,Documentary
+54,Other,Standard,8.61,11,Africa,Tablet,13.99,0,Gift Card,3,0.72,Romance
+68,Female,Standard,18.49,11,South America,Mobile,13.99,0,Gift Card,1,1.54,Drama
+54,Other,Basic,0.51,11,South America,Tablet,8.99,1,PayPal,5,0.04,Documentary
+36,Other,Basic,18.51,11,South America,TV,8.99,0,Debit Card,3,1.54,Sci-Fi
+34,Female,Standard,28.76,11,North America,Mobile,13.99,0,PayPal,2,2.4,Documentary
+59,Other,Basic,7.97,11,Asia,TV,8.99,0,Crypto,1,0.66,Action
+45,Female,Standard,1.77,11,Africa,Mobile,13.99,1,PayPal,3,0.15,Romance
+58,Female,Premium,59.99,11,North America,Desktop,17.99,0,Credit Card,2,5.0,Comedy
+30,Other,Standard,5.21,11,Oceania,Tablet,13.99,0,PayPal,3,0.43,Romance
+52,Other,Basic,28.04,11,Europe,Laptop,8.99,0,Debit Card,2,2.34,Action
+59,Other,Standard,8.76,11,Oceania,Laptop,13.99,0,Debit Card,3,0.73,Sci-Fi
+21,Other,Basic,54.56,11,North America,Desktop,8.99,0,Credit Card,5,4.55,Romance
+28,Other,Premium,7.1,11,North America,Laptop,17.99,0,Crypto,3,0.59,Horror
+28,Female,Standard,14.34,11,Asia,Desktop,13.99,0,Credit Card,5,1.2,Comedy
+57,Female,Standard,1.41,11,Europe,Tablet,13.99,0,PayPal,5,0.12,Romance
+18,Female,Standard,25.19,11,North America,TV,13.99,0,PayPal,1,2.1,Horror
+19,Female,Basic,49.17,11,Europe,Desktop,8.99,0,Credit Card,4,4.1,Drama
+46,Female,Standard,4.68,11,Africa,Tablet,13.99,1,Gift Card,5,0.39,Comedy
+30,Female,Basic,8.52,11,Asia,Laptop,8.99,0,Gift Card,4,0.71,Action
+40,Male,Basic,9.07,11,Asia,Mobile,8.99,0,Credit Card,1,0.76,Horror
+21,Other,Standard,14.71,11,Asia,Laptop,13.99,0,Crypto,1,1.23,Sci-Fi
+45,Other,Basic,6.87,11,Europe,Laptop,8.99,0,Debit Card,3,0.57,Drama
+67,Female,Premium,3.33,11,Europe,Mobile,17.99,1,Crypto,3,0.28,Action
+67,Other,Standard,10.24,11,South America,Desktop,13.99,0,Debit Card,2,0.85,Romance
+44,Female,Premium,18.89,11,Africa,Laptop,17.99,0,PayPal,1,1.57,Documentary
+19,Other,Basic,3.72,11,Asia,Desktop,8.99,1,Crypto,5,0.31,Documentary
+58,Female,Standard,4.39,11,South America,Mobile,13.99,0,Debit Card,5,0.37,Romance
+53,Female,Standard,6.68,11,North America,Mobile,13.99,0,PayPal,4,0.56,Action
+59,Other,Basic,35.89,11,Oceania,Laptop,8.99,0,Credit Card,4,2.99,Drama
+38,Female,Standard,2.44,11,Oceania,Laptop,13.99,1,Gift Card,5,0.2,Documentary
+27,Male,Premium,17.29,11,Europe,Laptop,17.99,0,Crypto,2,1.44,Comedy
+58,Female,Standard,2.4,11,North America,Mobile,13.99,0,PayPal,5,0.2,Documentary
+30,Female,Standard,15.45,11,Europe,Mobile,13.99,0,Credit Card,1,1.29,Sci-Fi
+40,Female,Premium,11.57,11,South America,Laptop,17.99,0,Debit Card,3,0.96,Documentary
+47,Other,Standard,8.01,11,Europe,Mobile,13.99,0,Gift Card,4,0.67,Horror
+56,Other,Basic,30.55,11,Africa,TV,8.99,0,Credit Card,1,2.55,Comedy
+63,Other,Standard,25.73,11,Africa,TV,13.99,0,PayPal,1,2.14,Comedy
+46,Female,Premium,4.65,11,Africa,Laptop,17.99,1,Debit Card,2,0.39,Horror
+18,Other,Premium,27.6,11,Africa,Laptop,17.99,0,Debit Card,5,2.3,Romance
+60,Female,Basic,49.16,11,Europe,TV,8.99,0,Debit Card,3,4.1,Documentary
+18,Female,Premium,9.88,11,South America,Laptop,17.99,0,Debit Card,4,0.82,Sci-Fi
+29,Female,Basic,15.6,11,South America,Tablet,8.99,0,Crypto,2,1.3,Documentary
+48,Male,Premium,1.64,11,North America,Mobile,17.99,1,Gift Card,1,0.14,Drama
+49,Female,Standard,18.79,11,Oceania,TV,13.99,0,Gift Card,1,1.57,Horror
+37,Other,Basic,1.32,11,South America,TV,8.99,1,Gift Card,5,0.11,Horror
+37,Male,Standard,16.01,11,Europe,Laptop,13.99,0,Debit Card,4,1.33,Horror
+33,Female,Premium,3.91,11,Oceania,Desktop,17.99,1,Debit Card,2,0.33,Comedy
+18,Other,Basic,0.67,11,Asia,Laptop,8.99,1,Gift Card,4,0.06,Documentary
+43,Other,Basic,0.59,11,Europe,Mobile,8.99,1,Debit Card,3,0.05,Drama
+48,Male,Standard,1.14,11,Europe,Tablet,13.99,0,PayPal,4,0.09,Romance
+53,Male,Basic,2.42,11,Africa,Desktop,8.99,1,Gift Card,5,0.2,Action
+34,Other,Premium,16.67,11,Asia,Tablet,17.99,0,Crypto,1,1.39,Action
+61,Male,Standard,7.28,11,North America,Laptop,13.99,0,PayPal,2,0.61,Romance
+43,Other,Premium,5.78,11,Africa,Desktop,17.99,0,PayPal,5,0.48,Sci-Fi
+54,Female,Basic,5.61,11,Europe,Mobile,8.99,0,PayPal,4,0.47,Sci-Fi
+24,Female,Basic,3.11,11,Asia,Tablet,8.99,1,Credit Card,2,0.26,Sci-Fi
+43,Male,Premium,14.21,11,South America,TV,17.99,0,PayPal,3,1.18,Horror
+50,Female,Standard,16.83,11,South America,Tablet,13.99,0,Credit Card,2,1.4,Documentary
+40,Female,Basic,5.54,11,Oceania,Mobile,8.99,1,Gift Card,1,0.46,Drama
+69,Other,Premium,13.4,11,North America,Laptop,17.99,0,Debit Card,3,1.12,Comedy
+23,Female,Premium,14.78,11,Oceania,TV,17.99,0,Debit Card,2,1.23,Documentary
+25,Female,Premium,4.43,11,Asia,TV,17.99,0,Credit Card,5,0.37,Romance
+61,Other,Premium,12.59,11,North America,TV,17.99,0,Crypto,5,1.05,Romance
+33,Other,Standard,16.3,11,Europe,Tablet,13.99,0,Gift Card,2,1.36,Sci-Fi
+23,Other,Premium,12.51,11,Europe,Mobile,17.99,0,Crypto,4,1.04,Documentary
+56,Other,Standard,17.44,11,Oceania,TV,13.99,0,Crypto,1,1.45,Documentary
+43,Male,Premium,6.6,11,South America,Desktop,17.99,0,Gift Card,4,0.55,Drama
+65,Female,Standard,47.81,11,Africa,Desktop,13.99,0,Crypto,4,3.98,Action
+18,Female,Basic,0.75,11,Africa,Laptop,8.99,1,Crypto,5,0.06,Romance
+55,Male,Basic,3.66,11,Asia,TV,8.99,1,Credit Card,4,0.3,Sci-Fi
+56,Other,Basic,9.13,11,Asia,Desktop,8.99,0,Debit Card,2,0.76,Romance
+68,Female,Standard,14.65,11,Oceania,Tablet,13.99,0,Debit Card,5,1.22,Sci-Fi
+62,Female,Premium,13.15,11,Oceania,Desktop,17.99,0,Debit Card,1,1.1,Comedy
+31,Male,Basic,48.35,11,Oceania,Desktop,8.99,0,Debit Card,5,4.03,Comedy
+64,Female,Basic,6.99,11,Oceania,Tablet,8.99,0,Crypto,1,0.58,Sci-Fi
+62,Male,Premium,20.63,11,Africa,TV,17.99,0,PayPal,3,1.72,Comedy
+60,Female,Basic,21.66,11,South America,Desktop,8.99,0,Crypto,2,1.8,Comedy
+51,Other,Premium,8.0,11,South America,TV,17.99,0,Crypto,1,0.67,Sci-Fi
+26,Other,Standard,2.0,11,Africa,Desktop,13.99,1,PayPal,3,0.17,Documentary
+61,Female,Standard,38.55,11,Europe,Desktop,13.99,0,Debit Card,4,3.21,Comedy
+29,Female,Basic,11.19,11,Africa,Mobile,8.99,0,Debit Card,2,0.93,Comedy
+19,Female,Premium,17.12,11,Europe,TV,17.99,0,Credit Card,1,1.43,Sci-Fi
+63,Other,Premium,15.02,11,North America,TV,17.99,0,PayPal,2,1.25,Comedy
+60,Other,Standard,2.38,10,Asia,Laptop,13.99,0,Debit Card,5,0.22,Action
+29,Male,Standard,35.97,10,South America,Desktop,13.99,0,Debit Card,4,3.27,Romance
+22,Male,Basic,0.75,10,South America,Mobile,8.99,1,Gift Card,3,0.07,Sci-Fi
+19,Female,Premium,7.43,10,Europe,Tablet,17.99,0,Debit Card,4,0.68,Drama
+56,Male,Standard,9.97,10,Asia,Mobile,13.99,0,Credit Card,5,0.91,Action
+39,Female,Basic,10.97,10,Oceania,Mobile,8.99,0,PayPal,1,1.0,Comedy
+35,Female,Standard,20.45,10,Europe,Tablet,13.99,0,Credit Card,2,1.86,Sci-Fi
+24,Male,Standard,22.15,10,Europe,TV,13.99,0,Gift Card,5,2.01,Horror
+25,Female,Basic,21.23,10,Africa,Laptop,8.99,0,Debit Card,1,1.93,Horror
+23,Male,Premium,22.77,10,South America,TV,17.99,0,Credit Card,1,2.07,Sci-Fi
+57,Female,Basic,4.12,10,South America,TV,8.99,1,Debit Card,1,0.37,Sci-Fi
+46,Other,Premium,7.86,10,Oceania,Tablet,17.99,0,Credit Card,1,0.71,Drama
+27,Female,Standard,16.32,10,Asia,TV,13.99,0,Crypto,2,1.48,Drama
+50,Other,Standard,9.9,10,North America,Desktop,13.99,0,Debit Card,2,0.9,Drama
+56,Other,Premium,0.12,10,Oceania,Laptop,17.99,1,Crypto,4,0.01,Horror
+49,Male,Basic,9.68,10,North America,Mobile,8.99,0,PayPal,2,0.88,Horror
+45,Other,Basic,9.98,10,Asia,Mobile,8.99,0,PayPal,3,0.91,Romance
+65,Other,Standard,20.56,10,Europe,Laptop,13.99,0,Debit Card,5,1.87,Sci-Fi
+21,Female,Basic,23.24,10,South America,Tablet,8.99,0,Credit Card,3,2.11,Romance
+35,Male,Premium,9.88,10,South America,Mobile,17.99,0,Debit Card,3,0.9,Sci-Fi
+57,Female,Basic,7.46,10,Asia,Desktop,8.99,0,Debit Card,1,0.68,Comedy
+54,Other,Basic,8.52,10,Asia,TV,8.99,0,Credit Card,4,0.77,Action
+32,Male,Standard,1.52,10,Asia,Desktop,13.99,1,PayPal,3,0.14,Action
+36,Other,Standard,2.79,10,Europe,Desktop,13.99,1,Gift Card,1,0.25,Sci-Fi
+26,Male,Standard,4.97,10,Africa,Laptop,13.99,1,PayPal,1,0.45,Horror
+65,Other,Basic,16.1,10,North America,Tablet,8.99,0,Crypto,3,1.46,Sci-Fi
+47,Female,Basic,2.57,10,South America,Tablet,8.99,1,Gift Card,5,0.23,Sci-Fi
+56,Female,Basic,38.59,10,Oceania,Mobile,8.99,0,Gift Card,2,3.51,Sci-Fi
+54,Other,Standard,13.19,10,North America,Tablet,13.99,0,Gift Card,2,1.2,Action
+36,Other,Basic,1.68,10,Africa,TV,8.99,1,PayPal,4,0.15,Action
+63,Other,Standard,30.83,10,Europe,Laptop,13.99,0,Crypto,2,2.8,Sci-Fi
+40,Female,Basic,3.8,10,Africa,Desktop,8.99,1,Credit Card,3,0.35,Comedy
+24,Female,Basic,21.04,10,Oceania,Tablet,8.99,0,Gift Card,2,1.91,Action
+32,Other,Standard,0.38,10,Asia,Desktop,13.99,0,Credit Card,5,0.03,Comedy
+29,Male,Premium,7.54,10,Europe,Mobile,17.99,0,Debit Card,3,0.69,Action
+48,Other,Basic,6.63,10,South America,Tablet,8.99,0,PayPal,2,0.6,Documentary
+18,Other,Premium,1.63,10,Africa,Desktop,17.99,0,Credit Card,4,0.15,Comedy
+35,Other,Basic,8.87,10,Oceania,Laptop,8.99,0,Credit Card,2,0.81,Drama
+40,Female,Standard,6.2,10,North America,Tablet,13.99,0,Credit Card,3,0.56,Drama
+37,Male,Standard,0.02,10,Europe,TV,13.99,0,PayPal,5,0.0,Sci-Fi
+29,Female,Standard,1.56,10,Europe,Tablet,13.99,1,Gift Card,5,0.14,Horror
+69,Female,Basic,16.43,10,Oceania,Tablet,8.99,0,Debit Card,1,1.49,Action
+33,Other,Standard,4.18,10,South America,Laptop,13.99,1,Crypto,5,0.38,Horror
+24,Female,Basic,9.13,10,Asia,Laptop,8.99,0,Debit Card,4,0.83,Documentary
+56,Female,Premium,8.83,10,Europe,Tablet,17.99,0,Debit Card,1,0.8,Documentary
+29,Male,Premium,14.85,10,Asia,Tablet,17.99,0,Credit Card,1,1.35,Horror
+35,Other,Standard,9.43,10,South America,Laptop,13.99,0,PayPal,2,0.86,Horror
+47,Other,Basic,0.29,10,Africa,Mobile,8.99,1,Debit Card,4,0.03,Horror
+48,Other,Basic,60.85,10,Africa,Desktop,8.99,0,Debit Card,5,5.53,Horror
+43,Other,Basic,13.19,10,Asia,TV,8.99,0,Crypto,5,1.2,Comedy
+62,Other,Premium,4.99,10,North America,TV,17.99,1,Debit Card,2,0.45,Comedy
+56,Other,Basic,1.72,10,North America,Mobile,8.99,1,Debit Card,2,0.16,Horror
+62,Male,Basic,7.12,10,North America,Desktop,8.99,0,Gift Card,1,0.65,Drama
+60,Female,Basic,4.46,10,Europe,Laptop,8.99,1,Gift Card,5,0.41,Action
+56,Other,Premium,1.54,10,Africa,Tablet,17.99,1,Credit Card,3,0.14,Romance
+54,Male,Standard,19.26,10,Africa,Mobile,13.99,0,Debit Card,5,1.75,Comedy
+33,Other,Premium,13.25,10,Europe,TV,17.99,0,Gift Card,1,1.2,Comedy
+23,Other,Premium,4.05,10,Asia,Mobile,17.99,1,PayPal,1,0.37,Sci-Fi
+37,Male,Premium,0.64,10,Europe,Desktop,17.99,1,Gift Card,5,0.06,Comedy
+49,Female,Basic,6.56,10,Africa,TV,8.99,0,Debit Card,5,0.6,Comedy
+68,Male,Basic,17.26,10,South America,Desktop,8.99,0,Credit Card,3,1.57,Documentary
+22,Other,Premium,2.61,10,Europe,TV,17.99,0,PayPal,4,0.24,Sci-Fi
+23,Female,Standard,31.27,10,Oceania,Mobile,13.99,0,Debit Card,4,2.84,Drama
+33,Other,Basic,2.36,10,Africa,Mobile,8.99,1,PayPal,3,0.21,Action
+34,Male,Basic,53.98,10,North America,Tablet,8.99,0,Crypto,5,4.91,Documentary
+39,Other,Basic,11.55,10,Europe,Mobile,8.99,0,Gift Card,1,1.05,Horror
+21,Female,Basic,1.31,10,South America,Mobile,8.99,1,Debit Card,2,0.12,Comedy
+32,Other,Basic,14.84,10,Europe,Desktop,8.99,0,Crypto,2,1.35,Sci-Fi
+49,Male,Standard,3.91,10,Oceania,TV,13.99,1,Gift Card,3,0.36,Romance
+28,Male,Basic,48.58,10,North America,Laptop,8.99,0,Debit Card,2,4.42,Drama
+26,Other,Premium,9.23,10,North America,Desktop,17.99,0,Gift Card,3,0.84,Documentary
+31,Male,Premium,4.0,10,South America,Mobile,17.99,0,Debit Card,5,0.36,Comedy
+32,Female,Premium,18.28,10,South America,Desktop,17.99,0,Credit Card,4,1.66,Action
+69,Male,Premium,36.44,10,North America,Laptop,17.99,0,Debit Card,4,3.31,Documentary
+34,Male,Basic,1.77,10,Africa,Laptop,8.99,1,Credit Card,2,0.16,Romance
+62,Female,Basic,4.82,10,Europe,Laptop,8.99,1,Debit Card,5,0.44,Sci-Fi
+65,Other,Standard,10.38,10,Oceania,Desktop,13.99,0,PayPal,4,0.94,Horror
+28,Female,Basic,46.68,10,Asia,Desktop,8.99,0,PayPal,1,4.24,Sci-Fi
+23,Male,Basic,17.27,10,Europe,TV,8.99,0,PayPal,4,1.57,Romance
+54,Male,Basic,22.85,10,South America,Desktop,8.99,0,Crypto,5,2.08,Drama
+64,Female,Standard,10.78,10,Oceania,Mobile,13.99,0,PayPal,3,0.98,Drama
+24,Other,Basic,17.56,10,Oceania,Mobile,8.99,0,Gift Card,5,1.6,Action
+27,Female,Standard,2.62,10,South America,Desktop,13.99,1,Crypto,4,0.24,Action
+36,Female,Premium,8.8,10,Oceania,Mobile,17.99,0,Debit Card,2,0.8,Comedy
+46,Male,Premium,1.48,10,Asia,Tablet,17.99,0,Credit Card,4,0.13,Romance
+47,Other,Premium,5.41,10,Oceania,Tablet,17.99,0,Debit Card,3,0.49,Horror
+49,Other,Premium,8.48,10,North America,Laptop,17.99,0,PayPal,1,0.77,Horror
+57,Other,Premium,28.19,10,Europe,Tablet,17.99,0,Debit Card,1,2.56,Romance
+18,Female,Standard,1.59,10,South America,Desktop,13.99,1,Gift Card,3,0.14,Documentary
+57,Female,Basic,1.76,10,North America,Tablet,8.99,1,Credit Card,4,0.16,Comedy
+42,Male,Premium,18.09,10,South America,TV,17.99,0,Debit Card,2,1.64,Horror
+34,Female,Premium,19.54,10,Asia,Laptop,17.99,0,Debit Card,2,1.78,Sci-Fi
+61,Other,Standard,12.41,10,Europe,TV,13.99,0,Crypto,2,1.13,Romance
+53,Other,Premium,4.49,10,South America,Tablet,17.99,1,Debit Card,1,0.41,Action
+47,Male,Premium,6.33,9,Asia,Laptop,17.99,0,Gift Card,4,0.63,Documentary
+63,Female,Basic,15.81,9,Europe,Mobile,8.99,0,PayPal,3,1.58,Comedy
+64,Other,Premium,7.0,9,Oceania,Mobile,17.99,0,Crypto,4,0.7,Drama
+66,Other,Premium,6.11,9,Europe,Tablet,17.99,0,Crypto,4,0.61,Drama
+23,Other,Basic,5.62,9,Africa,Tablet,8.99,0,Gift Card,4,0.56,Documentary
+28,Female,Premium,0.12,9,Europe,TV,17.99,1,Crypto,2,0.01,Romance
+61,Other,Standard,19.49,9,Asia,TV,13.99,0,PayPal,1,1.95,Drama
+68,Female,Basic,10.14,9,Europe,TV,8.99,0,Gift Card,1,1.01,Sci-Fi
+70,Other,Basic,4.88,9,Europe,TV,8.99,1,PayPal,1,0.49,Drama
+50,Other,Standard,4.36,9,Asia,Tablet,13.99,1,PayPal,2,0.44,Action
+51,Other,Basic,2.42,9,Europe,Tablet,8.99,1,Crypto,5,0.24,Documentary
+63,Male,Premium,0.67,9,Africa,Tablet,17.99,0,Credit Card,5,0.07,Horror
+18,Female,Basic,20.25,9,South America,Tablet,8.99,0,Gift Card,3,2.02,Romance
+18,Male,Premium,0.97,9,Africa,Tablet,17.99,0,Debit Card,5,0.1,Sci-Fi
+18,Other,Premium,7.15,9,Europe,Laptop,17.99,0,Debit Card,3,0.72,Comedy
+29,Female,Standard,6.13,9,North America,Mobile,13.99,0,Gift Card,3,0.61,Sci-Fi
+21,Female,Basic,23.78,9,Oceania,Laptop,8.99,0,Credit Card,3,2.38,Romance
+49,Male,Basic,11.25,9,South America,Mobile,8.99,0,Debit Card,1,1.12,Action
+40,Other,Basic,75.99,9,Africa,Mobile,8.99,0,Credit Card,1,7.6,Comedy
+64,Male,Standard,54.34,9,Asia,Desktop,13.99,0,Debit Card,3,5.43,Documentary
+60,Other,Premium,2.79,9,Africa,Desktop,17.99,0,PayPal,5,0.28,Horror
+27,Male,Premium,7.92,9,South America,Desktop,17.99,0,Debit Card,5,0.79,Horror
+19,Male,Standard,10.58,9,South America,Desktop,13.99,0,Credit Card,1,1.06,Documentary
+57,Other,Standard,4.99,9,North America,Tablet,13.99,0,Crypto,5,0.5,Romance
+44,Female,Basic,40.75,9,South America,Desktop,8.99,0,Gift Card,1,4.08,Documentary
+27,Male,Basic,0.4,9,Oceania,Tablet,8.99,1,Debit Card,5,0.04,Action
+24,Other,Basic,10.15,9,Asia,TV,8.99,0,Debit Card,2,1.02,Action
+22,Female,Standard,0.63,9,Europe,Tablet,13.99,1,Debit Card,3,0.06,Action
+38,Male,Standard,0.61,9,North America,Mobile,13.99,0,Credit Card,4,0.06,Documentary
+29,Female,Premium,9.33,9,Europe,Mobile,17.99,0,PayPal,5,0.93,Horror
+30,Male,Standard,5.1,9,North America,TV,13.99,0,PayPal,5,0.51,Comedy
+54,Female,Standard,4.41,9,North America,Laptop,13.99,1,Gift Card,2,0.44,Sci-Fi
+64,Female,Basic,5.7,9,North America,Desktop,8.99,0,Credit Card,1,0.57,Comedy
+34,Female,Basic,27.09,9,Oceania,TV,8.99,0,Debit Card,1,2.71,Documentary
+54,Female,Basic,27.8,9,North America,TV,8.99,0,Gift Card,4,2.78,Horror
+59,Female,Basic,4.06,9,Africa,Laptop,8.99,1,Gift Card,5,0.41,Sci-Fi
+31,Other,Premium,14.43,9,Africa,TV,17.99,0,Credit Card,5,1.44,Documentary
+64,Male,Standard,1.24,9,Africa,Mobile,13.99,0,Credit Card,4,0.12,Sci-Fi
+67,Other,Premium,16.71,9,Europe,TV,17.99,0,Crypto,4,1.67,Romance
+51,Female,Basic,23.59,9,South America,TV,8.99,0,Debit Card,3,2.36,Documentary
+35,Female,Basic,7.37,9,Asia,Tablet,8.99,0,PayPal,4,0.74,Horror
+65,Female,Standard,16.1,9,Africa,TV,13.99,0,PayPal,4,1.61,Documentary
+54,Male,Basic,30.0,9,Asia,Tablet,8.99,0,Credit Card,4,3.0,Drama
+57,Male,Premium,11.09,9,Oceania,Mobile,17.99,0,Gift Card,3,1.11,Romance
+63,Female,Standard,41.15,9,South America,Laptop,13.99,0,PayPal,2,4.12,Romance
+30,Male,Premium,24.6,9,North America,Tablet,17.99,0,Credit Card,4,2.46,Documentary
+40,Male,Basic,2.24,9,Oceania,Desktop,8.99,1,Debit Card,2,0.22,Drama
+44,Female,Basic,47.4,9,North America,Desktop,8.99,0,Debit Card,5,4.74,Romance
+20,Other,Premium,11.73,9,Africa,Mobile,17.99,0,Credit Card,2,1.17,Documentary
+56,Female,Premium,24.68,9,Europe,Mobile,17.99,0,Credit Card,1,2.47,Drama
+31,Female,Basic,9.38,9,Africa,TV,8.99,0,Crypto,1,0.94,Horror
+48,Female,Premium,1.84,9,North America,Laptop,17.99,1,Crypto,2,0.18,Comedy
+18,Other,Premium,17.75,9,Oceania,Desktop,17.99,0,Gift Card,1,1.77,Comedy
+19,Male,Standard,43.11,9,Europe,Desktop,13.99,0,Debit Card,1,4.31,Comedy
+64,Male,Standard,1.29,9,Africa,Mobile,13.99,1,Crypto,1,0.13,Sci-Fi
+24,Male,Standard,3.05,9,North America,TV,13.99,1,Crypto,1,0.3,Action
+65,Other,Premium,16.68,9,Asia,Mobile,17.99,0,Debit Card,2,1.67,Romance
+41,Other,Premium,1.65,9,Europe,Tablet,17.99,1,PayPal,2,0.16,Comedy
+19,Male,Premium,0.17,9,South America,Desktop,17.99,0,Debit Card,4,0.02,Horror
+51,Other,Premium,4.43,9,South America,Laptop,17.99,1,Gift Card,3,0.44,Horror
+29,Other,Basic,27.02,9,South America,Mobile,8.99,0,Crypto,3,2.7,Comedy
+64,Female,Basic,11.77,9,Africa,Mobile,8.99,0,Crypto,2,1.18,Action
+34,Male,Standard,1.22,9,North America,Desktop,13.99,0,Debit Card,5,0.12,Action
+18,Female,Standard,11.81,9,South America,Mobile,13.99,0,Credit Card,4,1.18,Horror
+31,Other,Standard,31.29,9,South America,TV,13.99,0,Crypto,4,3.13,Documentary
+35,Other,Premium,21.23,9,Asia,TV,17.99,0,PayPal,5,2.12,Horror
+40,Female,Standard,7.88,9,Oceania,Mobile,13.99,0,Crypto,2,0.79,Sci-Fi
+22,Other,Premium,17.65,9,Africa,TV,17.99,0,PayPal,2,1.76,Drama
+63,Male,Standard,15.51,9,South America,Laptop,13.99,0,PayPal,1,1.55,Action
+32,Other,Basic,5.21,9,Asia,Laptop,8.99,0,Gift Card,2,0.52,Romance
+39,Female,Premium,4.67,9,Oceania,TV,17.99,1,Crypto,3,0.47,Sci-Fi
+44,Male,Basic,8.02,9,North America,TV,8.99,0,Crypto,4,0.8,Comedy
+52,Male,Premium,3.12,9,South America,TV,17.99,1,PayPal,1,0.31,Comedy
+51,Female,Premium,8.6,9,Europe,TV,17.99,0,Gift Card,1,0.86,Sci-Fi
+65,Male,Premium,13.83,9,South America,Tablet,17.99,0,Credit Card,3,1.38,Documentary
+28,Other,Standard,6.97,9,Africa,Desktop,13.99,0,Debit Card,4,0.7,Horror
+19,Female,Premium,3.9,9,North America,Laptop,17.99,0,Credit Card,5,0.39,Romance
+18,Female,Premium,0.24,9,South America,TV,17.99,1,Credit Card,1,0.02,Drama
+23,Female,Standard,12.14,9,North America,TV,13.99,0,Crypto,3,1.21,Romance
+28,Other,Standard,1.07,9,Africa,Mobile,13.99,1,PayPal,1,0.11,Comedy
+65,Female,Basic,4.12,9,South America,Tablet,8.99,1,Credit Card,5,0.41,Romance
+41,Female,Premium,18.87,9,Europe,TV,17.99,0,Gift Card,3,1.89,Documentary
+23,Other,Standard,5.52,9,Oceania,Mobile,13.99,0,Gift Card,4,0.55,Horror
+66,Other,Premium,51.07,9,Africa,Laptop,17.99,0,Crypto,5,5.11,Action
+67,Male,Basic,15.98,9,South America,TV,8.99,0,Credit Card,4,1.6,Sci-Fi
+19,Male,Basic,15.61,8,Africa,Tablet,8.99,0,Crypto,2,1.73,Horror
+45,Male,Standard,13.11,8,Asia,Laptop,13.99,0,Gift Card,1,1.46,Sci-Fi
+24,Female,Premium,42.14,8,South America,Laptop,17.99,0,Gift Card,3,4.68,Horror
+53,Male,Premium,4.69,8,Asia,Mobile,17.99,0,Crypto,5,0.52,Horror
+65,Other,Basic,9.95,8,North America,Laptop,8.99,0,Crypto,5,1.11,Comedy
+60,Other,Standard,13.86,8,Europe,Desktop,13.99,0,Debit Card,1,1.54,Documentary
+21,Other,Standard,2.77,8,Africa,TV,13.99,1,Gift Card,4,0.31,Horror
+62,Male,Premium,0.62,8,Asia,Mobile,17.99,1,PayPal,1,0.07,Horror
+49,Female,Basic,9.65,8,Asia,Laptop,8.99,0,Crypto,3,1.07,Romance
+70,Female,Premium,9.25,8,South America,Tablet,17.99,0,PayPal,5,1.03,Documentary
+31,Female,Premium,17.83,8,North America,Tablet,17.99,0,PayPal,3,1.98,Sci-Fi
+70,Female,Basic,12.25,8,Africa,Desktop,8.99,0,Crypto,3,1.36,Horror
+58,Other,Premium,2.75,8,South America,Laptop,17.99,0,PayPal,4,0.31,Documentary
+34,Female,Premium,1.56,8,North America,Tablet,17.99,1,PayPal,3,0.17,Horror
+32,Female,Standard,13.49,8,Africa,Desktop,13.99,0,Gift Card,4,1.5,Sci-Fi
+41,Female,Basic,23.74,8,North America,Mobile,8.99,0,Crypto,2,2.64,Documentary
+61,Other,Basic,4.71,8,Oceania,Mobile,8.99,1,Crypto,2,0.52,Action
+26,Female,Premium,0.67,8,Asia,Laptop,17.99,0,Debit Card,4,0.07,Sci-Fi
+59,Female,Premium,6.0,8,South America,Desktop,17.99,0,Crypto,2,0.67,Documentary
+59,Male,Basic,14.96,8,Asia,Laptop,8.99,0,Credit Card,2,1.66,Romance
+47,Other,Basic,13.22,8,North America,Mobile,8.99,0,Crypto,4,1.47,Action
+60,Female,Basic,20.76,8,Asia,Laptop,8.99,0,Credit Card,4,2.31,Action
+65,Other,Premium,27.63,8,Asia,TV,17.99,0,Crypto,5,3.07,Romance
+28,Female,Premium,3.16,8,Europe,Tablet,17.99,1,Crypto,1,0.35,Horror
+32,Male,Basic,10.13,8,Oceania,Tablet,8.99,0,Credit Card,5,1.13,Horror
+58,Male,Premium,27.98,8,North America,Mobile,17.99,0,Crypto,1,3.11,Romance
+44,Female,Premium,5.79,8,South America,TV,17.99,0,Gift Card,3,0.64,Documentary
+47,Male,Standard,26.18,8,North America,TV,13.99,0,Debit Card,1,2.91,Action
+60,Male,Standard,7.61,8,Europe,Laptop,13.99,0,Crypto,5,0.85,Horror
+31,Female,Premium,2.08,8,South America,Desktop,17.99,1,Credit Card,3,0.23,Romance
+24,Other,Standard,6.56,8,Asia,TV,13.99,0,PayPal,4,0.73,Romance
+29,Female,Premium,5.29,8,Oceania,Tablet,17.99,0,Debit Card,3,0.59,Horror
+69,Female,Premium,1.35,8,North America,Mobile,17.99,1,Debit Card,3,0.15,Drama
+37,Male,Premium,2.44,8,Europe,Mobile,17.99,1,Crypto,2,0.27,Comedy
+51,Male,Basic,26.04,8,South America,Laptop,8.99,0,Credit Card,1,2.89,Romance
+20,Female,Premium,60.37,8,Asia,Laptop,17.99,0,Debit Card,3,6.71,Sci-Fi
+20,Female,Basic,12.66,8,Africa,TV,8.99,0,PayPal,5,1.41,Comedy
+45,Male,Standard,2.69,8,Asia,Tablet,13.99,1,Crypto,3,0.3,Drama
+39,Other,Standard,8.63,8,Oceania,Mobile,13.99,0,Debit Card,4,0.96,Romance
+34,Male,Basic,9.96,8,North America,Tablet,8.99,0,Credit Card,2,1.11,Action
+55,Other,Premium,7.53,8,Oceania,TV,17.99,0,Crypto,2,0.84,Horror
+40,Female,Standard,22.52,8,Africa,Laptop,13.99,0,PayPal,5,2.5,Comedy
+45,Female,Basic,7.13,8,Oceania,Mobile,8.99,0,Credit Card,3,0.79,Horror
+34,Other,Premium,1.59,8,South America,Laptop,17.99,1,Crypto,5,0.18,Action
+57,Female,Basic,1.22,8,Oceania,TV,8.99,1,Credit Card,5,0.14,Horror
+58,Female,Basic,8.53,8,North America,Laptop,8.99,0,PayPal,2,0.95,Comedy
+27,Other,Basic,16.36,8,Asia,TV,8.99,0,Gift Card,1,1.82,Drama
+50,Other,Standard,31.24,8,South America,TV,13.99,0,PayPal,4,3.47,Romance
+70,Male,Premium,18.46,8,North America,TV,17.99,0,Credit Card,4,2.05,Documentary
+43,Female,Basic,15.64,8,Oceania,Mobile,8.99,0,Debit Card,1,1.74,Action
+61,Female,Basic,12.55,8,Africa,TV,8.99,0,PayPal,3,1.39,Romance
+41,Other,Basic,18.51,8,Asia,Mobile,8.99,0,Credit Card,2,2.06,Drama
+20,Other,Standard,2.13,8,Oceania,Desktop,13.99,1,Gift Card,3,0.24,Horror
+40,Male,Basic,5.11,8,North America,Desktop,8.99,0,Crypto,1,0.57,Romance
+61,Other,Premium,5.87,8,Africa,Laptop,17.99,0,Crypto,5,0.65,Horror
+51,Female,Standard,1.91,8,Europe,Laptop,13.99,1,PayPal,3,0.21,Comedy
+50,Other,Standard,1.49,8,Asia,Laptop,13.99,0,Credit Card,4,0.17,Documentary
+45,Male,Premium,27.2,8,Europe,Laptop,17.99,0,Debit Card,5,3.02,Sci-Fi
+18,Male,Premium,23.07,8,South America,TV,17.99,0,Credit Card,1,2.56,Drama
+37,Male,Standard,8.39,8,Oceania,Desktop,13.99,0,Crypto,5,0.93,Action
+40,Other,Standard,7.82,8,North America,Tablet,13.99,0,Credit Card,2,0.87,Documentary
+53,Male,Premium,2.72,8,Asia,Desktop,17.99,1,Crypto,1,0.3,Romance
+60,Male,Basic,4.61,8,North America,Mobile,8.99,1,PayPal,3,0.51,Sci-Fi
+29,Female,Premium,3.17,8,South America,TV,17.99,1,Crypto,2,0.35,Action
+58,Other,Basic,37.24,8,Europe,TV,8.99,0,Gift Card,3,4.14,Romance
+46,Male,Standard,8.72,8,Europe,Desktop,13.99,0,Debit Card,5,0.97,Documentary
+34,Other,Premium,8.64,8,Oceania,TV,17.99,0,Gift Card,4,0.96,Action
+39,Female,Basic,7.24,8,Oceania,Mobile,8.99,0,Credit Card,3,0.8,Horror
+31,Male,Basic,3.86,8,Europe,TV,8.99,1,PayPal,4,0.43,Action
+56,Other,Basic,1.62,8,Oceania,Tablet,8.99,1,Credit Card,1,0.18,Sci-Fi
+37,Female,Standard,1.64,8,Asia,Laptop,13.99,1,Credit Card,1,0.18,Action
+25,Male,Basic,2.39,8,Europe,Laptop,8.99,1,Credit Card,1,0.27,Horror
+28,Male,Basic,25.3,8,North America,Tablet,8.99,0,Gift Card,5,2.81,Horror
+51,Female,Premium,8.68,8,Africa,TV,17.99,0,PayPal,4,0.96,Documentary
+58,Female,Standard,17.99,8,South America,TV,13.99,0,Debit Card,1,2.0,Drama
+32,Female,Standard,2.74,8,Asia,TV,13.99,1,Credit Card,1,0.3,Action
+43,Male,Premium,13.49,8,Europe,Desktop,17.99,0,Gift Card,4,1.5,Documentary
+24,Female,Basic,25.78,8,Europe,Laptop,8.99,0,Credit Card,3,2.86,Horror
+70,Other,Standard,25.23,7,Oceania,Laptop,13.99,0,Gift Card,3,3.15,Comedy
+33,Other,Basic,44.72,7,Oceania,Tablet,8.99,0,PayPal,4,5.59,Horror
+40,Other,Premium,1.2,7,Africa,Tablet,17.99,1,PayPal,1,0.15,Action
+42,Female,Basic,7.27,7,Africa,Laptop,8.99,0,Crypto,2,0.91,Romance
+28,Female,Basic,9.2,7,Asia,TV,8.99,0,PayPal,2,1.15,Comedy
+55,Male,Standard,7.78,7,Asia,Mobile,13.99,0,PayPal,3,0.97,Drama
+36,Male,Premium,11.31,7,North America,TV,17.99,0,PayPal,3,1.41,Action
+34,Male,Premium,0.33,7,Asia,Tablet,17.99,1,Gift Card,2,0.04,Horror
+36,Female,Standard,9.2,7,Oceania,Desktop,13.99,0,Debit Card,2,1.15,Action
+62,Male,Basic,11.99,7,Europe,TV,8.99,0,PayPal,2,1.5,Romance
+61,Male,Premium,25.26,7,North America,Tablet,17.99,0,Debit Card,5,3.16,Horror
+25,Other,Premium,5.75,7,North America,Laptop,17.99,0,Credit Card,3,0.72,Documentary
+66,Other,Basic,1.21,7,Africa,TV,8.99,1,Crypto,5,0.15,Documentary
+66,Other,Basic,21.29,7,Africa,Tablet,8.99,0,Crypto,5,2.66,Romance
+66,Other,Basic,8.03,7,Africa,Mobile,8.99,0,Crypto,4,1.0,Horror
+32,Female,Premium,40.94,7,South America,Desktop,17.99,0,Crypto,1,5.12,Action
+55,Female,Premium,20.71,7,North America,Mobile,17.99,0,Debit Card,5,2.59,Sci-Fi
+45,Female,Premium,0.91,7,South America,Mobile,17.99,1,Crypto,5,0.11,Horror
+43,Male,Premium,4.64,7,Oceania,Tablet,17.99,0,Debit Card,5,0.58,Documentary
+21,Female,Standard,9.13,7,Africa,Laptop,13.99,0,Debit Card,1,1.14,Drama
+44,Other,Premium,7.91,7,South America,Mobile,17.99,0,Debit Card,1,0.99,Documentary
+26,Other,Standard,4.64,7,Asia,Desktop,13.99,1,Crypto,1,0.58,Comedy
+70,Male,Standard,32.59,7,Asia,Mobile,13.99,0,PayPal,4,4.07,Comedy
+34,Female,Premium,1.58,7,Oceania,TV,17.99,1,Gift Card,1,0.2,Comedy
+62,Male,Basic,9.89,7,Europe,Tablet,8.99,0,Gift Card,2,1.24,Horror
+52,Male,Standard,1.35,7,Asia,TV,13.99,1,Crypto,1,0.17,Action
+64,Male,Standard,13.86,7,Africa,Laptop,13.99,0,Credit Card,3,1.73,Comedy
+58,Female,Premium,0.45,7,Oceania,TV,17.99,1,Crypto,1,0.06,Sci-Fi
+68,Other,Standard,12.66,7,Asia,Tablet,13.99,0,Credit Card,2,1.58,Romance
+33,Female,Premium,11.3,7,North America,Tablet,17.99,0,Gift Card,1,1.41,Drama
+22,Other,Premium,10.69,7,Africa,TV,17.99,0,Gift Card,2,1.34,Drama
+55,Male,Premium,2.47,7,Africa,Desktop,17.99,0,Debit Card,4,0.31,Romance
+24,Male,Premium,6.65,7,Europe,Mobile,17.99,0,Crypto,4,0.83,Horror
+19,Female,Premium,4.06,7,Africa,Laptop,17.99,0,PayPal,3,0.51,Action
+34,Other,Premium,9.67,7,Oceania,Mobile,17.99,0,Credit Card,1,1.21,Drama
+45,Male,Standard,43.5,7,North America,Desktop,13.99,0,Gift Card,5,5.44,Drama
+43,Male,Basic,17.66,7,Asia,Laptop,8.99,0,Crypto,1,2.21,Horror
+52,Female,Basic,4.47,7,North America,Tablet,8.99,1,Debit Card,3,0.56,Action
+38,Other,Standard,32.69,7,Asia,Tablet,13.99,0,Gift Card,4,4.09,Documentary
+31,Female,Premium,3.13,7,North America,Mobile,17.99,0,Debit Card,5,0.39,Documentary
+29,Other,Standard,1.6,7,Asia,Tablet,13.99,0,Debit Card,4,0.2,Sci-Fi
+24,Other,Standard,5.4,7,Asia,Laptop,13.99,0,Gift Card,5,0.68,Sci-Fi
+31,Female,Basic,6.71,7,South America,Tablet,8.99,0,Crypto,5,0.84,Sci-Fi
+20,Female,Basic,14.05,7,Africa,Mobile,8.99,0,Credit Card,3,1.76,Action
+49,Male,Standard,14.28,7,Africa,Desktop,13.99,0,Crypto,3,1.78,Sci-Fi
+21,Other,Premium,6.14,7,Europe,Desktop,17.99,0,Crypto,4,0.77,Documentary
+19,Female,Basic,48.49,7,Europe,TV,8.99,0,Debit Card,4,6.06,Action
+53,Other,Standard,52.23,7,Oceania,Desktop,13.99,0,PayPal,3,6.53,Drama
+43,Female,Standard,3.16,7,Asia,Mobile,13.99,1,PayPal,2,0.4,Sci-Fi
+49,Male,Premium,8.49,7,South America,Laptop,17.99,0,Crypto,1,1.06,Sci-Fi
+58,Female,Premium,17.93,7,Europe,Laptop,17.99,0,Credit Card,1,2.24,Documentary
+70,Other,Basic,61.47,7,Europe,Mobile,8.99,0,PayPal,1,7.68,Romance
+69,Other,Basic,1.9,7,Europe,Desktop,8.99,1,Credit Card,5,0.24,Documentary
+26,Female,Standard,11.7,7,North America,Tablet,13.99,0,Crypto,5,1.46,Action
+69,Male,Standard,11.83,7,Oceania,TV,13.99,0,Debit Card,4,1.48,Documentary
+63,Other,Basic,19.68,7,Oceania,TV,8.99,0,Credit Card,3,2.46,Documentary
+33,Female,Premium,2.08,7,North America,TV,17.99,0,Debit Card,4,0.26,Romance
+33,Female,Premium,14.93,7,Europe,Laptop,17.99,0,Debit Card,3,1.87,Action
+41,Female,Basic,27.09,7,South America,TV,8.99,0,Credit Card,5,3.39,Action
+28,Female,Premium,0.01,7,South America,TV,17.99,1,Crypto,1,0.0,Sci-Fi
+44,Female,Basic,1.69,7,North America,Mobile,8.99,1,Crypto,5,0.21,Romance
+39,Other,Premium,11.29,7,Europe,Tablet,17.99,0,Gift Card,1,1.41,Documentary
+43,Other,Standard,4.09,7,Europe,TV,13.99,0,Gift Card,5,0.51,Documentary
+39,Other,Standard,35.7,7,South America,TV,13.99,0,Crypto,4,4.46,Sci-Fi
+66,Female,Standard,6.54,7,Africa,Tablet,13.99,0,PayPal,2,0.82,Comedy
+64,Female,Premium,22.92,7,Africa,Desktop,17.99,0,Debit Card,1,2.87,Action
+69,Male,Basic,21.53,7,North America,Laptop,8.99,0,Crypto,3,2.69,Comedy
+35,Female,Standard,0.45,7,Oceania,Laptop,13.99,0,Debit Card,5,0.06,Documentary
+51,Female,Premium,0.46,7,Africa,TV,17.99,1,PayPal,2,0.06,Drama
+60,Female,Premium,3.92,7,North America,TV,17.99,1,Crypto,2,0.49,Comedy
+27,Other,Basic,0.18,7,Europe,Tablet,8.99,1,Gift Card,3,0.02,Drama
+64,Female,Standard,8.11,6,North America,Tablet,13.99,0,Gift Card,3,1.16,Action
+19,Other,Premium,1.87,6,South America,Laptop,17.99,1,Debit Card,1,0.27,Action
+50,Male,Premium,4.6,6,North America,Tablet,17.99,0,PayPal,4,0.66,Sci-Fi
+64,Female,Standard,3.66,6,Africa,Mobile,13.99,0,PayPal,1,0.52,Romance
+42,Male,Premium,22.19,6,Asia,Desktop,17.99,0,PayPal,2,3.17,Sci-Fi
+43,Other,Standard,77.57,6,South America,Mobile,13.99,0,Credit Card,4,11.08,Comedy
+28,Female,Premium,25.32,6,South America,Laptop,17.99,0,Gift Card,1,3.62,Action
+69,Female,Premium,1.75,6,Oceania,Mobile,17.99,0,PayPal,5,0.25,Romance
+37,Male,Standard,2.43,6,North America,Tablet,13.99,0,Crypto,5,0.35,Romance
+31,Male,Basic,11.96,6,Africa,Laptop,8.99,0,PayPal,4,1.71,Sci-Fi
+49,Female,Basic,38.43,6,Oceania,Tablet,8.99,0,PayPal,3,5.49,Drama
+18,Female,Standard,13.02,6,Africa,Desktop,13.99,0,Crypto,5,1.86,Documentary
+59,Female,Basic,0.75,6,Oceania,TV,8.99,1,Debit Card,3,0.11,Romance
+24,Male,Standard,16.21,6,Asia,Mobile,13.99,0,Gift Card,1,2.32,Documentary
+66,Female,Standard,18.96,6,South America,Laptop,13.99,0,Gift Card,3,2.71,Action
+23,Male,Basic,0.6,6,Oceania,Desktop,8.99,1,PayPal,3,0.09,Documentary
+58,Female,Basic,10.42,6,Oceania,Tablet,8.99,0,Debit Card,2,1.49,Documentary
+31,Female,Premium,9.95,6,North America,Mobile,17.99,0,Debit Card,2,1.42,Documentary
+45,Female,Standard,7.39,6,Oceania,TV,13.99,0,PayPal,1,1.06,Romance
+57,Female,Standard,4.91,6,North America,Desktop,13.99,0,PayPal,1,0.7,Sci-Fi
+30,Male,Premium,1.87,6,Asia,Desktop,17.99,0,Credit Card,2,0.27,Comedy
+41,Female,Basic,36.94,6,Africa,Tablet,8.99,0,Credit Card,4,5.28,Drama
+36,Female,Standard,22.11,6,Europe,Laptop,13.99,0,Credit Card,4,3.16,Action
+52,Other,Premium,26.94,6,North America,Desktop,17.99,0,Crypto,3,3.85,Documentary
+23,Female,Standard,3.7,6,Africa,Mobile,13.99,0,PayPal,3,0.53,Drama
+36,Female,Premium,14.18,6,Oceania,Tablet,17.99,0,Gift Card,2,2.03,Sci-Fi
+29,Male,Premium,9.22,6,South America,Laptop,17.99,0,Debit Card,4,1.32,Drama
+45,Female,Premium,15.41,6,Africa,Laptop,17.99,0,Credit Card,3,2.2,Sci-Fi
+50,Other,Premium,21.92,6,Asia,Mobile,17.99,0,PayPal,1,3.13,Documentary
+27,Other,Basic,2.58,6,South America,Tablet,8.99,1,Debit Card,3,0.37,Romance
+56,Other,Premium,13.15,6,Africa,Mobile,17.99,0,Credit Card,2,1.88,Horror
+36,Male,Basic,12.52,6,Asia,Laptop,8.99,0,Credit Card,4,1.79,Documentary
+61,Female,Standard,6.67,6,South America,Tablet,13.99,0,Gift Card,1,0.95,Sci-Fi
+66,Female,Standard,7.74,6,South America,Laptop,13.99,0,Credit Card,4,1.11,Horror
+32,Female,Basic,8.94,6,North America,Desktop,8.99,0,Crypto,5,1.28,Action
+22,Other,Basic,13.16,6,Europe,Tablet,8.99,0,Debit Card,4,1.88,Comedy
+41,Male,Basic,17.87,6,North America,Tablet,8.99,0,PayPal,1,2.55,Drama
+53,Male,Basic,6.45,6,South America,Mobile,8.99,0,Credit Card,5,0.92,Documentary
+50,Female,Premium,19.01,6,Asia,TV,17.99,0,PayPal,1,2.72,Action
+54,Other,Premium,14.2,6,Europe,Laptop,17.99,0,Crypto,5,2.03,Romance
+42,Other,Premium,4.26,6,North America,Tablet,17.99,0,Crypto,5,0.61,Horror
+42,Female,Basic,1.85,6,Africa,Laptop,8.99,1,Crypto,5,0.26,Horror
+70,Female,Basic,6.8,6,North America,Mobile,8.99,0,Debit Card,4,0.97,Action
+47,Male,Premium,22.31,6,Africa,TV,17.99,0,Gift Card,3,3.19,Comedy
+65,Female,Premium,4.89,6,Asia,TV,17.99,0,Gift Card,1,0.7,Documentary
+19,Female,Standard,8.54,6,Africa,TV,13.99,0,Credit Card,3,1.22,Romance
+19,Female,Standard,1.68,6,North America,Laptop,13.99,0,Credit Card,3,0.24,Documentary
+44,Other,Premium,3.38,6,Europe,Mobile,17.99,0,Credit Card,5,0.48,Horror
+52,Other,Premium,3.1,6,Europe,Tablet,17.99,0,Credit Card,3,0.44,Documentary
+48,Male,Premium,2.98,6,South America,TV,17.99,0,Debit Card,2,0.43,Comedy
+27,Other,Basic,6.89,6,Europe,Tablet,8.99,0,Credit Card,5,0.98,Documentary
+62,Female,Premium,5.32,6,Asia,Laptop,17.99,0,Debit Card,5,0.76,Drama
+68,Female,Standard,6.49,6,South America,Desktop,13.99,0,Credit Card,1,0.93,Drama
+36,Female,Standard,2.56,6,Africa,Tablet,13.99,0,Debit Card,5,0.37,Comedy
+60,Female,Premium,1.09,6,South America,Laptop,17.99,1,Credit Card,1,0.16,Horror
+34,Other,Standard,6.49,6,South America,Mobile,13.99,0,Credit Card,1,0.93,Comedy
+67,Female,Premium,9.87,6,Europe,TV,17.99,0,PayPal,3,1.41,Action
+59,Other,Basic,20.13,6,Africa,Mobile,8.99,0,Credit Card,1,2.88,Drama
+54,Other,Standard,4.69,6,South America,Laptop,13.99,0,Gift Card,5,0.67,Documentary
+43,Male,Standard,26.79,6,Africa,TV,13.99,0,Credit Card,3,3.83,Comedy
+68,Other,Basic,2.28,6,Asia,Desktop,8.99,1,Credit Card,3,0.33,Romance
+28,Male,Basic,0.43,6,South America,TV,8.99,1,Credit Card,3,0.06,Drama
+56,Other,Premium,45.06,6,Africa,Mobile,17.99,0,Gift Card,5,6.44,Action
+51,Female,Premium,2.04,6,South America,TV,17.99,0,Debit Card,2,0.29,Drama
+44,Other,Premium,6.78,6,Africa,Laptop,17.99,0,PayPal,5,0.97,Action
+32,Other,Basic,15.46,6,North America,Laptop,8.99,0,Credit Card,4,2.21,Horror
+61,Female,Standard,2.36,6,Asia,TV,13.99,1,Crypto,1,0.34,Drama
+43,Female,Standard,5.74,6,Oceania,Mobile,13.99,0,Credit Card,3,0.82,Drama
+50,Other,Basic,6.59,6,Asia,Tablet,8.99,0,Credit Card,2,0.94,Horror
+61,Other,Premium,0.85,6,Europe,TV,17.99,1,Crypto,1,0.12,Horror
+68,Other,Basic,6.53,6,Europe,Laptop,8.99,0,PayPal,4,0.93,Documentary
+41,Male,Basic,19.33,6,Europe,Laptop,8.99,0,Gift Card,5,2.76,Horror
+58,Female,Basic,17.27,6,Asia,TV,8.99,0,Debit Card,3,2.47,Romance
+44,Male,Standard,29.87,6,Africa,Mobile,13.99,0,Gift Card,3,4.27,Drama
+64,Male,Basic,15.97,6,Oceania,Mobile,8.99,0,Credit Card,1,2.28,Romance
+30,Female,Standard,6.03,6,Europe,Desktop,13.99,0,Crypto,1,0.86,Horror
+66,Female,Basic,5.27,6,South America,Mobile,8.99,0,Credit Card,5,0.75,Documentary
+42,Other,Premium,9.19,5,South America,Mobile,17.99,0,PayPal,5,1.53,Horror
+42,Other,Basic,20.52,5,Europe,Tablet,8.99,0,Debit Card,2,3.42,Romance
+42,Other,Premium,0.15,5,South America,Tablet,17.99,0,Debit Card,4,0.02,Sci-Fi
+21,Male,Standard,12.34,5,Africa,Tablet,13.99,0,PayPal,2,2.06,Sci-Fi
+67,Male,Standard,9.57,5,Europe,Mobile,13.99,0,Crypto,5,1.59,Action
+40,Other,Basic,0.86,5,Oceania,Tablet,8.99,1,Debit Card,2,0.14,Documentary
+45,Male,Standard,13.13,5,Asia,Desktop,13.99,0,Crypto,5,2.19,Drama
+49,Other,Basic,16.82,5,Asia,TV,8.99,0,Gift Card,5,2.8,Romance
+57,Male,Standard,3.73,5,Europe,Laptop,13.99,0,PayPal,2,0.62,Comedy
+46,Other,Basic,3.39,5,North America,Tablet,8.99,0,Debit Card,4,0.57,Horror
+35,Female,Premium,12.01,5,Asia,Mobile,17.99,0,Debit Card,4,2.0,Horror
+37,Female,Basic,25.43,5,Africa,Desktop,8.99,0,Gift Card,4,4.24,Horror
+45,Female,Standard,0.26,5,Oceania,Desktop,13.99,1,Crypto,1,0.04,Comedy
+37,Female,Basic,7.59,5,Europe,Desktop,8.99,0,Crypto,2,1.26,Drama
+38,Other,Basic,11.42,5,South America,Laptop,8.99,0,Crypto,5,1.9,Romance
+42,Female,Standard,0.48,5,North America,Desktop,13.99,0,Credit Card,5,0.08,Action
+31,Male,Basic,2.85,5,Oceania,Mobile,8.99,1,Debit Card,5,0.48,Horror
+57,Female,Standard,15.02,5,South America,Tablet,13.99,0,Credit Card,2,2.5,Drama
+25,Other,Basic,19.31,5,Africa,Mobile,8.99,0,PayPal,2,3.22,Documentary
+40,Female,Basic,33.55,5,Africa,Mobile,8.99,0,PayPal,1,5.59,Horror
+47,Male,Standard,2.01,5,North America,Laptop,13.99,0,Credit Card,2,0.33,Documentary
+62,Other,Premium,7.16,5,North America,Desktop,17.99,0,Gift Card,5,1.19,Romance
+44,Other,Basic,5.85,5,Asia,Tablet,8.99,0,PayPal,1,0.97,Action
+25,Female,Basic,1.84,5,Oceania,Laptop,8.99,1,PayPal,5,0.31,Sci-Fi
+32,Female,Standard,9.8,5,North America,Tablet,13.99,0,Credit Card,3,1.63,Drama
+36,Male,Basic,0.19,5,Oceania,Mobile,8.99,1,Debit Card,2,0.03,Sci-Fi
+32,Female,Basic,0.54,5,Oceania,Laptop,8.99,1,PayPal,2,0.09,Drama
+53,Male,Basic,25.23,5,Europe,Desktop,8.99,0,Credit Card,1,4.21,Documentary
+61,Female,Standard,39.09,5,Europe,Tablet,13.99,0,PayPal,1,6.52,Documentary
+46,Female,Premium,3.16,5,Asia,TV,17.99,0,Debit Card,5,0.53,Action
+45,Other,Basic,8.87,5,Africa,Laptop,8.99,0,PayPal,1,1.48,Comedy
+33,Male,Premium,1.98,5,Europe,Desktop,17.99,0,Credit Card,2,0.33,Sci-Fi
+38,Male,Basic,5.46,5,Oceania,TV,8.99,0,Gift Card,2,0.91,Horror
+69,Other,Premium,26.07,5,Oceania,Laptop,17.99,0,PayPal,1,4.34,Romance
+51,Male,Basic,7.54,5,Europe,Desktop,8.99,0,Debit Card,4,1.26,Action
+44,Other,Basic,20.91,5,South America,Laptop,8.99,0,Gift Card,5,3.48,Sci-Fi
+22,Other,Premium,3.24,5,South America,Laptop,17.99,0,Gift Card,4,0.54,Romance
+31,Male,Standard,8.85,5,Oceania,Tablet,13.99,0,Gift Card,1,1.47,Sci-Fi
+59,Female,Standard,9.77,5,Africa,TV,13.99,0,Crypto,4,1.63,Comedy
+55,Male,Standard,22.74,5,Europe,Mobile,13.99,0,PayPal,3,3.79,Horror
+70,Other,Premium,22.22,5,Europe,TV,17.99,0,Credit Card,2,3.7,Romance
+55,Male,Basic,10.19,5,Europe,Desktop,8.99,0,PayPal,3,1.7,Action
+63,Female,Basic,1.07,5,South America,TV,8.99,1,Credit Card,4,0.18,Action
+29,Female,Premium,17.11,5,South America,Mobile,17.99,0,Crypto,1,2.85,Horror
+30,Other,Standard,17.22,5,South America,Laptop,13.99,0,PayPal,1,2.87,Horror
+35,Other,Basic,0.03,5,Asia,TV,8.99,1,PayPal,3,0.01,Horror
+37,Male,Standard,3.66,5,Africa,Tablet,13.99,0,PayPal,1,0.61,Sci-Fi
+18,Male,Premium,2.75,5,Asia,TV,17.99,1,Crypto,1,0.46,Drama
+29,Other,Basic,4.67,5,South America,Laptop,8.99,0,PayPal,3,0.78,Sci-Fi
+58,Female,Standard,76.29,5,Europe,Mobile,13.99,0,Crypto,5,12.72,Sci-Fi
+21,Male,Standard,0.66,5,South America,Laptop,13.99,1,Crypto,1,0.11,Horror
+28,Female,Standard,4.67,5,Oceania,Mobile,13.99,0,Crypto,2,0.78,Drama
+69,Female,Standard,3.35,5,Europe,Laptop,13.99,0,Gift Card,4,0.56,Action
+33,Male,Premium,17.72,5,North America,Laptop,17.99,0,Credit Card,5,2.95,Romance
+27,Female,Premium,6.01,5,Europe,Mobile,17.99,0,Gift Card,1,1.0,Horror
+59,Female,Standard,5.26,5,Africa,Laptop,13.99,0,Crypto,1,0.88,Documentary
+53,Female,Standard,6.2,5,Oceania,Desktop,13.99,0,Gift Card,4,1.03,Documentary
+40,Male,Premium,4.68,5,Europe,Tablet,17.99,0,Debit Card,4,0.78,Horror
+26,Male,Premium,16.34,5,Asia,TV,17.99,0,Credit Card,2,2.72,Drama
+35,Other,Basic,2.19,5,Oceania,Laptop,8.99,1,Gift Card,5,0.36,Action
+19,Female,Premium,11.05,5,Oceania,TV,17.99,0,Gift Card,1,1.84,Romance
+43,Other,Premium,7.18,5,North America,Desktop,17.99,0,Crypto,5,1.2,Sci-Fi
+28,Female,Premium,1.79,5,Oceania,TV,17.99,0,Gift Card,5,0.3,Drama
+50,Female,Standard,23.31,5,South America,Tablet,13.99,0,Credit Card,1,3.88,Action
+18,Other,Premium,9.52,5,Oceania,Desktop,17.99,0,Gift Card,2,1.59,Drama
+36,Other,Premium,11.87,5,North America,TV,17.99,0,Gift Card,4,1.98,Comedy
+30,Female,Premium,1.85,5,Europe,Laptop,17.99,0,Debit Card,5,0.31,Drama
+45,Female,Basic,4.02,5,North America,Tablet,8.99,1,PayPal,1,0.67,Documentary
+58,Male,Standard,2.11,5,North America,TV,13.99,1,Credit Card,1,0.35,Action
+18,Female,Premium,33.81,5,Asia,TV,17.99,0,Crypto,2,5.64,Romance
+53,Other,Premium,1.64,5,North America,Laptop,17.99,1,Crypto,1,0.27,Horror
+69,Other,Premium,13.61,5,Europe,TV,17.99,0,Credit Card,3,2.27,Romance
+65,Male,Premium,20.18,4,Oceania,Mobile,17.99,0,Crypto,4,4.04,Drama
+59,Male,Basic,14.13,4,Asia,Mobile,8.99,0,PayPal,2,2.83,Horror
+68,Other,Premium,1.89,4,South America,Laptop,17.99,0,Credit Card,4,0.38,Documentary
+55,Male,Standard,10.1,4,Asia,Desktop,13.99,0,Debit Card,4,2.02,Sci-Fi
+34,Male,Premium,3.92,4,South America,TV,17.99,0,Gift Card,1,0.78,Action
+21,Female,Standard,6.2,4,Oceania,Mobile,13.99,0,Debit Card,5,1.24,Action
+60,Female,Premium,15.94,4,South America,Desktop,17.99,0,PayPal,3,3.19,Action
+18,Other,Basic,20.15,4,South America,TV,8.99,0,Crypto,4,4.03,Horror
+30,Male,Basic,0.39,4,Africa,Mobile,8.99,1,Credit Card,2,0.08,Comedy
+56,Female,Standard,4.05,4,Europe,TV,13.99,0,PayPal,4,0.81,Drama
+64,Female,Premium,6.41,4,North America,Tablet,17.99,0,Credit Card,1,1.28,Sci-Fi
+30,Other,Basic,0.52,4,Asia,TV,8.99,1,PayPal,2,0.1,Sci-Fi
+41,Other,Standard,2.95,4,Asia,Laptop,13.99,0,PayPal,3,0.59,Sci-Fi
+36,Male,Standard,14.29,4,Africa,Mobile,13.99,0,Credit Card,4,2.86,Sci-Fi
+29,Male,Premium,16.42,4,Oceania,Tablet,17.99,0,Credit Card,3,3.28,Drama
+19,Female,Premium,1.8,4,Africa,Tablet,17.99,0,Debit Card,2,0.36,Documentary
+32,Other,Standard,17.48,4,North America,Laptop,13.99,0,Crypto,4,3.5,Horror
+45,Male,Premium,18.07,4,Asia,Tablet,17.99,0,Gift Card,1,3.61,Romance
+63,Male,Premium,13.66,4,Asia,Mobile,17.99,0,PayPal,2,2.73,Sci-Fi
+31,Other,Standard,15.37,4,South America,Laptop,13.99,0,Crypto,3,3.07,Comedy
+28,Other,Standard,14.45,4,Europe,Laptop,13.99,0,Credit Card,5,2.89,Horror
+22,Male,Standard,0.12,4,Asia,Laptop,13.99,0,PayPal,5,0.02,Drama
+57,Female,Premium,12.51,4,Africa,TV,17.99,0,Gift Card,2,2.5,Documentary
+51,Male,Standard,38.31,4,Africa,TV,13.99,0,Crypto,5,7.66,Action
+44,Other,Standard,2.14,4,Asia,Desktop,13.99,1,Crypto,2,0.43,Comedy
+52,Male,Standard,5.03,4,Europe,Desktop,13.99,0,Debit Card,5,1.01,Sci-Fi
+58,Male,Premium,6.28,4,Europe,Tablet,17.99,0,Debit Card,4,1.26,Drama
+67,Male,Basic,1.74,4,Europe,Mobile,8.99,1,Gift Card,2,0.35,Action
+57,Male,Basic,12.33,4,South America,Desktop,8.99,0,Crypto,2,2.47,Drama
+58,Female,Standard,5.63,4,Africa,TV,13.99,0,Gift Card,5,1.13,Documentary
+32,Other,Basic,0.49,4,North America,Desktop,8.99,1,Gift Card,2,0.1,Documentary
+34,Male,Premium,3.58,4,Europe,Desktop,17.99,0,Gift Card,1,0.72,Sci-Fi
+65,Other,Standard,4.68,4,Asia,TV,13.99,0,Gift Card,1,0.94,Drama
+68,Female,Basic,0.27,4,Oceania,Tablet,8.99,1,Crypto,2,0.05,Horror
+41,Male,Premium,1.34,4,Europe,Laptop,17.99,0,PayPal,2,0.27,Action
+32,Female,Standard,11.47,4,Asia,Laptop,13.99,0,PayPal,1,2.29,Drama
+68,Female,Basic,9.48,4,Oceania,Tablet,8.99,0,Credit Card,2,1.9,Drama
+35,Other,Basic,1.21,4,Oceania,Desktop,8.99,1,Gift Card,2,0.24,Action
+35,Female,Basic,2.22,4,Africa,Desktop,8.99,1,PayPal,2,0.44,Comedy
+45,Female,Standard,21.09,4,Africa,Tablet,13.99,0,Gift Card,5,4.22,Romance
+19,Other,Premium,0.24,4,Oceania,Desktop,17.99,0,Gift Card,4,0.05,Sci-Fi
+46,Female,Standard,5.78,4,Asia,Laptop,13.99,0,Credit Card,2,1.16,Sci-Fi
+51,Other,Standard,1.23,4,Europe,Tablet,13.99,0,Credit Card,4,0.25,Comedy
+33,Male,Standard,0.93,4,Asia,Tablet,13.99,1,Crypto,1,0.19,Sci-Fi
+68,Female,Premium,23.8,4,Oceania,Tablet,17.99,0,Crypto,2,4.76,Sci-Fi
+54,Other,Premium,13.49,4,Africa,Laptop,17.99,0,Debit Card,1,2.7,Action
+23,Female,Standard,2.63,4,Oceania,Mobile,13.99,0,PayPal,3,0.53,Comedy
+25,Male,Standard,1.36,4,North America,Laptop,13.99,0,Gift Card,5,0.27,Romance
+59,Other,Basic,12.02,4,North America,Mobile,8.99,0,Crypto,2,2.4,Action
+27,Other,Standard,10.69,4,Asia,Mobile,13.99,0,Crypto,3,2.14,Drama
+53,Other,Basic,8.33,4,Asia,Tablet,8.99,0,Crypto,2,1.67,Romance
+45,Other,Standard,4.13,4,South America,Tablet,13.99,0,Debit Card,2,0.83,Comedy
+37,Other,Standard,8.25,4,North America,Laptop,13.99,0,PayPal,1,1.65,Horror
+46,Other,Premium,7.29,4,North America,Laptop,17.99,0,Credit Card,2,1.46,Comedy
+68,Male,Premium,52.22,4,North America,Laptop,17.99,0,Gift Card,1,10.44,Romance
+40,Male,Basic,14.79,4,North America,TV,8.99,0,PayPal,3,2.96,Sci-Fi
+38,Female,Premium,1.18,4,Africa,Mobile,17.99,0,Debit Card,3,0.24,Action
+30,Male,Standard,1.29,4,Africa,TV,13.99,0,Credit Card,5,0.26,Action
+59,Male,Standard,2.41,4,Asia,Tablet,13.99,0,Debit Card,2,0.48,Action
+66,Female,Standard,4.96,4,North America,Laptop,13.99,0,Gift Card,1,0.99,Sci-Fi
+60,Male,Standard,1.24,4,North America,Desktop,13.99,0,PayPal,2,0.25,Drama
+48,Male,Standard,7.38,4,South America,Desktop,13.99,0,Credit Card,4,1.48,Horror
+60,Male,Basic,31.9,4,Oceania,Tablet,8.99,0,Crypto,2,6.38,Comedy
+29,Male,Basic,14.23,4,Europe,Desktop,8.99,0,Credit Card,2,2.85,Documentary
+33,Male,Basic,43.55,4,South America,TV,8.99,0,Gift Card,1,8.71,Documentary
+49,Other,Premium,7.69,4,Asia,Tablet,17.99,0,Gift Card,4,1.54,Sci-Fi
+62,Female,Basic,1.8,4,South America,Mobile,8.99,1,Crypto,5,0.36,Drama
+40,Other,Basic,8.13,4,Oceania,Tablet,8.99,0,Gift Card,4,1.63,Romance
+40,Male,Standard,8.17,4,North America,Laptop,13.99,0,Debit Card,1,1.63,Documentary
+27,Other,Premium,27.3,4,South America,Laptop,17.99,0,PayPal,3,5.46,Drama
+64,Male,Premium,15.22,4,North America,Laptop,17.99,0,Gift Card,1,3.04,Documentary
+36,Other,Basic,5.39,4,Asia,Tablet,8.99,0,Debit Card,2,1.08,Drama
+37,Male,Standard,28.57,4,Europe,Mobile,13.99,0,Credit Card,2,5.71,Horror
+27,Other,Premium,6.78,4,South America,Mobile,17.99,0,PayPal,3,1.36,Drama
+24,Female,Basic,7.5,4,South America,Tablet,8.99,0,Debit Card,2,1.5,Romance
+49,Female,Standard,0.59,4,Africa,Desktop,13.99,1,Credit Card,1,0.12,Comedy
+46,Other,Premium,26.06,4,Oceania,Desktop,17.99,0,PayPal,4,5.21,Action
+66,Female,Standard,3.01,4,Africa,Tablet,13.99,0,Credit Card,2,0.6,Comedy
+21,Male,Standard,10.63,4,Oceania,Tablet,13.99,0,Gift Card,1,2.13,Comedy
+25,Male,Basic,9.7,4,North America,Desktop,8.99,0,PayPal,2,1.94,Horror
+50,Female,Basic,8.09,4,North America,Mobile,8.99,0,Debit Card,1,1.62,Action
+59,Female,Basic,6.96,4,Asia,TV,8.99,0,PayPal,2,1.39,Horror
+47,Female,Basic,8.22,4,Africa,TV,8.99,0,Gift Card,2,1.64,Action
+21,Male,Premium,11.78,4,Oceania,Laptop,17.99,0,Crypto,3,2.36,Drama
+28,Female,Premium,3.02,4,Africa,Desktop,17.99,0,Debit Card,2,0.6,Action
+65,Other,Premium,13.71,4,South America,Desktop,17.99,0,Crypto,3,2.74,Sci-Fi
+31,Other,Basic,5.4,4,Europe,Desktop,8.99,0,Credit Card,5,1.08,Romance
+55,Other,Basic,17.87,4,South America,Tablet,8.99,0,Credit Card,1,3.57,Romance
+62,Female,Standard,35.13,4,Europe,Desktop,13.99,0,Crypto,4,7.03,Comedy
+40,Female,Standard,11.91,4,Europe,Mobile,13.99,0,Debit Card,5,2.38,Comedy
+51,Other,Standard,1.23,4,South America,Laptop,13.99,0,Credit Card,5,0.25,Romance
+29,Female,Premium,1.38,4,Europe,Laptop,17.99,1,Gift Card,3,0.28,Sci-Fi
+22,Female,Premium,26.81,4,Asia,TV,17.99,0,Debit Card,5,5.36,Romance
+62,Male,Premium,10.33,3,Africa,Desktop,17.99,0,Crypto,2,2.58,Documentary
+32,Female,Basic,7.17,3,Asia,Tablet,8.99,0,Debit Card,5,1.79,Horror
+67,Male,Basic,17.44,3,South America,Laptop,8.99,0,Credit Card,3,4.36,Romance
+40,Female,Basic,7.31,3,Africa,Tablet,8.99,0,Debit Card,1,1.83,Action
+59,Male,Premium,31.05,3,North America,Mobile,17.99,0,Credit Card,5,7.76,Action
+60,Female,Basic,1.07,3,Oceania,Tablet,8.99,1,Credit Card,3,0.27,Romance
+67,Female,Premium,4.2,3,South America,Desktop,17.99,0,Crypto,5,1.05,Action
+70,Male,Standard,28.32,3,Asia,Tablet,13.99,0,Debit Card,3,7.08,Action
+63,Male,Premium,9.84,3,North America,Laptop,17.99,0,PayPal,4,2.46,Comedy
+39,Female,Premium,17.14,3,Asia,Mobile,17.99,0,Credit Card,5,4.29,Comedy
+21,Other,Premium,6.28,3,South America,Laptop,17.99,0,Crypto,4,1.57,Documentary
+55,Male,Basic,7.22,3,North America,Tablet,8.99,0,Gift Card,2,1.8,Romance
+40,Male,Premium,12.26,3,North America,Mobile,17.99,0,Debit Card,5,3.06,Romance
+27,Male,Basic,46.09,3,Oceania,TV,8.99,0,Crypto,4,11.52,Documentary
+21,Other,Premium,13.63,3,Asia,Laptop,17.99,0,Crypto,1,3.41,Comedy
+46,Female,Standard,7.59,3,Oceania,Laptop,13.99,0,Crypto,3,1.9,Comedy
+22,Other,Standard,46.56,3,Europe,Mobile,13.99,0,PayPal,3,11.64,Comedy
+30,Male,Standard,2.26,3,South America,TV,13.99,0,Gift Card,4,0.56,Documentary
+44,Female,Standard,0.78,3,North America,Mobile,13.99,0,Credit Card,3,0.2,Drama
+54,Male,Premium,4.93,3,Asia,TV,17.99,0,Crypto,1,1.23,Documentary
+63,Other,Basic,1.25,3,Asia,Tablet,8.99,1,Debit Card,5,0.31,Comedy
+33,Female,Standard,1.33,3,Africa,Tablet,13.99,0,PayPal,5,0.33,Documentary
+65,Other,Basic,1.68,3,Asia,TV,8.99,1,PayPal,1,0.42,Sci-Fi
+62,Male,Basic,6.84,3,Africa,Desktop,8.99,0,Crypto,2,1.71,Comedy
+47,Female,Basic,6.28,3,Oceania,Tablet,8.99,0,Debit Card,2,1.57,Documentary
+49,Male,Basic,4.11,3,Oceania,Mobile,8.99,1,Crypto,3,1.03,Action
+59,Female,Basic,9.12,3,Europe,Laptop,8.99,0,Credit Card,4,2.28,Sci-Fi
+69,Male,Premium,27.12,3,Asia,TV,17.99,0,Credit Card,5,6.78,Drama
+36,Other,Standard,25.82,3,Africa,Mobile,13.99,0,PayPal,1,6.46,Comedy
+57,Other,Premium,29.23,3,South America,Laptop,17.99,0,Credit Card,1,7.31,Romance
+20,Other,Premium,25.68,3,Asia,Laptop,17.99,0,Credit Card,5,6.42,Comedy
+50,Other,Basic,3.37,3,South America,Mobile,8.99,0,Credit Card,3,0.84,Documentary
+33,Female,Basic,11.53,3,Europe,TV,8.99,0,Debit Card,5,2.88,Documentary
+52,Male,Standard,21.89,3,Europe,Mobile,13.99,0,PayPal,1,5.47,Horror
+19,Male,Premium,5.34,3,North America,Tablet,17.99,0,Debit Card,1,1.33,Action
+48,Female,Premium,5.85,3,North America,Tablet,17.99,0,Credit Card,4,1.46,Action
+19,Female,Basic,6.32,3,Asia,Mobile,8.99,0,Credit Card,2,1.58,Drama
+65,Other,Basic,0.39,3,Oceania,Desktop,8.99,1,PayPal,2,0.1,Action
+22,Male,Standard,13.57,3,Oceania,Tablet,13.99,0,Debit Card,4,3.39,Documentary
+46,Male,Premium,26.01,3,Asia,Mobile,17.99,0,Debit Card,3,6.5,Horror
+36,Male,Premium,13.68,3,South America,Tablet,17.99,0,Crypto,3,3.42,Comedy
+24,Female,Basic,1.71,3,Africa,Mobile,8.99,1,Crypto,3,0.43,Sci-Fi
+38,Other,Premium,0.55,3,Africa,Desktop,17.99,1,Debit Card,1,0.14,Documentary
+39,Female,Standard,0.12,3,South America,Tablet,13.99,0,Debit Card,3,0.03,Sci-Fi
+35,Other,Basic,25.11,3,Africa,Mobile,8.99,0,Crypto,2,6.28,Drama
+21,Male,Standard,4.52,3,Oceania,Mobile,13.99,0,Crypto,3,1.13,Drama
+66,Male,Standard,3.11,3,Africa,TV,13.99,0,PayPal,3,0.78,Comedy
+57,Female,Premium,4.83,3,Oceania,Desktop,17.99,0,Credit Card,4,1.21,Comedy
+51,Female,Standard,13.68,3,Africa,Desktop,13.99,0,PayPal,4,3.42,Documentary
+40,Other,Basic,6.58,3,Asia,Desktop,8.99,0,PayPal,1,1.65,Drama
+68,Female,Premium,1.85,3,Europe,Tablet,17.99,0,Gift Card,5,0.46,Romance
+32,Male,Premium,2.38,3,Asia,Mobile,17.99,0,Gift Card,4,0.59,Drama
+25,Other,Standard,9.92,3,Europe,Tablet,13.99,0,Crypto,5,2.48,Horror
+37,Male,Premium,6.42,3,North America,Laptop,17.99,0,Debit Card,1,1.6,Comedy
+25,Other,Basic,17.9,3,Oceania,Tablet,8.99,0,Crypto,3,4.47,Romance
+64,Female,Standard,2.56,3,North America,Laptop,13.99,0,Debit Card,4,0.64,Documentary
+45,Female,Premium,3.45,3,Africa,Desktop,17.99,0,Crypto,3,0.86,Horror
+21,Female,Premium,4.89,3,Oceania,Desktop,17.99,0,Debit Card,4,1.22,Sci-Fi
+39,Female,Basic,2.09,3,Oceania,Laptop,8.99,1,Crypto,3,0.52,Documentary
+60,Female,Basic,6.3,3,North America,Mobile,8.99,0,Debit Card,2,1.57,Comedy
+31,Female,Standard,7.48,3,Africa,Tablet,13.99,0,Gift Card,2,1.87,Sci-Fi
+70,Other,Basic,11.44,3,Asia,TV,8.99,0,PayPal,4,2.86,Romance
+56,Other,Premium,36.2,3,Europe,Mobile,17.99,0,Gift Card,5,9.05,Sci-Fi
+65,Other,Basic,3.84,3,Oceania,Desktop,8.99,0,Credit Card,3,0.96,Comedy
+23,Female,Premium,4.03,3,North America,Mobile,17.99,0,PayPal,5,1.01,Romance
+56,Female,Basic,15.59,3,South America,Desktop,8.99,0,Gift Card,3,3.9,Action
+51,Female,Standard,6.79,3,Asia,Tablet,13.99,0,Gift Card,4,1.7,Action
+57,Other,Premium,10.89,3,North America,Desktop,17.99,0,Crypto,5,2.72,Sci-Fi
+53,Other,Standard,8.85,3,Oceania,Mobile,13.99,0,Gift Card,1,2.21,Sci-Fi
+27,Other,Premium,30.11,3,Africa,Mobile,17.99,0,Crypto,3,7.53,Romance
+20,Male,Basic,0.61,3,Asia,Laptop,8.99,1,PayPal,3,0.15,Documentary
+20,Female,Basic,25.17,3,Oceania,Desktop,8.99,0,Crypto,2,6.29,Documentary
+67,Female,Premium,5.4,3,Asia,Mobile,17.99,0,PayPal,2,1.35,Sci-Fi
+43,Male,Standard,0.24,3,Europe,Mobile,13.99,1,Gift Card,3,0.06,Romance
+29,Female,Basic,0.36,3,Asia,Mobile,8.99,1,Debit Card,4,0.09,Horror
+63,Male,Basic,14.4,3,Europe,Desktop,8.99,0,Debit Card,3,3.6,Documentary
+27,Female,Standard,5.85,3,Oceania,Laptop,13.99,0,Crypto,5,1.46,Sci-Fi
+57,Male,Premium,6.13,3,Asia,Desktop,17.99,0,PayPal,3,1.53,Sci-Fi
+50,Male,Premium,10.83,3,Africa,Laptop,17.99,0,Credit Card,3,2.71,Drama
+63,Male,Basic,1.03,3,North America,Tablet,8.99,1,Credit Card,5,0.26,Documentary
+46,Other,Standard,13.38,3,South America,Laptop,13.99,0,Credit Card,2,3.35,Romance
+47,Other,Standard,42.79,2,Europe,TV,13.99,0,Debit Card,1,14.26,Drama
+29,Female,Premium,5.97,2,Europe,Tablet,17.99,0,PayPal,4,1.99,Action
+33,Male,Standard,16.27,2,Africa,Desktop,13.99,0,Crypto,2,5.42,Comedy
+20,Female,Basic,1.98,2,Asia,Tablet,8.99,1,Crypto,1,0.66,Sci-Fi
+26,Male,Premium,3.67,2,North America,Desktop,17.99,0,Gift Card,1,1.22,Documentary
+51,Male,Basic,6.65,2,North America,TV,8.99,0,PayPal,4,2.22,Horror
+36,Female,Standard,7.28,2,North America,Tablet,13.99,0,Debit Card,4,2.43,Sci-Fi
+24,Male,Standard,0.49,2,Oceania,Laptop,13.99,0,Debit Card,2,0.16,Romance
+37,Female,Standard,3.94,2,Oceania,Mobile,13.99,0,Debit Card,2,1.31,Comedy
+26,Other,Basic,0.06,2,South America,TV,8.99,1,Credit Card,4,0.02,Action
+56,Female,Standard,35.01,2,Asia,Desktop,13.99,0,Crypto,4,11.67,Sci-Fi
+23,Male,Premium,16.01,2,Europe,Laptop,17.99,0,PayPal,1,5.34,Sci-Fi
+42,Female,Basic,5.67,2,Asia,Mobile,8.99,0,Debit Card,3,1.89,Horror
+58,Male,Standard,19.25,2,Europe,Mobile,13.99,0,Credit Card,2,6.42,Drama
+50,Female,Basic,7.45,2,Europe,Laptop,8.99,0,Gift Card,3,2.48,Sci-Fi
+20,Male,Basic,3.02,2,Africa,Tablet,8.99,0,Debit Card,5,1.01,Action
+21,Male,Premium,16.09,2,North America,Tablet,17.99,0,Crypto,4,5.36,Sci-Fi
+25,Male,Standard,0.45,2,Oceania,TV,13.99,1,Debit Card,1,0.15,Comedy
+55,Female,Standard,3.81,2,Oceania,TV,13.99,0,Gift Card,1,1.27,Sci-Fi
+19,Other,Premium,8.12,2,Europe,Laptop,17.99,0,PayPal,1,2.71,Action
+20,Other,Standard,11.97,2,Africa,Mobile,13.99,0,Crypto,5,3.99,Comedy
+31,Male,Premium,12.0,2,Europe,Mobile,17.99,0,Credit Card,2,4.0,Comedy
+36,Male,Standard,9.1,2,North America,Tablet,13.99,0,Debit Card,2,3.03,Drama
+37,Female,Basic,5.35,2,North America,Tablet,8.99,0,Gift Card,2,1.78,Drama
+34,Male,Standard,6.79,2,Oceania,Mobile,13.99,0,PayPal,2,2.26,Romance
+56,Other,Standard,34.8,2,Oceania,Desktop,13.99,0,Debit Card,4,11.6,Drama
+38,Female,Basic,24.57,2,Africa,Tablet,8.99,0,Gift Card,4,8.19,Comedy
+36,Other,Basic,22.43,2,South America,Tablet,8.99,0,Crypto,4,7.48,Romance
+48,Other,Premium,16.78,2,Europe,Mobile,17.99,0,PayPal,1,5.59,Drama
+49,Female,Standard,8.43,2,Oceania,TV,13.99,0,Gift Card,1,2.81,Comedy
+39,Male,Standard,31.83,2,Africa,Mobile,13.99,0,Crypto,5,10.61,Horror
+26,Male,Standard,11.12,2,Asia,TV,13.99,0,Debit Card,4,3.71,Horror
+45,Male,Premium,2.7,2,Europe,TV,17.99,0,Credit Card,4,0.9,Sci-Fi
+63,Other,Basic,15.77,2,Europe,Tablet,8.99,0,PayPal,4,5.26,Drama
+48,Female,Basic,1.3,2,South America,Mobile,8.99,1,Crypto,4,0.43,Drama
+30,Female,Premium,5.97,2,South America,Tablet,17.99,0,Credit Card,3,1.99,Horror
+47,Female,Basic,3.84,2,Europe,Mobile,8.99,0,Credit Card,2,1.28,Action
+22,Other,Basic,2.59,2,Africa,TV,8.99,1,Gift Card,1,0.86,Documentary
+65,Female,Standard,15.97,2,Africa,TV,13.99,0,Crypto,1,5.32,Drama
+38,Male,Premium,5.89,2,Europe,Desktop,17.99,0,Crypto,1,1.96,Romance
+62,Other,Basic,1.16,2,South America,TV,8.99,1,PayPal,2,0.39,Horror
+56,Male,Premium,6.24,2,Oceania,Tablet,17.99,0,Crypto,4,2.08,Sci-Fi
+23,Other,Basic,14.42,2,Africa,Tablet,8.99,0,Crypto,2,4.81,Romance
+61,Male,Basic,1.1,2,South America,Laptop,8.99,1,PayPal,5,0.37,Romance
+26,Other,Standard,11.13,2,South America,Laptop,13.99,0,Credit Card,2,3.71,Sci-Fi
+44,Male,Basic,3.91,2,South America,Laptop,8.99,0,Credit Card,4,1.3,Drama
+43,Female,Basic,7.51,2,Europe,TV,8.99,0,Credit Card,4,2.5,Drama
+66,Male,Standard,0.29,2,Oceania,Laptop,13.99,1,Gift Card,2,0.1,Action
+25,Other,Standard,6.71,2,Africa,Tablet,13.99,0,Credit Card,4,2.24,Sci-Fi
+34,Other,Standard,12.65,2,South America,Laptop,13.99,0,Debit Card,4,4.22,Documentary
+56,Male,Basic,8.71,2,Asia,Laptop,8.99,0,Debit Card,3,2.9,Drama
+67,Other,Basic,15.16,2,Asia,Desktop,8.99,0,Debit Card,5,5.05,Romance
+41,Female,Premium,0.43,2,Oceania,Mobile,17.99,0,Gift Card,5,0.14,Horror
+60,Female,Standard,1.03,2,Asia,Tablet,13.99,0,PayPal,5,0.34,Documentary
+35,Male,Premium,9.51,2,Oceania,Desktop,17.99,0,Gift Card,1,3.17,Horror
+67,Female,Basic,9.24,2,North America,Desktop,8.99,0,PayPal,3,3.08,Documentary
+32,Other,Standard,27.77,2,Oceania,Tablet,13.99,0,Crypto,3,9.26,Sci-Fi
+53,Male,Standard,3.65,2,Asia,Laptop,13.99,0,PayPal,4,1.22,Romance
+23,Male,Premium,10.39,2,North America,TV,17.99,0,PayPal,4,3.46,Romance
+45,Other,Standard,7.03,2,Africa,Laptop,13.99,0,PayPal,2,2.34,Drama
+46,Other,Basic,0.04,2,South America,Tablet,8.99,1,Credit Card,4,0.01,Action
+46,Male,Standard,19.74,2,North America,Desktop,13.99,0,Credit Card,4,6.58,Documentary
+41,Other,Basic,19.1,2,Europe,Mobile,8.99,0,PayPal,1,6.37,Sci-Fi
+28,Female,Premium,0.12,2,North America,Laptop,17.99,0,PayPal,5,0.04,Comedy
+62,Female,Standard,24.14,2,Africa,Desktop,13.99,0,Crypto,4,8.05,Horror
+47,Other,Standard,6.85,2,North America,Mobile,13.99,0,Gift Card,3,2.28,Romance
+30,Male,Premium,1.84,2,Oceania,Tablet,17.99,0,PayPal,2,0.61,Action
+49,Female,Basic,7.69,2,Africa,Mobile,8.99,0,Gift Card,1,2.56,Comedy
+51,Male,Premium,3.79,2,Asia,Laptop,17.99,0,Credit Card,3,1.26,Sci-Fi
+54,Female,Standard,9.97,2,Asia,Tablet,13.99,0,Debit Card,2,3.32,Romance
+35,Male,Standard,25.08,2,Oceania,TV,13.99,0,Crypto,5,8.36,Action
+56,Male,Standard,0.93,2,Oceania,Tablet,13.99,0,Credit Card,5,0.31,Horror
+24,Male,Standard,5.37,2,North America,TV,13.99,0,Gift Card,2,1.79,Comedy
+66,Male,Basic,56.24,2,North America,Laptop,8.99,0,Credit Card,4,18.75,Romance
+29,Other,Basic,17.58,2,Europe,Desktop,8.99,0,PayPal,1,5.86,Action
+27,Female,Basic,0.03,2,Africa,Mobile,8.99,1,Debit Card,3,0.01,Drama
+19,Male,Standard,8.32,2,Asia,Laptop,13.99,0,PayPal,2,2.77,Horror
+60,Female,Premium,9.31,2,Europe,Desktop,17.99,0,PayPal,5,3.1,Horror
+52,Male,Basic,6.78,2,Asia,Mobile,8.99,0,Gift Card,1,2.26,Romance
+66,Male,Standard,1.97,2,Europe,Laptop,13.99,0,Credit Card,4,0.66,Sci-Fi
+30,Other,Standard,3.36,2,Oceania,Laptop,13.99,0,Crypto,2,1.12,Sci-Fi
+20,Other,Standard,2.75,2,Africa,TV,13.99,0,Credit Card,2,0.92,Sci-Fi
+70,Other,Basic,8.26,2,Asia,TV,8.99,0,Debit Card,4,2.75,Comedy
+30,Male,Standard,29.21,2,Asia,Mobile,13.99,0,PayPal,3,9.74,Romance
+18,Female,Basic,18.12,2,North America,Tablet,8.99,0,Debit Card,1,6.04,Horror
+65,Other,Premium,0.76,2,Asia,Mobile,17.99,0,Debit Card,2,0.25,Comedy
+42,Other,Premium,3.6,2,Oceania,TV,17.99,0,Credit Card,1,1.2,Action
+30,Female,Basic,10.64,2,Europe,Tablet,8.99,0,Credit Card,2,3.55,Romance
+18,Other,Basic,2.02,2,Oceania,Mobile,8.99,0,Crypto,5,0.67,Documentary
+42,Male,Premium,18.17,2,South America,Laptop,17.99,0,Crypto,4,6.06,Sci-Fi
+50,Female,Basic,0.82,1,North America,Mobile,8.99,1,PayPal,5,0.41,Drama
+22,Female,Premium,21.84,1,Oceania,Mobile,17.99,0,Credit Card,1,10.92,Horror
+67,Other,Premium,28.86,1,South America,Laptop,17.99,0,Gift Card,2,14.43,Drama
+26,Other,Standard,5.59,1,North America,Tablet,13.99,0,Debit Card,3,2.79,Romance
+48,Male,Basic,3.34,1,Oceania,Mobile,8.99,1,Credit Card,1,1.67,Comedy
+49,Female,Basic,18.37,1,North America,Laptop,8.99,0,PayPal,2,9.19,Drama
+48,Other,Basic,4.91,1,North America,Mobile,8.99,1,PayPal,1,2.46,Action
+70,Other,Premium,13.24,1,Africa,TV,17.99,0,Gift Card,5,6.62,Drama
+25,Female,Standard,7.36,1,North America,Mobile,13.99,0,PayPal,4,3.68,Comedy
+53,Other,Premium,7.79,1,Africa,TV,17.99,0,Gift Card,1,3.9,Sci-Fi
+57,Female,Basic,15.75,1,Europe,Desktop,8.99,0,Crypto,3,7.88,Horror
+20,Other,Basic,26.06,1,Europe,Mobile,8.99,0,Debit Card,1,13.03,Sci-Fi
+51,Female,Premium,3.89,1,Europe,Tablet,17.99,0,Credit Card,2,1.95,Drama
+59,Male,Standard,16.35,1,Asia,TV,13.99,0,PayPal,3,8.18,Action
+65,Female,Standard,0.53,1,Europe,Laptop,13.99,0,Credit Card,5,0.27,Sci-Fi
+36,Female,Premium,19.63,1,North America,Desktop,17.99,0,Gift Card,2,9.81,Action
+65,Male,Standard,1.55,1,Asia,Laptop,13.99,0,Debit Card,2,0.78,Horror
+57,Female,Premium,28.21,1,Asia,Desktop,17.99,0,Crypto,5,14.11,Documentary
+51,Male,Standard,20.53,1,Europe,Laptop,13.99,0,Debit Card,4,10.27,Comedy
+19,Male,Standard,4.34,1,Asia,Tablet,13.99,0,PayPal,1,2.17,Sci-Fi
+58,Other,Standard,14.37,1,North America,TV,13.99,0,Debit Card,3,7.18,Action
+53,Female,Basic,20.16,1,North America,Tablet,8.99,0,Debit Card,5,10.08,Documentary
+69,Female,Basic,6.16,1,South America,Tablet,8.99,0,Crypto,1,3.08,Horror
+59,Other,Premium,4.17,1,South America,Desktop,17.99,0,Debit Card,4,2.08,Comedy
+28,Female,Standard,11.94,1,Oceania,Tablet,13.99,0,Crypto,2,5.97,Comedy
+38,Female,Premium,34.08,1,North America,Laptop,17.99,0,Credit Card,4,17.04,Drama
+19,Female,Premium,2.3,1,South America,Mobile,17.99,0,Crypto,3,1.15,Comedy
+48,Male,Premium,8.82,1,South America,Laptop,17.99,0,PayPal,5,4.41,Romance
+47,Male,Premium,25.17,1,Africa,Desktop,17.99,0,Crypto,5,12.59,Sci-Fi
+59,Other,Premium,6.25,1,South America,Laptop,17.99,0,Debit Card,1,3.12,Romance
+69,Other,Basic,2.86,1,South America,Laptop,8.99,0,Gift Card,4,1.43,Action
+62,Female,Premium,6.17,1,Asia,TV,17.99,0,Debit Card,2,3.08,Comedy
+48,Other,Standard,3.97,1,South America,TV,13.99,0,Debit Card,5,1.99,Horror
+67,Female,Basic,5.74,1,Africa,Laptop,8.99,0,Credit Card,5,2.87,Drama
+38,Other,Premium,8.36,1,South America,TV,17.99,0,Gift Card,2,4.18,Drama
+68,Female,Standard,18.07,1,Asia,TV,13.99,0,Crypto,3,9.04,Horror
+54,Other,Standard,2.79,1,South America,TV,13.99,0,Credit Card,1,1.4,Action
+66,Male,Premium,10.41,1,North America,Laptop,17.99,0,Credit Card,5,5.21,Comedy
+64,Other,Premium,0.34,1,Europe,Desktop,17.99,1,Gift Card,3,0.17,Comedy
+22,Other,Standard,25.13,1,Africa,Desktop,13.99,0,Gift Card,2,12.56,Romance
+52,Female,Premium,4.12,1,South America,Laptop,17.99,0,Crypto,4,2.06,Sci-Fi
+70,Other,Premium,7.61,1,South America,Laptop,17.99,0,Credit Card,5,3.81,Drama
+40,Male,Premium,0.88,1,Europe,Mobile,17.99,0,Credit Card,2,0.44,Sci-Fi
+69,Female,Standard,9.43,1,Europe,Desktop,13.99,0,Credit Card,3,4.71,Action
+47,Female,Basic,0.46,1,Asia,TV,8.99,1,Credit Card,1,0.23,Comedy
+68,Other,Premium,3.15,1,Africa,Tablet,17.99,0,Credit Card,3,1.57,Horror
+29,Female,Standard,54.53,1,South America,Mobile,13.99,0,Debit Card,2,27.27,Sci-Fi
+31,Other,Premium,18.73,1,Oceania,Mobile,17.99,0,Crypto,1,9.37,Action
+36,Female,Premium,19.03,1,Asia,Desktop,17.99,0,Crypto,2,9.52,Sci-Fi
+55,Other,Basic,12.26,1,Oceania,Desktop,8.99,0,PayPal,1,6.13,Comedy
+49,Female,Premium,15.64,1,Africa,Tablet,17.99,0,PayPal,4,7.82,Horror
+38,Female,Basic,23.78,1,Oceania,Desktop,8.99,0,Credit Card,2,11.89,Action
+26,Female,Basic,7.83,1,North America,Tablet,8.99,0,Credit Card,1,3.92,Documentary
+22,Male,Premium,4.9,1,North America,TV,17.99,0,Gift Card,5,2.45,Drama
+37,Other,Standard,10.87,1,Oceania,Mobile,13.99,0,Gift Card,5,5.43,Documentary
+57,Female,Basic,3.81,1,Africa,Desktop,8.99,1,Gift Card,2,1.91,Drama
+22,Other,Standard,5.42,1,Asia,Desktop,13.99,0,Debit Card,2,2.71,Action
+52,Male,Premium,27.41,1,Africa,Laptop,17.99,0,Crypto,2,13.71,Action
+59,Other,Premium,4.8,1,Africa,Desktop,17.99,0,PayPal,1,2.4,Drama
+56,Male,Basic,6.72,1,Oceania,Laptop,8.99,0,Debit Card,2,3.36,Romance
+65,Other,Standard,2.92,1,Africa,TV,13.99,0,Credit Card,5,1.46,Documentary
+19,Male,Premium,8.03,1,Asia,TV,17.99,0,Gift Card,3,4.01,Drama
+44,Female,Standard,22.85,1,South America,Tablet,13.99,0,Credit Card,3,11.43,Comedy
+50,Other,Basic,0.11,1,South America,Tablet,8.99,1,Gift Card,2,0.06,Sci-Fi
+22,Female,Premium,14.35,1,Europe,Laptop,17.99,0,Credit Card,5,7.17,Sci-Fi
+36,Other,Premium,23.5,1,Oceania,Laptop,17.99,0,PayPal,1,11.75,Action
+58,Female,Basic,16.81,1,Europe,TV,8.99,0,Gift Card,2,8.4,Horror
+61,Other,Premium,0.25,1,North America,Desktop,17.99,0,PayPal,2,0.12,Sci-Fi
+50,Other,Standard,4.03,1,South America,Laptop,13.99,0,Gift Card,1,2.02,Horror
+34,Female,Basic,13.6,1,North America,Mobile,8.99,0,Debit Card,2,6.8,Romance
+62,Male,Premium,29.21,1,South America,Mobile,17.99,0,Gift Card,1,14.61,Documentary
+23,Female,Standard,3.9,1,Oceania,Tablet,13.99,0,Credit Card,1,1.95,Sci-Fi
+27,Female,Basic,5.3,1,Africa,Mobile,8.99,0,PayPal,2,2.65,Documentary
+25,Male,Premium,2.42,1,North America,Tablet,17.99,0,Credit Card,5,1.21,Sci-Fi
+21,Female,Standard,0.44,1,Asia,Tablet,13.99,1,PayPal,1,0.22,Romance
+40,Other,Basic,6.86,1,Oceania,Tablet,8.99,0,Crypto,4,3.43,Sci-Fi
+39,Female,Standard,2.76,1,South America,Mobile,13.99,0,PayPal,3,1.38,Documentary
+38,Other,Basic,8.81,1,North America,Desktop,8.99,0,Gift Card,4,4.41,Action
+24,Male,Basic,1.68,1,North America,Laptop,8.99,1,Credit Card,1,0.84,Sci-Fi
+61,Other,Standard,5.98,1,North America,Tablet,13.99,0,Gift Card,5,2.99,Romance
+67,Male,Standard,0.01,1,South America,Desktop,13.99,0,Crypto,4,0.01,Horror
+31,Male,Premium,4.6,1,South America,Desktop,17.99,0,Gift Card,1,2.3,Sci-Fi
+63,Female,Basic,0.52,1,Africa,Tablet,8.99,1,PayPal,4,0.26,Comedy
+29,Female,Standard,3.69,1,North America,Tablet,13.99,0,Credit Card,1,1.84,Documentary
+27,Other,Premium,2.3,1,Europe,Mobile,17.99,0,Credit Card,5,1.15,Romance
+22,Male,Standard,13.78,0,Oceania,TV,13.99,0,PayPal,2,13.78,Sci-Fi
+18,Male,Standard,28.66,0,Oceania,Desktop,13.99,0,Gift Card,5,28.66,Drama
+44,Male,Basic,21.72,0,Asia,Tablet,8.99,0,Crypto,2,21.72,Documentary
+67,Male,Basic,1.56,0,Oceania,Desktop,8.99,0,Crypto,5,1.56,Documentary
+68,Male,Basic,1.83,0,Africa,Mobile,8.99,0,Debit Card,5,1.83,Horror
+57,Male,Standard,2.34,0,North America,Desktop,13.99,0,Debit Card,5,2.34,Sci-Fi
+61,Male,Basic,16.1,0,Oceania,TV,8.99,0,Debit Card,1,16.1,Action
+64,Other,Premium,1.83,0,Africa,Tablet,17.99,0,PayPal,1,1.83,Romance
+19,Other,Basic,4.42,0,Europe,Laptop,8.99,0,Credit Card,3,4.42,Drama
+68,Other,Basic,2.48,0,Asia,Tablet,8.99,0,Credit Card,3,2.48,Horror
+35,Female,Standard,13.03,0,Africa,Desktop,13.99,0,PayPal,5,13.03,Sci-Fi
+55,Female,Premium,0.15,0,South America,TV,17.99,0,PayPal,4,0.15,Documentary
+20,Female,Standard,1.45,0,North America,Tablet,13.99,0,Gift Card,5,1.45,Horror
+54,Female,Standard,15.72,0,Africa,Mobile,13.99,0,PayPal,5,15.72,Romance
+65,Male,Premium,15.52,0,South America,Mobile,17.99,0,Gift Card,4,15.52,Drama
+59,Other,Premium,32.81,0,North America,Laptop,17.99,0,Debit Card,3,32.81,Sci-Fi
+21,Female,Premium,20.56,0,Africa,Laptop,17.99,0,Crypto,5,20.56,Documentary
+70,Other,Standard,1.34,0,Asia,TV,13.99,0,Debit Card,1,1.34,Documentary
+49,Male,Standard,3.75,0,North America,Tablet,13.99,0,Credit Card,4,3.75,Horror
+43,Male,Basic,1.63,0,Oceania,Mobile,8.99,0,Credit Card,3,1.63,Documentary
+63,Male,Standard,0.4,0,North America,TV,13.99,0,PayPal,4,0.4,Comedy
+66,Other,Basic,12.76,0,North America,Tablet,8.99,0,Credit Card,1,12.76,Sci-Fi
+24,Other,Basic,11.85,0,Asia,Mobile,8.99,0,Debit Card,3,11.85,Sci-Fi
+53,Female,Premium,17.99,0,Europe,Mobile,17.99,0,Crypto,3,17.99,Horror
+41,Male,Basic,4.32,0,South America,Tablet,8.99,1,PayPal,1,4.32,Horror
+25,Male,Basic,5.88,0,Europe,Mobile,8.99,0,Credit Card,3,5.88,Drama
+30,Male,Standard,2.27,0,North America,Tablet,13.99,0,Crypto,2,2.27,Action
+63,Other,Standard,1.38,0,Oceania,Desktop,13.99,0,Gift Card,4,1.38,Sci-Fi
+60,Male,Standard,5.77,0,Europe,Tablet,13.99,0,Debit Card,5,5.77,Comedy
+31,Female,Basic,3.89,0,Oceania,Laptop,8.99,0,Credit Card,3,3.89,Romance
+53,Female,Basic,7.84,0,North America,Mobile,8.99,0,Gift Card,3,7.84,Action
+63,Female,Standard,1.66,0,Europe,Desktop,13.99,0,Crypto,1,1.66,Comedy
+36,Male,Standard,10.58,0,Europe,Tablet,13.99,0,Credit Card,1,10.58,Romance
+46,Male,Premium,14.63,0,Oceania,Mobile,17.99,0,PayPal,2,14.63,Documentary
+25,Female,Basic,2.78,0,Oceania,TV,8.99,1,Debit Card,1,2.78,Drama
+30,Male,Standard,0.74,0,South America,Laptop,13.99,0,Credit Card,4,0.74,Action
+57,Other,Basic,52.8,0,Europe,Tablet,8.99,0,PayPal,2,52.8,Sci-Fi
+57,Female,Basic,14.31,0,Oceania,Mobile,8.99,0,PayPal,5,14.31,Romance
+37,Male,Standard,18.92,0,North America,TV,13.99,0,Crypto,1,18.92,Action
+52,Male,Premium,1.92,0,North America,TV,17.99,0,Debit Card,4,1.92,Action
+61,Other,Standard,4.12,0,Africa,Desktop,13.99,0,Crypto,1,4.12,Romance
+42,Male,Basic,98.42,0,Asia,Desktop,8.99,0,Gift Card,5,98.42,Documentary
+43,Male,Premium,8.97,0,North America,TV,17.99,0,Gift Card,5,8.97,Documentary
+24,Female,Basic,5.59,0,North America,Tablet,8.99,0,Crypto,5,5.59,Documentary
+19,Male,Premium,5.34,0,Europe,Tablet,17.99,0,Credit Card,3,5.34,Documentary
+20,Male,Basic,1.81,0,Africa,Mobile,8.99,0,Credit Card,3,1.81,Sci-Fi
+63,Female,Premium,2.81,0,South America,Tablet,17.99,0,Gift Card,5,2.81,Drama
+21,Female,Standard,3.88,0,Africa,Mobile,13.99,0,Crypto,1,3.88,Action
+35,Female,Standard,8.39,0,Africa,TV,13.99,0,Credit Card,2,8.39,Comedy
+36,Female,Basic,22.91,0,Asia,TV,8.99,0,Crypto,1,22.91,Drama
+48,Female,Standard,4.19,0,Europe,Tablet,13.99,0,Gift Card,2,4.19,Documentary
+20,Other,Standard,21.21,0,North America,Mobile,13.99,0,Crypto,2,21.21,Drama
+18,Other,Basic,3.17,0,Asia,Laptop,8.99,1,Credit Card,1,3.17,Action
+65,Female,Basic,26.98,0,South America,TV,8.99,0,Debit Card,2,26.98,Romance
+66,Female,Premium,16.22,0,Europe,TV,17.99,0,Gift Card,2,16.22,Drama
+27,Male,Basic,1.41,0,North America,Tablet,8.99,0,Debit Card,5,1.41,Action
+19,Male,Premium,9.32,0,Oceania,Desktop,17.99,0,Debit Card,2,9.32,Documentary
+33,Male,Standard,4.63,0,Europe,TV,13.99,0,Debit Card,1,4.63,Sci-Fi
+54,Other,Standard,0.72,0,Europe,Laptop,13.99,0,Gift Card,5,0.72,Horror
+55,Female,Basic,11.36,0,North America,Laptop,8.99,0,PayPal,4,11.36,Comedy
+19,Female,Standard,12.01,0,Africa,TV,13.99,0,Crypto,3,12.01,Documentary
+39,Male,Premium,4.84,0,Africa,Laptop,17.99,0,Debit Card,2,4.84,Comedy
+59,Female,Standard,29.55,0,South America,Laptop,13.99,0,Crypto,5,29.55,Romance
+62,Other,Standard,3.61,0,Oceania,Desktop,13.99,0,PayPal,3,3.61,Romance
+32,Female,Premium,14.36,0,South America,Desktop,17.99,0,PayPal,2,14.36,Romance
+33,Female,Premium,25.15,0,North America,TV,17.99,0,Crypto,1,25.15,Comedy
+22,Female,Basic,5.42,0,Africa,Desktop,8.99,0,PayPal,1,5.42,Action
+59,Male,Standard,7.52,0,Europe,TV,13.99,0,PayPal,4,7.52,Action
+41,Female,Basic,7.78,0,Asia,Tablet,8.99,0,PayPal,2,7.78,Romance
+58,Female,Basic,34.53,0,Asia,TV,8.99,0,Gift Card,4,34.53,Romance
+70,Female,Premium,10.54,0,Europe,Desktop,17.99,0,Crypto,4,10.54,Documentary
+46,Male,Basic,5.07,0,Africa,Desktop,8.99,0,Debit Card,1,5.07,Comedy
+53,Other,Basic,16.65,0,Europe,Desktop,8.99,0,Debit Card,4,16.65,Sci-Fi
+58,Male,Premium,32.88,0,South America,Tablet,17.99,0,Debit Card,5,32.88,Romance
+62,Female,Premium,4.75,0,South America,Mobile,17.99,0,Gift Card,2,4.75,Comedy
+25,Other,Standard,6.11,0,Asia,Laptop,13.99,0,Credit Card,1,6.11,Drama
+44,Male,Premium,18.92,0,Oceania,Tablet,17.99,0,Crypto,4,18.92,Romance
+23,Male,Basic,1.81,0,Europe,Laptop,8.99,0,Crypto,5,1.81,Horror
+33,Male,Standard,7.45,0,Europe,Mobile,13.99,0,PayPal,4,7.45,Action
+22,Female,Premium,4.98,0,South America,TV,17.99,0,PayPal,5,4.98,Drama
+40,Female,Basic,3.0,0,Oceania,Laptop,8.99,0,Debit Card,4,3.0,Drama
