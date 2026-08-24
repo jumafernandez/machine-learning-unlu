@@ -77,24 +77,33 @@ Revisen el dibujo y el CSV. ¿Hay conexiones que sólo pueden recorrerse en un s
 
 ## Consigna 4 · Resolver el problema
 
-Completen la función para resolver según dos criterios. Pueden consultar la demostración docente y la documentación de `NetworkX`.
+`NetworkX` ya incluye las estrategias que necesitamos. No vamos a reimplementarlas: ejecutaremos una búsqueda no ponderada cuando el criterio sea la cantidad de acciones, y Dijkstra cuando el criterio sea el costo acumulado.
 
 ```{python}
-def resolver_agente(grafo, inicial, objetivo, criterio="pasos"):
-    try:
-        if criterio == "pasos":
-            # Completen con una búsqueda no ponderada.
-            pass
-        elif criterio == "costo":
-            # Completen con una búsqueda que minimice el atributo "costo".
-            pass
-        else:
-            raise ValueError("El criterio debe ser 'pasos' o 'costo'.")
-    except nx.NetworkXNoPath:
-        return {"estado": "sin solución", "camino": None}
+camino_menos_pasos = nx.shortest_path(grafo, source=INICIAL, target=OBJETIVO)
+camino_menor_costo = nx.dijkstra_path(grafo, INICIAL, OBJETIVO, weight="costo")
+
+comparacion = pd.DataFrame([
+    {
+        "criterio": "Menor cantidad de acciones",
+        "estrategia": "Búsqueda no ponderada",
+        "camino": " → ".join(camino_menos_pasos),
+        "pasos": len(camino_menos_pasos) - 1,
+        "costo": sum(grafo[u][v]["costo"] for u, v in zip(camino_menos_pasos, camino_menos_pasos[1:])),
+    },
+    {
+        "criterio": "Menor costo acumulado",
+        "estrategia": "Dijkstra",
+        "camino": " → ".join(camino_menor_costo),
+        "pasos": len(camino_menor_costo) - 1,
+        "costo": nx.dijkstra_path_length(grafo, INICIAL, OBJETIVO, weight="costo"),
+    },
+])
+
+comparacion
 ```
 
-Ejecuten la función con ambos criterios. Informen camino, cantidad de acciones y costo total. Luego respondan:
+Luego respondan:
 
 1. ¿Las dos estrategias devuelven la misma solución? Si no, ¿qué diferencia entre ellas importa para el agente?
 2. ¿Cuál adoptarían si la alerta tuviera que atenderse con el menor tiempo de desplazamiento? Justifiquen.
@@ -109,7 +118,7 @@ grafo_alternativo = grafo.copy()
 grafo_alternativo.remove_edge("Laboratorio", "CentroDatos")
 ```
 
-1. Vuelvan a resolver el problema con ambos criterios.
+1. Vuelvan a ejecutar las dos búsquedas sobre `grafo_alternativo`.
 2. Comparen el resultado antes y después de la modificación.
 3. Indiquen qué cambió en el modelo de transición y qué partes de la formulación del agente se mantienen.
 4. Si ya no existiera ningún camino, ¿qué debería poder informar el agente?
