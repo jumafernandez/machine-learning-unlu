@@ -213,3 +213,7 @@ tp00-retomando_impulso/data/raw/badata_ecobici_recorridos_realizados_2024.csv
 tp00-retomando_impulso/data/raw/usuarios_ecobici_2024.csv
 tp00-retomando_impulso/data/processed/recorridos_usuarios_3meses.csv
 tp00-retomando_impulso/data/interim/recorridos_3meses.csv
+2025/tp00-retomando_impulso/data/raw/badata_ecobici_recorridos_realizados_2024.csv
+2025/tp00-retomando_impulso/data/processed/recorridos_usuarios_3meses.csv
+2025/tp00-retomando_impulso/data/interim/recorridos_3meses.csv
+2025/tp00-retomando_impulso/data/raw/usuarios_ecobici_2024.csv

@@ -1,0 +1,13 @@
+origen,destino,costo
+Acceso,Control,1
+Acceso,Depósito,2
+Control,Archivo,4
+Control,Patio,2
+Depósito,Taller,2
+Depósito,Archivo,1
+Archivo,CentroDatos,6
+Patio,CentroDatos,5
+Taller,Patio,1
+Taller,Laboratorio,5
+Laboratorio,CentroDatos,1
+Patio,Laboratorio,4

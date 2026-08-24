@@ -1,0 +1,9 @@
+origen,destino,costo
+Base,Recepción,2
+Base,Archivo,1
+Recepción,Laboratorio,2
+Archivo,Laboratorio,4
+Archivo,Taller,1
+Taller,Laboratorio,1
+Laboratorio,Servidor,3
+Taller,Servidor,7

@@ -1,0 +1,102 @@
+---
+title: "Taller de agentes y problemas de búsqueda"
+subtitle: "Heurísticas, búsqueda voraz y A*"
+format:
+  html:
+    toc: true
+    code-fold: false
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Continuidad del taller
+
+Retomamos el problema de inspección del encuentro anterior. El estado inicial, el objetivo y los costos no cambian; ahora incorporamos una estimación `h(n)` de la distancia restante hasta el objetivo.
+
+> La pregunta no es solamente si una heurística encuentra una solución, sino cuánto modifica el orden de exploración y si preserva la calidad de la solución.
+
+## Actividad inicial en el simulador
+
+En el simulador, generen un grafo con costos y comparen UCS con una estrategia informada cuando esté disponible. Antes de correrla, formulen una hipótesis: ¿qué nodos creen que deberían ser priorizados si se conoce una estimación hacia el objetivo?
+
+## Cargar el mismo problema y una heurística
+
+```{python}
+from collections import deque
+import heapq
+from itertools import count
+
+import networkx as nx
+import pandas as pd
+
+ARISTAS = "datos/desafio_inspeccion.csv"
+HEURISTICAS = "datos/heuristica_inspeccion.csv"
+INICIAL = "Acceso"
+OBJETIVO = "CentroDatos"
+
+def cargar_grafo(ruta):
+    tabla = pd.read_csv(ruta)
+    grafo = nx.DiGraph()
+    for fila in tabla.itertuples(index=False):
+        grafo.add_edge(fila.origen, fila.destino, costo=float(fila.costo))
+    return grafo
+
+grafo = cargar_grafo(ARISTAS)
+h = pd.read_csv(HEURISTICAS).set_index("nodo")["heuristica"].to_dict()
+pd.DataFrame({"nodo": h.keys(), "h(n)": h.values()})
+```
+
+## Implementación de referencia: A*
+
+```{python}
+def reconstruir_camino(padres, inicial, objetivo):
+    if objetivo not in padres:
+        return None
+    camino = [objetivo]
+    while camino[-1] != inicial:
+        camino.append(padres[camino[-1]])
+    return list(reversed(camino))
+
+def a_estrella(grafo, inicial, objetivo, h):
+    orden = count()
+    frontera = [(h[inicial], 0, next(orden), inicial)]  # f(n), g(n), desempate, nodo
+    mejor_g = {inicial: 0}
+    padres = {inicial: None}
+    expansiones = []
+
+    while frontera:
+        _, g_actual, _, actual = heapq.heappop(frontera)
+        if g_actual != mejor_g[actual]:
+            continue
+        expansiones.append(actual)
+        if actual == objetivo:
+            return {
+                "camino": reconstruir_camino(padres, inicial, objetivo),
+                "costo": g_actual,
+                "expansiones": expansiones,
+            }
+        for vecino in grafo.successors(actual):
+            nuevo_g = g_actual + grafo[actual][vecino]["costo"]
+            if vecino not in mejor_g or nuevo_g < mejor_g[vecino]:
+                mejor_g[vecino] = nuevo_g
+                padres[vecino] = actual
+                heapq.heappush(frontera, (nuevo_g + h[vecino], nuevo_g, next(orden), vecino))
+    return {"camino": None, "costo": None, "expansiones": expansiones}
+
+a_estrella(grafo, INICIAL, OBJETIVO, h)
+```
+
+## Consignas de experimentación
+
+1. Implementen búsqueda voraz cambiando el criterio de prioridad: deben usar sólo `h(n)` y no el costo acumulado.
+2. Comparen UCS, voraz y A* sobre el mismo grafo: camino, costo y nodos expandidos.
+3. Analicen si la tabla `h(n)` parece admisible. Justifiquen al menos dos valores comparándolos con costos reales hacia el objetivo.
+4. Modifiquen una estimación para que sobreestime deliberadamente. ¿Qué cambia en la ejecución de A*? ¿Qué deja de estar garantizado?
+5. Recuperen el escenario del pasaje inhabilitado del encuentro anterior y discutan si la heurística sigue siendo adecuada.
+
+## Cierre
+
+El taller conserva un mismo problema para que la diferencia no sea de contexto sino de estrategia: primero exploramos sin información adicional; luego incorporamos una estimación y evaluamos qué aporta, qué costo tiene y qué supuestos requiere.

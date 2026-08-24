@@ -1,0 +1,115 @@
+---
+title: "Taller: agentes y problemas de búsqueda"
+subtitle: "Desafío de experimentación"
+format:
+  html:
+    toc: true
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Consigna 1 · Observar en el simulador
+
+Abrí el [Simulador de algoritmos de búsqueda](https://jumafernandez.github.io/simulador-busqueda-ia/) y cargá el ejemplo **“Costos engañosos (BFS ≠ UCS)”**.
+
+1. Ejecutá BFS hasta terminar y anotá el camino, la cantidad de saltos y el costo.
+2. Reiniciá y ejecutá UCS.
+3. Explicá, en no más de cinco líneas, por qué los dos algoritmos pueden producir caminos distintos.
+4. Indicá cuál de ambos caminos conviene si el criterio de calidad es el costo acumulado.
+
+## Consigna 2 · Formular un nuevo problema
+
+Un agente de inspección debe llegar desde `Acceso` hasta `CentroDatos`. El grafo está disponible en `datos/desafio_inspeccion.csv`.
+
+Antes de ejecutar código, completen la siguiente formulación:
+
+| Componente | Respuesta |
+|---|---|
+| Estados | |
+| Estado inicial | |
+| Objetivo | |
+| Acciones posibles | |
+| Modelo de transición | |
+| Criterio de costo | |
+
+```{python}
+from collections import deque
+import heapq
+from itertools import count
+
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
+
+ARCHIVO = "datos/desafio_inspeccion.csv"
+INICIAL = "Acceso"
+OBJETIVO = "CentroDatos"
+
+def cargar_grafo(ruta):
+    aristas = pd.read_csv(ruta)
+    grafo = nx.DiGraph()
+    for fila in aristas.itertuples(index=False):
+        grafo.add_edge(fila.origen, fila.destino, costo=float(fila.costo))
+    return grafo
+
+def dibujar_grafo(grafo):
+    posicion = nx.spring_layout(grafo, seed=21)
+    plt.figure(figsize=(10, 6))
+    nx.draw_networkx(grafo, posicion, node_color="#eef4f5", edgecolors="#14384a", node_size=1500, arrows=True)
+    nx.draw_networkx_edge_labels(grafo, posicion, edge_labels=nx.get_edge_attributes(grafo, "costo"), font_color="#5d5179")
+    plt.axis("off")
+    plt.show()
+
+grafo = cargar_grafo(ARCHIVO)
+dibujar_grafo(grafo)
+```
+
+## Consigna 3 · Resolver y comparar
+
+Partiendo de la demostración de clase, implementen BFS, DFS y UCS para este nuevo grafo. Cada función debe devolver, como mínimo:
+
+- camino encontrado;
+- costo total;
+- orden de expansión;
+- cantidad de nodos expandidos;
+- tamaño máximo de la frontera.
+
+```{python}
+# Completen las funciones. Pueden reutilizar la estructura de la demostración,
+# pero deben justificar los resultados con este nuevo problema.
+
+def bfs(grafo, inicial, objetivo):
+    # TODO
+    pass
+
+def dfs(grafo, inicial, objetivo):
+    # TODO
+    pass
+
+def ucs(grafo, inicial, objetivo):
+    # TODO
+    pass
+```
+
+Construyan una tabla comparativa de las tres corridas. Luego respondan:
+
+1. ¿Qué algoritmo encuentra el camino con menos pasos?
+2. ¿Qué algoritmo encuentra el menor costo total?
+3. ¿DFS coincide con alguno de los anteriores? Expliquen por qué su respuesta depende del orden de sucesores.
+4. ¿Qué métrica permite ver mejor el costo en memoria de cada estrategia?
+
+## Consigna 4 · Cambio de escenario
+
+Supongan que el pasaje `Laboratorio → CentroDatos` queda temporalmente inhabilitado.
+
+1. Modifiquen el grafo eliminando esa arista.
+2. Vuelvan a ejecutar los tres algoritmos.
+3. Comparen las soluciones antes y después del cambio.
+4. Expliquen qué información del problema cambió y qué componentes de la formulación permanecieron iguales.
+
+## Entrega breve
+
+Entreguen el Quarto o notebook ejecutado, la tabla de comparación y respuestas concisas a las consignas de análisis. No se evalúa sólo que el código funcione: importa que la explicación conecte los resultados con la estrategia de búsqueda.

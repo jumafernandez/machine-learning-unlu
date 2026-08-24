@@ -1,0 +1,222 @@
+---
+title: "Taller de agentes y problemas de búsqueda"
+subtitle: "Demostración: de la formulación a la comparación de algoritmos"
+format:
+  html:
+    toc: true
+    code-fold: false
+    theme: cosmo
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Propósito
+
+En esta demostración vamos a construir una solución completa para un agente mensajero que debe llegar desde una **Base** hasta un **Servidor**. El mismo caso permitirá comparar búsqueda en anchura, profundidad y costo uniforme.
+
+La idea no es usar una biblioteca que resuelva el problema por nosotros: vamos a implementar los algoritmos para poder mirar la frontera, el orden de expansión y el camino final.
+
+## Actividad inicial: mirar antes de programar
+
+1. Abrí el [Simulador de algoritmos de búsqueda](https://jumafernandez.github.io/simulador-busqueda-ia/).
+2. Cargá el ejemplo **“Costos engañosos (BFS ≠ UCS)”**.
+3. Ejecutá BFS y costo uniforme paso a paso.
+4. Registrá: camino encontrado, cantidad de saltos, costo total y nodos expandidos.
+
+> Pregunta para poner en común: ¿por qué una solución con menos aristas no necesariamente tiene menor costo?
+
+## 1. Formular el problema
+
+| Componente | Decisión para este caso |
+|---|---|
+| Estados | Ubicación actual del agente |
+| Estado inicial | `Base` |
+| Acciones | Recorrer una arista saliente desde la ubicación actual |
+| Modelo de transición | Llegar al nodo de destino de esa arista |
+| Objetivo | Llegar a `Servidor` |
+| Costo | Suma de los costos de las aristas recorridas |
+
+## 2. Cargar y dibujar el espacio de estados
+
+```{python}
+from collections import deque
+import heapq
+from itertools import count
+
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
+
+ARCHIVO = "datos/demo_mensajero.csv"
+INICIAL = "Base"
+OBJETIVO = "Servidor"
+
+def cargar_grafo(ruta):
+    aristas = pd.read_csv(ruta)
+    grafo = nx.DiGraph()
+    for fila in aristas.itertuples(index=False):
+        grafo.add_edge(fila.origen, fila.destino, costo=float(fila.costo))
+    return grafo
+
+def dibujar_grafo(grafo, inicial=None, objetivo=None, camino=None, titulo="Espacio de estados"):
+    posicion = nx.spring_layout(grafo, seed=14)
+    colores = ["#eef4f5" for _ in grafo.nodes]
+    if inicial in grafo:
+        colores[list(grafo.nodes).index(inicial)] = "#9edce3"
+    if objetivo in grafo:
+        colores[list(grafo.nodes).index(objetivo)] = "#f4d28a"
+
+    aristas_camino = list(zip(camino, camino[1:])) if camino else []
+    plt.figure(figsize=(9, 5))
+    nx.draw_networkx_nodes(grafo, posicion, node_color=colores, edgecolors="#14384a", node_size=1500)
+    nx.draw_networkx_labels(grafo, posicion, font_weight="bold", font_color="#14384a")
+    nx.draw_networkx_edges(grafo, posicion, edge_color="#8ea8b1", arrows=True, arrowsize=18)
+    nx.draw_networkx_edges(grafo, posicion, edgelist=aristas_camino, edge_color="#2f91a5", width=3, arrows=True, arrowsize=18)
+    nx.draw_networkx_edge_labels(grafo, posicion, edge_labels=nx.get_edge_attributes(grafo, "costo"), font_color="#5d5179")
+    plt.title(titulo, color="#14384a", weight="bold")
+    plt.axis("off")
+    plt.show()
+
+grafo = cargar_grafo(ARCHIVO)
+dibujar_grafo(grafo, INICIAL, OBJETIVO)
+```
+
+## 3. Funciones comunes
+
+```{python}
+def reconstruir_camino(padres, inicial, objetivo):
+    if objetivo not in padres:
+        return None
+    camino = [objetivo]
+    while camino[-1] != inicial:
+        camino.append(padres[camino[-1]])
+    return list(reversed(camino))
+
+def costo_camino(grafo, camino):
+    if not camino:
+        return None
+    return sum(grafo[u][v]["costo"] for u, v in zip(camino, camino[1:]))
+
+def resultado(nombre, grafo, padres, expansiones, generados, frontera_max, inicial, objetivo):
+    camino = reconstruir_camino(padres, inicial, objetivo)
+    return {
+        "algoritmo": nombre,
+        "camino": camino,
+        "costo": costo_camino(grafo, camino),
+        "profundidad": len(camino) - 1 if camino else None,
+        "expandidos": expansiones,
+        "generados": generados,
+        "frontera_max": frontera_max,
+    }
+```
+
+## 4. Búsqueda en anchura
+
+```{python}
+def bfs(grafo, inicial, objetivo):
+    frontera = deque([inicial])
+    visitados = {inicial}
+    padres = {inicial: None}
+    expansiones, generados, frontera_max = [], 1, 1
+
+    while frontera:
+        actual = frontera.popleft()
+        expansiones.append(actual)
+        if actual == objetivo:
+            break
+        for vecino in grafo.successors(actual):
+            if vecino not in visitados:
+                visitados.add(vecino)
+                padres[vecino] = actual
+                frontera.append(vecino)
+                generados += 1
+        frontera_max = max(frontera_max, len(frontera))
+
+    return resultado("BFS", grafo, padres, expansiones, generados, frontera_max, inicial, objetivo)
+
+bfs_demo = bfs(grafo, INICIAL, OBJETIVO)
+bfs_demo
+```
+
+## 5. Búsqueda en profundidad
+
+```{python}
+def dfs(grafo, inicial, objetivo):
+    frontera = [inicial]
+    visitados = {inicial}
+    padres = {inicial: None}
+    expansiones, generados, frontera_max = [], 1, 1
+
+    while frontera:
+        actual = frontera.pop()
+        expansiones.append(actual)
+        if actual == objetivo:
+            break
+        # reversed mantiene un orden de exploración estable para la demostración
+        for vecino in reversed(list(grafo.successors(actual))):
+            if vecino not in visitados:
+                visitados.add(vecino)
+                padres[vecino] = actual
+                frontera.append(vecino)
+                generados += 1
+        frontera_max = max(frontera_max, len(frontera))
+
+    return resultado("DFS", grafo, padres, expansiones, generados, frontera_max, inicial, objetivo)
+
+dfs_demo = dfs(grafo, INICIAL, OBJETIVO)
+dfs_demo
+```
+
+## 6. Búsqueda de costo uniforme
+
+```{python}
+def ucs(grafo, inicial, objetivo):
+    orden = count()
+    frontera = [(0, next(orden), inicial)]
+    mejor_costo = {inicial: 0}
+    padres = {inicial: None}
+    expansiones, generados, frontera_max = [], 1, 1
+
+    while frontera:
+        costo_actual, _, actual = heapq.heappop(frontera)
+        if costo_actual != mejor_costo[actual]:
+            continue
+        expansiones.append(actual)
+        if actual == objetivo:
+            break
+        for vecino in grafo.successors(actual):
+            nuevo_costo = costo_actual + grafo[actual][vecino]["costo"]
+            if vecino not in mejor_costo or nuevo_costo < mejor_costo[vecino]:
+                mejor_costo[vecino] = nuevo_costo
+                padres[vecino] = actual
+                heapq.heappush(frontera, (nuevo_costo, next(orden), vecino))
+                generados += 1
+        frontera_max = max(frontera_max, len(frontera))
+
+    return resultado("UCS", grafo, padres, expansiones, generados, frontera_max, inicial, objetivo)
+
+ucs_demo = ucs(grafo, INICIAL, OBJETIVO)
+ucs_demo
+```
+
+## 7. Comparar resultados
+
+```{python}
+comparacion = pd.DataFrame([bfs_demo, dfs_demo, ucs_demo])
+comparacion[["algoritmo", "camino", "costo", "profundidad", "expandidos", "generados", "frontera_max"]]
+```
+
+```{python}
+dibujar_grafo(grafo, INICIAL, OBJETIVO, ucs_demo["camino"], "Camino encontrado por costo uniforme")
+```
+
+## Cierre de la demostración
+
+- BFS garantiza la menor cantidad de aristas cuando todos los pasos tienen el mismo peso.
+- DFS no garantiza la solución más corta ni la de menor costo; su recorrido depende del orden de sucesores.
+- UCS prioriza el menor costo acumulado y por eso puede elegir un camino con más pasos.
+
+En el desafío siguiente, el problema es nuevo y tiene más alternativas. La estrategia es reutilizar esta estructura, no copiar resultados.
