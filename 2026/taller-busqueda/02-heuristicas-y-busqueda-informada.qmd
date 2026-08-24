@@ -5,6 +5,7 @@ format:
   html:
     toc: true
     code-fold: false
+    embed-resources: true
 jupyter: python3
 execute:
   echo: true

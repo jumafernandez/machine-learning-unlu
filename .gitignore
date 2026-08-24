@@ -138,6 +138,7 @@ celerybeat.pid
 .env
 .envrc
 .venv
+/.tools/
 env/
 venv/
 ENV/
@@ -158,6 +159,12 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Quarto: estado y archivos intermedios locales
+.quarto/
+_quarto/
+_freeze/
+*.quarto_ipynb
 
 # Pyre type checker
 .pyre/

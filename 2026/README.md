@@ -10,3 +10,5 @@ El directorio [`taller-busqueda/`](taller-busqueda/) reúne los materiales de lo
 - `01-desafio-estudiantes.qmd`: consignas y andamiaje para resolver un nuevo problema.
 - `02-heuristicas-y-busqueda-informada.qmd`: continuidad con búsqueda voraz y A*.
 - `datos/`: grafos y heurísticas en CSV.
+
+Las versiones HTML listas para lectura están en [`taller-busqueda/`](taller-busqueda/).

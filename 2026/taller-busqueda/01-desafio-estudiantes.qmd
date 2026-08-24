@@ -4,6 +4,7 @@ subtitle: "Desafío de experimentación"
 format:
   html:
     toc: true
+    embed-resources: true
 jupyter: python3
 execute:
   echo: true
