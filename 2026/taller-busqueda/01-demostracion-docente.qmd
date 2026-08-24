@@ -1,6 +1,6 @@
 ---
 title: "Taller de agentes y problemas de búsqueda"
-subtitle: "Demostración docente · Formular, representar y resolver"
+subtitle: "Demostración · De los datos al problema de búsqueda"
 format:
   html:
     toc: true
@@ -16,148 +16,149 @@ execute:
 
 ## Propósito
 
-Construiremos una solución completa para un **agente de reparto** dentro de un campus. Debe llevar un insumo desde el depósito hasta un laboratorio.
+Partimos de los datos de un entorno para formular un problema de búsqueda y resolverlo con dos implementaciones que acompañan la bibliografía del curso:
 
-El centro del trabajo no es el grafo ni la programación de un algoritmo desde cero: es **formular un problema de búsqueda para un agente**, decidir qué cuenta como una buena solución y usar una biblioteca para ejecutarla sobre un entorno representado explícitamente.
+- **AIPython**, el código ejecutable de *Artificial Intelligence: Foundations of Computational Agents* de David Poole y Alan Mackworth.
+- **aima-python**, la implementación de referencia de *Artificial Intelligence: A Modern Approach* de Stuart Russell y Peter Norvig.
 
-## Actividad inicial · Mirar la estrategia
+No programaremos BFS, DFS ni costo uniforme. El trabajo importante será describir la tarea del agente: sus estados, acciones, transiciones, objetivo y criterio de calidad de una solución.
 
-Abrí el [Simulador de algoritmos de búsqueda](https://jumafernandez.github.io/simulador-busqueda-ia/) y cargá el ejemplo **“Costos engañosos (BFS ≠ UCS)”**.
+## 1. Un entorno en una tabla
 
-1. Ejecutá BFS y costo uniforme paso a paso.
-2. Identificá qué nodos se exploran primero en cada caso.
-3. Anticipá cuál usarías si el agente sólo necesitara llegar; cuál si debiera minimizar el costo de traslado.
-
-El simulador permite observar el comportamiento interno. En Python nos concentraremos en modelar y resolver problemas con `NetworkX`.
-
-## 1. Formular el problema del agente
-
-| Componente | Decisión para este caso |
-|---|---|
-| Agente | Repartidor autónomo del campus |
-| Estados | Ubicación actual del agente |
-| Estado inicial | `Depósito` |
-| Percepción | Ubicación actual y conexiones habilitadas desde ella |
-| Acciones | Desplazarse por una conexión saliente disponible |
-| Modelo de transición | La acción lleva al nodo de destino de la conexión elegida |
-| Objetivo | Llegar a `Laboratorio` |
-| Costo | Tiempo estimado de cada traslado |
-
-La representación como grafo dirigido es una decisión de modelado: cada lugar es un estado, cada conexión posible es una acción y el atributo `costo` representa su tiempo de recorrido.
-
-## 2. Primer entorno: construirlo a mano
-
-Para casos pequeños, resulta útil declarar el entorno directamente. Así podemos discutir cada transición antes de leer datos externos.
+Un agente de reparto debe llevar un insumo desde `Base` hasta `Servidor`. Cada fila representa una acción posible y su costo.
 
 ```{python}
+import sys
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
 
-INICIAL = "Depósito"
-OBJETIVO = "Laboratorio"
+RAIZ_REPOSITORIO = Path.cwd().resolve().parents[1]
+sys.path.insert(0, str(RAIZ_REPOSITORIO / ".tools/aima-python"))
+sys.path.insert(0, str(RAIZ_REPOSITORIO / ".tools/aipython-src/aipython"))
 
-conexiones = [
-    ("Depósito", "Recepción", {"costo": 2}),
-    ("Depósito", "Archivo", {"costo": 1}),
-    ("Recepción", "Laboratorio", {"costo": 2}),
-    ("Archivo", "Laboratorio", {"costo": 4}),
-    ("Archivo", "Taller", {"costo": 1}),
-    ("Taller", "Laboratorio", {"costo": 1}),
-]
+from aima.search import Problem, breadth_first_graph_search, depth_first_graph_search, uniform_cost_search
+from searchGeneric import AStarSearcher, Searcher
+from searchProblem import Arc, Search_problem_from_explicit_graph
 
-grafo_manual = nx.DiGraph()
-grafo_manual.add_edges_from(conexiones)
+ARISTAS = "datos/demo_mensajero.csv"
+INICIAL = "Base"
+OBJETIVO = "Servidor"
+
+df = pd.read_csv(ARISTAS)
+df.head()
 ```
 
-```{python}
-def dibujar_entorno(grafo, inicial, objetivo, camino=None, titulo="Entorno del agente"):
-    posicion = nx.spring_layout(grafo, seed=14)
-    colores = ["#eef4f5" for _ in grafo.nodes]
-    colores[list(grafo.nodes).index(inicial)] = "#9edce3"
-    colores[list(grafo.nodes).index(objetivo)] = "#f4d28a"
-    aristas_camino = list(zip(camino, camino[1:])) if camino else []
+Antes de resolver, formulemos el problema.
 
-    plt.figure(figsize=(9, 5))
-    nx.draw_networkx_nodes(grafo, posicion, node_color=colores, edgecolors="#14384a", node_size=1700)
-    nx.draw_networkx_labels(grafo, posicion, font_weight="bold", font_color="#14384a")
-    nx.draw_networkx_edges(grafo, posicion, edge_color="#8ea8b1", arrows=True, arrowsize=18)
-    nx.draw_networkx_edges(grafo, posicion, edgelist=aristas_camino, edge_color="#2f91a5", width=3, arrows=True, arrowsize=18)
-    nx.draw_networkx_edge_labels(grafo, posicion, edge_labels=nx.get_edge_attributes(grafo, "costo"), font_color="#5d5179")
-    plt.title(titulo, color="#14384a", weight="bold")
-    plt.axis("off")
-    plt.show()
+| Componente | Decisión para este caso |
+|---|---|
+| Agente | Repartidor autónomo |
+| Estado | Ubicación actual del agente |
+| Estado inicial | `Base` |
+| Acciones | Trasladarse por una conexión saliente habilitada |
+| Transición | La acción lleva al destino indicado en la tabla |
+| Objetivo | `Servidor` |
+| Costo | Tiempo de traslado asociado a cada conexión |
 
-dibujar_entorno(grafo_manual, INICIAL, OBJETIVO)
-```
+## 2. Dibujar el entorno
 
-## 3. Resolver según el criterio de calidad
-
-Si todas las acciones tienen el mismo valor, buscamos una secuencia con la menor cantidad de pasos.
+El grafo es una forma de **ver** el espacio de estados; la tabla sigue siendo la fuente de datos del problema.
 
 ```{python}
-camino_menos_pasos = nx.shortest_path(grafo_manual, source=INICIAL, target=OBJETIVO)
-camino_menos_pasos
-```
-
-Pero en este caso los desplazamientos tienen costos distintos. Para minimizar el tiempo acumulado usamos Dijkstra e indicamos qué atributo contiene el costo.
-
-```{python}
-camino_menor_costo = nx.dijkstra_path(grafo_manual, INICIAL, OBJETIVO, weight="costo")
-costo_menor = nx.dijkstra_path_length(grafo_manual, INICIAL, OBJETIVO, weight="costo")
-
-print("Camino de menor costo:", " → ".join(camino_menor_costo))
-print("Costo total:", costo_menor)
-dibujar_entorno(grafo_manual, INICIAL, OBJETIVO, camino_menor_costo, "Solución de menor costo")
-```
-
-> La biblioteca ejecuta la estrategia; nuestra responsabilidad sigue siendo formular correctamente estados, acciones, objetivo y criterio de costo. Un algoritmo correcto sobre un modelo equivocado no resuelve el problema del agente.
-
-## 4. Segundo entorno: cargar conexiones desde un CSV
-
-En un problema más grande no queremos editar código cada vez que cambia el mapa. Un CSV de aristas separa los datos del programa.
-
-```{python}
-ARCHIVO = "datos/demo_mensajero.csv"
-aristas = pd.read_csv(ARCHIVO)
-aristas
-```
-
-```{python}
-grafo_csv = nx.from_pandas_edgelist(
-    aristas,
+grafo = nx.from_pandas_edgelist(
+    df,
     source="origen",
     target="destino",
     edge_attr="costo",
     create_using=nx.DiGraph,
 )
 
-dibujar_entorno(grafo_csv, "Base", "Servidor", titulo="Entorno cargado desde CSV")
+posicion = nx.spring_layout(grafo, seed=14)
+colores = ["#9edce3" if nodo == INICIAL else "#f4d28a" if nodo == OBJETIVO else "#eef4f5" for nodo in grafo.nodes]
+plt.figure(figsize=(9, 5))
+nx.draw_networkx(grafo, posicion, node_color=colores, edgecolors="#14384a", node_size=1650, arrows=True)
+nx.draw_networkx_edge_labels(grafo, posicion, edge_labels=nx.get_edge_attributes(grafo, "costo"), font_color="#5d5179")
+plt.axis("off")
+plt.show()
 ```
+
+## 3. Russell y Norvig · Modelar un `Problem`
+
+`aima-python` utiliza la misma interfaz de formulación que presenta el libro: definimos las acciones disponibles, el resultado de una acción y el costo del camino. La búsqueda queda en las funciones de la biblioteca.
 
 ```{python}
-def resolver_agente(grafo, inicial, objetivo, criterio="pasos"):
-    try:
-        if criterio == "pasos":
-            camino = nx.shortest_path(grafo, source=inicial, target=objetivo)
-            return {"estado": "solución encontrada", "camino": camino, "pasos": len(camino) - 1}
-        if criterio == "costo":
-            camino = nx.dijkstra_path(grafo, inicial, objetivo, weight="costo")
-            costo = nx.dijkstra_path_length(grafo, inicial, objetivo, weight="costo")
-            return {"estado": "solución encontrada", "camino": camino, "costo": costo}
-        raise ValueError("El criterio debe ser 'pasos' o 'costo'.")
-    except nx.NetworkXNoPath:
-        return {"estado": "sin solución", "camino": None}
+class ProblemaReparto(Problem):
+    def __init__(self, aristas, inicial, objetivo):
+        super().__init__(initial=inicial, goal=objetivo)
+        self.salidas = aristas.groupby("origen")
+        self.costos = {(fila.origen, fila.destino): fila.costo for fila in aristas.itertuples(index=False)}
 
-resolver_agente(grafo_csv, "Base", "Servidor", criterio="costo")
+    def actions(self, estado):
+        if estado not in self.salidas.groups:
+            return []
+        return self.salidas.get_group(estado)["destino"].tolist()
+
+    def result(self, estado, accion):
+        return accion
+
+    def path_cost(self, costo_acumulado, estado, accion, siguiente_estado):
+        return costo_acumulado + self.costos[(estado, accion)]
+
+problema_rn = ProblemaReparto(df, INICIAL, OBJETIVO)
 ```
 
-## 5. Qué aprendimos del caso
+Ahora aplicamos directamente las búsquedas no informadas del libro.
 
-- El problema se define desde la tarea del agente: estado, percepción, acciones, transición, objetivo y costo.
-- El grafo es una representación útil del entorno; no sustituye la formulación del problema.
-- Un CSV permite modificar el entorno sin alterar la lógica de resolución.
-- La elección de búsqueda depende del criterio de calidad: menos pasos no siempre significa menor costo.
-- Si no existe una ruta, el resultado también es información relevante para el agente.
+```{python}
+def resumir_nodo(nombre, nodo):
+    camino = [n.state for n in nodo.path()]
+    return {"biblioteca": "aima-python", "estrategia": nombre, "camino": " → ".join(camino), "pasos": nodo.depth, "costo": nodo.path_cost}
 
-En el desafío siguiente se aplicará el mismo proceso sobre un nuevo contexto de inspección. La novedad estará en la formulación y el análisis, no en copiar una implementación de algoritmos.
+resultados_rn = [
+    resumir_nodo("BFS", breadth_first_graph_search(problema_rn)),
+    resumir_nodo("DFS", depth_first_graph_search(problema_rn)),
+    resumir_nodo("Costo uniforme", uniform_cost_search(problema_rn)),
+]
+
+pd.DataFrame(resultados_rn)
+```
+
+## 4. Poole y Mackworth · El buscador genérico
+
+En AIPython el problema explícito se construye con nodos y arcos. `Searcher` implementa la búsqueda genérica con frontera LIFO (profundidad). `AStarSearcher`, si la heurística vale cero, prioriza únicamente el costo acumulado: es la forma de búsqueda de menor costo del esquema genérico de Poole.
+
+```{python}
+arcos = [
+    Arc(fila.origen, fila.destino, cost=fila.costo, action=fila.destino)
+    for fila in df.itertuples(index=False)
+]
+
+problema_poole = Search_problem_from_explicit_graph(
+    title="Agente de reparto",
+    nodes=set(df["origen"]) | set(df["destino"]),
+    arcs=arcos,
+    start=INICIAL,
+    goals={OBJETIVO},
+    hmap={},  # h(n)=0: la prioridad es sólo el costo acumulado
+)
+
+camino_dfs_poole = Searcher(problema_poole).search()
+camino_uc_poole = AStarSearcher(problema_poole).search()
+
+pd.DataFrame([
+    {"biblioteca": "AIPython", "estrategia": "DFS genérica", "camino": " → ".join(reversed(list(camino_dfs_poole.nodes()))), "costo": camino_dfs_poole.cost},
+    {"biblioteca": "AIPython", "estrategia": "Menor costo (h = 0)", "camino": " → ".join(reversed(list(camino_uc_poole.nodes()))), "costo": camino_uc_poole.cost},
+])
+```
+
+## 5. Lectura del resultado
+
+- Con **BFS**, el criterio es llegar con la menor cantidad de acciones.
+- Con **DFS**, el resultado depende del orden de exploración y no garantiza ni menos pasos ni menor costo.
+- Con **costo uniforme**, el agente prioriza el menor costo acumulado, aunque recorra más conexiones.
+- Las dos bibliotecas ofrecen el algoritmo: nosotros construimos el problema que el agente debe resolver.
+
+La actividad siguiente presenta otro entorno. Allí el foco será decidir qué estrategia tiene sentido para la tarea antes de ejecutar una o dos líneas de código.

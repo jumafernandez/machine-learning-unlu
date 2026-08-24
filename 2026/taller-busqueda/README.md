@@ -2,8 +2,8 @@
 
 Materiales Quarto para los encuentros del 27/08 y 03/09.
 
-- `01-demostracion-docente.qmd`: formulación y resolución completa de un problema para un agente de reparto.
-- `01-desafio-estudiantes.qmd`: desafío de formulación y resolución para un agente de inspección.
+- `01-demostracion-docente.qmd`: demostración con AIPython (Poole y Mackworth) y aima-python (Russell y Norvig) sobre un agente de reparto.
+- `01-desafio-estudiantes.qmd`: actividad de formulación y elección de estrategia para un agente de inspección.
 - `02-heuristicas-y-busqueda-informada.qmd`: continuidad del mismo problema con heurísticas y A*.
 - `datos/`: grafos dirigidos en formato CSV.
 
@@ -29,4 +29,4 @@ Para renderizar un material:
 quarto render 01-demostracion-docente.qmd
 ```
 
-Los HTML publicados son autocontenidos: estudiantes y docentes pueden abrirlos sin instalar Quarto ni dependencias de Python. Los archivos están pensados para abrirse también como notebooks/celdas de Quarto durante la clase. `NetworkX` se utiliza para representar entornos y ejecutar las búsquedas; el foco pedagógico está en formular la tarea del agente, elegir un criterio de calidad y analizar la solución.
+Los HTML publicados son autocontenidos: estudiantes y docentes pueden abrirlos sin instalar Quarto ni dependencias de Python. Los archivos están pensados para abrirse también como notebooks/celdas de Quarto durante la clase. `NetworkX` se utiliza únicamente para visualizar y explorar los entornos; las búsquedas se ejecutan con las implementaciones que acompañan los libros de Poole/Mackworth y Russell/Norvig. El foco pedagógico está en formular la tarea del agente, elegir un criterio de calidad y analizar la solución.

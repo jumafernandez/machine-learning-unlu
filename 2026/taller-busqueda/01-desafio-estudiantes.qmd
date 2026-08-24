@@ -1,6 +1,6 @@
 ---
 title: "Taller: agentes y problemas de búsqueda"
-subtitle: "Desafío de experimentación · Agente de inspección"
+subtitle: "Actividad · Elegir una estrategia para un agente de inspección"
 format:
   html:
     toc: true
@@ -12,117 +12,135 @@ execute:
   message: false
 ---
 
-## Propósito del desafío
+## Situación
 
-Ahora trabajarán con un problema nuevo. Un **agente de inspección** debe llegar a una zona que reportó una alerta. El desafío consiste en formular su problema de búsqueda, representar el entorno y justificar una estrategia de resolución.
+Un agente de inspección debe llegar desde `Acceso` hasta `CentroDatos`, donde se reportó una alerta. Cada fila del archivo describe una acción disponible; el costo expresa el tiempo de desplazamiento.
 
-No se espera implementar algoritmos de búsqueda desde cero: se espera usar las herramientas disponibles con criterio, explicando qué problema resuelve el agente y por qué la estrategia elegida es pertinente.
-
-## Consigna 1 · Explorar una estrategia
-
-Abrí el [Simulador de algoritmos de búsqueda](https://jumafernandez.github.io/simulador-busqueda-ia/) y cargá el ejemplo **“Costos engañosos (BFS ≠ UCS)”**.
-
-1. Ejecutá BFS y costo uniforme.
-2. Registrá para cada caso el camino obtenido, la cantidad de pasos y el costo total.
-3. Explicá brevemente por qué un agente que busca llegar con el menor costo acumulado no siempre debería elegir la ruta con menos aristas.
-
-## Consigna 2 · Formular el problema del agente
-
-El agente inicia en `Acceso` y debe alcanzar `CentroDatos`. El entorno se encuentra en `datos/desafio_inspeccion.csv`.
-
-Antes de programar, completen la siguiente tabla:
+Antes de ejecutar una búsqueda, respondan:
 
 | Componente | Respuesta |
 |---|---|
-| Agente y tarea | |
-| Estados | |
+| Estado del agente | |
 | Estado inicial | |
-| Percepción relevante | |
 | Acciones posibles | |
-| Modelo de transición | |
+| Resultado de una acción | |
 | Objetivo | |
-| Criterio de calidad de una solución | |
+| Criterio para preferir una solución | |
 
-Expliquen también por qué el entorno se modela como un grafo **dirigido** y qué representa el costo de cada conexión.
-
-## Consigna 3 · Cargar y observar el entorno
+## 1. Leer y explorar los datos
 
 ```{python}
+import sys
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
 
-ARCHIVO = "datos/desafio_inspeccion.csv"
+RAIZ_REPOSITORIO = Path.cwd().resolve().parents[1]
+sys.path.insert(0, str(RAIZ_REPOSITORIO / ".tools/aima-python"))
+from aima.search import Problem, breadth_first_graph_search, depth_first_graph_search, uniform_cost_search
+
+ARISTAS = "datos/desafio_inspeccion.csv"
 INICIAL = "Acceso"
 OBJETIVO = "CentroDatos"
 
-aristas = pd.read_csv(ARCHIVO)
+df = pd.read_csv(ARISTAS)
+df.head()
+```
+
+Para conocer todas las rutas simples posibles en este entorno pequeño:
+
+```{python}
 grafo = nx.from_pandas_edgelist(
-    aristas,
+    df,
     source="origen",
     target="destino",
     edge_attr="costo",
     create_using=nx.DiGraph,
 )
 
+caminos_posibles = list(nx.all_simple_paths(grafo, INICIAL, OBJETIVO))
+pd.DataFrame({"camino posible": [" → ".join(camino) for camino in caminos_posibles]})
+```
+
+1. ¿Cuáles son los caminos posibles?
+2. ¿Cuál tiene menos acciones?
+3. ¿Cuál tiene menor costo acumulado?
+4. Si el objetivo fuera atender la alerta en el menor tiempo posible, ¿cuál de esas dos preguntas debería guiar al agente?
+
+## 2. Representar el entorno
+
+```{python}
 posicion = nx.spring_layout(grafo, seed=21)
+colores = ["#9edce3" if nodo == INICIAL else "#f4d28a" if nodo == OBJETIVO else "#eef4f5" for nodo in grafo.nodes]
 plt.figure(figsize=(10, 6))
-nx.draw_networkx(grafo, posicion, node_color="#eef4f5", edgecolors="#14384a", node_size=1500, arrows=True)
+nx.draw_networkx(grafo, posicion, node_color=colores, edgecolors="#14384a", node_size=1500, arrows=True)
 nx.draw_networkx_edge_labels(grafo, posicion, edge_labels=nx.get_edge_attributes(grafo, "costo"), font_color="#5d5179")
 plt.axis("off")
 plt.show()
 ```
 
-Revisen el dibujo y el CSV. ¿Hay conexiones que sólo pueden recorrerse en un sentido? ¿El agente puede llegar al objetivo desde todos los estados? Fundamenten a partir del entorno, no sólo de la imagen.
+¿La dirección de las flechas importa en este problema? Expliquen qué acción se estaría habilitando o prohibiendo si reemplazáramos el grafo dirigido por uno no dirigido.
 
-## Consigna 4 · Resolver el problema
+## 3. Resolver con las búsquedas del libro
 
-`NetworkX` ya incluye las estrategias que necesitamos. No vamos a reimplementarlas: ejecutaremos una búsqueda no ponderada cuando el criterio sea la cantidad de acciones, y Dijkstra cuando el criterio sea el costo acumulado.
+`aima-python` implementa las búsquedas; la clase siguiente sólo expresa el problema de este agente en la interfaz de Russell y Norvig.
 
 ```{python}
-camino_menos_pasos = nx.shortest_path(grafo, source=INICIAL, target=OBJETIVO)
-camino_menor_costo = nx.dijkstra_path(grafo, INICIAL, OBJETIVO, weight="costo")
+class ProblemaInspeccion(Problem):
+    def __init__(self, aristas, inicial, objetivo):
+        super().__init__(initial=inicial, goal=objetivo)
+        self.salidas = aristas.groupby("origen")
+        self.costos = {(fila.origen, fila.destino): fila.costo for fila in aristas.itertuples(index=False)}
 
-comparacion = pd.DataFrame([
-    {
-        "criterio": "Menor cantidad de acciones",
-        "estrategia": "Búsqueda no ponderada",
-        "camino": " → ".join(camino_menos_pasos),
-        "pasos": len(camino_menos_pasos) - 1,
-        "costo": sum(grafo[u][v]["costo"] for u, v in zip(camino_menos_pasos, camino_menos_pasos[1:])),
-    },
-    {
-        "criterio": "Menor costo acumulado",
-        "estrategia": "Dijkstra",
-        "camino": " → ".join(camino_menor_costo),
-        "pasos": len(camino_menor_costo) - 1,
-        "costo": nx.dijkstra_path_length(grafo, INICIAL, OBJETIVO, weight="costo"),
-    },
+    def actions(self, estado):
+        if estado not in self.salidas.groups:
+            return []
+        return self.salidas.get_group(estado)["destino"].tolist()
+
+    def result(self, estado, accion):
+        return accion
+
+    def path_cost(self, costo_acumulado, estado, accion, siguiente_estado):
+        return costo_acumulado + self.costos[(estado, accion)]
+
+problema = ProblemaInspeccion(df, INICIAL, OBJETIVO)
+```
+
+Ejecuten las estrategias y completen la interpretación, no el algoritmo.
+
+```{python}
+def fila(nombre, nodo):
+    camino = [n.state for n in nodo.path()]
+    return {"estrategia": nombre, "camino": " → ".join(camino), "pasos": nodo.depth, "costo": nodo.path_cost}
+
+pd.DataFrame([
+    fila("BFS", breadth_first_graph_search(problema)),
+    fila("DFS", depth_first_graph_search(problema)),
+    fila("Costo uniforme", uniform_cost_search(problema)),
 ])
-
-comparacion
 ```
 
-Luego respondan:
+1. ¿Cuál es la solución con menor cantidad de acciones? ¿Qué búsqueda la encuentra?
+2. ¿Cuál es la solución con menor costo? ¿Qué búsqueda la encuentra?
+3. ¿Qué resultado devuelve DFS en esta corrida? ¿Por qué no conviene tomarlo como criterio de calidad general?
+4. Para el agente de inspección, ¿qué estrategia elegirían y por qué?
 
-1. ¿Las dos estrategias devuelven la misma solución? Si no, ¿qué diferencia entre ellas importa para el agente?
-2. ¿Cuál adoptarían si la alerta tuviera que atenderse con el menor tiempo de desplazamiento? Justifiquen.
-3. ¿Qué cambiaría si todos los desplazamientos tuvieran el mismo costo?
+## 4. Cambio del entorno
 
-## Consigna 5 · Cambio en el entorno
-
-Se inhabilita temporalmente la conexión `Laboratorio → CentroDatos`.
+El pasaje `Laboratorio → CentroDatos` queda inhabilitado. Sin cambiar la definición de los estados, construyan el nuevo conjunto de datos y repitan las **dos líneas** que corresponden a la estrategia que eligieron.
 
 ```{python}
-grafo_alternativo = grafo.copy()
-grafo_alternativo.remove_edge("Laboratorio", "CentroDatos")
+df_alternativo = df.loc[
+    ~((df["origen"] == "Laboratorio") & (df["destino"] == "CentroDatos"))
+].copy()
+
+df_alternativo
 ```
 
-1. Vuelvan a ejecutar las dos búsquedas sobre `grafo_alternativo`.
-2. Comparen el resultado antes y después de la modificación.
-3. Indiquen qué cambió en el modelo de transición y qué partes de la formulación del agente se mantienen.
-4. Si ya no existiera ningún camino, ¿qué debería poder informar el agente?
+¿Qué elemento de la formulación del problema cambió? ¿Qué elementos se mantuvieron? Si no existiera ningún camino al objetivo, ¿qué debería poder informar el agente?
 
 ## Entrega breve
 
-Entreguen el Quarto o notebook ejecutado, la tabla de formulación y respuestas concisas. Se evaluará la relación entre la situación, el modelo elegido, el criterio de búsqueda y la interpretación de los resultados.
+Entreguen la formulación del problema, la elección razonada de una estrategia y respuestas concisas a las preguntas de análisis. No se evalúa la implementación de los algoritmos: se evalúa que puedan relacionar el problema del agente con la búsqueda seleccionada.
