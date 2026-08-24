@@ -2,9 +2,9 @@
 
 Materiales Quarto para los encuentros del 27/08 y 03/09.
 
-- `01-demostracion-docente.qmd`: recorrido completo para desarrollar en clase.
-- `01-desafio-estudiantes.qmd`: desafío sobre un nuevo problema, con funciones a completar.
-- `02-heuristicas-y-busqueda-informada.qmd`: continuidad con búsqueda voraz y A*.
+- `01-demostracion-docente.qmd`: formulación y resolución completa de un problema para un agente de reparto.
+- `01-desafio-estudiantes.qmd`: desafío de formulación y resolución para un agente de inspección.
+- `02-heuristicas-y-busqueda-informada.qmd`: continuidad del mismo problema con heurísticas y A*.
 - `datos/`: grafos dirigidos en formato CSV.
 
 ## Versiones para lectura
@@ -29,4 +29,4 @@ Para renderizar un material:
 quarto render 01-demostracion-docente.qmd
 ```
 
-Los HTML publicados son autocontenidos: estudiantes y docentes pueden abrirlos sin instalar Quarto ni dependencias de Python. Los archivos están pensados para abrirse también como notebooks/celdas de Quarto durante la clase. La implementación de los algoritmos se desarrolla de forma explícita: `networkx` se usa para representar y dibujar el grafo, no para resolver la búsqueda.
+Los HTML publicados son autocontenidos: estudiantes y docentes pueden abrirlos sin instalar Quarto ni dependencias de Python. Los archivos están pensados para abrirse también como notebooks/celdas de Quarto durante la clase. `NetworkX` se utiliza para representar entornos y ejecutar las búsquedas; el foco pedagógico está en formular la tarea del agente, elegir un criterio de calidad y analizar la solución.

@@ -2226,10 +2226,11 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#continuidad-del-taller" id="toc-continuidad-del-taller" class="nav-link active" data-scroll-target="#continuidad-del-taller">Continuidad del taller</a></li>
-  <li><a href="#actividad-inicial-en-el-simulador" id="toc-actividad-inicial-en-el-simulador" class="nav-link" data-scroll-target="#actividad-inicial-en-el-simulador">Actividad inicial en el simulador</a></li>
-  <li><a href="#cargar-el-mismo-problema-y-una-heurística" id="toc-cargar-el-mismo-problema-y-una-heurística" class="nav-link" data-scroll-target="#cargar-el-mismo-problema-y-una-heurística">Cargar el mismo problema y una heurística</a></li>
-  <li><a href="#implementación-de-referencia-a" id="toc-implementación-de-referencia-a" class="nav-link" data-scroll-target="#implementación-de-referencia-a">Implementación de referencia: A*</a></li>
+  <li><a href="#retomar-el-problema-del-agente" id="toc-retomar-el-problema-del-agente" class="nav-link active" data-scroll-target="#retomar-el-problema-del-agente">Retomar el problema del agente</a></li>
+  <li><a href="#actividad-inicial-anticipar-prioridades" id="toc-actividad-inicial-anticipar-prioridades" class="nav-link" data-scroll-target="#actividad-inicial-anticipar-prioridades">Actividad inicial · Anticipar prioridades</a></li>
+  <li><a href="#cargar-entorno-y-estimaciones" id="toc-cargar-entorno-y-estimaciones" class="nav-link" data-scroll-target="#cargar-entorno-y-estimaciones">1. Cargar entorno y estimaciones</a></li>
+  <li><a href="#comparar-una-referencia-sin-heurística-con-a" id="toc-comparar-una-referencia-sin-heurística-con-a" class="nav-link" data-scroll-target="#comparar-una-referencia-sin-heurística-con-a">2. Comparar una referencia sin heurística con A*</a></li>
+  <li><a href="#examinar-una-heurística" id="toc-examinar-una-heurística" class="nav-link" data-scroll-target="#examinar-una-heurística">3. Examinar una heurística</a></li>
   <li><a href="#consignas-de-experimentación" id="toc-consignas-de-experimentación" class="nav-link" data-scroll-target="#consignas-de-experimentación">Consignas de experimentación</a></li>
   <li><a href="#cierre" id="toc-cierre" class="nav-link" data-scroll-target="#cierre">Cierre</a></li>
   </ul>
@@ -2240,7 +2241,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Taller de agentes y problemas de búsqueda</h1>
-<p class="subtitle lead">Heurísticas, búsqueda voraz y A*</p>
+<p class="subtitle lead">Continuidad · Heurísticas y búsqueda informada</p>
 </div>
 
 
@@ -2257,42 +2258,37 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 </header>
 
 
-<section id="continuidad-del-taller" class="level2">
-<h2 class="anchored" data-anchor-id="continuidad-del-taller">Continuidad del taller</h2>
-<p>Retomamos el problema de inspección del encuentro anterior. El estado inicial, el objetivo y los costos no cambian; ahora incorporamos una estimación <code>h(n)</code> de la distancia restante hasta el objetivo.</p>
-<blockquote class="blockquote">
-<p>La pregunta no es solamente si una heurística encuentra una solución, sino cuánto modifica el orden de exploración y si preserva la calidad de la solución.</p>
-</blockquote>
+<section id="retomar-el-problema-del-agente" class="level2">
+<h2 class="anchored" data-anchor-id="retomar-el-problema-del-agente">Retomar el problema del agente</h2>
+<p>Volvemos al agente de inspección. Su tarea, estados, acciones, objetivo y costos se mantienen: debe llegar desde <code>Acceso</code> hasta <code>CentroDatos</code>. La diferencia es que ahora contará con una estimación de la distancia restante desde cada estado hasta el objetivo.</p>
+<p>La pregunta es qué aporta esa información al proceso de decisión y bajo qué condiciones permite conservar una solución de menor costo.</p>
 </section>
-<section id="actividad-inicial-en-el-simulador" class="level2">
-<h2 class="anchored" data-anchor-id="actividad-inicial-en-el-simulador">Actividad inicial en el simulador</h2>
-<p>En el simulador, generen un grafo con costos y comparen UCS con una estrategia informada cuando esté disponible. Antes de correrla, formulen una hipótesis: ¿qué nodos creen que deberían ser priorizados si se conoce una estimación hacia el objetivo?</p>
+<section id="actividad-inicial-anticipar-prioridades" class="level2">
+<h2 class="anchored" data-anchor-id="actividad-inicial-anticipar-prioridades">Actividad inicial · Anticipar prioridades</h2>
+<p>En el <a href="https://jumafernandez.github.io/simulador-busqueda-ia/">simulador</a>, trabajen con un entorno que tenga costos y una estrategia informada. Antes de ejecutarla, formulen una hipótesis: si el agente dispone de una estimación hacia el objetivo, ¿qué estados esperarían que priorice?, ¿qué riesgo aparece si esa estimación es demasiado alta?</p>
 </section>
-<section id="cargar-el-mismo-problema-y-una-heurística" class="level2">
-<h2 class="anchored" data-anchor-id="cargar-el-mismo-problema-y-una-heurística">Cargar el mismo problema y una heurística</h2>
-<div id="31c5fc66" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> deque</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> heapq</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> count</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>ARISTAS <span class="op">=</span> <span class="st">&quot;datos/desafio_inspeccion.csv&quot;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>HEURISTICAS <span class="op">=</span> <span class="st">&quot;datos/heuristica_inspeccion.csv&quot;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>INICIAL <span class="op">=</span> <span class="st">&quot;Acceso&quot;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>OBJETIVO <span class="op">=</span> <span class="st">&quot;CentroDatos&quot;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cargar_grafo(ruta):</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    tabla <span class="op">=</span> pd.read_csv(ruta)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    grafo <span class="op">=</span> nx.DiGraph()</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> fila <span class="kw">in</span> tabla.itertuples(index<span class="op">=</span><span class="va">False</span>):</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        grafo.add_edge(fila.origen, fila.destino, costo<span class="op">=</span><span class="bu">float</span>(fila.costo))</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grafo</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>grafo <span class="op">=</span> cargar_grafo(ARISTAS)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(HEURISTICAS).set_index(<span class="st">&quot;nodo&quot;</span>)[<span class="st">&quot;heuristica&quot;</span>].to_dict()</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({<span class="st">&quot;nodo&quot;</span>: h.keys(), <span class="st">&quot;h(n)&quot;</span>: h.values()})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="cargar-entorno-y-estimaciones" class="level2">
+<h2 class="anchored" data-anchor-id="cargar-entorno-y-estimaciones">1. Cargar entorno y estimaciones</h2>
+<div id="50c49713" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ARISTAS <span class="op">=</span> <span class="st">&quot;datos/desafio_inspeccion.csv&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>HEURISTICAS <span class="op">=</span> <span class="st">&quot;datos/heuristica_inspeccion.csv&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>INICIAL <span class="op">=</span> <span class="st">&quot;Acceso&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>OBJETIVO <span class="op">=</span> <span class="st">&quot;CentroDatos&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>aristas <span class="op">=</span> pd.read_csv(ARISTAS)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>grafo <span class="op">=</span> nx.from_pandas_edgelist(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    aristas,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    source<span class="op">=</span><span class="st">&quot;origen&quot;</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">&quot;destino&quot;</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    edge_attr<span class="op">=</span><span class="st">&quot;costo&quot;</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    create_using<span class="op">=</span>nx.DiGraph,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> pd.read_csv(HEURISTICAS).set_index(<span class="st">&quot;nodo&quot;</span>)[<span class="st">&quot;heuristica&quot;</span>].to_dict()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({<span class="st">&quot;estado&quot;</span>: h.keys(), <span class="st">&quot;estimación h(n)&quot;</span>: h.values()})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
@@ -2301,8 +2297,8 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">nodo</th>
-<th data-quarto-table-cell-role="th">h(n)</th>
+<th data-quarto-table-cell-role="th">estado</th>
+<th data-quarto-table-cell-role="th">estimación h(n)</th>
 </tr>
 </thead>
 <tbody>
@@ -2353,71 +2349,175 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 </div>
 </div>
 </section>
-<section id="implementación-de-referencia-a" class="level2">
-<h2 class="anchored" data-anchor-id="implementación-de-referencia-a">Implementación de referencia: A*</h2>
-<div id="7800a058" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reconstruir_camino(padres, inicial, objetivo):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> objetivo <span class="kw">not</span> <span class="kw">in</span> padres:</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    camino <span class="op">=</span> [objetivo]</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> camino[<span class="op">-</span><span class="dv">1</span>] <span class="op">!=</span> inicial:</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        camino.append(padres[camino[<span class="op">-</span><span class="dv">1</span>]])</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">list</span>(<span class="bu">reversed</span>(camino))</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> a_estrella(grafo, inicial, objetivo, h):</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    orden <span class="op">=</span> count()</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    frontera <span class="op">=</span> [(h[inicial], <span class="dv">0</span>, <span class="bu">next</span>(orden), inicial)]  <span class="co"># f(n), g(n), desempate, nodo</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    mejor_g <span class="op">=</span> {inicial: <span class="dv">0</span>}</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    padres <span class="op">=</span> {inicial: <span class="va">None</span>}</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    expansiones <span class="op">=</span> []</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> frontera:</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        _, g_actual, _, actual <span class="op">=</span> heapq.heappop(frontera)</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> g_actual <span class="op">!=</span> mejor_g[actual]:</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        expansiones.append(actual)</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> actual <span class="op">==</span> objetivo:</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> {</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;camino&quot;</span>: reconstruir_camino(padres, inicial, objetivo),</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;costo&quot;</span>: g_actual,</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;expansiones&quot;</span>: expansiones,</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            }</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> vecino <span class="kw">in</span> grafo.successors(actual):</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            nuevo_g <span class="op">=</span> g_actual <span class="op">+</span> grafo[actual][vecino][<span class="st">&quot;costo&quot;</span>]</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> vecino <span class="kw">not</span> <span class="kw">in</span> mejor_g <span class="kw">or</span> nuevo_g <span class="op">&lt;</span> mejor_g[vecino]:</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                mejor_g[vecino] <span class="op">=</span> nuevo_g</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>                padres[vecino] <span class="op">=</span> actual</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>                heapq.heappush(frontera, (nuevo_g <span class="op">+</span> h[vecino], nuevo_g, <span class="bu">next</span>(orden), vecino))</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">&quot;camino&quot;</span>: <span class="va">None</span>, <span class="st">&quot;costo&quot;</span>: <span class="va">None</span>, <span class="st">&quot;expansiones&quot;</span>: expansiones}</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>a_estrella(grafo, INICIAL, OBJETIVO, h)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="comparar-una-referencia-sin-heurística-con-a" class="level2">
+<h2 class="anchored" data-anchor-id="comparar-una-referencia-sin-heurística-con-a">2. Comparar una referencia sin heurística con A*</h2>
+<p>Primero recuperamos el camino de menor costo sin información heurística. Luego usamos A*, que combina el costo ya recorrido y una estimación hacia el objetivo.</p>
+<div id="3aec41a0" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>camino_dijkstra <span class="op">=</span> nx.dijkstra_path(grafo, INICIAL, OBJETIVO, weight<span class="op">=</span><span class="st">&quot;costo&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>costo_dijkstra <span class="op">=</span> nx.dijkstra_path_length(grafo, INICIAL, OBJETIVO, weight<span class="op">=</span><span class="st">&quot;costo&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> heuristica(estado, objetivo):</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> h[estado]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>camino_a_estrella <span class="op">=</span> nx.astar_path(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    grafo,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    INICIAL,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    OBJETIVO,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    heuristic<span class="op">=</span>heuristica,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="st">&quot;costo&quot;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>costo_a_estrella <span class="op">=</span> nx.astar_path_length(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    grafo,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    INICIAL,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    OBJETIVO,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    heuristic<span class="op">=</span>heuristica,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="st">&quot;costo&quot;</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>pd.DataFrame([</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    {<span class="st">&quot;estrategia&quot;</span>: <span class="st">&quot;Dijkstra&quot;</span>, <span class="st">&quot;camino&quot;</span>: <span class="st">&quot; → &quot;</span>.join(camino_dijkstra), <span class="st">&quot;costo&quot;</span>: costo_dijkstra},</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    {<span class="st">&quot;estrategia&quot;</span>: <span class="st">&quot;A*&quot;</span>, <span class="st">&quot;camino&quot;</span>: <span class="st">&quot; → &quot;</span>.join(camino_a_estrella), <span class="st">&quot;costo&quot;</span>: costo_a_estrella},</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>{&#39;camino&#39;: [&#39;Acceso&#39;, &#39;Control&#39;, &#39;Patio&#39;, &#39;CentroDatos&#39;],
- &#39;costo&#39;: 8.0,
- &#39;expansiones&#39;: [&#39;Acceso&#39;,
-  &#39;Control&#39;,
-  &#39;Depósito&#39;,
-  &#39;Patio&#39;,
-  &#39;Archivo&#39;,
-  &#39;Taller&#39;,
-  &#39;Laboratorio&#39;,
-  &#39;CentroDatos&#39;]}</code></pre>
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">estrategia</th>
+<th data-quarto-table-cell-role="th">camino</th>
+<th data-quarto-table-cell-role="th">costo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Dijkstra</td>
+<td>Acceso → Control → Patio → CentroDatos</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>A*</td>
+<td>Acceso → Control → Patio → CentroDatos</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><code>NetworkX</code> resuelve ambas búsquedas. Para discutir el orden de expansión, la frontera y el efecto visual de una heurística, volvemos al simulador; para el problema del agente, nos concentramos en cómo se modela y qué resultado se justifica.</p>
+</blockquote>
+</section>
+<section id="examinar-una-heurística" class="level2">
+<h2 class="anchored" data-anchor-id="examinar-una-heurística">3. Examinar una heurística</h2>
+<p>Para que A* conserve la garantía de encontrar una solución óptima, la heurística no debe sobreestimar el costo restante. Contrastemos algunos valores con el costo real mínimo hacia el objetivo.</p>
+<div id="752c36be" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>filas <span class="op">=</span> []</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estado, estimacion <span class="kw">in</span> h.items():</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        costo_real <span class="op">=</span> nx.dijkstra_path_length(grafo, estado, OBJETIVO, weight<span class="op">=</span><span class="st">&quot;costo&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        filas.append({<span class="st">&quot;estado&quot;</span>: estado, <span class="st">&quot;h(n)&quot;</span>: estimacion, <span class="st">&quot;costo real mínimo&quot;</span>: costo_real, <span class="st">&quot;¿h(n) ≤ costo real?&quot;</span>: estimacion <span class="op">&lt;=</span> costo_real})</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> nx.NetworkXNoPath:</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        filas.append({<span class="st">&quot;estado&quot;</span>: estado, <span class="st">&quot;h(n)&quot;</span>: estimacion, <span class="st">&quot;costo real mínimo&quot;</span>: <span class="va">None</span>, <span class="st">&quot;¿h(n) ≤ costo real?&quot;</span>: <span class="st">&quot;sin camino&quot;</span>})</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(filas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">estado</th>
+<th data-quarto-table-cell-role="th">h(n)</th>
+<th data-quarto-table-cell-role="th">costo real mínimo</th>
+<th data-quarto-table-cell-role="th">¿h(n) ≤ costo real?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Acceso</td>
+<td>5</td>
+<td>8</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Control</td>
+<td>5</td>
+<td>7</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Depósito</td>
+<td>4</td>
+<td>7</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Archivo</td>
+<td>4</td>
+<td>6</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Patio</td>
+<td>3</td>
+<td>5</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>Taller</td>
+<td>3</td>
+<td>6</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>Laboratorio</td>
+<td>1</td>
+<td>1</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>CentroDatos</td>
+<td>0</td>
+<td>0</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+
+</div>
 </div>
 </div>
 </section>
 <section id="consignas-de-experimentación" class="level2">
 <h2 class="anchored" data-anchor-id="consignas-de-experimentación">Consignas de experimentación</h2>
 <ol type="1">
-<li>Implementen búsqueda voraz cambiando el criterio de prioridad: deben usar sólo <code>h(n)</code> y no el costo acumulado.</li>
-<li>Comparen UCS, voraz y A* sobre el mismo grafo: camino, costo y nodos expandidos.</li>
-<li>Analicen si la tabla <code>h(n)</code> parece admisible. Justifiquen al menos dos valores comparándolos con costos reales hacia el objetivo.</li>
-<li>Modifiquen una estimación para que sobreestime deliberadamente. ¿Qué cambia en la ejecución de A*? ¿Qué deja de estar garantizado?</li>
-<li>Recuperen el escenario del pasaje inhabilitado del encuentro anterior y discutan si la heurística sigue siendo adecuada.</li>
+<li>Expliquen en sus palabras qué información adicional incorpora A* respecto de Dijkstra.</li>
+<li>Verifiquen si <code>h(n)</code> es admisible para todos los estados alcanzables. Fundamenten con la tabla.</li>
+<li>Cambien deliberadamente una estimación para que sea mayor que el costo real. Vuelvan a ejecutar A* y discutan qué garantía se pierde, aun si en esta corrida el resultado parece razonable.</li>
+<li>Recuperen el escenario en que <code>Laboratorio → CentroDatos</code> se encuentra inhabilitado. ¿La heurística original sigue representando adecuadamente el entorno? ¿Por qué?</li>
+<li>En el simulador, comparen el recorrido visual de una estrategia sin heurística y una informada. Relacionen esa observación con el mismo problema de inspección.</li>
 </ol>
 </section>
 <section id="cierre" class="level2">
 <h2 class="anchored" data-anchor-id="cierre">Cierre</h2>
-<p>El taller conserva un mismo problema para que la diferencia no sea de contexto sino de estrategia: primero exploramos sin información adicional; luego incorporamos una estimación y evaluamos qué aporta, qué costo tiene y qué supuestos requiere.</p>
+<p>El problema no cambió: el agente sigue tomando decisiones para alcanzar un objetivo dentro de un entorno. Lo que se incorporó es información orientadora sobre la cercanía al objetivo. La heurística puede hacer más eficiente la búsqueda, pero debe analizarse como parte del modelo y no aceptarse como un dato neutral.</p>
 </section>
 
 </main>

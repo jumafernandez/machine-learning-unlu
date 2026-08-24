@@ -1,6 +1,6 @@
 ---
 title: "Taller de agentes y problemas de búsqueda"
-subtitle: "Heurísticas, búsqueda voraz y A*"
+subtitle: "Continuidad · Heurísticas y búsqueda informada"
 format:
   html:
     toc: true
@@ -13,23 +13,19 @@ execute:
   message: false
 ---
 
-## Continuidad del taller
+## Retomar el problema del agente
 
-Retomamos el problema de inspección del encuentro anterior. El estado inicial, el objetivo y los costos no cambian; ahora incorporamos una estimación `h(n)` de la distancia restante hasta el objetivo.
+Volvemos al agente de inspección. Su tarea, estados, acciones, objetivo y costos se mantienen: debe llegar desde `Acceso` hasta `CentroDatos`. La diferencia es que ahora contará con una estimación de la distancia restante desde cada estado hasta el objetivo.
 
-> La pregunta no es solamente si una heurística encuentra una solución, sino cuánto modifica el orden de exploración y si preserva la calidad de la solución.
+La pregunta es qué aporta esa información al proceso de decisión y bajo qué condiciones permite conservar una solución de menor costo.
 
-## Actividad inicial en el simulador
+## Actividad inicial · Anticipar prioridades
 
-En el simulador, generen un grafo con costos y comparen UCS con una estrategia informada cuando esté disponible. Antes de correrla, formulen una hipótesis: ¿qué nodos creen que deberían ser priorizados si se conoce una estimación hacia el objetivo?
+En el [simulador](https://jumafernandez.github.io/simulador-busqueda-ia/), trabajen con un entorno que tenga costos y una estrategia informada. Antes de ejecutarla, formulen una hipótesis: si el agente dispone de una estimación hacia el objetivo, ¿qué estados esperarían que priorice?, ¿qué riesgo aparece si esa estimación es demasiado alta?
 
-## Cargar el mismo problema y una heurística
+## 1. Cargar entorno y estimaciones
 
 ```{python}
-from collections import deque
-import heapq
-from itertools import count
-
 import networkx as nx
 import pandas as pd
 
@@ -38,66 +34,77 @@ HEURISTICAS = "datos/heuristica_inspeccion.csv"
 INICIAL = "Acceso"
 OBJETIVO = "CentroDatos"
 
-def cargar_grafo(ruta):
-    tabla = pd.read_csv(ruta)
-    grafo = nx.DiGraph()
-    for fila in tabla.itertuples(index=False):
-        grafo.add_edge(fila.origen, fila.destino, costo=float(fila.costo))
-    return grafo
-
-grafo = cargar_grafo(ARISTAS)
+aristas = pd.read_csv(ARISTAS)
+grafo = nx.from_pandas_edgelist(
+    aristas,
+    source="origen",
+    target="destino",
+    edge_attr="costo",
+    create_using=nx.DiGraph,
+)
 h = pd.read_csv(HEURISTICAS).set_index("nodo")["heuristica"].to_dict()
-pd.DataFrame({"nodo": h.keys(), "h(n)": h.values()})
+
+pd.DataFrame({"estado": h.keys(), "estimación h(n)": h.values()})
 ```
 
-## Implementación de referencia: A*
+## 2. Comparar una referencia sin heurística con A*
+
+Primero recuperamos el camino de menor costo sin información heurística. Luego usamos A*, que combina el costo ya recorrido y una estimación hacia el objetivo.
 
 ```{python}
-def reconstruir_camino(padres, inicial, objetivo):
-    if objetivo not in padres:
-        return None
-    camino = [objetivo]
-    while camino[-1] != inicial:
-        camino.append(padres[camino[-1]])
-    return list(reversed(camino))
+camino_dijkstra = nx.dijkstra_path(grafo, INICIAL, OBJETIVO, weight="costo")
+costo_dijkstra = nx.dijkstra_path_length(grafo, INICIAL, OBJETIVO, weight="costo")
 
-def a_estrella(grafo, inicial, objetivo, h):
-    orden = count()
-    frontera = [(h[inicial], 0, next(orden), inicial)]  # f(n), g(n), desempate, nodo
-    mejor_g = {inicial: 0}
-    padres = {inicial: None}
-    expansiones = []
+def heuristica(estado, objetivo):
+    return h[estado]
 
-    while frontera:
-        _, g_actual, _, actual = heapq.heappop(frontera)
-        if g_actual != mejor_g[actual]:
-            continue
-        expansiones.append(actual)
-        if actual == objetivo:
-            return {
-                "camino": reconstruir_camino(padres, inicial, objetivo),
-                "costo": g_actual,
-                "expansiones": expansiones,
-            }
-        for vecino in grafo.successors(actual):
-            nuevo_g = g_actual + grafo[actual][vecino]["costo"]
-            if vecino not in mejor_g or nuevo_g < mejor_g[vecino]:
-                mejor_g[vecino] = nuevo_g
-                padres[vecino] = actual
-                heapq.heappush(frontera, (nuevo_g + h[vecino], nuevo_g, next(orden), vecino))
-    return {"camino": None, "costo": None, "expansiones": expansiones}
+camino_a_estrella = nx.astar_path(
+    grafo,
+    INICIAL,
+    OBJETIVO,
+    heuristic=heuristica,
+    weight="costo",
+)
+costo_a_estrella = nx.astar_path_length(
+    grafo,
+    INICIAL,
+    OBJETIVO,
+    heuristic=heuristica,
+    weight="costo",
+)
 
-a_estrella(grafo, INICIAL, OBJETIVO, h)
+pd.DataFrame([
+    {"estrategia": "Dijkstra", "camino": " → ".join(camino_dijkstra), "costo": costo_dijkstra},
+    {"estrategia": "A*", "camino": " → ".join(camino_a_estrella), "costo": costo_a_estrella},
+])
+```
+
+> `NetworkX` resuelve ambas búsquedas. Para discutir el orden de expansión, la frontera y el efecto visual de una heurística, volvemos al simulador; para el problema del agente, nos concentramos en cómo se modela y qué resultado se justifica.
+
+## 3. Examinar una heurística
+
+Para que A* conserve la garantía de encontrar una solución óptima, la heurística no debe sobreestimar el costo restante. Contrastemos algunos valores con el costo real mínimo hacia el objetivo.
+
+```{python}
+filas = []
+for estado, estimacion in h.items():
+    try:
+        costo_real = nx.dijkstra_path_length(grafo, estado, OBJETIVO, weight="costo")
+        filas.append({"estado": estado, "h(n)": estimacion, "costo real mínimo": costo_real, "¿h(n) ≤ costo real?": estimacion <= costo_real})
+    except nx.NetworkXNoPath:
+        filas.append({"estado": estado, "h(n)": estimacion, "costo real mínimo": None, "¿h(n) ≤ costo real?": "sin camino"})
+
+pd.DataFrame(filas)
 ```
 
 ## Consignas de experimentación
 
-1. Implementen búsqueda voraz cambiando el criterio de prioridad: deben usar sólo `h(n)` y no el costo acumulado.
-2. Comparen UCS, voraz y A* sobre el mismo grafo: camino, costo y nodos expandidos.
-3. Analicen si la tabla `h(n)` parece admisible. Justifiquen al menos dos valores comparándolos con costos reales hacia el objetivo.
-4. Modifiquen una estimación para que sobreestime deliberadamente. ¿Qué cambia en la ejecución de A*? ¿Qué deja de estar garantizado?
-5. Recuperen el escenario del pasaje inhabilitado del encuentro anterior y discutan si la heurística sigue siendo adecuada.
+1. Expliquen en sus palabras qué información adicional incorpora A* respecto de Dijkstra.
+2. Verifiquen si `h(n)` es admisible para todos los estados alcanzables. Fundamenten con la tabla.
+3. Cambien deliberadamente una estimación para que sea mayor que el costo real. Vuelvan a ejecutar A* y discutan qué garantía se pierde, aun si en esta corrida el resultado parece razonable.
+4. Recuperen el escenario en que `Laboratorio → CentroDatos` se encuentra inhabilitado. ¿La heurística original sigue representando adecuadamente el entorno? ¿Por qué?
+5. En el simulador, comparen el recorrido visual de una estrategia sin heurística y una informada. Relacionen esa observación con el mismo problema de inspección.
 
 ## Cierre
 
-El taller conserva un mismo problema para que la diferencia no sea de contexto sino de estrategia: primero exploramos sin información adicional; luego incorporamos una estimación y evaluamos qué aporta, qué costo tiene y qué supuestos requiere.
+El problema no cambió: el agente sigue tomando decisiones para alcanzar un objetivo dentro de un entorno. Lo que se incorporó es información orientadora sobre la cercanía al objetivo. La heurística puede hacer más eficiente la búsqueda, pero debe analizarse como parte del modelo y no aceptarse como un dato neutral.
