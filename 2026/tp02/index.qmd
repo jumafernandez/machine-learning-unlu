@@ -1,0 +1,541 @@
+---
+title: "Agentes y búsqueda informada"
+subtitle: "TP02 · Resolución paso a paso de los ejercicios 1 a 3"
+lang: es
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    toc-title: "Recorrido"
+    code-fold: false
+    code-copy: true
+    code-overflow: wrap
+    code-tools: true
+    embed-resources: true
+jupyter: python3
+execute:
+  echo: true
+  error: false
+  cache: false
+  daemon: false
+---
+
+Esta guía desarrolla los **ejercicios 1, 2 y 3 del TP02**: un grafo pequeño, el mapa de Rumania y la distribución de experimentos entre dos GPU. El cuarto ejercicio no se incluye.
+
+En los tres casos distinguimos el costo acumulado **g(n)** de la estimación del costo restante **h(n)**. La búsqueda voraz prioriza h(n); A* combina ambas cantidades en **f(n) = g(n) + h(n)**.
+
+::: {.callout-note title="Un criterio común"}
+La heurística debe estimar lo que falta **en la misma unidad que el costo**. Primero decidimos qué queremos optimizar; después definimos g y h. Las búsquedas se importan de la biblioteca, no se reimplementan.
+:::
+
+## Preparación
+
+### Implementación · Biblioteca y herramientas
+
+Utilizamos `aima-python`, la implementación de referencia que acompaña a Russell y Norvig. La carpeta `_vendor` contiene una copia de los módulos necesarios de la versión disponible en el entorno del curso, junto con su licencia.
+
+En esta versión, el módulo se importa como `aima.search`. La función auxiliar `path_states` se define debajo: no está exportada por esta copia de `search`. Esto adapta las importaciones del enunciado **sin cambiar los algoritmos**.
+
+```{python}
+import sys
+from pathlib import Path
+from itertools import product
+from math import ceil
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import networkx as nx
+from IPython.display import HTML, Markdown, display
+
+VENDOR = Path.cwd() / "_vendor"
+if not (VENDOR / "aima" / "search.py").is_file():
+    raise FileNotFoundError("Falta _vendor junto al archivo Quarto.")
+sys.path.insert(0, str(VENDOR.resolve()))
+
+from aima.search import (
+    Problem, Node, Graph, GraphProblem, romania_map,
+    best_first_graph_search, astar_search, uniform_cost_search,
+)
+
+def path_states(nodo):
+    return [paso.state for paso in nodo.path()]
+
+def aplicar(problema, estrategia):
+    if estrategia == "Voraz":
+        return best_first_graph_search(problema, problema.h)
+    if estrategia == "A*":
+        return astar_search(problema)
+    if estrategia == "Costo uniforme":
+        return uniform_cost_search(problema)
+    raise ValueError(estrategia)
+```
+
+### Estética · Presentación de tablas y figuras
+
+Este bloque solo configura la apariencia. Todo el código permanece desplegado.
+
+```{python}
+display(HTML("""
+<style>
+ h1,h2,h3 { color: #163e50; }
+ h1.title { font-size: 2.15rem; }
+ p { text-align: justify; }
+ p.subtitle { text-align: left; color: #59717c; }
+ .cell-output-display { overflow-x: auto; }
+ table.dataframe { font-size: .92rem; width: 100%; border-collapse: collapse; }
+ table.dataframe th { color: #163e50; background: #edf5f7; }
+ table.dataframe th, table.dataframe td { padding: .55rem; text-align: left;
+                                         border-bottom: 1px solid #d7e6eb; }
+</style>
+"""))
+plt.rcParams.update({"font.size": 11, "figure.facecolor": "white",
+                     "axes.spines.top": False, "axes.spines.right": False})
+
+def tabla(filas):
+    display(HTML(pd.DataFrame(filas).to_html(index=False, escape=True)))
+```
+
+## Ejercicio 1 · Un ejemplo pequeño para razonar
+
+### El grafo del enunciado
+
+Tenemos dos alternativas desde Inicio: pasar por A o pasar por B. Los costos son los de las aristas; las estimaciones h son las que proporciona la consigna.
+
+**Estética.** Dibujamos el grafo y sus etiquetas. Este dibujo no ejecuta la búsqueda.
+
+```{python}
+aristas = [("Inicio", "A", 2), ("A", "Objetivo", 6),
+           ("Inicio", "B", 5), ("B", "Objetivo", 2)]
+grafo = nx.DiGraph()
+grafo.add_weighted_edges_from(aristas)
+posiciones = {"Inicio": (0, 0), "A": (1, 1),
+              "B": (1, -1), "Objetivo": (2, 0)}
+etiquetas = {"Inicio": "Inicio", "A": "A\nh = 6",
+             "B": "B\nh = 2", "Objetivo": "Objetivo\nh = 0"}
+fig, ax = plt.subplots(figsize=(9, 4.2))
+nx.draw_networkx(grafo, posiciones, labels=etiquetas, ax=ax,
+                 node_size=2900, node_color="#edf5f7", edgecolors="#8eb9c3",
+                 font_color="#163e50", arrowsize=22, node_shape="o")
+nx.draw_networkx_edge_labels(grafo, posiciones, ax=ax,
+                            edge_labels=nx.get_edge_attributes(grafo, "weight"),
+                            rotate=False, font_color="#5f5078")
+ax.set_xlim(-.4, 2.4)
+ax.set_ylim(-1.5, 1.5)
+ax.axis("off")
+plt.show()
+```
+
+### Razonamiento · Costos y estimaciones
+
+| Nodo o alternativa | g(n) | h(n) | f(n) = g(n) + h(n) |
+|---|---:|---:|---:|
+| A, después de Inicio → A | 2 | 6 | 8 |
+| B, después de Inicio → B | 5 | 2 | 7 |
+| Objetivo, llegando por A | 8 | 0 | 8 |
+| Objetivo, llegando por B | 7 | 0 | 7 |
+
+El mismo estado objetivo puede alcanzarse por caminos con distinto g. **g pertenece al camino representado por el nodo de búsqueda**, no es una propiedad fija de la casilla «Objetivo».
+
+**Costo uniforme / Dijkstra.** Luego de expandir Inicio, elige A porque g(A)=2 es menor que g(B)=5. Genera una llegada al objetivo de costo 8. Pero no termina allí: todavía queda B, de costo 5. Al expandir B encuentra una llegada de costo 7, que será la solución.
+
+| Paso después de expandir Inicio | Frontera, ordenada por g | Se extrae |
+|---|---|---|
+| 1 | A: 2; B: 5 | A |
+| 2 | B: 5; Objetivo: 8 | B |
+| 3 | Objetivo: 7 | Objetivo |
+
+**Voraz.** Elige B porque h(B)=2 es menor que h(A)=6. Después elige Objetivo, cuya h es cero. Devuelve Inicio → B → Objetivo, con costo 7.
+
+**A*.** Compara f(A)=8 con f(B)=7 y elige B. Luego compara el objetivo de f=7 con A de f=8 y termina por el camino de costo 7.
+
+Las **tres estrategias** encuentran el menor costo en este ejemplo. Costo uniforme lo garantiza para este problema de costos positivos; A* también con esta heurística admisible y consistente. Voraz acierta en este caso, pero no tiene esa garantía general.
+
+### Implementación · Comprobar la resolución
+
+La consigna no asigna h a Inicio. Usamos cero allí: es admisible y no modifica la primera decisión, porque Inicio es inicialmente el único nodo de la frontera.
+
+```{python}
+mapa_pequeno = Graph({
+    "Inicio": {"A": 2, "B": 5},
+    "A": {"Objetivo": 6}, "B": {"Objetivo": 2},
+    "Objetivo": {},
+}, directed=True)
+
+class ProblemaPequeno(GraphProblem):
+    def h(self, nodo):
+        return {"Inicio": 0, "A": 6, "B": 2, "Objetivo": 0}[nodo.state]
+
+resultados_1 = []
+for estrategia in ("Costo uniforme", "Voraz", "A*"):
+    problema = ProblemaPequeno("Inicio", "Objetivo", mapa_pequeno)
+    solucion = aplicar(problema, estrategia)
+    assert path_states(solucion) == ["Inicio", "B", "Objetivo"]
+    assert solucion.path_cost == 7
+    resultados_1.append({"Estrategia": estrategia,
+                         "Camino": " → ".join(path_states(solucion)),
+                         "Costo": solucion.path_cost})
+tabla(resultados_1)
+```
+
+## Ejercicio 2 · El mapa de Rumania
+
+### Implementación · Resolver Arad → Bucharest
+
+El estado es la ciudad actual; las acciones son los viajes hacia ciudades vecinas. El costo se mide en kilómetros. Ahora ambas estrategias pueden devolver rutas distintas.
+
+Contamos un estado expandido cuando la biblioteca solicita sus acciones para generar sucesores. No incluimos el objetivo, porque esta implementación lo reconoce antes de expandirlo.
+
+```{python}
+class RutaMedida(GraphProblem):
+    def __init__(self, origen, destino):
+        super().__init__(origen, destino, romania_map)
+        self.expandidos = 0
+
+    def actions(self, estado):
+        self.expandidos += 1
+        return super().actions(estado)
+
+def comparar_rutas(origen, destino):
+    filas, soluciones = [], {}
+    for estrategia in ("Voraz", "A*"):
+        p = RutaMedida(origen, destino)
+        s = aplicar(p, estrategia)
+        assert s is not None
+        camino = path_states(s)
+        assert camino[0] == origen and camino[-1] == destino
+        assert sum(romania_map.get(a, b)
+                   for a, b in zip(camino, camino[1:])) == s.path_cost
+        filas.append({"Origen": origen, "Destino": destino,
+                      "Estrategia": estrategia, "Camino": " → ".join(camino),
+                      "Costo (km)": s.path_cost, "Expandidos": p.expandidos})
+        soluciones[estrategia] = s
+    referencia = uniform_cost_search(GraphProblem(origen, destino, romania_map))
+    assert soluciones["A*"].path_cost == referencia.path_cost
+    return filas, soluciones
+
+filas_rumania, soluciones_rumania = comparar_rutas("Arad", "Bucharest")
+tabla(filas_rumania)
+assert soluciones_rumania["Voraz"].path_cost == 450
+assert soluciones_rumania["A*"].path_cost == 418
+```
+
+### Razonamiento · Qué cambia entre las soluciones
+
+- **Voraz:** Arad → Sibiu → Fagaras → Bucharest, **450 km**.
+- **A*:** Arad → Sibiu → Rimnicu → Pitesti → Bucharest, **418 km**.
+
+Voraz se orienta por la ciudad que parece más cercana al objetivo. A* también considera cuánto costó llegar hasta ella: una continuación atractiva por h no necesariamente produce el menor costo total.
+
+En esta versión, `GraphProblem.h` calcula la distancia euclídea entre las coordenadas del mapa y la convierte a entero. **No usa literalmente la tabla de distancias del libro**, de modo que algunos valores h pueden diferir de los de la presentación. Se mantiene el mismo criterio geométrico y aquí se obtienen las rutas de 450 y 418 km.
+
+```{python}
+p = GraphProblem("Arad", "Bucharest", romania_map)
+tabla([{"Ciudad": nodo.state, "g (km)": nodo.path_cost,
+        "h (km)": p.h(nodo), "f (km)": nodo.path_cost + p.h(nodo)}
+       for nodo in soluciones_rumania["A*"].path()])
+```
+
+Esta tabla muestra el **camino devuelto**, no el orden completo de exploración ni toda la frontera.
+
+### Cambiar origen y destino
+
+Hay que recalcular h respecto del **nuevo destino**. No corresponde conservar una tabla que estime distancias a Bucharest si ahora queremos llegar a Arad o a Pitesti. `GraphProblem` lo hace usando `self.goal`.
+
+```{python}
+otras_rutas = []
+for origen, destino in [("Lugoj", "Arad"), ("Arad", "Pitesti")]:
+    filas, _ = comparar_rutas(origen, destino)
+    otras_rutas.extend(filas)
+tabla(otras_rutas)
+```
+
+En Lugoj → Arad coinciden: pasan por Timisoara y recorren **229 km**. En Arad → Pitesti no: voraz recorre **551 km**, mientras que A* encuentra una ruta de **317 km**.
+
+**Verificación.** Para los destinos utilizados comprobamos la consistencia de la heurística en cada arista: `h(u) ≤ costo(u,v) + h(v)`. Además, arriba contrastamos el costo devuelto por A* con costo uniforme.
+
+```{python}
+for destino in ("Bucharest", "Arad", "Pitesti"):
+    p = GraphProblem("Arad", destino, romania_map)
+    assert p.h(Node(destino)) == 0
+    for u in romania_map.nodes():
+        for v, costo in romania_map.get(u).items():
+            assert p.h(Node(u)) <= costo + p.h(Node(v))
+print("Heurísticas consistentes y costos de A* contrastados: OK.")
+```
+
+## Ejercicio 3 · Planificación de experimentos
+
+### El problema y los supuestos
+
+Tenemos dos GPU equivalentes y seis experimentos de duraciones conocidas. Queremos terminar **todos** lo antes posible.
+
+```{python}
+EXPERIMENTOS = ("E1", "E2", "E3", "E4", "E5", "E6")
+DURACIONES = (8, 7, 6, 5, 4, 3)
+TOTAL = sum(DURACIONES)
+tabla([{"Experimento": nombre, "Duración (h)": duracion}
+       for nombre, duracion in zip(EXPERIMENTOS, DURACIONES)])
+print("Trabajo total:", TOTAL, "horas de GPU.")
+```
+
+Para esta resolución asumimos que todos están disponibles al comienzo, son independientes, no se interrumpen ni se reparten entre GPU y no hay tiempos de preparación. Cada GPU ejecuta secuencialmente los experimentos que recibe; las dos trabajan en paralelo.
+
+**No estamos buscando un recorrido entre experimentos.** Cada nodo representa una asignación parcial. Una acción decide a qué GPU enviar el siguiente experimento.
+
+### Razonamiento · Modelar el espacio de estados
+
+| Elemento | Definición elegida |
+|---|---|
+| Estado | `(k, carga_gpu1, carga_gpu2)` |
+| k | Cantidad de experimentos ya asignados |
+| Inicial | `(0, 0, 0)` |
+| Acciones | Asignar el próximo experimento a GPU 1 o GPU 2 |
+| Transición | Incrementar k y sumar su duración a la GPU elegida |
+| Objetivo | k = 6: todos los experimentos asignados |
+| Calidad del plan | Máxima carga entre las dos GPU: el tiempo hasta terminar todo |
+
+Asignamos E1, E2, ..., E6 en ese orden. Esto evita explorar distintas permutaciones de las mismas decisiones. **No elimina distribuciones posibles:** cada experimento todavía puede asignarse a cualquiera de las dos GPU. Bajo los supuestos anteriores, el orden interno de ejecución no cambia el tiempo de terminación de una GPU.
+
+El estado conserva las cargas y cuáles experimentos quedan pendientes, identificados por k. La lista concreta asignada a cada GPU se recupera de las acciones del camino solución.
+
+### Razonamiento · Definir g y el costo de una acción
+
+Elegimos **g(n) = max(carga_gpu1, carga_gpu2)**. Representa el tiempo de terminación del plan parcial.
+
+La biblioteca acumula costos de acciones. Para que ese acumulado coincida con g, usamos:
+
+`costo(estado → siguiente) = max(cargas siguientes) − max(cargas actuales)`
+
+Los incrementos se suman y se cancelan sucesivamente, por lo que el costo acumulado final es exactamente el máximo de las dos cargas. Es un costo no negativo y puede valer cero.
+
+| Decisión | Cargas resultantes | g | Costo de esta acción |
+|---|---|---:|---:|
+| Comenzar | (0, 0) | 0 | — |
+| E1 a GPU 1 | (8, 0) | 8 | 8 |
+| E2 a GPU 2 | (8, 7) | 8 | 0 |
+| E3 a GPU 2 | (8, 13) | 13 | 5 |
+
+Asignar E2 cuesta cero **en este criterio**, no porque no consuma recursos, sino porque no extiende el horizonte de terminación del plan. Si sumáramos todas las duraciones, cualquier asignación costaría 33: ese criterio no permitiría distinguir un buen reparto de uno malo.
+
+### Razonamiento · Proponer h
+
+Buscamos una **cota inferior del tiempo final**, que llamaremos L(n). Consideramos tres restricciones:
+
+1. No se puede terminar antes que la GPU que ya tiene más carga: g(n).
+2. Hay 33 horas de trabajo para dos GPU: al menos 16,5 horas. Como todas las duraciones son enteras, el tiempo final será entero: **al menos 17 horas**.
+3. El experimento pendiente más largo tendrá que ejecutarse en alguna GPU. Incluso colocándolo en la menos cargada, terminaría no antes de `min(cargas) + mayor_duración_pendiente`.
+
+Tomamos el máximo de esas tres cotas:
+
+`L(n) = max(g(n), 17, min(cargas) + mayor_duración_pendiente)`
+
+Y lo convertimos en una estimación del **costo adicional**:
+
+**h(n) = L(n) − g(n)**
+
+Por lo tanto, para A*, **f(n) = L(n)**. No confundimos una estimación del tiempo final con el costo que todavía falta sumar.
+
+Esta h es admisible porque las tres cantidades son cotas inferiores del tiempo final. Es consistente en este modelo: L no disminuye al asignar el próximo experimento, que es el mayor de los pendientes. La carga máxima y la cota 17 no disminuyen; además, la nueva carga máxima cubre la cota previa del experimento que acaba de asignarse. Así, `h(n) ≤ costo(n,n') + h(n')`.
+
+::: {.callout-note title="h puede valer cero antes de completar el plan"}
+Eso significa que la cota no exige extender el horizonte actual. Puede quedar trabajo para la otra GPU. Por ejemplo, con cargas (21, 0) quedan 12 horas que cabrían en la GPU libre sin superar 21. **h = 0 no sustituye la prueba de objetivo k = 6.**
+:::
+
+### Implementación · El problema para la biblioteca
+
+```{python}
+class PlanGPU(Problem):
+    def __init__(self):
+        super().__init__((0, 0, 0))
+        self.expandidos = 0
+
+    def actions(self, estado):
+        self.expandidos += 1
+        return (0, 1) if estado[0] < len(DURACIONES) else ()
+
+    def result(self, estado, gpu):
+        k, carga1, carga2 = estado
+        if k >= len(DURACIONES) or gpu not in (0, 1):
+            raise ValueError("Acción no aplicable")
+        cargas = [carga1, carga2]
+        cargas[gpu] += DURACIONES[k]
+        return (k + 1, *cargas)
+
+    def goal_test(self, estado):
+        return estado[0] == len(DURACIONES)
+
+    def path_cost(self, costo, estado, accion, siguiente):
+        incremento = max(siguiente[1:]) - max(estado[1:])
+        return costo + incremento
+
+    def h(self, nodo):
+        k, carga1, carga2 = nodo.state
+        g_actual = max(carga1, carga2)
+        mayor_pendiente = max(DURACIONES[k:], default=0)
+        cota_final = max(g_actual, ceil(TOTAL / 2),
+                         min(carga1, carga2) + mayor_pendiente)
+        return cota_final - g_actual
+```
+
+El problema tiene un número finito de asignaciones y k aumenta en cada acción. Por eso los costos cero no introducen ciclos. La consistencia de h es importante para la versión de A* sobre grafos que utiliza esta biblioteca.
+
+### Implementación · Resolver y comparar
+
+```{python}
+def asignaciones(solucion):
+    grupos = [[], []]
+    for experimento, gpu in zip(EXPERIMENTOS, solucion.solution()):
+        grupos[gpu].append(experimento)
+    return grupos
+
+filas_gpu, soluciones_gpu = [], {}
+for estrategia in ("Voraz", "A*"):
+    problema = PlanGPU()
+    solucion = aplicar(problema, estrategia)
+    assert solucion is not None and problema.goal_test(solucion.state)
+    assert len(solucion.solution()) == len(DURACIONES)
+    assert solucion.path_cost == max(solucion.state[1:])
+    for nodo in solucion.path():
+        assert nodo.path_cost == max(nodo.state[1:])
+    grupos = asignaciones(solucion)
+    soluciones_gpu[estrategia] = solucion
+    filas_gpu.append({"Estrategia": estrategia,
+                      "GPU 1": ", ".join(grupos[0]) or "Sin experimentos",
+                      "GPU 2": ", ".join(grupos[1]) or "Sin experimentos",
+                      "Carga GPU 1 (h)": solucion.state[1],
+                      "Carga GPU 2 (h)": solucion.state[2],
+                      "Tiempo total (h)": solucion.path_cost,
+                      "Expandidos": problema.expandidos})
+tabla(filas_gpu)
+assert soluciones_gpu["A*"].path_cost == 17
+```
+
+Los estados expandidos se cuentan con la misma definición en ambas estrategias y son datos de la ejecución, no cifras estimadas. Las asignaciones y los conteos dependen también de los desempates: en esta biblioteca se utiliza el orden de los estados cuando las prioridades coinciden. Intercambiar los nombres de las GPU no cambia la calidad del plan.
+
+### Razonamiento · Por qué voraz puede repartir mal
+
+Voraz minimiza **el incremento estimado restante**, pero ignora el horizonte que ya acumuló. Puede preferir un plan con g alto y h bajo frente a otro con g menor y h mayor. Una h admisible **no garantiza que voraz sea óptima**.
+
+Por ejemplo, después de asignar E1 a una GPU, estas son las dos alternativas para E2:
+
+| Cargas después de E2 | g | h | f = g + h |
+|---|---:|---:|---:|
+| Juntos: (0, 15) | 15 | 2 | 17 |
+| Repartidos: (7, 8) | 8 | 9 | 17 |
+
+Voraz prefiere juntar ambos porque h=2 es menor que h=9. A* ve una cota de 17 en los dos casos: no confunde «poco costo adicional» con «buen costo total».
+
+```{python}
+display(Markdown(
+    f"Con esta h y los desempates de la versión utilizada, voraz termina en "
+    f"**{soluciones_gpu['Voraz'].path_cost} horas**, mientras que A* termina en "
+    f"**{soluciones_gpu['A*'].path_cost} horas**."
+))
+```
+
+Esta es **una resolución posible**, no la única h válida para la consigna. Una propuesta diferente debe mantener coherencia entre objetivo, costos y estimación; conviene comparar sus resultados y justificar qué propiedades conserva.
+
+### Implementación · Ver g, h y f en el plan de A*
+
+```{python}
+modelo = PlanGPU()
+pasos = []
+for nodo in soluciones_gpu["A*"].path():
+    k, carga1, carga2 = nodo.state
+    decision = "Inicio" if k == 0 else f"{EXPERIMENTOS[k - 1]} → GPU {nodo.action + 1}"
+    pasos.append({"Decisión": decision, "Estado": str(nodo.state),
+                  "g (h)": nodo.path_cost, "h (h)": modelo.h(nodo),
+                  "f (h)": nodo.path_cost + modelo.h(nodo)})
+tabla(pasos)
+```
+
+### Estética · Ver los cronogramas resultantes
+
+El eje horizontal representa horas reales de ejecución. Cada barra es un experimento. Este gráfico se construye a partir del plan encontrado: no modifica la búsqueda.
+
+```{python}
+fig, ejes = plt.subplots(2, 1, figsize=(10, 5.5), constrained_layout=True)
+colores = ["#2f8193", "#6a5987", "#5b99aa", "#8e7fa8", "#638b83", "#967339"]
+limite = max(s.path_cost for s in soluciones_gpu.values()) + 1
+for ax, (estrategia, solucion) in zip(ejes, soluciones_gpu.items()):
+    cargas = [0, 0]
+    for i, gpu in enumerate(solucion.solution()):
+        duracion = DURACIONES[i]
+        ax.barh(gpu, duracion, left=cargas[gpu], height=.55,
+                color=colores[i], edgecolor="white")
+        ax.text(cargas[gpu] + duracion / 2, gpu, EXPERIMENTOS[i],
+                ha="center", va="center", color="white", fontweight="bold")
+        cargas[gpu] += duracion
+    ax.axvline(solucion.path_cost, color="#163e50", linestyle="--", linewidth=1)
+    ax.set_title(f"{estrategia} · finaliza en {solucion.path_cost} h", loc="left")
+    ax.set_yticks([0, 1], ["GPU 1", "GPU 2"])
+    ax.set_ylim(-.65, 1.65)
+    ax.invert_yaxis()
+    ax.set_xlim(0, limite)
+    ax.set_xlabel("Horas desde el comienzo")
+    ax.set_axisbelow(True)
+    ax.grid(axis="x", alpha=.2)
+plt.show()
+```
+
+### Verificación · Demostrar el óptimo y comprobar h
+
+Un reparto de **17 y 16 horas** alcanza la cota inferior 17, por lo que es óptimo. Por ejemplo, E1+E3+E6 suman 17 y E2+E4+E5 suman 16. Hay más de una asignación óptima.
+
+Como hay solo seis experimentos, podemos verificar independientemente los resultados enumerando las 64 asignaciones. **Esto es una comprobación del ejemplo pequeño, no la estrategia con la que resolvimos la consigna.**
+
+```{python}
+modelo = PlanGPU()
+
+def estado_tras(decisiones, inicial=(0, 0, 0)):
+    estado = inicial
+    for gpu in decisiones:
+        estado = modelo.result(estado, gpu)
+    return estado
+
+finales = [estado_tras(decisiones) for decisiones in product((0, 1), repeat=6)]
+optimo_exhaustivo = min(max(estado[1:]) for estado in finales)
+assert len(finales) == 64
+assert optimo_exhaustivo == 17 == soluciones_gpu["A*"].path_cost
+
+# Todos los estados parciales que pueden alcanzarse en este modelo.
+estados = {estado_tras(decisiones)
+           for k in range(7) for decisiones in product((0, 1), repeat=k)}
+for estado in estados:
+    k = estado[0]
+    g_actual = max(estado[1:])
+    h_actual = modelo.h(Node(estado))
+    mejor_final = min(max(estado_tras(resto, estado)[1:])
+                      for resto in product((0, 1), repeat=6 - k))
+    assert 0 <= h_actual <= mejor_final - g_actual  # Admisibilidad.
+    if k == 6:
+        assert h_actual == 0
+    else:
+        for gpu in (0, 1):
+            siguiente = modelo.result(estado, gpu)
+            costo = modelo.path_cost(0, estado, gpu, siguiente)
+            assert costo >= 0
+            assert h_actual <= costo + modelo.h(Node(siguiente))  # Consistencia.
+
+print("64 asignaciones verificadas. Óptimo: 17 horas.")
+print(f"h admisible y consistente en los {len(estados)} estados distintos: OK.")
+```
+
+::: {.callout-note title="Qué conecta los tres ejercicios"}
+El problema original no tiene que parecer un mapa. En el laboratorio, los estados son **planes parciales**, las acciones son decisiones de asignación y la solución es un cronograma. Lo fundamental es que la formulación permita comparar correctamente la calidad de esos planes.
+:::
+
+## Fuentes y reproducción
+
+- Enunciados: [TP02 · Agentes y búsqueda informada](https://docs.google.com/document/d/1uJCXqUj6Nwt5LlmBcrseCsHDT8cMdheaAZtNVNMWSJI/edit), ejercicios 1 a 3, consultados el 3 de septiembre de 2026.
+- Algoritmos y mapa: [aima-python](https://github.com/aimacode/aima-python), versión local `f104e03fdc1582f014b3a4c93f1a9b7d2da70114`. Los módulos copiados se conservan sin cambios; su licencia MIT está en `_vendor/LICENSE`.
+- El modelo de planificación y la heurística propuesta son parte de esta resolución, no una solución atribuida al libro.
+
+El HTML se puede leer sin Quarto ni Python y contiene los resultados calculados. Para regenerarlo, conservar `_vendor` junto al `.qmd`, usar Python 3.10 o posterior con Jupyter, NumPy, pandas, Matplotlib y NetworkX, y ejecutar:
+
+```bash
+quarto render index.qmd
+```
+
+El código de modelado, verificación y estética está desplegado. Esta resolución se preparó como material local de apoyo; no se publicó en el campus.
