@@ -1,10 +1,16 @@
 ---
-title: "Taller de agentes y problemas de búsqueda"
-subtitle: "Continuidad · Heurísticas y búsqueda informada"
+title: "Búsqueda informada y heurísticas"
+subtitle: "Cómo combinar el costo recorrido con una estimación de lo que falta"
+lang: es
 format:
   html:
     toc: true
+    toc-depth: 3
+    toc-title: "En esta página"
     code-fold: false
+    code-copy: true
+    code-overflow: wrap
+    theme: cosmo
     embed-resources: true
 jupyter: python3
 execute:
@@ -13,98 +19,429 @@ execute:
   message: false
 ---
 
-## Retomar el problema del agente
+La búsqueda informada agrega conocimiento para decidir **qué nodo de la frontera conviene explorar primero**. Para comprender cómo funciona, comenzaremos separando tres cantidades: el costo recorrido, la estimación de lo que falta y la combinación de ambas.
 
-Volvemos al agente de inspección. Su tarea, estados, acciones, objetivo y costos se mantienen: debe llegar desde `Acceso` hasta `CentroDatos`. La diferencia es que ahora contará con una estimación de la distancia restante desde cada estado hasta el objetivo.
+## Parte 1 — Las tres cantidades que debemos distinguir
 
-La pregunta es qué aporta esa información al proceso de decisión y bajo qué condiciones permite conservar una solución de menor costo.
+Supongamos que la búsqueda alcanzó un nodo $n$:
 
-## Actividad inicial · Anticipar prioridades
+- $g(n)$ es el **costo real acumulado** desde el estado inicial hasta $n$. Se obtiene sumando los costos de las aristas recorridas.
+- $h(n)$ es una **estimación del costo restante** desde $n$ hasta el objetivo. No surge automáticamente del grafo: forma parte del conocimiento que aportamos al problema.
+- $f(n)$ es el valor con el que una estrategia ordena la frontera. En A*, combina las dos cantidades anteriores:
 
-En el [simulador](https://jumafernandez.github.io/simulador-busqueda-ia/), trabajen con un entorno que tenga costos y una estrategia informada. Antes de ejecutarla, formulen una hipótesis: si el agente dispone de una estimación hacia el objetivo, ¿qué estados esperarían que priorice?, ¿qué riesgo aparece si esa estimación es demasiado alta?
+$$f(n)=g(n)+h(n)$$
 
-## 1. Cargar entorno y estimaciones
+Por lo tanto, $g(n)$ mira hacia el camino ya recorrido, $h(n)$ mira hacia el objetivo y $f(n)$ estima el costo total de una solución que pase por $n$.
+
+## Parte 2 — Un mismo grafo, tres formas de buscar
+
+Consideremos el siguiente problema. Los valores sobre las aristas son costos reales; dentro de cada nodo aparece su heurística $h(n)$.
+
+<svg viewBox="0 0 1100 330" role="img" aria-label="Grafo con inicio, A, B y objetivo; los costos de las rutas y las heurísticas se muestran en cada nodo" style="display:block;width:100%;max-width:1100px;margin:1.5rem auto;overflow:visible;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <defs>
+    <marker id="flecha" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#5d6268" />
+    </marker>
+  </defs>
+  <g fill="none" stroke="#5d6268" stroke-width="2.25" marker-end="url(#flecha)">
+    <path d="M190 162 L350 78" />
+    <path d="M190 193 L350 271" />
+    <path d="M534 78 L760 121" />
+    <path d="M534 271 L760 208" />
+  </g>
+  <g fill="#ffffff" stroke="#d9dce0" stroke-width="2">
+    <rect x="42" y="128" width="148" height="72" rx="16" />
+    <rect x="350" y="42" width="184" height="72" rx="16" />
+    <rect x="350" y="235" width="184" height="72" rx="16" />
+    <rect x="760" y="128" width="260" height="72" rx="16" />
+  </g>
+  <g fill="#202124" font-size="27" text-anchor="middle" dominant-baseline="middle">
+    <text x="116" y="165">Inicio</text>
+    <text x="442" y="79">A · h=6</text>
+    <text x="442" y="271">B · h=2</text>
+    <text x="890" y="165">Objetivo · h=0</text>
+  </g>
+  <g fill="#202124" font-size="23" text-anchor="middle" dominant-baseline="middle">
+    <text x="279" y="76">costo 2</text>
+    <text x="279" y="258">costo 5</text>
+    <text x="648" y="74">costo 6</text>
+    <text x="648" y="259">costo 2</text>
+  </g>
+</svg>
+
+Hay dos soluciones posibles:
+
+- `Inicio → A → Objetivo`, con costo $2+6=8$.
+- `Inicio → B → Objetivo`, con costo $5+2=7$.
+
+### 2.1 — Dijkstra o búsqueda de costo uniforme
+
+Dijkstra ordena la frontera usando únicamente el costo recorrido:
+
+$$f(n)=g(n)$$
+
+También podemos verlo como A* usando $h(n)=0$ en todos los nodos. En ese caso:
+
+$$f(n)=g(n)+0=g(n)$$
+
+| Paso | Frontera ordenada por $g$ | Nodo elegido |
+|---:|---|---|
+| 1 | `A: 2`, `B: 5` | A |
+| 2 | `B: 5`, `Objetivo: 8` | B |
+| 3 | `Objetivo: 7` | Objetivo |
+
+Encuentra el camino óptimo `Inicio → B → Objetivo`, de costo 7. Sin embargo, antes explora A porque es más barato desde el inicio. **Conoce los costos, pero no tiene información que lo oriente hacia el objetivo.**
+
+### 2.2 — Búsqueda voraz
+
+La búsqueda voraz ordena la frontera utilizando solamente la estimación restante:
+
+$$f(n)=h(n)$$
+
+| Paso | Frontera ordenada por $h$ | Nodo elegido |
+|---:|---|---|
+| 1 | `B: 2`, `A: 6` | B |
+| 2 | `Objetivo: 0`, `A: 6` | Objetivo |
+
+En este caso, la heurística la conduce rápidamente hasta el camino óptimo, de costo 7. Pero eso no está garantizado: como ignora $g(n)$, **puede preferir una continuación aparentemente cercana aunque el recorrido completo resulte caro**. Ese contraste aparecerá con claridad al pasar al mapa de Rumania.
+
+### 2.3 — A*
+
+A* considera simultáneamente lo recorrido y lo que estima que falta:
+
+$$f(n)=g(n)+h(n)$$
+
+| Paso | Frontera ordenada por $f=g+h$ | Nodo elegido |
+|---:|---|---|
+| 1 | `B: 5+2=7`, `A: 2+6=8` | B |
+| 2 | `Objetivo: 7+0=7`, `A: 2+6=8` | Objetivo |
+
+A* elige B desde el comienzo porque estima un costo total menor: 7 frente a 8. Finalmente encuentra `Inicio → B → Objetivo`, de costo 7.
+
+| Estrategia | Prioridad | Resultado en el ejemplo |
+|---|---:|---|
+| Dijkstra / costo uniforme | $g(n)$ | Óptimo; explora A antes de orientarse hacia la meta |
+| Búsqueda voraz | $h(n)$ | Llega rápido; en este caso obtiene el costo óptimo 7 |
+| A* | $g(n)+h(n)$ | Usa orientación y obtiene el costo óptimo 7 |
+
+## Parte 3 — Aplicación: el mapa de Rumania
+
+Retomamos el problema clásico del mapa de Rumania presentado por Russell y Norvig. El agente debe encontrar una ruta desde `Arad` hasta `Bucharest`. Las rutas posibles y sus distancias son las mismas que en la guía de búsqueda no informada; ahora incorporamos una estimación de la distancia que falta para alcanzar el objetivo.
+
+Cada ciudad representa un estado. Trasladarse a una ciudad vecina es una acción y la distancia de la ruta es su costo.
+
+### 3.1 — El problema y las rutas
 
 ```{python}
+import sys
+from pathlib import Path
+
 import networkx as nx
 import pandas as pd
 
-ARISTAS = "datos/desafio_inspeccion.csv"
-HEURISTICAS = "datos/heuristica_inspeccion.csv"
-INICIAL = "Acceso"
-OBJETIVO = "CentroDatos"
+RAIZ_REPOSITORIO = Path.cwd().resolve().parents[1]
+sys.path.insert(0, str(RAIZ_REPOSITORIO / ".tools/aima-python"))
+sys.path.insert(0, str(RAIZ_REPOSITORIO / ".tools/aipython-src/aipython"))
 
-aristas = pd.read_csv(ARISTAS)
-grafo = nx.from_pandas_edgelist(
-    aristas,
-    source="origen",
-    target="destino",
-    edge_attr="costo",
-    create_using=nx.DiGraph,
+from aima.search import (
+    GraphProblem,
+    astar_search,
+    best_first_graph_search,
+    romania_map,
+    uniform_cost_search,
 )
-h = pd.read_csv(HEURISTICAS).set_index("nodo")["heuristica"].to_dict()
-
-pd.DataFrame({"estado": h.keys(), "estimación h(n)": h.values()})
+from searchGeneric import AStarSearcher
+from searchProblem import Arc, Search_problem_from_explicit_graph
 ```
 
-## 2. Comparar una referencia sin heurística con A*
+```{python}
+rutas = [
+    ("Arad", "Zerind", 75),          ("Arad", "Sibiu", 140),
+    ("Arad", "Timisoara", 118),      ("Bucharest", "Fagaras", 211),
+    ("Bucharest", "Pitesti", 101),   ("Bucharest", "Giurgiu", 90),
+    ("Bucharest", "Urziceni", 85),   ("Craiova", "Drobeta", 120),
+    ("Craiova", "Rimnicu", 146),     ("Craiova", "Pitesti", 138),
+    ("Drobeta", "Mehadia", 75),      ("Eforie", "Hirsova", 86),
+    ("Fagaras", "Sibiu", 99),        ("Hirsova", "Urziceni", 98),
+    ("Iasi", "Vaslui", 92),          ("Iasi", "Neamt", 87),
+    ("Lugoj", "Timisoara", 111),     ("Lugoj", "Mehadia", 70),
+    ("Oradea", "Zerind", 71),        ("Oradea", "Sibiu", 151),
+    ("Pitesti", "Rimnicu", 97),      ("Rimnicu", "Sibiu", 80),
+    ("Urziceni", "Vaslui", 142),
+]
 
-Primero recuperamos el camino de menor costo sin información heurística. Luego usamos A*, que combina el costo ya recorrido y una estimación hacia el objetivo.
+rutas_df = pd.DataFrame(rutas, columns=["origen", "destino", "distancia_km"])
+rutas_df.head()
+```
+
+| Elemento | Formulación |
+|---|---|
+| Estado inicial | `Arad` |
+| Objetivo | `Bucharest` |
+| Estado | Ciudad actual |
+| Acciones | Viajar hacia una ciudad vecina |
+| Resultado | Llegar a la ciudad elegida |
+| Costo | Distancia de la ruta en kilómetros |
+
+### 3.2 — La distancia en línea recta
+
+La heurística $h(n)$ estima el costo restante desde una ciudad $n$ hasta `Bucharest`. En este problema usamos la distancia en línea recta: es información sobre la ubicación del objetivo que las estrategias no informadas no aprovechaban.
 
 ```{python}
-camino_dijkstra = nx.dijkstra_path(grafo, INICIAL, OBJETIVO, weight="costo")
-costo_dijkstra = nx.dijkstra_path_length(grafo, INICIAL, OBJETIVO, weight="costo")
+h = {
+    "Arad": 366, "Bucharest": 0, "Craiova": 160, "Drobeta": 242,
+    "Eforie": 161, "Fagaras": 176, "Giurgiu": 77, "Hirsova": 151,
+    "Iasi": 226, "Lugoj": 244, "Mehadia": 241, "Neamt": 234,
+    "Oradea": 380, "Pitesti": 100, "Rimnicu": 193, "Sibiu": 253,
+    "Timisoara": 329, "Urziceni": 80, "Vaslui": 199, "Zerind": 374,
+}
 
-def heuristica(estado, objetivo):
-    return h[estado]
+pd.DataFrame(h.items(), columns=["ciudad", "h(n) · km hasta Bucharest"]).head()
+```
 
-camino_a_estrella = nx.astar_path(
-    grafo,
-    INICIAL,
-    OBJETIVO,
-    heuristic=heuristica,
-    weight="costo",
+$h(n)$ no es el costo de un camino conocido ni reemplaza las distancias de las rutas. Es una estimación que permite orientar la búsqueda hacia `Bucharest`.
+
+## Parte 4 — Búsqueda voraz sobre Rumania
+
+**Razonamiento.** La búsqueda voraz utiliza únicamente la heurística: entre los nodos de la frontera, se elige el que tiene menor $h(n)$.
+
+**Implementación.** Aplicamos esa prioridad con `aima-python`:
+
+```{python}
+problema_rn = GraphProblem("Arad", "Bucharest", romania_map)
+
+# La búsqueda voraz prioriza solamente h(n).
+solucion_voraz = best_first_graph_search(
+    problema_rn,
+    lambda nodo: h[nodo.state],
 )
-costo_a_estrella = nx.astar_path_length(
-    grafo,
-    INICIAL,
-    OBJETIVO,
-    heuristic=heuristica,
-    weight="costo",
+
+pd.DataFrame([{
+    "estrategia": "Búsqueda voraz · h(n)",
+    "camino": " → ".join(nodo.state for nodo in solucion_voraz.path()),
+    "costo_km": solucion_voraz.path_cost,
+}])
+```
+
+La búsqueda voraz sigue la estimación más pequeña y encuentra:
+
+`Arad → Sibiu → Fagaras → Bucharest`, con un costo de **450 km**.
+
+## Parte 5 — A* sobre Rumania
+
+**Razonamiento.** A* considera simultáneamente $g(n)$ y $h(n)$. La frontera ya no se ordena sólo por la ciudad que parece más cercana, sino por el costo total estimado de completar una solución.
+
+**Implementación.** La biblioteca recibe la función heurística y se encarga de ejecutar A*:
+
+```{python}
+# A* combina el costo del camino recorrido con la estimación restante.
+solucion_a_estrella = astar_search(
+    problema_rn,
+    h=lambda nodo: h[nodo.state],
 )
+
+pd.DataFrame([{
+    "estrategia": "A* · g(n) + h(n)",
+    "camino": " → ".join(nodo.state for nodo in solucion_a_estrella.path()),
+    "costo_km": solucion_a_estrella.path_cost,
+}])
+```
+
+A* encuentra:
+
+`Arad → Sibiu → Rimnicu → Pitesti → Bucharest`, con un costo de **418 km**.
+
+**Estética.** El siguiente código no implementa A*: toma el camino ya devuelto por la biblioteca y construye un visor sencillo para recorrer sus estados y los valores $g(n)$, $h(n)$ y $f(n)$. Está completamente abierto para que puedan modificarlo o reutilizarlo.
+
+```{python}
+from IPython.display import HTML, display
+import json
+
+pasos_a_estrella = []
+for indice, nodo in enumerate(solucion_a_estrella.path()):
+    pasos_a_estrella.append({
+        "estado": nodo.state,
+        "g": nodo.path_cost,
+        "h": h[nodo.state],
+        "f": nodo.path_cost + h[nodo.state],
+        "camino": " → ".join(
+            anterior.state for anterior in solucion_a_estrella.path()[: indice + 1]
+        ),
+    })
+
+plantilla_visor = """
+<div id="visor-a-estrella" style="max-width:760px;margin:1rem 0 1.5rem;border:1px solid #d9dce0;border-radius:12px;padding:1.25rem;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#5d6268;margin-bottom:.45rem">Camino devuelto por A*</div>
+  <div data-estado style="font-size:1.6rem;font-weight:700;color:#153e59"></div>
+  <div data-camino style="margin:.4rem 0 1rem;color:#4c5560"></div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-bottom:1rem">
+    <div style="background:#f5f7f8;padding:.75rem;border-radius:8px"><strong>g(n)</strong><br><span data-g></span></div>
+    <div style="background:#f5f7f8;padding:.75rem;border-radius:8px"><strong>h(n)</strong><br><span data-h></span></div>
+    <div style="background:#e8f3f6;padding:.75rem;border-radius:8px"><strong>f(n)</strong><br><span data-f></span></div>
+  </div>
+  <div style="display:flex;gap:.6rem;align-items:center">
+    <button type="button" data-anterior>← Anterior</button>
+    <button type="button" data-siguiente>Siguiente →</button>
+    <span data-paso style="color:#5d6268"></span>
+  </div>
+</div>
+<script>
+(() => {
+  const pasos = __PASOS__;
+  const visor = document.getElementById("visor-a-estrella");
+  let actual = 0;
+
+  function mostrar() {
+    const paso = pasos[actual];
+    visor.querySelector("[data-estado]").textContent = paso.estado;
+    visor.querySelector("[data-camino]").textContent = paso.camino;
+    visor.querySelector("[data-g]").textContent = paso.g + " km recorridos";
+    visor.querySelector("[data-h]").textContent = paso.h + " km estimados";
+    visor.querySelector("[data-f]").textContent = paso.f + " km estimados en total";
+    visor.querySelector("[data-paso]").textContent = "Paso " + (actual + 1) + " de " + pasos.length;
+    visor.querySelector("[data-anterior]").disabled = actual === 0;
+    visor.querySelector("[data-siguiente]").disabled = actual === pasos.length - 1;
+  }
+
+  visor.querySelector("[data-anterior]").addEventListener("click", () => {
+    actual -= 1;
+    mostrar();
+  });
+  visor.querySelector("[data-siguiente]").addEventListener("click", () => {
+    actual += 1;
+    mostrar();
+  });
+  mostrar();
+})();
+</script>
+"""
+
+html_visor = plantilla_visor.replace("__PASOS__", json.dumps(pasos_a_estrella))
+display(HTML(html_visor))
+```
+
+La comparación permite ver por qué “parecer más cerca” no equivale a “formar parte del camino más barato”.
+
+## Parte 6 — Las implementaciones de los libros
+
+### 6.1 — Russell y Norvig · `aima-python`
+
+La biblioteca asociada a *Artificial Intelligence: A Modern Approach* incluye el mapa de Rumania, la formulación `GraphProblem` y los algoritmos de búsqueda. Conservamos el problema y cambiamos únicamente la prioridad.
+
+```{python}
+problema_rn = GraphProblem("Arad", "Bucharest", romania_map)
+
+solucion_costo = uniform_cost_search(problema_rn)
+solucion_voraz = best_first_graph_search(problema_rn, lambda nodo: h[nodo.state])
+solucion_a_estrella = astar_search(problema_rn, h=lambda nodo: h[nodo.state])
+
+def resumen_rn(nombre, nodo):
+    return {
+        "estrategia": nombre,
+        "camino": " → ".join(n.state for n in nodo.path()),
+        "costo_km": nodo.path_cost,
+        "profundidad": nodo.depth,
+    }
 
 pd.DataFrame([
-    {"estrategia": "Dijkstra", "camino": " → ".join(camino_dijkstra), "costo": costo_dijkstra},
-    {"estrategia": "A*", "camino": " → ".join(camino_a_estrella), "costo": costo_a_estrella},
+    resumen_rn("Costo uniforme · g(n)", solucion_costo),
+    resumen_rn("Voraz · h(n)", solucion_voraz),
+    resumen_rn("A* · g(n) + h(n)", solucion_a_estrella),
 ])
 ```
 
-> `NetworkX` resuelve ambas búsquedas. Para discutir el orden de expansión, la frontera y el efecto visual de una heurística, volvemos al simulador; para el problema del agente, nos concentramos en cómo se modela y qué resultado se justifica.
+La búsqueda voraz obtiene el camino de 450 km. Costo uniforme y A* encuentran el camino óptimo de 418 km, pero A* utiliza la heurística para orientar la exploración.
 
-## 3. Examinar una heurística
+### 6.2 — Poole y Mackworth · `AStarSearcher`
 
-Para que A* conserve la garantía de encontrar una solución óptima, la heurística no debe sobreestimar el costo restante. Contrastemos algunos valores con el costo real mínimo hacia el objetivo.
+En *Artificial Intelligence: Foundations of Computational Agents*, el problema explícito se construye con nodos, arcos, un estado inicial, metas y un mapa heurístico. `AStarSearcher` ordena la frontera mediante $g(n)+h(n)$.
 
 ```{python}
-filas = []
-for estado, estimacion in h.items():
-    try:
-        costo_real = nx.dijkstra_path_length(grafo, estado, OBJETIVO, weight="costo")
-        filas.append({"estado": estado, "h(n)": estimacion, "costo real mínimo": costo_real, "¿h(n) ≤ costo real?": estimacion <= costo_real})
-    except nx.NetworkXNoPath:
-        filas.append({"estado": estado, "h(n)": estimacion, "costo real mínimo": None, "¿h(n) ≤ costo real?": "sin camino"})
+arcos = []
+for origen, destino, costo in rutas:
+    arcos.append(Arc(origen, destino, cost=costo, action=destino))
+    arcos.append(Arc(destino, origen, cost=costo, action=origen))
 
-pd.DataFrame(filas)
+nodos = set(rutas_df["origen"]) | set(rutas_df["destino"])
+problema_poole = Search_problem_from_explicit_graph(
+    title="De Arad a Bucharest",
+    nodes=nodos,
+    arcs=arcos,
+    start="Arad",
+    goals={"Bucharest"},
+    hmap=h,
+)
+
+camino_poole = AStarSearcher(problema_poole).search()
+
+pd.DataFrame([{
+    "biblioteca": "AIPython",
+    "estrategia": "A* · g(n) + h(n)",
+    "camino": " → ".join(reversed(list(camino_poole.nodes()))),
+    "costo_km": camino_poole.cost,
+}])
 ```
 
-## Consignas de experimentación
+Las bibliotecas organizan el código de manera diferente, pero implementan la misma idea central: A* prioriza una estimación del costo total de la solución.
 
-1. Expliquen en sus palabras qué información adicional incorpora A* respecto de Dijkstra.
-2. Verifiquen si `h(n)` es admisible para todos los estados alcanzables. Fundamenten con la tabla.
-3. Cambien deliberadamente una estimación para que sea mayor que el costo real. Vuelvan a ejecutar A* y discutan qué garantía se pierde, aun si en esta corrida el resultado parece razonable.
-4. Recuperen el escenario en que `Laboratorio → CentroDatos` se encuentra inhabilitado. ¿La heurística original sigue representando adecuadamente el entorno? ¿Por qué?
-5. En el simulador, comparen el recorrido visual de una estrategia sin heurística y una informada. Relacionen esa observación con el mismo problema de inspección.
+## Parte 7 — Propiedades de la heurística
 
-## Cierre
+### 7.1 — Admisibilidad
 
-El problema no cambió: el agente sigue tomando decisiones para alcanzar un objetivo dentro de un entorno. Lo que se incorporó es información orientadora sobre la cercanía al objetivo. La heurística puede hacer más eficiente la búsqueda, pero debe analizarse como parte del modelo y no aceptarse como un dato neutral.
+Una heurística es **admisible** cuando nunca sobreestima el costo real mínimo que falta para llegar a la meta:
+
+$$h(n) \leq h^*(n)$$
+
+```{python}
+grafo = nx.Graph()
+grafo.add_weighted_edges_from(rutas)
+costos_reales = nx.single_source_dijkstra_path_length(grafo, "Bucharest", weight="weight")
+
+verificacion_admisible = pd.DataFrame({
+    "ciudad": list(h),
+    "h(n)": list(h.values()),
+    "costo_real_minimo": [costos_reales[ciudad] for ciudad in h],
+})
+verificacion_admisible["admisible"] = (
+    verificacion_admisible["h(n)"] <= verificacion_admisible["costo_real_minimo"]
+)
+verificacion_admisible
+```
+
+La distancia en línea recta es admisible porque una ruta por carretera no puede ser más corta que el segmento directo entre las dos ciudades.
+
+### 7.2 — Consistencia
+
+Una heurística es **consistente** cuando, para cada ruta $n \rightarrow n'$, se cumple:
+
+$$h(n) \leq c(n,n') + h(n')$$
+
+```{python}
+filas_consistencia = []
+for origen, destino, costo in rutas:
+    filas_consistencia.extend([
+        {"origen": origen, "destino": destino, "costo": costo,
+         "h_origen": h[origen], "h_destino": h[destino],
+         "consistente": h[origen] <= costo + h[destino]},
+        {"origen": destino, "destino": origen, "costo": costo,
+         "h_origen": h[destino], "h_destino": h[origen],
+         "consistente": h[destino] <= costo + h[origen]},
+    ])
+
+verificacion_consistente = pd.DataFrame(filas_consistencia)
+verificacion_consistente.head()
+```
+
+La consistencia hace que las prioridades de A* evolucionen de forma coherente a medida que se extiende un camino. En búsqueda sobre grafos, permite evitar reaperturas innecesarias y conservar la garantía de optimalidad.
+
+## Síntesis
+
+- La búsqueda informada conserva la formulación del problema y agrega conocimiento para ordenar la frontera.
+- La búsqueda voraz usa $h(n)$: puede avanzar con decisión, pero no garantiza el camino más barato.
+- A* usa $g(n)+h(n)$ y equilibra el costo recorrido con el costo restante estimado.
+- La utilidad de A* depende de la calidad de la heurística y de propiedades como la admisibilidad y la consistencia.
+
+## Referencias
+
+- Poole, D. L., & Mackworth, A. K. (2023). *Artificial Intelligence: Foundations of Computational Agents* (3rd ed.). Cambridge University Press. [Versión abierta](https://artint.info/3e/html/ArtInt3e.html).
+- Russell, S. J., & Norvig, P. (2021). *Artificial Intelligence: A Modern Approach* (4th ed.). Pearson. Capítulo 3.
