@@ -35,44 +35,61 @@ Por lo tanto, $g(n)$ mira hacia el camino ya recorrido, $h(n)$ mira hacia el obj
 
 ## Parte 2 — Un mismo grafo, tres formas de buscar
 
-Consideremos el siguiente problema. Los valores sobre las aristas son costos reales; dentro de cada nodo aparece su heurística $h(n)$.
+Consideremos un problema pequeño con tres ramas. Los valores sobre las aristas son costos reales; dentro de cada nodo aparece su heurística $h(n)$.
 
-<svg viewBox="0 0 1100 330" role="img" aria-label="Grafo con inicio, A, B y objetivo; los costos de las rutas y las heurísticas se muestran en cada nodo" style="display:block;width:100%;max-width:1100px;margin:1.5rem auto;overflow:visible;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+<svg viewBox="0 0 1200 520" role="img" aria-label="Grafo con tres caminos desde Inicio hasta Objetivo; los costos aparecen sobre las aristas y las heurísticas dentro de los nodos" style="display:block;width:100%;max-width:1100px;margin:1.5rem auto;overflow:visible;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
   <defs>
     <marker id="flecha" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#5d6268" />
     </marker>
   </defs>
   <g fill="none" stroke="#5d6268" stroke-width="2.25" marker-end="url(#flecha)">
-    <path d="M190 162 L350 78" />
-    <path d="M190 193 L350 271" />
-    <path d="M534 78 L760 121" />
-    <path d="M534 271 L760 208" />
+    <path d="M220 238 L300 113" />
+    <path d="M440 80 L580 80" />
+    <path d="M720 100 L950 235" />
+    <path d="M220 260 L300 260" />
+    <path d="M440 260 L580 260" />
+    <path d="M720 260 L950 260" />
+    <path d="M220 282 L300 407" />
+    <path d="M440 440 L950 285" />
   </g>
   <g fill="#ffffff" stroke="#d9dce0" stroke-width="2">
-    <rect x="42" y="128" width="148" height="72" rx="16" />
-    <rect x="350" y="42" width="184" height="72" rx="16" />
-    <rect x="350" y="235" width="184" height="72" rx="16" />
-    <rect x="760" y="128" width="260" height="72" rx="16" />
+    <rect x="60" y="224" width="160" height="72" rx="16" />
+    <rect x="300" y="44" width="140" height="72" rx="16" />
+    <rect x="580" y="44" width="140" height="72" rx="16" />
+    <rect x="300" y="224" width="140" height="72" rx="16" />
+    <rect x="580" y="224" width="140" height="72" rx="16" />
+    <rect x="300" y="404" width="140" height="72" rx="16" />
+    <rect x="950" y="224" width="210" height="72" rx="16" />
   </g>
-  <g fill="#202124" font-size="27" text-anchor="middle" dominant-baseline="middle">
-    <text x="116" y="165">Inicio</text>
-    <text x="442" y="79">A · h=6</text>
-    <text x="442" y="271">B · h=2</text>
-    <text x="890" y="165">Objetivo · h=0</text>
+  <g fill="#202124" font-size="24" text-anchor="middle" dominant-baseline="middle">
+    <text x="140" y="260">Inicio · h=5</text>
+    <text x="370" y="80">A · h=3</text>
+    <text x="650" y="80">C · h=1</text>
+    <text x="370" y="260">B · h=5</text>
+    <text x="650" y="260">D · h=2</text>
+    <text x="370" y="440">E · h=20</text>
+    <text x="1055" y="260">Objetivo · h=0</text>
   </g>
-  <g fill="#202124" font-size="23" text-anchor="middle" dominant-baseline="middle">
-    <text x="279" y="76">costo 2</text>
-    <text x="279" y="258">costo 5</text>
-    <text x="648" y="74">costo 6</text>
-    <text x="648" y="259">costo 2</text>
+  <g fill="#5d5179" font-size="20" text-anchor="middle" dominant-baseline="middle">
+    <text x="247" y="164">2</text>
+    <text x="510" y="64">2</text>
+    <text x="842" y="147">8</text>
+    <text x="260" y="244">4</text>
+    <text x="510" y="244">3</text>
+    <text x="836" y="244">2</text>
+    <text x="247" y="355">1</text>
+    <text x="689" y="380">20</text>
   </g>
 </svg>
 
-Hay dos soluciones posibles:
+Hay tres soluciones posibles:
 
-- `Inicio → A → Objetivo`, con costo $2+6=8$.
-- `Inicio → B → Objetivo`, con costo $5+2=7$.
+- `Inicio → A → C → Objetivo`, con costo $2+2+8=12$.
+- `Inicio → B → D → Objetivo`, con costo $4+3+2=9$.
+- `Inicio → E → Objetivo`, con costo $1+20=21$.
+
+La rama E comienza con la acción más barata pero termina siendo muy costosa. La rama A parece muy cercana al objetivo según $h$, pero no es la de menor costo. La rama B conduce a la solución óptima.
 
 ### 2.1 — Dijkstra o búsqueda de costo uniforme
 
@@ -84,13 +101,18 @@ También podemos verlo como A* usando $h(n)=0$ en todos los nodos. En ese caso:
 
 $$f(n)=g(n)+0=g(n)$$
 
-| Paso | Frontera ordenada por $g$ | Nodo elegido |
-|---:|---|---|
-| 1 | `A: 2`, `B: 5` | A |
-| 2 | `B: 5`, `Objetivo: 8` | B |
-| 3 | `Objetivo: 7` | Objetivo |
+| Paso | Frontera ordenada por $g$ | Nodo elegido | Recorrido hasta el nodo elegido |
+|---:|---|---|---|
+| 1 | `E: 1`, `A: 2`, `B: 4` | E | `Inicio → E` |
+| 2 | `A: 2`, `B: 4`, `Objetivo: 21` | A | `Inicio → A` |
+| 3 | `B: 4`, `C: 4`, `Objetivo: 21` | B | `Inicio → B` |
+| 4 | `C: 4`, `D: 7`, `Objetivo: 21` | C | `Inicio → A → C` |
+| 5 | `D: 7`, `Objetivo: 12` | D | `Inicio → B → D` |
+| 6 | `Objetivo: 9` | Objetivo | `Inicio → B → D → Objetivo` |
 
-Encuentra el camino óptimo `Inicio → B → Objetivo`, de costo 7. Sin embargo, antes explora A porque es más barato desde el inicio. **Conoce los costos, pero no tiene información que lo oriente hacia el objetivo.**
+Dijkstra encuentra el camino óptimo `Inicio → B → D → Objetivo`, de costo 9. Antes explora E porque su primer costo es apenas 1, aunque esa rama termina costando 21. **Conoce los costos recorridos, pero no tiene información que lo oriente hacia el objetivo.**
+
+En el paso 3, B y C empatan con $g=4$; mostramos B primero. El desempate podría invertirse sin afectar la solución ni la garantía del algoritmo.
 
 ### 2.2 — Búsqueda voraz
 
@@ -98,12 +120,13 @@ La búsqueda voraz ordena la frontera utilizando solamente la estimación restan
 
 $$f(n)=h(n)$$
 
-| Paso | Frontera ordenada por $h$ | Nodo elegido |
-|---:|---|---|
-| 1 | `B: 2`, `A: 6` | B |
-| 2 | `Objetivo: 0`, `A: 6` | Objetivo |
+| Paso | Frontera ordenada por $h$ | Nodo elegido | Recorrido hasta el nodo elegido |
+|---:|---|---|---|
+| 1 | `A: 3`, `B: 5`, `E: 20` | A | `Inicio → A` |
+| 2 | `C: 1`, `B: 5`, `E: 20` | C | `Inicio → A → C` |
+| 3 | `Objetivo: 0`, `B: 5`, `E: 20` | Objetivo | `Inicio → A → C → Objetivo` |
 
-En este caso, la heurística la conduce rápidamente hasta el camino óptimo, de costo 7. Pero eso no está garantizado: como ignora $g(n)$, **puede preferir una continuación aparentemente cercana aunque el recorrido completo resulte caro**. Ese contraste aparecerá con claridad al pasar al mapa de Rumania.
+La heurística conduce rápidamente a `Inicio → A → C → Objetivo`, pero ese camino cuesta 12. Como voraz ignora $g(n)$, **prefiere la continuación que parece más cercana aunque la solución completa no sea la más barata**.
 
 ### 2.3 — A*
 
@@ -111,18 +134,21 @@ A* considera simultáneamente lo recorrido y lo que estima que falta:
 
 $$f(n)=g(n)+h(n)$$
 
-| Paso | Frontera ordenada por $f=g+h$ | Nodo elegido |
-|---:|---|---|
-| 1 | `B: 5+2=7`, `A: 2+6=8` | B |
-| 2 | `Objetivo: 7+0=7`, `A: 2+6=8` | Objetivo |
+| Paso | Frontera ordenada por $f=g+h$ | Nodo elegido | Recorrido hasta el nodo elegido |
+|---:|---|---|---|
+| 1 | `A: 2+3=5`, `B: 4+5=9`, `E: 1+20=21` | A | `Inicio → A` |
+| 2 | `C: 4+1=5`, `B: 4+5=9`, `E: 1+20=21` | C | `Inicio → A → C` |
+| 3 | `B: 4+5=9`, `Objetivo: 12+0=12`, `E: 1+20=21` | B | `Inicio → B` |
+| 4 | `D: 7+2=9`, `Objetivo: 12+0=12`, `E: 1+20=21` | D | `Inicio → B → D` |
+| 5 | `Objetivo: 9+0=9`, `E: 1+20=21` | Objetivo | `Inicio → B → D → Objetivo` |
 
-A* elige B desde el comienzo porque estima un costo total menor: 7 frente a 8. Finalmente encuentra `Inicio → B → Objetivo`, de costo 7.
+A* explora primero la rama A porque inicialmente parece prometedora. Sin embargo, no se precipita a aceptar el objetivo de costo 12: todavía existe B con $f=9$. Al combinar costo recorrido y estimación, encuentra `Inicio → B → D → Objetivo`, de costo 9.
 
 | Estrategia | Prioridad | Resultado en el ejemplo |
 |---|---:|---|
-| Dijkstra / costo uniforme | $g(n)$ | Óptimo; explora A antes de orientarse hacia la meta |
-| Búsqueda voraz | $h(n)$ | Llega rápido; en este caso obtiene el costo óptimo 7 |
-| A* | $g(n)+h(n)$ | Usa orientación y obtiene el costo óptimo 7 |
+| Dijkstra / costo uniforme | $g(n)$ | Óptimo, costo 9; explora la rama E por su bajo costo inicial |
+| Búsqueda voraz | $h(n)$ | Llega rápido, pero devuelve una solución de costo 12 |
+| A* | $g(n)+h(n)$ | Descarta la solución de 12 mientras exista una alternativa con $f$ menor y obtiene costo 9 |
 
 ## Parte 3 — Aplicación: el mapa de Rumania
 

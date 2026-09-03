@@ -11,7 +11,6 @@ format:
     code-fold: false
     code-copy: true
     code-overflow: wrap
-    code-tools: true
     embed-resources: true
     number-sections: false
     fig-cap-location: bottom
@@ -57,7 +56,7 @@ El **agente** recibe el tablero y planifica una secuencia de acciones para orden
 
 ## 2. Preparar las herramientas
 
-### Implementación · Importar las búsquedas
+### Importar las búsquedas
 
 Usamos los módulos de `0-lib` de la [guía de búsqueda no informada](https://github.com/telsesser/26-ML-01/tree/main/0-lib). Implementan los pseudocódigos de Russell y Norvig con una interfaz de nombres en mayúsculas: `ACTIONS`, `RESULT`, `IS_GOAL` y `ACTION_COST`.
 
@@ -67,9 +66,6 @@ Son los módulos utilizados en esa práctica, **no el paquete `aima-python`**. L
 import random
 import sys
 from pathlib import Path
-from html import escape
-
-from IPython.display import HTML, Markdown, display
 
 # Quarto ejecuta esta guía desde la carpeta que contiene el .qmd.
 # La carpeta 0-lib debe estar al lado del documento.
@@ -89,9 +85,17 @@ from view import Silent
 
 `sys.path.insert(...)` solo le indica a Python dónde encontrar esos módulos locales. No forma parte del algoritmo y no exige una ubicación especial en tu computadora.
 
+El siguiente bloque carga únicamente herramientas de presentación. Se ejecuta para construir el HTML, pero se oculta porque no forma parte del problema de búsqueda.
+
+```{python}
+#| echo: false
+from html import escape
+from IPython.display import HTML, Markdown, display
+```
+
 ## 3. Representar un estado
 
-### Razonamiento · Del tablero a una tupla
+### Del tablero a una tupla
 
 Guardamos las casillas por filas, de izquierda a derecha. El `0` representa el hueco.
 
@@ -123,53 +127,79 @@ Los índices comienzan en cero. En la imagen inicial, el hueco está en la prime
 
 ## 4. Construir el modelo
 
-### Implementación · Acciones y transiciones
+### Acciones y transiciones
 
 Las acciones nombran el movimiento **del hueco**. Por ejemplo, `abajo` hace bajar el hueco y subir la ficha que estaba debajo. El orden de las acciones se mantiene fijo para que las ejecuciones sean reproducibles.
 
 ```{python}
-DESPLAZAMIENTOS = {"abajo": 3, "arriba": -3, "derecha": 1, "izquierda": -1}
+# En una tupla de nueve posiciones, bajar o subir una fila equivale
+# a avanzar o retroceder tres lugares. Moverse horizontalmente
+# equivale a avanzar o retroceder un lugar.
+CAMBIO_DE_INDICE = {
+    "abajo": 3,
+    "arriba": -3,
+    "derecha": 1,
+    "izquierda": -1,
+}
 
 class EightPuzzle(Problem):
     def __init__(self, INITIAL, GOAL=OBJETIVO):
+        # Cada tablero válido contiene una sola vez los valores 0 a 8.
         for estado in (INITIAL, GOAL):
             if len(estado) != 9 or set(estado) != set(range(9)):
                 raise ValueError("El tablero debe contener 0, 1, ..., 8 una vez.")
         super().__init__(tuple(INITIAL), tuple(GOAL))
 
     def acciones_validas(self, estado):
+        # Localizamos el hueco. divmod devuelve su fila y su columna.
         fila, columna = divmod(estado.index(0), 3)
+
+        # Una acción está permitida si el hueco no atraviesa un borde.
         disponibles = {
             "abajo": fila < 2,
             "arriba": fila > 0,
             "derecha": columna < 2,
             "izquierda": columna > 0,
         }
-        return [accion for accion in sorted(DESPLAZAMIENTOS)
+
+        # Ordenamos para que distintas ejecuciones exploren igual.
+        return [accion for accion in sorted(CAMBIO_DE_INDICE)
                 if disponibles[accion]]
 
     def ACTIONS(self, estado):
+        # Interfaz que espera la biblioteca de búsqueda.
         return self.acciones_validas(estado)
 
     def RESULT(self, estado, accion):
+        # Rechazamos movimientos que salen del tablero.
         if accion not in self.acciones_validas(estado):
             raise ValueError(f"Acción no aplicable: {accion}")
+
+        # Buscamos el índice actual del hueco y calculamos el índice
+        # de la ficha vecina con la que debe intercambiarse.
         hueco = estado.index(0)
-        vecino = hueco + DESPLAZAMIENTOS[accion]
+        vecino = hueco + CAMBIO_DE_INDICE[accion]
+
+        # La tupla no puede modificarse. Creamos una lista, hacemos
+        # el intercambio y devolvemos un nuevo estado inmutable.
         nuevo = list(estado)
         nuevo[hueco], nuevo[vecino] = nuevo[vecino], nuevo[hueco]
         return tuple(nuevo)
 
     def ACTION_COST(self, estado, accion, siguiente):
+        # Todos los movimientos tienen el mismo costo.
         return 1
 
     def IS_GOAL(self, estado):
+        # El objetivo exige que coincidan las nueve posiciones.
         return estado == self.GOAL
 ```
 
 `RESULT` devuelve un estado nuevo: no modifica el recibido. El mismo estado puede ser examinado por varias ramas sin que una altere a las demás.
 
-### Razonamiento · Probar un movimiento antes de buscar
+El diccionario `CAMBIO_DE_INDICE` **no representa costos**. Traduce un movimiento del hueco al cambio correspondiente dentro de la tupla. Por ejemplo, si el hueco está en el índice 1, moverlo abajo lleva al índice `1 + 3 = 4`.
+
+### Probar un movimiento antes de buscar
 
 ```{python}
 problema_tp = EightPuzzle(INICIAL_TP)
@@ -191,19 +221,28 @@ Todavía no usamos una estrategia de búsqueda. Ya describimos qué puede hacer 
 
 ## 5. Empezar con un caso breve
 
-### Implementación · La función de mezcla del TP
+### La función de mezcla del TP
 
 Partimos del objetivo y realizamos movimientos válidos. Así obtenemos un tablero que sabemos que tiene solución: se puede deshacer la secuencia.
 
 ```{python}
 def mezclar(n, semilla=0):
+    # Generador aleatorio reproducible.
     rnd = random.Random(semilla)
+
+    # Comenzamos desde el objetivo: así sabemos que el resultado
+    # tendrá solución porque podremos deshacer los movimientos.
     p = EightPuzzle(OBJETIVO)
     estado, previo = OBJETIVO, None
+
     for _ in range(n):
+        # Elegimos una acción legal al azar.
         siguiente = p.RESULT(estado, rnd.choice(p.ACTIONS(estado)))
+
+        # Evitamos deshacer inmediatamente el último movimiento.
         if siguiente != previo:
             previo, estado = estado, siguiente
+
     return estado
 
 INICIAL_BREVE = mezclar(4)
@@ -214,7 +253,7 @@ print(texto_tablero(INICIAL_BREVE))
 La función omite los intentos que desharían inmediatamente el movimiento anterior. Además, una secuencia de mezcla puede tener un atajo. Por eso `mezclar(n)` produce un tablero a **lo sumo a n movimientos** del objetivo, no necesariamente a n. En esta ejecución, `mezclar(4)` se resuelve en tres.
 :::
 
-### Implementación · Resolver con amplitud
+### Resolver con amplitud
 
 Todo el modelo se conecta con la biblioteca en estas dos líneas:
 
@@ -228,18 +267,22 @@ print("Movimientos de la solución:", solucion_breve.PATH_COST)
 
 Amplitud explora por niveles. Como cada acción cuesta uno, el primer objetivo que encuentra corresponde a una solución con la menor cantidad de movimientos.
 
-### Implementación · Recuperar el plan
+### Recuperar el plan
 
 Un **nodo de búsqueda** guarda un estado, su padre, la acción que lo produjo y el costo acumulado. Seguimos los padres desde la solución hasta la raíz y luego invertimos el orden.
 
 ```{python}
 def reconstruir(nodo):
     estados, acciones = [], []
+
+    # Desde la solución seguimos los enlaces hacia sus padres.
     while nodo is not None:
         estados.append(nodo.STATE)
         if nodo.PARENT is not None:
             acciones.append(nodo.ACTION)
         nodo = nodo.PARENT
+
+    # El recorrido anterior quedó de objetivo a inicio.
     return estados[::-1], acciones[::-1]
 
 camino_breve, acciones_breves = reconstruir(solucion_breve)
@@ -251,11 +294,10 @@ assert camino_breve[-1] == OBJETIVO
 
 ## 6. Ver la solución paso a paso
 
-### Estética · Dibujar los tableros
-
-Este bloque solo convierte las tuplas en casillas HTML. No interviene en las decisiones del algoritmo. El hueco se representa en blanco; en cada transición resaltamos la ficha que se movió.
+El hueco sube y luego se desplaza dos veces a la izquierda. El costo pasa de cero a tres. Estos son los estados del **camino solución**, no todos los estados que exploró amplitud antes de encontrarlo.
 
 ```{python}
+#| echo: false
 ESTILO = """
 <style>
   :root { --puzzle-ink: #163e50; --puzzle-accent: #2f8193; }
@@ -316,11 +358,9 @@ def mostrar_tableros(estados, acciones=None, etiquetas=None):
 mostrar_tableros(camino_breve, acciones_breves)
 ```
 
-El hueco sube y luego se desplaza dos veces a la izquierda. El costo pasa de cero a tres. Estos son los estados del **camino solución**, no todos los estados que exploró amplitud antes de encontrarlo.
-
 ## 7. Comparar las cuatro búsquedas
 
-### Razonamiento · Cambiar la estrategia, conservar el problema
+### Cambiar la estrategia, conservar el problema
 
 | Estrategia | Cómo elige el siguiente nodo |
 |---|---|
@@ -331,9 +371,9 @@ El hueco sube y luego se desplaza dos veces a la izquierda. El costo pasa de cer
 
 No necesitamos `h(n)` para ninguna de estas estrategias. En costo uniforme le pasamos `g` a `best_first_search`: su prioridad es únicamente el costo ya recorrido.
 
-### Implementación · Registrar lo que ocurre
+### Medir la ejecución
 
-La biblioteca permite pasar un observador `view`. Lo usamos para contar nodos extraídos y profundidades sin modificar las búsquedas. Para contar expansiones, registramos las solicitudes de acciones que realizan los algoritmos.
+La biblioteca permite contar nodos extraídos y profundidades sin modificar las búsquedas. Dejamos esa infraestructura oculta para concentrarnos en la comparación.
 
 Distinguimos tres medidas:
 
@@ -344,6 +384,7 @@ Distinguimos tres medidas:
 Imponemos un máximo de 200.000 extracciones por ejecución y capturamos el límite de recursión de Python. Una interrupción **no significa que el problema no tenga solución**.
 
 ```{python}
+#| echo: false
 class LimiteBusqueda(Exception):
     pass
 
@@ -414,11 +455,10 @@ def comparar(inicial, max_extraidos=200_000):
     return filas, soluciones
 ```
 
-### Estética · Mostrar la tabla
-
-La tabla se construye con los resultados reales de la ejecución. Esta función solo les da formato; no calcula las medidas.
+La tabla se construye con los resultados reales de la ejecución.
 
 ```{python}
+#| echo: false
 def mostrar_resultados(filas):
     columnas = ["Estrategia", "Movimientos", "Expandidos",
                 "Prof. máx. generada", "Extraídos", "Resultado"]
@@ -435,7 +475,7 @@ filas_breves, soluciones_breves = comparar(INICIAL_BREVE)
 mostrar_resultados(filas_breves)
 ```
 
-### Razonamiento · Interpretar la comparación
+### Interpretar la comparación
 
 Amplitud, costo uniforme y profundidad iterativa encuentran una solución de **tres movimientos**. Profundidad encuentra una de **27** con este orden de acciones: llegar a un objetivo no significa llegar por el camino más corto.
 
@@ -443,7 +483,7 @@ Amplitud y costo uniforme no tienen por qué expandir exactamente la misma canti
 
 ## 8. Resolver el tablero de la imagen
 
-### Razonamiento · Comprobar que puede resolverse
+### Comprobar que puede resolverse
 
 Para un tablero de ancho impar, como este de 3 × 3, la configuración inicial y la objetivo deben tener la misma **paridad de inversiones**, ignorando el hueco. Una inversión es un par de fichas que aparece en orden numérico inverso al recorrer las filas.
 
@@ -467,7 +507,7 @@ assert not resoluble((0, 2, 1, 3, 4, 5, 6, 7, 8))
 mostrar_tableros([INICIAL_TP, OBJETIVO], etiquetas=["Inicial del TP", "Objetivo"])
 ```
 
-### Implementación · Ejecutar las mismas estrategias
+### Ejecutar las mismas estrategias
 
 El modelo y los algoritmos no cambian: solo cambiamos la configuración inicial.
 
@@ -488,11 +528,10 @@ Este tablero requiere mucha más exploración que el ejemplo breve. Amplitud y c
 
 No estamos concluyendo que esas dos estrategias sean incapaces de resolver el problema. Estamos mostrando qué sucede **con esta implementación, este orden de acciones y estos límites**. En particular, los módulos de profundidad calculan la profundidad recursivamente; el límite de Python es un detalle de implementación, no una propiedad matemática de DFS.
 
-### Estética · Recorrer el plan completo
-
 Cada tablero corresponde a una acción del plan óptimo obtenido por amplitud. La etiqueta indica el movimiento del hueco y el costo acumulado.
 
 ```{python}
+#| echo: false
 mostrar_tableros(camino_tp, acciones_tp)
 ```
 
@@ -535,4 +574,4 @@ Para **leer o proyectar**, alcanza con abrir el HTML: los resultados ya están c
 quarto render index.qmd
 ```
 
-Todo el código de modelado, medición y visualización está desplegado. No hay que abrir un visor separado para seguir la resolución.
+El código central del modelo y de las búsquedas está desplegado. El código auxiliar de presentación y medición se ejecuta al generar la página, pero permanece oculto para mantener el recorrido claro.
