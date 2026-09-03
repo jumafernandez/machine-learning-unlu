@@ -2238,7 +2238,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Agentes y búsqueda informada</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Código</button></div></div>
+<h1 class="title">Agentes y búsqueda informada</h1>
 <p class="subtitle lead">TP02 · Resolución paso a paso de los ejercicios 1 a 3</p>
 </div>
 
@@ -2277,7 +2277,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <h3 class="anchored" data-anchor-id="implementación-biblioteca-y-herramientas">Implementación · Biblioteca y herramientas</h3>
 <p>Utilizamos <code>aima-python</code>, la implementación de referencia que acompaña a Russell y Norvig. La carpeta <code>_vendor</code> contiene una copia de los módulos necesarios de la versión disponible en el entorno del curso, junto con su licencia.</p>
 <p>En esta versión, el módulo se importa como <code>aima.search</code>. La función auxiliar <code>path_states</code> se define debajo: no está exportada por esta copia de <code>search</code>. Esto adapta las importaciones del enunciado <strong>sin cambiar los algoritmos</strong>.</p>
-<div id="af243609" class="cell" data-execution_count="1">
+<div id="91924331" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> product</span>
@@ -2313,26 +2313,8 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 </section>
 <section id="estética-presentación-de-tablas-y-figuras" class="level3">
 <h3 class="anchored" data-anchor-id="estética-presentación-de-tablas-y-figuras">Estética · Presentación de tablas y figuras</h3>
-<p>Este bloque solo configura la apariencia. Todo el código permanece desplegado.</p>
-<div id="aa6bd8cb" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>display(HTML(<span class="st">&quot;&quot;&quot;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;style&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st"> h1,h2,h3 { color: #163e50; }</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st"> h1.title { font-size: 2.15rem; }</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st"> p { text-align: justify; }</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st"> p.subtitle { text-align: left; color: #59717c; }</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st"> .cell-output-display { overflow-x: auto; }</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st"> table.dataframe { font-size: .92rem; width: 100%; border-collapse: collapse; }</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="st"> table.dataframe th { color: #163e50; background: #edf5f7; }</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st"> table.dataframe th, table.dataframe td { padding: .55rem; text-align: left;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="st">                                         border-bottom: 1px solid #d7e6eb; }</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/style&gt;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;&quot;&quot;</span>))</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>plt.rcParams.update({<span class="st">&quot;font.size&quot;</span>: <span class="dv">11</span>, <span class="st">&quot;figure.facecolor&quot;</span>: <span class="st">&quot;white&quot;</span>,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&quot;axes.spines.top&quot;</span>: <span class="va">False</span>, <span class="st">&quot;axes.spines.right&quot;</span>: <span class="va">False</span>})</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tabla(filas):</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    display(HTML(pd.DataFrame(filas).to_html(index<span class="op">=</span><span class="va">False</span>, escape<span class="op">=</span><span class="va">True</span>)))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Este bloque solo configura la apariencia; su código queda oculto para no interrumpir la lectura.</p>
+<div id="430ea052" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 
 <style>
@@ -2356,26 +2338,7 @@ border-bottom: 1px solid #d7e6eb; }
 <h3 class="anchored" data-anchor-id="el-grafo-del-enunciado">El grafo del enunciado</h3>
 <p>Tenemos dos alternativas desde Inicio: pasar por A o pasar por B. Los costos son los de las aristas; las estimaciones h son las que proporciona la consigna.</p>
 <p><strong>Estética.</strong> Dibujamos el grafo y sus etiquetas. Este dibujo no ejecuta la búsqueda.</p>
-<div id="d9f79fb1" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>aristas <span class="op">=</span> [(<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="dv">2</span>), (<span class="st">&quot;A&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>, <span class="dv">6</span>),</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>           (<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="dv">5</span>), (<span class="st">&quot;B&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>, <span class="dv">2</span>)]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>grafo <span class="op">=</span> nx.DiGraph()</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>grafo.add_weighted_edges_from(aristas)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>posiciones <span class="op">=</span> {<span class="st">&quot;Inicio&quot;</span>: (<span class="dv">0</span>, <span class="dv">0</span>), <span class="st">&quot;A&quot;</span>: (<span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;B&quot;</span>: (<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>), <span class="st">&quot;Objetivo&quot;</span>: (<span class="dv">2</span>, <span class="dv">0</span>)}</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>etiquetas <span class="op">=</span> {<span class="st">&quot;Inicio&quot;</span>: <span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;A&quot;</span>: <span class="st">&quot;A</span><span class="ch">\n</span><span class="st">h = 6&quot;</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>             <span class="st">&quot;B&quot;</span>: <span class="st">&quot;B</span><span class="ch">\n</span><span class="st">h = 2&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>: <span class="st">&quot;Objetivo</span><span class="ch">\n</span><span class="st">h = 0&quot;</span>}</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.2</span>))</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>nx.draw_networkx(grafo, posiciones, labels<span class="op">=</span>etiquetas, ax<span class="op">=</span>ax,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                 node_size<span class="op">=</span><span class="dv">2900</span>, node_color<span class="op">=</span><span class="st">&quot;#edf5f7&quot;</span>, edgecolors<span class="op">=</span><span class="st">&quot;#8eb9c3&quot;</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                 font_color<span class="op">=</span><span class="st">&quot;#163e50&quot;</span>, arrowsize<span class="op">=</span><span class="dv">22</span>, node_shape<span class="op">=</span><span class="st">&quot;o&quot;</span>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>nx.draw_networkx_edge_labels(grafo, posiciones, ax<span class="op">=</span>ax,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                            edge_labels<span class="op">=</span>nx.get_edge_attributes(grafo, <span class="st">&quot;weight&quot;</span>),</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                            rotate<span class="op">=</span><span class="va">False</span>, font_color<span class="op">=</span><span class="st">&quot;#5f5078&quot;</span>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">.4</span>, <span class="fl">2.4</span>)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">&quot;off&quot;</span>)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="64d55983" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2463,27 +2426,27 @@ border-bottom: 1px solid #d7e6eb; }
 <section id="implementación-comprobar-la-resolución" class="level3">
 <h3 class="anchored" data-anchor-id="implementación-comprobar-la-resolución">Implementación · Comprobar la resolución</h3>
 <p>La consigna no asigna h a Inicio. Usamos cero allí: es admisible y no modifica la primera decisión, porque Inicio es inicialmente el único nodo de la frontera.</p>
-<div id="c8357d6b" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mapa_pequeno <span class="op">=</span> Graph({</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Inicio&quot;</span>: {<span class="st">&quot;A&quot;</span>: <span class="dv">2</span>, <span class="st">&quot;B&quot;</span>: <span class="dv">5</span>},</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;A&quot;</span>: {<span class="st">&quot;Objetivo&quot;</span>: <span class="dv">6</span>}, <span class="st">&quot;B&quot;</span>: {<span class="st">&quot;Objetivo&quot;</span>: <span class="dv">2</span>},</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Objetivo&quot;</span>: {},</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}, directed<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ProblemaPequeno(GraphProblem):</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> h(<span class="va">self</span>, nodo):</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {<span class="st">&quot;Inicio&quot;</span>: <span class="dv">0</span>, <span class="st">&quot;A&quot;</span>: <span class="dv">6</span>, <span class="st">&quot;B&quot;</span>: <span class="dv">2</span>, <span class="st">&quot;Objetivo&quot;</span>: <span class="dv">0</span>}[nodo.state]</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>resultados_1 <span class="op">=</span> []</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Costo uniforme&quot;</span>, <span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    problema <span class="op">=</span> ProblemaPequeno(<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>, mapa_pequeno)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    solucion <span class="op">=</span> aplicar(problema, estrategia)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> path_states(solucion) <span class="op">==</span> [<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>]</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion.path_cost <span class="op">==</span> <span class="dv">7</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    resultados_1.append({<span class="st">&quot;Estrategia&quot;</span>: estrategia,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;Camino&quot;</span>: <span class="st">&quot; → &quot;</span>.join(path_states(solucion)),</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;Costo&quot;</span>: solucion.path_cost})</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>tabla(resultados_1)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8dfb328e" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mapa_pequeno <span class="op">=</span> Graph({</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Inicio&quot;</span>: {<span class="st">&quot;A&quot;</span>: <span class="dv">2</span>, <span class="st">&quot;B&quot;</span>: <span class="dv">5</span>},</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;A&quot;</span>: {<span class="st">&quot;Objetivo&quot;</span>: <span class="dv">6</span>}, <span class="st">&quot;B&quot;</span>: {<span class="st">&quot;Objetivo&quot;</span>: <span class="dv">2</span>},</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Objetivo&quot;</span>: {},</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>}, directed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ProblemaPequeno(GraphProblem):</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> h(<span class="va">self</span>, nodo):</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {<span class="st">&quot;Inicio&quot;</span>: <span class="dv">0</span>, <span class="st">&quot;A&quot;</span>: <span class="dv">6</span>, <span class="st">&quot;B&quot;</span>: <span class="dv">2</span>, <span class="st">&quot;Objetivo&quot;</span>: <span class="dv">0</span>}[nodo.state]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>resultados_1 <span class="op">=</span> []</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Costo uniforme&quot;</span>, <span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    problema <span class="op">=</span> ProblemaPequeno(<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>, mapa_pequeno)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    solucion <span class="op">=</span> aplicar(problema, estrategia)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> path_states(solucion) <span class="op">==</span> [<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>]</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion.path_cost <span class="op">==</span> <span class="dv">7</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    resultados_1.append({<span class="st">&quot;Estrategia&quot;</span>: estrategia,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;Camino&quot;</span>: <span class="st">&quot; → &quot;</span>.join(path_states(solucion)),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;Costo&quot;</span>: solucion.path_cost})</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>tabla(resultados_1)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
@@ -2521,38 +2484,38 @@ border-bottom: 1px solid #d7e6eb; }
 <h3 class="anchored" data-anchor-id="implementación-resolver-arad-bucharest">Implementación · Resolver Arad → Bucharest</h3>
 <p>El estado es la ciudad actual; las acciones son los viajes hacia ciudades vecinas. El costo se mide en kilómetros. Ahora ambas estrategias pueden devolver rutas distintas.</p>
 <p>Contamos un estado expandido cuando la biblioteca solicita sus acciones para generar sucesores. No incluimos el objetivo, porque esta implementación lo reconoce antes de expandirlo.</p>
-<div id="d2dec3e4" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RutaMedida(GraphProblem):</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, origen, destino):</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(origen, destino, romania_map)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> actions(<span class="va">self</span>, estado):</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">super</span>().actions(estado)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> comparar_rutas(origen, destino):</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    filas, soluciones <span class="op">=</span> [], {}</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> RutaMedida(origen, destino)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> aplicar(p, estrategia)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> s <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        camino <span class="op">=</span> path_states(s)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> camino[<span class="dv">0</span>] <span class="op">==</span> origen <span class="kw">and</span> camino[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> destino</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="bu">sum</span>(romania_map.get(a, b)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> a, b <span class="kw">in</span> <span class="bu">zip</span>(camino, camino[<span class="dv">1</span>:])) <span class="op">==</span> s.path_cost</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        filas.append({<span class="st">&quot;Origen&quot;</span>: origen, <span class="st">&quot;Destino&quot;</span>: destino,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Estrategia&quot;</span>: estrategia, <span class="st">&quot;Camino&quot;</span>: <span class="st">&quot; → &quot;</span>.join(camino),</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Costo (km)&quot;</span>: s.path_cost, <span class="st">&quot;Expandidos&quot;</span>: p.expandidos})</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        soluciones[estrategia] <span class="op">=</span> s</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    referencia <span class="op">=</span> uniform_cost_search(GraphProblem(origen, destino, romania_map))</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> soluciones[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> referencia.path_cost</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> filas, soluciones</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>filas_rumania, soluciones_rumania <span class="op">=</span> comparar_rutas(<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Bucharest&quot;</span>)</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>tabla(filas_rumania)</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_rumania[<span class="st">&quot;Voraz&quot;</span>].path_cost <span class="op">==</span> <span class="dv">450</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_rumania[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> <span class="dv">418</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0b2d235e" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RutaMedida(GraphProblem):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, origen, destino):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(origen, destino, romania_map)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> actions(<span class="va">self</span>, estado):</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">super</span>().actions(estado)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> comparar_rutas(origen, destino):</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    filas, soluciones <span class="op">=</span> [], {}</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> RutaMedida(origen, destino)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> aplicar(p, estrategia)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> s <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        camino <span class="op">=</span> path_states(s)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> camino[<span class="dv">0</span>] <span class="op">==</span> origen <span class="kw">and</span> camino[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> destino</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="bu">sum</span>(romania_map.get(a, b)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> a, b <span class="kw">in</span> <span class="bu">zip</span>(camino, camino[<span class="dv">1</span>:])) <span class="op">==</span> s.path_cost</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        filas.append({<span class="st">&quot;Origen&quot;</span>: origen, <span class="st">&quot;Destino&quot;</span>: destino,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Estrategia&quot;</span>: estrategia, <span class="st">&quot;Camino&quot;</span>: <span class="st">&quot; → &quot;</span>.join(camino),</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Costo (km)&quot;</span>: s.path_cost, <span class="st">&quot;Expandidos&quot;</span>: p.expandidos})</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        soluciones[estrategia] <span class="op">=</span> s</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    referencia <span class="op">=</span> uniform_cost_search(GraphProblem(origen, destino, romania_map))</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> soluciones[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> referencia.path_cost</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> filas, soluciones</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>filas_rumania, soluciones_rumania <span class="op">=</span> comparar_rutas(<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Bucharest&quot;</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>tabla(filas_rumania)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_rumania[<span class="st">&quot;Voraz&quot;</span>].path_cost <span class="op">==</span> <span class="dv">450</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_rumania[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> <span class="dv">418</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
@@ -2595,11 +2558,11 @@ border-bottom: 1px solid #d7e6eb; }
 </ul>
 <p>Voraz se orienta por la ciudad que parece más cercana al objetivo. A* también considera cuánto costó llegar hasta ella: una continuación atractiva por h no necesariamente produce el menor costo total.</p>
 <p>En esta versión, <code>GraphProblem.h</code> calcula la distancia euclídea entre las coordenadas del mapa y la convierte a entero. <strong>No usa literalmente la tabla de distancias del libro</strong>, de modo que algunos valores h pueden diferir de los de la presentación. Se mantiene el mismo criterio geométrico y aquí se obtienen las rutas de 450 y 418 km.</p>
-<div id="1054e2a7" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> GraphProblem(<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Bucharest&quot;</span>, romania_map)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tabla([{<span class="st">&quot;Ciudad&quot;</span>: nodo.state, <span class="st">&quot;g (km)&quot;</span>: nodo.path_cost,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;h (km)&quot;</span>: p.h(nodo), <span class="st">&quot;f (km)&quot;</span>: nodo.path_cost <span class="op">+</span> p.h(nodo)}</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>       <span class="cf">for</span> nodo <span class="kw">in</span> soluciones_rumania[<span class="st">&quot;A*&quot;</span>].path()])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="3ff804de" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> GraphProblem(<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Bucharest&quot;</span>, romania_map)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tabla([{<span class="st">&quot;Ciudad&quot;</span>: nodo.state, <span class="st">&quot;g (km)&quot;</span>: nodo.path_cost,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;h (km)&quot;</span>: p.h(nodo), <span class="st">&quot;f (km)&quot;</span>: nodo.path_cost <span class="op">+</span> p.h(nodo)}</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>       <span class="cf">for</span> nodo <span class="kw">in</span> soluciones_rumania[<span class="st">&quot;A*&quot;</span>].path()])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
@@ -2650,12 +2613,12 @@ border-bottom: 1px solid #d7e6eb; }
 <section id="cambiar-origen-y-destino" class="level3">
 <h3 class="anchored" data-anchor-id="cambiar-origen-y-destino">Cambiar origen y destino</h3>
 <p>Hay que recalcular h respecto del <strong>nuevo destino</strong>. No corresponde conservar una tabla que estime distancias a Bucharest si ahora queremos llegar a Arad o a Pitesti. <code>GraphProblem</code> lo hace usando <code>self.goal</code>.</p>
-<div id="df5a3c5e" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>otras_rutas <span class="op">=</span> []</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> origen, destino <span class="kw">in</span> [(<span class="st">&quot;Lugoj&quot;</span>, <span class="st">&quot;Arad&quot;</span>), (<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Pitesti&quot;</span>)]:</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    filas, _ <span class="op">=</span> comparar_rutas(origen, destino)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    otras_rutas.extend(filas)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>tabla(otras_rutas)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ebaac10e" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>otras_rutas <span class="op">=</span> []</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> origen, destino <span class="kw">in</span> [(<span class="st">&quot;Lugoj&quot;</span>, <span class="st">&quot;Arad&quot;</span>), (<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Pitesti&quot;</span>)]:</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    filas, _ <span class="op">=</span> comparar_rutas(origen, destino)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    otras_rutas.extend(filas)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>tabla(otras_rutas)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
@@ -2707,14 +2670,7 @@ border-bottom: 1px solid #d7e6eb; }
 </div>
 <p>En Lugoj → Arad coinciden: pasan por Timisoara y recorren <strong>229 km</strong>. En Arad → Pitesti no: voraz recorre <strong>551 km</strong>, mientras que A* encuentra una ruta de <strong>317 km</strong>.</p>
 <p><strong>Verificación.</strong> Para los destinos utilizados comprobamos la consistencia de la heurística en cada arista: <code>h(u) ≤ costo(u,v) + h(v)</code>. Además, arriba contrastamos el costo devuelto por A* con costo uniforme.</p>
-<div id="6604c647" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> destino <span class="kw">in</span> (<span class="st">&quot;Bucharest&quot;</span>, <span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Pitesti&quot;</span>):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> GraphProblem(<span class="st">&quot;Arad&quot;</span>, destino, romania_map)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> p.h(Node(destino)) <span class="op">==</span> <span class="dv">0</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> u <span class="kw">in</span> romania_map.nodes():</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> v, costo <span class="kw">in</span> romania_map.get(u).items():</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> p.h(Node(u)) <span class="op">&lt;=</span> costo <span class="op">+</span> p.h(Node(v))</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Heurísticas consistentes y costos de A* contrastados: OK.&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cffc54f8" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>Heurísticas consistentes y costos de A* contrastados: OK.</code></pre>
 </div>
@@ -2726,13 +2682,13 @@ border-bottom: 1px solid #d7e6eb; }
 <section id="el-problema-y-los-supuestos" class="level3">
 <h3 class="anchored" data-anchor-id="el-problema-y-los-supuestos">El problema y los supuestos</h3>
 <p>Tenemos dos GPU equivalentes y seis experimentos de duraciones conocidas. Queremos terminar <strong>todos</strong> lo antes posible.</p>
-<div id="2ae106df" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>EXPERIMENTOS <span class="op">=</span> (<span class="st">&quot;E1&quot;</span>, <span class="st">&quot;E2&quot;</span>, <span class="st">&quot;E3&quot;</span>, <span class="st">&quot;E4&quot;</span>, <span class="st">&quot;E5&quot;</span>, <span class="st">&quot;E6&quot;</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>DURACIONES <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>TOTAL <span class="op">=</span> <span class="bu">sum</span>(DURACIONES)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>tabla([{<span class="st">&quot;Experimento&quot;</span>: nombre, <span class="st">&quot;Duración (h)&quot;</span>: duracion}</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>       <span class="cf">for</span> nombre, duracion <span class="kw">in</span> <span class="bu">zip</span>(EXPERIMENTOS, DURACIONES)])</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Trabajo total:&quot;</span>, TOTAL, <span class="st">&quot;horas de GPU.&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="9919747a" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>EXPERIMENTOS <span class="op">=</span> (<span class="st">&quot;E1&quot;</span>, <span class="st">&quot;E2&quot;</span>, <span class="st">&quot;E3&quot;</span>, <span class="st">&quot;E4&quot;</span>, <span class="st">&quot;E5&quot;</span>, <span class="st">&quot;E6&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>DURACIONES <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>TOTAL <span class="op">=</span> <span class="bu">sum</span>(DURACIONES)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>tabla([{<span class="st">&quot;Experimento&quot;</span>: nombre, <span class="st">&quot;Duración (h)&quot;</span>: duracion}</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>       <span class="cf">for</span> nombre, duracion <span class="kw">in</span> <span class="bu">zip</span>(EXPERIMENTOS, DURACIONES)])</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Trabajo total:&quot;</span>, TOTAL, <span class="st">&quot;horas de GPU.&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
@@ -2897,70 +2853,70 @@ border-bottom: 1px solid #d7e6eb; }
 </section>
 <section id="implementación-el-problema-para-la-biblioteca" class="level3">
 <h3 class="anchored" data-anchor-id="implementación-el-problema-para-la-biblioteca">Implementación · El problema para la biblioteca</h3>
-<div id="754ebef1" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PlanGPU(Problem):</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>((<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> actions(<span class="va">self</span>, estado):</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="dv">0</span>, <span class="dv">1</span>) <span class="cf">if</span> estado[<span class="dv">0</span>] <span class="op">&lt;</span> <span class="bu">len</span>(DURACIONES) <span class="cf">else</span> ()</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> result(<span class="va">self</span>, estado, gpu):</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        k, carga1, carga2 <span class="op">=</span> estado</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> k <span class="op">&gt;=</span> <span class="bu">len</span>(DURACIONES) <span class="kw">or</span> gpu <span class="kw">not</span> <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">1</span>):</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;Acción no aplicable&quot;</span>)</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        cargas <span class="op">=</span> [carga1, carga2]</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        cargas[gpu] <span class="op">+=</span> DURACIONES[k]</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (k <span class="op">+</span> <span class="dv">1</span>, <span class="op">*</span>cargas)</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> goal_test(<span class="va">self</span>, estado):</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> estado[<span class="dv">0</span>] <span class="op">==</span> <span class="bu">len</span>(DURACIONES)</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> path_cost(<span class="va">self</span>, costo, estado, accion, siguiente):</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        incremento <span class="op">=</span> <span class="bu">max</span>(siguiente[<span class="dv">1</span>:]) <span class="op">-</span> <span class="bu">max</span>(estado[<span class="dv">1</span>:])</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> costo <span class="op">+</span> incremento</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> h(<span class="va">self</span>, nodo):</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        k, carga1, carga2 <span class="op">=</span> nodo.state</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        g_actual <span class="op">=</span> <span class="bu">max</span>(carga1, carga2)</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>        mayor_pendiente <span class="op">=</span> <span class="bu">max</span>(DURACIONES[k:], default<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>        cota_final <span class="op">=</span> <span class="bu">max</span>(g_actual, ceil(TOTAL <span class="op">/</span> <span class="dv">2</span>),</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                         <span class="bu">min</span>(carga1, carga2) <span class="op">+</span> mayor_pendiente)</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> cota_final <span class="op">-</span> g_actual</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="f31e306a" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PlanGPU(Problem):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>((<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> actions(<span class="va">self</span>, estado):</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="dv">0</span>, <span class="dv">1</span>) <span class="cf">if</span> estado[<span class="dv">0</span>] <span class="op">&lt;</span> <span class="bu">len</span>(DURACIONES) <span class="cf">else</span> ()</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> result(<span class="va">self</span>, estado, gpu):</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        k, carga1, carga2 <span class="op">=</span> estado</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> k <span class="op">&gt;=</span> <span class="bu">len</span>(DURACIONES) <span class="kw">or</span> gpu <span class="kw">not</span> <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">1</span>):</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;Acción no aplicable&quot;</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        cargas <span class="op">=</span> [carga1, carga2]</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        cargas[gpu] <span class="op">+=</span> DURACIONES[k]</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (k <span class="op">+</span> <span class="dv">1</span>, <span class="op">*</span>cargas)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> goal_test(<span class="va">self</span>, estado):</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> estado[<span class="dv">0</span>] <span class="op">==</span> <span class="bu">len</span>(DURACIONES)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> path_cost(<span class="va">self</span>, costo, estado, accion, siguiente):</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        incremento <span class="op">=</span> <span class="bu">max</span>(siguiente[<span class="dv">1</span>:]) <span class="op">-</span> <span class="bu">max</span>(estado[<span class="dv">1</span>:])</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> costo <span class="op">+</span> incremento</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> h(<span class="va">self</span>, nodo):</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        k, carga1, carga2 <span class="op">=</span> nodo.state</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        g_actual <span class="op">=</span> <span class="bu">max</span>(carga1, carga2)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        mayor_pendiente <span class="op">=</span> <span class="bu">max</span>(DURACIONES[k:], default<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        cota_final <span class="op">=</span> <span class="bu">max</span>(g_actual, ceil(TOTAL <span class="op">/</span> <span class="dv">2</span>),</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>                         <span class="bu">min</span>(carga1, carga2) <span class="op">+</span> mayor_pendiente)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> cota_final <span class="op">-</span> g_actual</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>El problema tiene un número finito de asignaciones y k aumenta en cada acción. Por eso los costos cero no introducen ciclos. La consistencia de h es importante para la versión de A* sobre grafos que utiliza esta biblioteca.</p>
 </section>
 <section id="implementación-resolver-y-comparar" class="level3">
 <h3 class="anchored" data-anchor-id="implementación-resolver-y-comparar">Implementación · Resolver y comparar</h3>
-<div id="0609aa42" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> asignaciones(solucion):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    grupos <span class="op">=</span> [[], []]</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> experimento, gpu <span class="kw">in</span> <span class="bu">zip</span>(EXPERIMENTOS, solucion.solution()):</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        grupos[gpu].append(experimento)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grupos</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>filas_gpu, soluciones_gpu <span class="op">=</span> [], {}</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    problema <span class="op">=</span> PlanGPU()</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    solucion <span class="op">=</span> aplicar(problema, estrategia)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> problema.goal_test(solucion.state)</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(solucion.solution()) <span class="op">==</span> <span class="bu">len</span>(DURACIONES)</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion.path_cost <span class="op">==</span> <span class="bu">max</span>(solucion.state[<span class="dv">1</span>:])</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> nodo <span class="kw">in</span> solucion.path():</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> nodo.path_cost <span class="op">==</span> <span class="bu">max</span>(nodo.state[<span class="dv">1</span>:])</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    grupos <span class="op">=</span> asignaciones(solucion)</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    soluciones_gpu[estrategia] <span class="op">=</span> solucion</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    filas_gpu.append({<span class="st">&quot;Estrategia&quot;</span>: estrategia,</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;GPU 1&quot;</span>: <span class="st">&quot;, &quot;</span>.join(grupos[<span class="dv">0</span>]) <span class="kw">or</span> <span class="st">&quot;Sin experimentos&quot;</span>,</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;GPU 2&quot;</span>: <span class="st">&quot;, &quot;</span>.join(grupos[<span class="dv">1</span>]) <span class="kw">or</span> <span class="st">&quot;Sin experimentos&quot;</span>,</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Carga GPU 1 (h)&quot;</span>: solucion.state[<span class="dv">1</span>],</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Carga GPU 2 (h)&quot;</span>: solucion.state[<span class="dv">2</span>],</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Tiempo total (h)&quot;</span>: solucion.path_cost,</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Expandidos&quot;</span>: problema.expandidos})</span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>tabla(filas_gpu)</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_gpu[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> <span class="dv">17</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="dadd0ef6" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> asignaciones(solucion):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    grupos <span class="op">=</span> [[], []]</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> experimento, gpu <span class="kw">in</span> <span class="bu">zip</span>(EXPERIMENTOS, solucion.solution()):</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        grupos[gpu].append(experimento)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grupos</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>filas_gpu, soluciones_gpu <span class="op">=</span> [], {}</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    problema <span class="op">=</span> PlanGPU()</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    solucion <span class="op">=</span> aplicar(problema, estrategia)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> problema.goal_test(solucion.state)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(solucion.solution()) <span class="op">==</span> <span class="bu">len</span>(DURACIONES)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion.path_cost <span class="op">==</span> <span class="bu">max</span>(solucion.state[<span class="dv">1</span>:])</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> nodo <span class="kw">in</span> solucion.path():</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> nodo.path_cost <span class="op">==</span> <span class="bu">max</span>(nodo.state[<span class="dv">1</span>:])</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    grupos <span class="op">=</span> asignaciones(solucion)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    soluciones_gpu[estrategia] <span class="op">=</span> solucion</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    filas_gpu.append({<span class="st">&quot;Estrategia&quot;</span>: estrategia,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;GPU 1&quot;</span>: <span class="st">&quot;, &quot;</span>.join(grupos[<span class="dv">0</span>]) <span class="kw">or</span> <span class="st">&quot;Sin experimentos&quot;</span>,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;GPU 2&quot;</span>: <span class="st">&quot;, &quot;</span>.join(grupos[<span class="dv">1</span>]) <span class="kw">or</span> <span class="st">&quot;Sin experimentos&quot;</span>,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Carga GPU 1 (h)&quot;</span>: solucion.state[<span class="dv">1</span>],</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Carga GPU 2 (h)&quot;</span>: solucion.state[<span class="dv">2</span>],</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Tiempo total (h)&quot;</span>: solucion.path_cost,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Expandidos&quot;</span>: problema.expandidos})</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>tabla(filas_gpu)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_gpu[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> <span class="dv">17</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
@@ -3028,12 +2984,7 @@ border-bottom: 1px solid #d7e6eb; }
 </tbody>
 </table>
 <p>Voraz prefiere juntar ambos porque h=2 es menor que h=9. A* ve una cota de 17 en los dos casos: no confunde «poco costo adicional» con «buen costo total».</p>
-<div id="de86eb45" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>display(Markdown(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f&quot;Con esta h y los desempates de la versión utilizada, voraz termina en &quot;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f&quot;**</span><span class="sc">{</span>soluciones_gpu[<span class="st">&#39;Voraz&#39;</span>]<span class="sc">.</span>path_cost<span class="sc">}</span><span class="ss"> horas**, mientras que A* termina en &quot;</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f&quot;**</span><span class="sc">{</span>soluciones_gpu[<span class="st">&#39;A*&#39;</span>]<span class="sc">.</span>path_cost<span class="sc">}</span><span class="ss"> horas**.&quot;</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="03918793" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-display cell-output-markdown">
 <p>Con esta h y los desempates de la versión utilizada, voraz termina en <strong>33 horas</strong>, mientras que A* termina en <strong>17 horas</strong>.</p>
 </div>
@@ -3042,16 +2993,16 @@ border-bottom: 1px solid #d7e6eb; }
 </section>
 <section id="implementación-ver-g-h-y-f-en-el-plan-de-a" class="level3">
 <h3 class="anchored" data-anchor-id="implementación-ver-g-h-y-f-en-el-plan-de-a">Implementación · Ver g, h y f en el plan de A*</h3>
-<div id="1fa62da6" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> PlanGPU()</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>pasos <span class="op">=</span> []</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nodo <span class="kw">in</span> soluciones_gpu[<span class="st">&quot;A*&quot;</span>].path():</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    k, carga1, carga2 <span class="op">=</span> nodo.state</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    decision <span class="op">=</span> <span class="st">&quot;Inicio&quot;</span> <span class="cf">if</span> k <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="ss">f&quot;</span><span class="sc">{</span>EXPERIMENTOS[k <span class="op">-</span> <span class="dv">1</span>]<span class="sc">}</span><span class="ss"> → GPU </span><span class="sc">{</span>nodo<span class="sc">.</span>action <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">&quot;</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    pasos.append({<span class="st">&quot;Decisión&quot;</span>: decision, <span class="st">&quot;Estado&quot;</span>: <span class="bu">str</span>(nodo.state),</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;g (h)&quot;</span>: nodo.path_cost, <span class="st">&quot;h (h)&quot;</span>: modelo.h(nodo),</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;f (h)&quot;</span>: nodo.path_cost <span class="op">+</span> modelo.h(nodo)})</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>tabla(pasos)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="6ee260e3" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> PlanGPU()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>pasos <span class="op">=</span> []</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nodo <span class="kw">in</span> soluciones_gpu[<span class="st">&quot;A*&quot;</span>].path():</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    k, carga1, carga2 <span class="op">=</span> nodo.state</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    decision <span class="op">=</span> <span class="st">&quot;Inicio&quot;</span> <span class="cf">if</span> k <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="ss">f&quot;</span><span class="sc">{</span>EXPERIMENTOS[k <span class="op">-</span> <span class="dv">1</span>]<span class="sc">}</span><span class="ss"> → GPU </span><span class="sc">{</span>nodo<span class="sc">.</span>action <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    pasos.append({<span class="st">&quot;Decisión&quot;</span>: decision, <span class="st">&quot;Estado&quot;</span>: <span class="bu">str</span>(nodo.state),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;g (h)&quot;</span>: nodo.path_cost, <span class="st">&quot;h (h)&quot;</span>: modelo.h(nodo),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;f (h)&quot;</span>: nodo.path_cost <span class="op">+</span> modelo.h(nodo)})</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>tabla(pasos)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
@@ -3121,29 +3072,7 @@ border-bottom: 1px solid #d7e6eb; }
 <section id="estética-ver-los-cronogramas-resultantes" class="level3">
 <h3 class="anchored" data-anchor-id="estética-ver-los-cronogramas-resultantes">Estética · Ver los cronogramas resultantes</h3>
 <p>El eje horizontal representa horas reales de ejecución. Cada barra es un experimento. Este gráfico se construye a partir del plan encontrado: no modifica la búsqueda.</p>
-<div id="12df34c5" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fig, ejes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>), constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>colores <span class="op">=</span> [<span class="st">&quot;#2f8193&quot;</span>, <span class="st">&quot;#6a5987&quot;</span>, <span class="st">&quot;#5b99aa&quot;</span>, <span class="st">&quot;#8e7fa8&quot;</span>, <span class="st">&quot;#638b83&quot;</span>, <span class="st">&quot;#967339&quot;</span>]</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>limite <span class="op">=</span> <span class="bu">max</span>(s.path_cost <span class="cf">for</span> s <span class="kw">in</span> soluciones_gpu.values()) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (estrategia, solucion) <span class="kw">in</span> <span class="bu">zip</span>(ejes, soluciones_gpu.items()):</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    cargas <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">0</span>]</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, gpu <span class="kw">in</span> <span class="bu">enumerate</span>(solucion.solution()):</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        duracion <span class="op">=</span> DURACIONES[i]</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        ax.barh(gpu, duracion, left<span class="op">=</span>cargas[gpu], height<span class="op">=</span><span class="fl">.55</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span>colores[i], edgecolor<span class="op">=</span><span class="st">&quot;white&quot;</span>)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        ax.text(cargas[gpu] <span class="op">+</span> duracion <span class="op">/</span> <span class="dv">2</span>, gpu, EXPERIMENTOS[i],</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                ha<span class="op">=</span><span class="st">&quot;center&quot;</span>, va<span class="op">=</span><span class="st">&quot;center&quot;</span>, color<span class="op">=</span><span class="st">&quot;white&quot;</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        cargas[gpu] <span class="op">+=</span> duracion</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    ax.axvline(solucion.path_cost, color<span class="op">=</span><span class="st">&quot;#163e50&quot;</span>, linestyle<span class="op">=</span><span class="st">&quot;--&quot;</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f&quot;</span><span class="sc">{</span>estrategia<span class="sc">}</span><span class="ss"> · finaliza en </span><span class="sc">{</span>solucion<span class="sc">.</span>path_cost<span class="sc">}</span><span class="ss"> h&quot;</span>, loc<span class="op">=</span><span class="st">&quot;left&quot;</span>)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    ax.set_yticks([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="st">&quot;GPU 1&quot;</span>, <span class="st">&quot;GPU 2&quot;</span>])</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="op">-</span><span class="fl">.65</span>, <span class="fl">1.65</span>)</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    ax.invert_yaxis()</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, limite)</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">&quot;Horas desde el comienzo&quot;</span>)</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    ax.set_axisbelow(<span class="va">True</span>)</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    ax.grid(axis<span class="op">=</span><span class="st">&quot;x&quot;</span>, alpha<span class="op">=</span><span class="fl">.2</span>)</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="4a95735f" class="cell" data-execution_count="14">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -3157,41 +3086,7 @@ border-bottom: 1px solid #d7e6eb; }
 <h3 class="anchored" data-anchor-id="verificación-demostrar-el-óptimo-y-comprobar-h">Verificación · Demostrar el óptimo y comprobar h</h3>
 <p>Un reparto de <strong>17 y 16 horas</strong> alcanza la cota inferior 17, por lo que es óptimo. Por ejemplo, E1+E3+E6 suman 17 y E2+E4+E5 suman 16. Hay más de una asignación óptima.</p>
 <p>Como hay solo seis experimentos, podemos verificar independientemente los resultados enumerando las 64 asignaciones. <strong>Esto es una comprobación del ejemplo pequeño, no la estrategia con la que resolvimos la consigna.</strong></p>
-<div id="4ea594d9" class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> PlanGPU()</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estado_tras(decisiones, inicial<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)):</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    estado <span class="op">=</span> inicial</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> gpu <span class="kw">in</span> decisiones:</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        estado <span class="op">=</span> modelo.result(estado, gpu)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> estado</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>finales <span class="op">=</span> [estado_tras(decisiones) <span class="cf">for</span> decisiones <span class="kw">in</span> product((<span class="dv">0</span>, <span class="dv">1</span>), repeat<span class="op">=</span><span class="dv">6</span>)]</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>optimo_exhaustivo <span class="op">=</span> <span class="bu">min</span>(<span class="bu">max</span>(estado[<span class="dv">1</span>:]) <span class="cf">for</span> estado <span class="kw">in</span> finales)</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(finales) <span class="op">==</span> <span class="dv">64</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> optimo_exhaustivo <span class="op">==</span> <span class="dv">17</span> <span class="op">==</span> soluciones_gpu[<span class="st">&quot;A*&quot;</span>].path_cost</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Todos los estados parciales que pueden alcanzarse en este modelo.</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>estados <span class="op">=</span> {estado_tras(decisiones)</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>           <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>) <span class="cf">for</span> decisiones <span class="kw">in</span> product((<span class="dv">0</span>, <span class="dv">1</span>), repeat<span class="op">=</span>k)}</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estado <span class="kw">in</span> estados:</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> estado[<span class="dv">0</span>]</span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    g_actual <span class="op">=</span> <span class="bu">max</span>(estado[<span class="dv">1</span>:])</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    h_actual <span class="op">=</span> modelo.h(Node(estado))</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    mejor_final <span class="op">=</span> <span class="bu">min</span>(<span class="bu">max</span>(estado_tras(resto, estado)[<span class="dv">1</span>:])</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">for</span> resto <span class="kw">in</span> product((<span class="dv">0</span>, <span class="dv">1</span>), repeat<span class="op">=</span><span class="dv">6</span> <span class="op">-</span> k))</span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="dv">0</span> <span class="op">&lt;=</span> h_actual <span class="op">&lt;=</span> mejor_final <span class="op">-</span> g_actual  <span class="co"># Admisibilidad.</span></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> k <span class="op">==</span> <span class="dv">6</span>:</span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> h_actual <span class="op">==</span> <span class="dv">0</span></span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> gpu <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">1</span>):</span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>            siguiente <span class="op">=</span> modelo.result(estado, gpu)</span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>            costo <span class="op">=</span> modelo.path_cost(<span class="dv">0</span>, estado, gpu, siguiente)</span>
-<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> costo <span class="op">&gt;=</span> <span class="dv">0</span></span>
-<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> h_actual <span class="op">&lt;=</span> costo <span class="op">+</span> modelo.h(Node(siguiente))  <span class="co"># Consistencia.</span></span>
-<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;64 asignaciones verificadas. Óptimo: 17 horas.&quot;</span>)</span>
-<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;h admisible y consistente en los </span><span class="sc">{</span><span class="bu">len</span>(estados)<span class="sc">}</span><span class="ss"> estados distintos: OK.&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="c1727233" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-stdout">
 <pre><code>64 asignaciones verificadas. Óptimo: 17 horas.
 h admisible y consistente en los 85 estados distintos: OK.</code></pre>
@@ -3220,10 +3115,8 @@ h admisible y consistente en los 85 estados distintos: OK.</code></pre>
 <li>El modelo de planificación y la heurística propuesta son parte de esta resolución, no una solución atribuida al libro.</li>
 </ul>
 <p>El HTML se puede leer sin Quarto ni Python y contiene los resultados calculados. Para regenerarlo, conservar <code>_vendor</code> junto al <code>.qmd</code>, usar Python 3.10 o posterior con Jupyter, NumPy, pandas, Matplotlib y NetworkX, y ejecutar:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render index.qmd</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render index.qmd</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>El código de modelado, verificación y estética está desplegado. Esta resolución se preparó como material local de apoyo; no se publicó en el campus.</p>
-<!-- -->
-
 </section>
 
 </main>
@@ -3298,57 +3191,6 @@ h admisible y consistente en los 85 estados distintos: OK.</code></pre>
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
-    }
-    const viewSource = window.document.getElementById('quarto-view-source') ||
-                       window.document.getElementById('quarto-code-tools-source');
-    if (viewSource) {
-      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-      viewSource.addEventListener("click", function(e) {
-        if (sourceUrl) {
-          // rstudio viewer pane
-          if (/\bcapabilities=\b/.test(window.location)) {
-            window.open(sourceUrl);
-          } else {
-            window.location.href = sourceUrl;
-          }
-        } else {
-          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-          modal.show();
-        }
-        return false;
-      });
-    }
-    function toggleCodeHandler(show) {
-      return function(e) {
-        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
-        for (let i=0; i<cellDetails.length; i++) {
-          const details = cellDetails[i];
-          if (show) {
-            details.open = true;
-          } else {
-            details.removeAttribute("open");
-          }
-        }
-        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
-        const fromCls = show ? "hidden" : "unhidden";
-        const toCls = show ? "unhidden" : "hidden";
-        for (let i=0; i<cellCodeDivs.length; i++) {
-          const codeDiv = cellCodeDivs[i];
-          if (codeDiv.classList.contains(fromCls)) {
-            codeDiv.classList.remove(fromCls);
-            codeDiv.classList.add(toCls);
-          } 
-        }
-        return false;
-      }
-    }
-    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-    if (hideAllCode) {
-      hideAllCode.addEventListener("click", toggleCodeHandler(false));
-    }
-    const showAllCode = window.document.getElementById("quarto-show-all-code");
-    if (showAllCode) {
-      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -3678,550 +3520,7 @@ h admisible y consistente en los 85 estados distintos: OK.</code></pre>
       }
     }
   });
-  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Agentes y búsqueda informada&quot;</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> &quot;TP02 · Resolución paso a paso de los ejercicios 1 a 3&quot;</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> es</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: cosmo</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: &quot;Recorrido&quot;</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-copy: true</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">    code-overflow: wrap</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">    embed-resources: true</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co">  error: false</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: false</span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="co">  daemon: false</span></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>Esta guía desarrolla los **ejercicios 1, 2 y 3 del TP02**: un grafo pequeño, el mapa de Rumania y la distribución de experimentos entre dos GPU. El cuarto ejercicio no se incluye.</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>En los tres casos distinguimos el costo acumulado **g(n)** de la estimación del costo restante **h(n)**. La búsqueda voraz prioriza h(n); A* combina ambas cantidades en **f(n) = g(n) + h(n)**.</span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>::: {.callout-note title=&quot;Un criterio común&quot;}</span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>La heurística debe estimar lo que falta **en la misma unidad que el costo**. Primero decidimos qué queremos optimizar; después definimos g y h. Las búsquedas se importan de la biblioteca, no se reimplementan.</span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preparación</span></span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementación · Biblioteca y herramientas</span></span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>Utilizamos <span class="in">`aima-python`</span>, la implementación de referencia que acompaña a Russell y Norvig. La carpeta <span class="in">`_vendor`</span> contiene una copia de los módulos necesarios de la versión disponible en el entorno del curso, junto con su licencia.</span>
-<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>En esta versión, el módulo se importa como <span class="in">`aima.search`</span>. La función auxiliar <span class="in">`path_states`</span> se define debajo: no está exportada por esta copia de <span class="in">`search`</span>. Esto adapta las importaciones del enunciado **sin cambiar los algoritmos**.</span>
-<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> product</span>
-<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> ceil</span>
-<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
-<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> HTML, Markdown, display</span>
-<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>VENDOR <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">&quot;_vendor&quot;</span></span>
-<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> (VENDOR <span class="op">/</span> <span class="st">&quot;aima&quot;</span> <span class="op">/</span> <span class="st">&quot;search.py&quot;</span>).is_file():</span>
-<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">FileNotFoundError</span>(<span class="st">&quot;Falta _vendor junto al archivo Quarto.&quot;</span>)</span>
-<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>sys.path.insert(<span class="dv">0</span>, <span class="bu">str</span>(VENDOR.resolve()))</span>
-<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> aima.search <span class="im">import</span> (</span>
-<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>    Problem, Node, Graph, GraphProblem, romania_map,</span>
-<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>    best_first_graph_search, astar_search, uniform_cost_search,</span>
-<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> path_states(nodo):</span>
-<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [paso.state <span class="cf">for</span> paso <span class="kw">in</span> nodo.path()]</span>
-<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> aplicar(problema, estrategia):</span>
-<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> estrategia <span class="op">==</span> <span class="st">&quot;Voraz&quot;</span>:</span>
-<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> best_first_graph_search(problema, problema.h)</span>
-<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> estrategia <span class="op">==</span> <span class="st">&quot;A*&quot;</span>:</span>
-<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> astar_search(problema)</span>
-<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> estrategia <span class="op">==</span> <span class="st">&quot;Costo uniforme&quot;</span>:</span>
-<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> uniform_cost_search(problema)</span>
-<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">ValueError</span>(estrategia)</span>
-<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estética · Presentación de tablas y figuras</span></span>
-<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a>Este bloque solo configura la apariencia. Todo el código permanece desplegado.</span>
-<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a>display(HTML(<span class="st">&quot;&quot;&quot;</span></span>
-<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;style&gt;</span></span>
-<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a><span class="st"> h1,h2,h3 { color: #163e50; }</span></span>
-<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a><span class="st"> h1.title { font-size: 2.15rem; }</span></span>
-<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a><span class="st"> p { text-align: justify; }</span></span>
-<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a><span class="st"> p.subtitle { text-align: left; color: #59717c; }</span></span>
-<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a><span class="st"> .cell-output-display { overflow-x: auto; }</span></span>
-<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a><span class="st"> table.dataframe { font-size: .92rem; width: 100%; border-collapse: collapse; }</span></span>
-<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a><span class="st"> table.dataframe th { color: #163e50; background: #edf5f7; }</span></span>
-<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a><span class="st"> table.dataframe th, table.dataframe td { padding: .55rem; text-align: left;</span></span>
-<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a><span class="st">                                         border-bottom: 1px solid #d7e6eb; }</span></span>
-<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/style&gt;</span></span>
-<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;&quot;&quot;</span>))</span>
-<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a>plt.rcParams.update({<span class="st">&quot;font.size&quot;</span>: <span class="dv">11</span>, <span class="st">&quot;figure.facecolor&quot;</span>: <span class="st">&quot;white&quot;</span>,</span>
-<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&quot;axes.spines.top&quot;</span>: <span class="va">False</span>, <span class="st">&quot;axes.spines.right&quot;</span>: <span class="va">False</span>})</span>
-<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tabla(filas):</span>
-<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a>    display(HTML(pd.DataFrame(filas).to_html(index<span class="op">=</span><span class="va">False</span>, escape<span class="op">=</span><span class="va">True</span>)))</span>
-<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-102"><a href="#cb20-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-103"><a href="#cb20-103" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejercicio 1 · Un ejemplo pequeño para razonar</span></span>
-<span id="cb20-104"><a href="#cb20-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-105"><a href="#cb20-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### El grafo del enunciado</span></span>
-<span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-107"><a href="#cb20-107" aria-hidden="true" tabindex="-1"></a>Tenemos dos alternativas desde Inicio: pasar por A o pasar por B. Los costos son los de las aristas; las estimaciones h son las que proporciona la consigna.</span>
-<span id="cb20-108"><a href="#cb20-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a>**Estética.** Dibujamos el grafo y sus etiquetas. Este dibujo no ejecuta la búsqueda.</span>
-<span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a>aristas <span class="op">=</span> [(<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="dv">2</span>), (<span class="st">&quot;A&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>, <span class="dv">6</span>),</span>
-<span id="cb20-115"><a href="#cb20-115" aria-hidden="true" tabindex="-1"></a>           (<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="dv">5</span>), (<span class="st">&quot;B&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>, <span class="dv">2</span>)]</span>
-<span id="cb20-116"><a href="#cb20-116" aria-hidden="true" tabindex="-1"></a>grafo <span class="op">=</span> nx.DiGraph()</span>
-<span id="cb20-117"><a href="#cb20-117" aria-hidden="true" tabindex="-1"></a>grafo.add_weighted_edges_from(aristas)</span>
-<span id="cb20-118"><a href="#cb20-118" aria-hidden="true" tabindex="-1"></a>posiciones <span class="op">=</span> {<span class="st">&quot;Inicio&quot;</span>: (<span class="dv">0</span>, <span class="dv">0</span>), <span class="st">&quot;A&quot;</span>: (<span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb20-119"><a href="#cb20-119" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;B&quot;</span>: (<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>), <span class="st">&quot;Objetivo&quot;</span>: (<span class="dv">2</span>, <span class="dv">0</span>)}</span>
-<span id="cb20-120"><a href="#cb20-120" aria-hidden="true" tabindex="-1"></a>etiquetas <span class="op">=</span> {<span class="st">&quot;Inicio&quot;</span>: <span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;A&quot;</span>: <span class="st">&quot;A</span><span class="ch">\n</span><span class="st">h = 6&quot;</span>,</span>
-<span id="cb20-121"><a href="#cb20-121" aria-hidden="true" tabindex="-1"></a>             <span class="st">&quot;B&quot;</span>: <span class="st">&quot;B</span><span class="ch">\n</span><span class="st">h = 2&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>: <span class="st">&quot;Objetivo</span><span class="ch">\n</span><span class="st">h = 0&quot;</span>}</span>
-<span id="cb20-122"><a href="#cb20-122" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.2</span>))</span>
-<span id="cb20-123"><a href="#cb20-123" aria-hidden="true" tabindex="-1"></a>nx.draw_networkx(grafo, posiciones, labels<span class="op">=</span>etiquetas, ax<span class="op">=</span>ax,</span>
-<span id="cb20-124"><a href="#cb20-124" aria-hidden="true" tabindex="-1"></a>                 node_size<span class="op">=</span><span class="dv">2900</span>, node_color<span class="op">=</span><span class="st">&quot;#edf5f7&quot;</span>, edgecolors<span class="op">=</span><span class="st">&quot;#8eb9c3&quot;</span>,</span>
-<span id="cb20-125"><a href="#cb20-125" aria-hidden="true" tabindex="-1"></a>                 font_color<span class="op">=</span><span class="st">&quot;#163e50&quot;</span>, arrowsize<span class="op">=</span><span class="dv">22</span>, node_shape<span class="op">=</span><span class="st">&quot;o&quot;</span>)</span>
-<span id="cb20-126"><a href="#cb20-126" aria-hidden="true" tabindex="-1"></a>nx.draw_networkx_edge_labels(grafo, posiciones, ax<span class="op">=</span>ax,</span>
-<span id="cb20-127"><a href="#cb20-127" aria-hidden="true" tabindex="-1"></a>                            edge_labels<span class="op">=</span>nx.get_edge_attributes(grafo, <span class="st">&quot;weight&quot;</span>),</span>
-<span id="cb20-128"><a href="#cb20-128" aria-hidden="true" tabindex="-1"></a>                            rotate<span class="op">=</span><span class="va">False</span>, font_color<span class="op">=</span><span class="st">&quot;#5f5078&quot;</span>)</span>
-<span id="cb20-129"><a href="#cb20-129" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">.4</span>, <span class="fl">2.4</span>)</span>
-<span id="cb20-130"><a href="#cb20-130" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)</span>
-<span id="cb20-131"><a href="#cb20-131" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">&quot;off&quot;</span>)</span>
-<span id="cb20-132"><a href="#cb20-132" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb20-133"><a href="#cb20-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-134"><a href="#cb20-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-135"><a href="#cb20-135" aria-hidden="true" tabindex="-1"></a><span class="fu">### Razonamiento · Costos y estimaciones</span></span>
-<span id="cb20-136"><a href="#cb20-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-137"><a href="#cb20-137" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Nodo o alternativa <span class="pp">|</span> g(n) <span class="pp">|</span> h(n) <span class="pp">|</span> f(n) = g(n) + h(n) <span class="pp">|</span></span>
-<span id="cb20-138"><a href="#cb20-138" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---:|---:|---:|</span></span>
-<span id="cb20-139"><a href="#cb20-139" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A, después de Inicio → A <span class="pp">|</span> 2 <span class="pp">|</span> 6 <span class="pp">|</span> 8 <span class="pp">|</span></span>
-<span id="cb20-140"><a href="#cb20-140" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> B, después de Inicio → B <span class="pp">|</span> 5 <span class="pp">|</span> 2 <span class="pp">|</span> 7 <span class="pp">|</span></span>
-<span id="cb20-141"><a href="#cb20-141" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Objetivo, llegando por A <span class="pp">|</span> 8 <span class="pp">|</span> 0 <span class="pp">|</span> 8 <span class="pp">|</span></span>
-<span id="cb20-142"><a href="#cb20-142" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Objetivo, llegando por B <span class="pp">|</span> 7 <span class="pp">|</span> 0 <span class="pp">|</span> 7 <span class="pp">|</span></span>
-<span id="cb20-143"><a href="#cb20-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a>El mismo estado objetivo puede alcanzarse por caminos con distinto g. **g pertenece al camino representado por el nodo de búsqueda**, no es una propiedad fija de la casilla «Objetivo».</span>
-<span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a>**Costo uniforme / Dijkstra.** Luego de expandir Inicio, elige A porque g(A)=2 es menor que g(B)=5. Genera una llegada al objetivo de costo 8. Pero no termina allí: todavía queda B, de costo 5. Al expandir B encuentra una llegada de costo 7, que será la solución.</span>
-<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-148"><a href="#cb20-148" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Paso después de expandir Inicio <span class="pp">|</span> Frontera, ordenada por g <span class="pp">|</span> Se extrae <span class="pp">|</span></span>
-<span id="cb20-149"><a href="#cb20-149" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 1 <span class="pp">|</span> A: 2; B: 5 <span class="pp">|</span> A <span class="pp">|</span></span>
-<span id="cb20-151"><a href="#cb20-151" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2 <span class="pp">|</span> B: 5; Objetivo: 8 <span class="pp">|</span> B <span class="pp">|</span></span>
-<span id="cb20-152"><a href="#cb20-152" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 3 <span class="pp">|</span> Objetivo: 7 <span class="pp">|</span> Objetivo <span class="pp">|</span></span>
-<span id="cb20-153"><a href="#cb20-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-154"><a href="#cb20-154" aria-hidden="true" tabindex="-1"></a>**Voraz.** Elige B porque h(B)=2 es menor que h(A)=6. Después elige Objetivo, cuya h es cero. Devuelve Inicio → B → Objetivo, con costo 7.</span>
-<span id="cb20-155"><a href="#cb20-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a>**A*.** Compara f(A)=8 con f(B)=7 y elige B. Luego compara el objetivo de f=7 con A de f=8 y termina por el camino de costo 7.</span>
-<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a>Las **tres estrategias** encuentran el menor costo en este ejemplo. Costo uniforme lo garantiza para este problema de costos positivos; A* también con esta heurística admisible y consistente. Voraz acierta en este caso, pero no tiene esa garantía general.</span>
-<span id="cb20-159"><a href="#cb20-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-160"><a href="#cb20-160" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementación · Comprobar la resolución</span></span>
-<span id="cb20-161"><a href="#cb20-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a>La consigna no asigna h a Inicio. Usamos cero allí: es admisible y no modifica la primera decisión, porque Inicio es inicialmente el único nodo de la frontera.</span>
-<span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a>mapa_pequeno <span class="op">=</span> Graph({</span>
-<span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Inicio&quot;</span>: {<span class="st">&quot;A&quot;</span>: <span class="dv">2</span>, <span class="st">&quot;B&quot;</span>: <span class="dv">5</span>},</span>
-<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;A&quot;</span>: {<span class="st">&quot;Objetivo&quot;</span>: <span class="dv">6</span>}, <span class="st">&quot;B&quot;</span>: {<span class="st">&quot;Objetivo&quot;</span>: <span class="dv">2</span>},</span>
-<span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Objetivo&quot;</span>: {},</span>
-<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a>}, directed<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb20-172"><a href="#cb20-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ProblemaPequeno(GraphProblem):</span>
-<span id="cb20-174"><a href="#cb20-174" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> h(<span class="va">self</span>, nodo):</span>
-<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {<span class="st">&quot;Inicio&quot;</span>: <span class="dv">0</span>, <span class="st">&quot;A&quot;</span>: <span class="dv">6</span>, <span class="st">&quot;B&quot;</span>: <span class="dv">2</span>, <span class="st">&quot;Objetivo&quot;</span>: <span class="dv">0</span>}[nodo.state]</span>
-<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a>resultados_1 <span class="op">=</span> []</span>
-<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Costo uniforme&quot;</span>, <span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
-<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a>    problema <span class="op">=</span> ProblemaPequeno(<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>, mapa_pequeno)</span>
-<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a>    solucion <span class="op">=</span> aplicar(problema, estrategia)</span>
-<span id="cb20-181"><a href="#cb20-181" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> path_states(solucion) <span class="op">==</span> [<span class="st">&quot;Inicio&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;Objetivo&quot;</span>]</span>
-<span id="cb20-182"><a href="#cb20-182" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion.path_cost <span class="op">==</span> <span class="dv">7</span></span>
-<span id="cb20-183"><a href="#cb20-183" aria-hidden="true" tabindex="-1"></a>    resultados_1.append({<span class="st">&quot;Estrategia&quot;</span>: estrategia,</span>
-<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;Camino&quot;</span>: <span class="st">&quot; → &quot;</span>.join(path_states(solucion)),</span>
-<span id="cb20-185"><a href="#cb20-185" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;Costo&quot;</span>: solucion.path_cost})</span>
-<span id="cb20-186"><a href="#cb20-186" aria-hidden="true" tabindex="-1"></a>tabla(resultados_1)</span>
-<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejercicio 2 · El mapa de Rumania</span></span>
-<span id="cb20-190"><a href="#cb20-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-191"><a href="#cb20-191" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementación · Resolver Arad → Bucharest</span></span>
-<span id="cb20-192"><a href="#cb20-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-193"><a href="#cb20-193" aria-hidden="true" tabindex="-1"></a>El estado es la ciudad actual; las acciones son los viajes hacia ciudades vecinas. El costo se mide en kilómetros. Ahora ambas estrategias pueden devolver rutas distintas.</span>
-<span id="cb20-194"><a href="#cb20-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-195"><a href="#cb20-195" aria-hidden="true" tabindex="-1"></a>Contamos un estado expandido cuando la biblioteca solicita sus acciones para generar sucesores. No incluimos el objetivo, porque esta implementación lo reconoce antes de expandirlo.</span>
-<span id="cb20-196"><a href="#cb20-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-199"><a href="#cb20-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-200"><a href="#cb20-200" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RutaMedida(GraphProblem):</span>
-<span id="cb20-201"><a href="#cb20-201" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, origen, destino):</span>
-<span id="cb20-202"><a href="#cb20-202" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(origen, destino, romania_map)</span>
-<span id="cb20-203"><a href="#cb20-203" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb20-204"><a href="#cb20-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-205"><a href="#cb20-205" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> actions(<span class="va">self</span>, estado):</span>
-<span id="cb20-206"><a href="#cb20-206" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb20-207"><a href="#cb20-207" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">super</span>().actions(estado)</span>
-<span id="cb20-208"><a href="#cb20-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-209"><a href="#cb20-209" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> comparar_rutas(origen, destino):</span>
-<span id="cb20-210"><a href="#cb20-210" aria-hidden="true" tabindex="-1"></a>    filas, soluciones <span class="op">=</span> [], {}</span>
-<span id="cb20-211"><a href="#cb20-211" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
-<span id="cb20-212"><a href="#cb20-212" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> RutaMedida(origen, destino)</span>
-<span id="cb20-213"><a href="#cb20-213" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> aplicar(p, estrategia)</span>
-<span id="cb20-214"><a href="#cb20-214" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> s <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span></span>
-<span id="cb20-215"><a href="#cb20-215" aria-hidden="true" tabindex="-1"></a>        camino <span class="op">=</span> path_states(s)</span>
-<span id="cb20-216"><a href="#cb20-216" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> camino[<span class="dv">0</span>] <span class="op">==</span> origen <span class="kw">and</span> camino[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> destino</span>
-<span id="cb20-217"><a href="#cb20-217" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="bu">sum</span>(romania_map.get(a, b)</span>
-<span id="cb20-218"><a href="#cb20-218" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> a, b <span class="kw">in</span> <span class="bu">zip</span>(camino, camino[<span class="dv">1</span>:])) <span class="op">==</span> s.path_cost</span>
-<span id="cb20-219"><a href="#cb20-219" aria-hidden="true" tabindex="-1"></a>        filas.append({<span class="st">&quot;Origen&quot;</span>: origen, <span class="st">&quot;Destino&quot;</span>: destino,</span>
-<span id="cb20-220"><a href="#cb20-220" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Estrategia&quot;</span>: estrategia, <span class="st">&quot;Camino&quot;</span>: <span class="st">&quot; → &quot;</span>.join(camino),</span>
-<span id="cb20-221"><a href="#cb20-221" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Costo (km)&quot;</span>: s.path_cost, <span class="st">&quot;Expandidos&quot;</span>: p.expandidos})</span>
-<span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a>        soluciones[estrategia] <span class="op">=</span> s</span>
-<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a>    referencia <span class="op">=</span> uniform_cost_search(GraphProblem(origen, destino, romania_map))</span>
-<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> soluciones[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> referencia.path_cost</span>
-<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> filas, soluciones</span>
-<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-227"><a href="#cb20-227" aria-hidden="true" tabindex="-1"></a>filas_rumania, soluciones_rumania <span class="op">=</span> comparar_rutas(<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Bucharest&quot;</span>)</span>
-<span id="cb20-228"><a href="#cb20-228" aria-hidden="true" tabindex="-1"></a>tabla(filas_rumania)</span>
-<span id="cb20-229"><a href="#cb20-229" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_rumania[<span class="st">&quot;Voraz&quot;</span>].path_cost <span class="op">==</span> <span class="dv">450</span></span>
-<span id="cb20-230"><a href="#cb20-230" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_rumania[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> <span class="dv">418</span></span>
-<span id="cb20-231"><a href="#cb20-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-232"><a href="#cb20-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-233"><a href="#cb20-233" aria-hidden="true" tabindex="-1"></a><span class="fu">### Razonamiento · Qué cambia entre las soluciones</span></span>
-<span id="cb20-234"><a href="#cb20-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-235"><a href="#cb20-235" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Voraz:** Arad → Sibiu → Fagaras → Bucharest, **450 km**.</span>
-<span id="cb20-236"><a href="#cb20-236" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**A*:** Arad → Sibiu → Rimnicu → Pitesti → Bucharest, **418 km**.</span>
-<span id="cb20-237"><a href="#cb20-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-238"><a href="#cb20-238" aria-hidden="true" tabindex="-1"></a>Voraz se orienta por la ciudad que parece más cercana al objetivo. A* también considera cuánto costó llegar hasta ella: una continuación atractiva por h no necesariamente produce el menor costo total.</span>
-<span id="cb20-239"><a href="#cb20-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-240"><a href="#cb20-240" aria-hidden="true" tabindex="-1"></a>En esta versión, <span class="in">`GraphProblem.h`</span> calcula la distancia euclídea entre las coordenadas del mapa y la convierte a entero. **No usa literalmente la tabla de distancias del libro**, de modo que algunos valores h pueden diferir de los de la presentación. Se mantiene el mismo criterio geométrico y aquí se obtienen las rutas de 450 y 418 km.</span>
-<span id="cb20-241"><a href="#cb20-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-244"><a href="#cb20-244" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-245"><a href="#cb20-245" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> GraphProblem(<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Bucharest&quot;</span>, romania_map)</span>
-<span id="cb20-246"><a href="#cb20-246" aria-hidden="true" tabindex="-1"></a>tabla([{<span class="st">&quot;Ciudad&quot;</span>: nodo.state, <span class="st">&quot;g (km)&quot;</span>: nodo.path_cost,</span>
-<span id="cb20-247"><a href="#cb20-247" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;h (km)&quot;</span>: p.h(nodo), <span class="st">&quot;f (km)&quot;</span>: nodo.path_cost <span class="op">+</span> p.h(nodo)}</span>
-<span id="cb20-248"><a href="#cb20-248" aria-hidden="true" tabindex="-1"></a>       <span class="cf">for</span> nodo <span class="kw">in</span> soluciones_rumania[<span class="st">&quot;A*&quot;</span>].path()])</span>
-<span id="cb20-249"><a href="#cb20-249" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-250"><a href="#cb20-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-251"><a href="#cb20-251" aria-hidden="true" tabindex="-1"></a>Esta tabla muestra el **camino devuelto**, no el orden completo de exploración ni toda la frontera.</span>
-<span id="cb20-252"><a href="#cb20-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-253"><a href="#cb20-253" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cambiar origen y destino</span></span>
-<span id="cb20-254"><a href="#cb20-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-255"><a href="#cb20-255" aria-hidden="true" tabindex="-1"></a>Hay que recalcular h respecto del **nuevo destino**. No corresponde conservar una tabla que estime distancias a Bucharest si ahora queremos llegar a Arad o a Pitesti. <span class="in">`GraphProblem`</span> lo hace usando <span class="in">`self.goal`</span>.</span>
-<span id="cb20-256"><a href="#cb20-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-259"><a href="#cb20-259" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-260"><a href="#cb20-260" aria-hidden="true" tabindex="-1"></a>otras_rutas <span class="op">=</span> []</span>
-<span id="cb20-261"><a href="#cb20-261" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> origen, destino <span class="kw">in</span> [(<span class="st">&quot;Lugoj&quot;</span>, <span class="st">&quot;Arad&quot;</span>), (<span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Pitesti&quot;</span>)]:</span>
-<span id="cb20-262"><a href="#cb20-262" aria-hidden="true" tabindex="-1"></a>    filas, _ <span class="op">=</span> comparar_rutas(origen, destino)</span>
-<span id="cb20-263"><a href="#cb20-263" aria-hidden="true" tabindex="-1"></a>    otras_rutas.extend(filas)</span>
-<span id="cb20-264"><a href="#cb20-264" aria-hidden="true" tabindex="-1"></a>tabla(otras_rutas)</span>
-<span id="cb20-265"><a href="#cb20-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-266"><a href="#cb20-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-267"><a href="#cb20-267" aria-hidden="true" tabindex="-1"></a>En Lugoj → Arad coinciden: pasan por Timisoara y recorren **229 km**. En Arad → Pitesti no: voraz recorre **551 km**, mientras que A* encuentra una ruta de **317 km**.</span>
-<span id="cb20-268"><a href="#cb20-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-269"><a href="#cb20-269" aria-hidden="true" tabindex="-1"></a>**Verificación.** Para los destinos utilizados comprobamos la consistencia de la heurística en cada arista: <span class="in">`h(u) ≤ costo(u,v) + h(v)`</span>. Además, arriba contrastamos el costo devuelto por A* con costo uniforme.</span>
-<span id="cb20-270"><a href="#cb20-270" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-273"><a href="#cb20-273" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-274"><a href="#cb20-274" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> destino <span class="kw">in</span> (<span class="st">&quot;Bucharest&quot;</span>, <span class="st">&quot;Arad&quot;</span>, <span class="st">&quot;Pitesti&quot;</span>):</span>
-<span id="cb20-275"><a href="#cb20-275" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> GraphProblem(<span class="st">&quot;Arad&quot;</span>, destino, romania_map)</span>
-<span id="cb20-276"><a href="#cb20-276" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> p.h(Node(destino)) <span class="op">==</span> <span class="dv">0</span></span>
-<span id="cb20-277"><a href="#cb20-277" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> u <span class="kw">in</span> romania_map.nodes():</span>
-<span id="cb20-278"><a href="#cb20-278" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> v, costo <span class="kw">in</span> romania_map.get(u).items():</span>
-<span id="cb20-279"><a href="#cb20-279" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> p.h(Node(u)) <span class="op">&lt;=</span> costo <span class="op">+</span> p.h(Node(v))</span>
-<span id="cb20-280"><a href="#cb20-280" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Heurísticas consistentes y costos de A* contrastados: OK.&quot;</span>)</span>
-<span id="cb20-281"><a href="#cb20-281" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-282"><a href="#cb20-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-283"><a href="#cb20-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejercicio 3 · Planificación de experimentos</span></span>
-<span id="cb20-284"><a href="#cb20-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-285"><a href="#cb20-285" aria-hidden="true" tabindex="-1"></a><span class="fu">### El problema y los supuestos</span></span>
-<span id="cb20-286"><a href="#cb20-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-287"><a href="#cb20-287" aria-hidden="true" tabindex="-1"></a>Tenemos dos GPU equivalentes y seis experimentos de duraciones conocidas. Queremos terminar **todos** lo antes posible.</span>
-<span id="cb20-288"><a href="#cb20-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-291"><a href="#cb20-291" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-292"><a href="#cb20-292" aria-hidden="true" tabindex="-1"></a>EXPERIMENTOS <span class="op">=</span> (<span class="st">&quot;E1&quot;</span>, <span class="st">&quot;E2&quot;</span>, <span class="st">&quot;E3&quot;</span>, <span class="st">&quot;E4&quot;</span>, <span class="st">&quot;E5&quot;</span>, <span class="st">&quot;E6&quot;</span>)</span>
-<span id="cb20-293"><a href="#cb20-293" aria-hidden="true" tabindex="-1"></a>DURACIONES <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>)</span>
-<span id="cb20-294"><a href="#cb20-294" aria-hidden="true" tabindex="-1"></a>TOTAL <span class="op">=</span> <span class="bu">sum</span>(DURACIONES)</span>
-<span id="cb20-295"><a href="#cb20-295" aria-hidden="true" tabindex="-1"></a>tabla([{<span class="st">&quot;Experimento&quot;</span>: nombre, <span class="st">&quot;Duración (h)&quot;</span>: duracion}</span>
-<span id="cb20-296"><a href="#cb20-296" aria-hidden="true" tabindex="-1"></a>       <span class="cf">for</span> nombre, duracion <span class="kw">in</span> <span class="bu">zip</span>(EXPERIMENTOS, DURACIONES)])</span>
-<span id="cb20-297"><a href="#cb20-297" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Trabajo total:&quot;</span>, TOTAL, <span class="st">&quot;horas de GPU.&quot;</span>)</span>
-<span id="cb20-298"><a href="#cb20-298" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-299"><a href="#cb20-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-300"><a href="#cb20-300" aria-hidden="true" tabindex="-1"></a>Para esta resolución asumimos que todos están disponibles al comienzo, son independientes, no se interrumpen ni se reparten entre GPU y no hay tiempos de preparación. Cada GPU ejecuta secuencialmente los experimentos que recibe; las dos trabajan en paralelo.</span>
-<span id="cb20-301"><a href="#cb20-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-302"><a href="#cb20-302" aria-hidden="true" tabindex="-1"></a>**No estamos buscando un recorrido entre experimentos.** Cada nodo representa una asignación parcial. Una acción decide a qué GPU enviar el siguiente experimento.</span>
-<span id="cb20-303"><a href="#cb20-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-304"><a href="#cb20-304" aria-hidden="true" tabindex="-1"></a><span class="fu">### Razonamiento · Modelar el espacio de estados</span></span>
-<span id="cb20-305"><a href="#cb20-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-306"><a href="#cb20-306" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Elemento <span class="pp">|</span> Definición elegida <span class="pp">|</span></span>
-<span id="cb20-307"><a href="#cb20-307" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb20-308"><a href="#cb20-308" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Estado <span class="pp">|</span> <span class="in">`(k, carga_gpu1, carga_gpu2)`</span> <span class="pp">|</span></span>
-<span id="cb20-309"><a href="#cb20-309" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> k <span class="pp">|</span> Cantidad de experimentos ya asignados <span class="pp">|</span></span>
-<span id="cb20-310"><a href="#cb20-310" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Inicial <span class="pp">|</span> <span class="in">`(0, 0, 0)`</span> <span class="pp">|</span></span>
-<span id="cb20-311"><a href="#cb20-311" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Acciones <span class="pp">|</span> Asignar el próximo experimento a GPU 1 o GPU 2 <span class="pp">|</span></span>
-<span id="cb20-312"><a href="#cb20-312" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Transición <span class="pp">|</span> Incrementar k y sumar su duración a la GPU elegida <span class="pp">|</span></span>
-<span id="cb20-313"><a href="#cb20-313" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Objetivo <span class="pp">|</span> k = 6: todos los experimentos asignados <span class="pp">|</span></span>
-<span id="cb20-314"><a href="#cb20-314" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Calidad del plan <span class="pp">|</span> Máxima carga entre las dos GPU: el tiempo hasta terminar todo <span class="pp">|</span></span>
-<span id="cb20-315"><a href="#cb20-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-316"><a href="#cb20-316" aria-hidden="true" tabindex="-1"></a>Asignamos E1, E2, ..., E6 en ese orden. Esto evita explorar distintas permutaciones de las mismas decisiones. **No elimina distribuciones posibles:** cada experimento todavía puede asignarse a cualquiera de las dos GPU. Bajo los supuestos anteriores, el orden interno de ejecución no cambia el tiempo de terminación de una GPU.</span>
-<span id="cb20-317"><a href="#cb20-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-318"><a href="#cb20-318" aria-hidden="true" tabindex="-1"></a>El estado conserva las cargas y cuáles experimentos quedan pendientes, identificados por k. La lista concreta asignada a cada GPU se recupera de las acciones del camino solución.</span>
-<span id="cb20-319"><a href="#cb20-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-320"><a href="#cb20-320" aria-hidden="true" tabindex="-1"></a><span class="fu">### Razonamiento · Definir g y el costo de una acción</span></span>
-<span id="cb20-321"><a href="#cb20-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-322"><a href="#cb20-322" aria-hidden="true" tabindex="-1"></a>Elegimos **g(n) = max(carga_gpu1, carga_gpu2)**. Representa el tiempo de terminación del plan parcial.</span>
-<span id="cb20-323"><a href="#cb20-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-324"><a href="#cb20-324" aria-hidden="true" tabindex="-1"></a>La biblioteca acumula costos de acciones. Para que ese acumulado coincida con g, usamos:</span>
-<span id="cb20-325"><a href="#cb20-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-326"><a href="#cb20-326" aria-hidden="true" tabindex="-1"></a><span class="in">`costo(estado → siguiente) = max(cargas siguientes) − max(cargas actuales)`</span></span>
-<span id="cb20-327"><a href="#cb20-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-328"><a href="#cb20-328" aria-hidden="true" tabindex="-1"></a>Los incrementos se suman y se cancelan sucesivamente, por lo que el costo acumulado final es exactamente el máximo de las dos cargas. Es un costo no negativo y puede valer cero.</span>
-<span id="cb20-329"><a href="#cb20-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-330"><a href="#cb20-330" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Decisión <span class="pp">|</span> Cargas resultantes <span class="pp">|</span> g <span class="pp">|</span> Costo de esta acción <span class="pp">|</span></span>
-<span id="cb20-331"><a href="#cb20-331" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---:|---:|</span></span>
-<span id="cb20-332"><a href="#cb20-332" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Comenzar <span class="pp">|</span> (0, 0) <span class="pp">|</span> 0 <span class="pp">|</span> — <span class="pp">|</span></span>
-<span id="cb20-333"><a href="#cb20-333" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> E1 a GPU 1 <span class="pp">|</span> (8, 0) <span class="pp">|</span> 8 <span class="pp">|</span> 8 <span class="pp">|</span></span>
-<span id="cb20-334"><a href="#cb20-334" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> E2 a GPU 2 <span class="pp">|</span> (8, 7) <span class="pp">|</span> 8 <span class="pp">|</span> 0 <span class="pp">|</span></span>
-<span id="cb20-335"><a href="#cb20-335" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> E3 a GPU 2 <span class="pp">|</span> (8, 13) <span class="pp">|</span> 13 <span class="pp">|</span> 5 <span class="pp">|</span></span>
-<span id="cb20-336"><a href="#cb20-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-337"><a href="#cb20-337" aria-hidden="true" tabindex="-1"></a>Asignar E2 cuesta cero **en este criterio**, no porque no consuma recursos, sino porque no extiende el horizonte de terminación del plan. Si sumáramos todas las duraciones, cualquier asignación costaría 33: ese criterio no permitiría distinguir un buen reparto de uno malo.</span>
-<span id="cb20-338"><a href="#cb20-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-339"><a href="#cb20-339" aria-hidden="true" tabindex="-1"></a><span class="fu">### Razonamiento · Proponer h</span></span>
-<span id="cb20-340"><a href="#cb20-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-341"><a href="#cb20-341" aria-hidden="true" tabindex="-1"></a>Buscamos una **cota inferior del tiempo final**, que llamaremos L(n). Consideramos tres restricciones:</span>
-<span id="cb20-342"><a href="#cb20-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-343"><a href="#cb20-343" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>No se puede terminar antes que la GPU que ya tiene más carga: g(n).</span>
-<span id="cb20-344"><a href="#cb20-344" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Hay 33 horas de trabajo para dos GPU: al menos 16,5 horas. Como todas las duraciones son enteras, el tiempo final será entero: **al menos 17 horas**.</span>
-<span id="cb20-345"><a href="#cb20-345" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>El experimento pendiente más largo tendrá que ejecutarse en alguna GPU. Incluso colocándolo en la menos cargada, terminaría no antes de <span class="in">`min(cargas) + mayor_duración_pendiente`</span>.</span>
-<span id="cb20-346"><a href="#cb20-346" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-347"><a href="#cb20-347" aria-hidden="true" tabindex="-1"></a>Tomamos el máximo de esas tres cotas:</span>
-<span id="cb20-348"><a href="#cb20-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-349"><a href="#cb20-349" aria-hidden="true" tabindex="-1"></a><span class="in">`L(n) = max(g(n), 17, min(cargas) + mayor_duración_pendiente)`</span></span>
-<span id="cb20-350"><a href="#cb20-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-351"><a href="#cb20-351" aria-hidden="true" tabindex="-1"></a>Y lo convertimos en una estimación del **costo adicional**:</span>
-<span id="cb20-352"><a href="#cb20-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-353"><a href="#cb20-353" aria-hidden="true" tabindex="-1"></a>**h(n) = L(n) − g(n)**</span>
-<span id="cb20-354"><a href="#cb20-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-355"><a href="#cb20-355" aria-hidden="true" tabindex="-1"></a>Por lo tanto, para A*, **f(n) = L(n)**. No confundimos una estimación del tiempo final con el costo que todavía falta sumar.</span>
-<span id="cb20-356"><a href="#cb20-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-357"><a href="#cb20-357" aria-hidden="true" tabindex="-1"></a>Esta h es admisible porque las tres cantidades son cotas inferiores del tiempo final. Es consistente en este modelo: L no disminuye al asignar el próximo experimento, que es el mayor de los pendientes. La carga máxima y la cota 17 no disminuyen; además, la nueva carga máxima cubre la cota previa del experimento que acaba de asignarse. Así, <span class="in">`h(n) ≤ costo(n,n&#39;) + h(n&#39;)`</span>.</span>
-<span id="cb20-358"><a href="#cb20-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-359"><a href="#cb20-359" aria-hidden="true" tabindex="-1"></a>::: {.callout-note title=&quot;h puede valer cero antes de completar el plan&quot;}</span>
-<span id="cb20-360"><a href="#cb20-360" aria-hidden="true" tabindex="-1"></a>Eso significa que la cota no exige extender el horizonte actual. Puede quedar trabajo para la otra GPU. Por ejemplo, con cargas (21, 0) quedan 12 horas que cabrían en la GPU libre sin superar 21. **h = 0 no sustituye la prueba de objetivo k = 6.**</span>
-<span id="cb20-361"><a href="#cb20-361" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb20-362"><a href="#cb20-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-363"><a href="#cb20-363" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementación · El problema para la biblioteca</span></span>
-<span id="cb20-364"><a href="#cb20-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-367"><a href="#cb20-367" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-368"><a href="#cb20-368" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PlanGPU(Problem):</span>
-<span id="cb20-369"><a href="#cb20-369" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
-<span id="cb20-370"><a href="#cb20-370" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>((<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb20-371"><a href="#cb20-371" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb20-372"><a href="#cb20-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-373"><a href="#cb20-373" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> actions(<span class="va">self</span>, estado):</span>
-<span id="cb20-374"><a href="#cb20-374" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.expandidos <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb20-375"><a href="#cb20-375" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="dv">0</span>, <span class="dv">1</span>) <span class="cf">if</span> estado[<span class="dv">0</span>] <span class="op">&lt;</span> <span class="bu">len</span>(DURACIONES) <span class="cf">else</span> ()</span>
-<span id="cb20-376"><a href="#cb20-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-377"><a href="#cb20-377" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> result(<span class="va">self</span>, estado, gpu):</span>
-<span id="cb20-378"><a href="#cb20-378" aria-hidden="true" tabindex="-1"></a>        k, carga1, carga2 <span class="op">=</span> estado</span>
-<span id="cb20-379"><a href="#cb20-379" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> k <span class="op">&gt;=</span> <span class="bu">len</span>(DURACIONES) <span class="kw">or</span> gpu <span class="kw">not</span> <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">1</span>):</span>
-<span id="cb20-380"><a href="#cb20-380" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;Acción no aplicable&quot;</span>)</span>
-<span id="cb20-381"><a href="#cb20-381" aria-hidden="true" tabindex="-1"></a>        cargas <span class="op">=</span> [carga1, carga2]</span>
-<span id="cb20-382"><a href="#cb20-382" aria-hidden="true" tabindex="-1"></a>        cargas[gpu] <span class="op">+=</span> DURACIONES[k]</span>
-<span id="cb20-383"><a href="#cb20-383" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (k <span class="op">+</span> <span class="dv">1</span>, <span class="op">*</span>cargas)</span>
-<span id="cb20-384"><a href="#cb20-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-385"><a href="#cb20-385" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> goal_test(<span class="va">self</span>, estado):</span>
-<span id="cb20-386"><a href="#cb20-386" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> estado[<span class="dv">0</span>] <span class="op">==</span> <span class="bu">len</span>(DURACIONES)</span>
-<span id="cb20-387"><a href="#cb20-387" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-388"><a href="#cb20-388" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> path_cost(<span class="va">self</span>, costo, estado, accion, siguiente):</span>
-<span id="cb20-389"><a href="#cb20-389" aria-hidden="true" tabindex="-1"></a>        incremento <span class="op">=</span> <span class="bu">max</span>(siguiente[<span class="dv">1</span>:]) <span class="op">-</span> <span class="bu">max</span>(estado[<span class="dv">1</span>:])</span>
-<span id="cb20-390"><a href="#cb20-390" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> costo <span class="op">+</span> incremento</span>
-<span id="cb20-391"><a href="#cb20-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-392"><a href="#cb20-392" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> h(<span class="va">self</span>, nodo):</span>
-<span id="cb20-393"><a href="#cb20-393" aria-hidden="true" tabindex="-1"></a>        k, carga1, carga2 <span class="op">=</span> nodo.state</span>
-<span id="cb20-394"><a href="#cb20-394" aria-hidden="true" tabindex="-1"></a>        g_actual <span class="op">=</span> <span class="bu">max</span>(carga1, carga2)</span>
-<span id="cb20-395"><a href="#cb20-395" aria-hidden="true" tabindex="-1"></a>        mayor_pendiente <span class="op">=</span> <span class="bu">max</span>(DURACIONES[k:], default<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb20-396"><a href="#cb20-396" aria-hidden="true" tabindex="-1"></a>        cota_final <span class="op">=</span> <span class="bu">max</span>(g_actual, ceil(TOTAL <span class="op">/</span> <span class="dv">2</span>),</span>
-<span id="cb20-397"><a href="#cb20-397" aria-hidden="true" tabindex="-1"></a>                         <span class="bu">min</span>(carga1, carga2) <span class="op">+</span> mayor_pendiente)</span>
-<span id="cb20-398"><a href="#cb20-398" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> cota_final <span class="op">-</span> g_actual</span>
-<span id="cb20-399"><a href="#cb20-399" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-400"><a href="#cb20-400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-401"><a href="#cb20-401" aria-hidden="true" tabindex="-1"></a>El problema tiene un número finito de asignaciones y k aumenta en cada acción. Por eso los costos cero no introducen ciclos. La consistencia de h es importante para la versión de A* sobre grafos que utiliza esta biblioteca.</span>
-<span id="cb20-402"><a href="#cb20-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-403"><a href="#cb20-403" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementación · Resolver y comparar</span></span>
-<span id="cb20-404"><a href="#cb20-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-407"><a href="#cb20-407" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-408"><a href="#cb20-408" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> asignaciones(solucion):</span>
-<span id="cb20-409"><a href="#cb20-409" aria-hidden="true" tabindex="-1"></a>    grupos <span class="op">=</span> [[], []]</span>
-<span id="cb20-410"><a href="#cb20-410" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> experimento, gpu <span class="kw">in</span> <span class="bu">zip</span>(EXPERIMENTOS, solucion.solution()):</span>
-<span id="cb20-411"><a href="#cb20-411" aria-hidden="true" tabindex="-1"></a>        grupos[gpu].append(experimento)</span>
-<span id="cb20-412"><a href="#cb20-412" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grupos</span>
-<span id="cb20-413"><a href="#cb20-413" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-414"><a href="#cb20-414" aria-hidden="true" tabindex="-1"></a>filas_gpu, soluciones_gpu <span class="op">=</span> [], {}</span>
-<span id="cb20-415"><a href="#cb20-415" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estrategia <span class="kw">in</span> (<span class="st">&quot;Voraz&quot;</span>, <span class="st">&quot;A*&quot;</span>):</span>
-<span id="cb20-416"><a href="#cb20-416" aria-hidden="true" tabindex="-1"></a>    problema <span class="op">=</span> PlanGPU()</span>
-<span id="cb20-417"><a href="#cb20-417" aria-hidden="true" tabindex="-1"></a>    solucion <span class="op">=</span> aplicar(problema, estrategia)</span>
-<span id="cb20-418"><a href="#cb20-418" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> problema.goal_test(solucion.state)</span>
-<span id="cb20-419"><a href="#cb20-419" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(solucion.solution()) <span class="op">==</span> <span class="bu">len</span>(DURACIONES)</span>
-<span id="cb20-420"><a href="#cb20-420" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> solucion.path_cost <span class="op">==</span> <span class="bu">max</span>(solucion.state[<span class="dv">1</span>:])</span>
-<span id="cb20-421"><a href="#cb20-421" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> nodo <span class="kw">in</span> solucion.path():</span>
-<span id="cb20-422"><a href="#cb20-422" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> nodo.path_cost <span class="op">==</span> <span class="bu">max</span>(nodo.state[<span class="dv">1</span>:])</span>
-<span id="cb20-423"><a href="#cb20-423" aria-hidden="true" tabindex="-1"></a>    grupos <span class="op">=</span> asignaciones(solucion)</span>
-<span id="cb20-424"><a href="#cb20-424" aria-hidden="true" tabindex="-1"></a>    soluciones_gpu[estrategia] <span class="op">=</span> solucion</span>
-<span id="cb20-425"><a href="#cb20-425" aria-hidden="true" tabindex="-1"></a>    filas_gpu.append({<span class="st">&quot;Estrategia&quot;</span>: estrategia,</span>
-<span id="cb20-426"><a href="#cb20-426" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;GPU 1&quot;</span>: <span class="st">&quot;, &quot;</span>.join(grupos[<span class="dv">0</span>]) <span class="kw">or</span> <span class="st">&quot;Sin experimentos&quot;</span>,</span>
-<span id="cb20-427"><a href="#cb20-427" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;GPU 2&quot;</span>: <span class="st">&quot;, &quot;</span>.join(grupos[<span class="dv">1</span>]) <span class="kw">or</span> <span class="st">&quot;Sin experimentos&quot;</span>,</span>
-<span id="cb20-428"><a href="#cb20-428" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Carga GPU 1 (h)&quot;</span>: solucion.state[<span class="dv">1</span>],</span>
-<span id="cb20-429"><a href="#cb20-429" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Carga GPU 2 (h)&quot;</span>: solucion.state[<span class="dv">2</span>],</span>
-<span id="cb20-430"><a href="#cb20-430" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Tiempo total (h)&quot;</span>: solucion.path_cost,</span>
-<span id="cb20-431"><a href="#cb20-431" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;Expandidos&quot;</span>: problema.expandidos})</span>
-<span id="cb20-432"><a href="#cb20-432" aria-hidden="true" tabindex="-1"></a>tabla(filas_gpu)</span>
-<span id="cb20-433"><a href="#cb20-433" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> soluciones_gpu[<span class="st">&quot;A*&quot;</span>].path_cost <span class="op">==</span> <span class="dv">17</span></span>
-<span id="cb20-434"><a href="#cb20-434" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-435"><a href="#cb20-435" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-436"><a href="#cb20-436" aria-hidden="true" tabindex="-1"></a>Los estados expandidos se cuentan con la misma definición en ambas estrategias y son datos de la ejecución, no cifras estimadas. Las asignaciones y los conteos dependen también de los desempates: en esta biblioteca se utiliza el orden de los estados cuando las prioridades coinciden. Intercambiar los nombres de las GPU no cambia la calidad del plan.</span>
-<span id="cb20-437"><a href="#cb20-437" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-438"><a href="#cb20-438" aria-hidden="true" tabindex="-1"></a><span class="fu">### Razonamiento · Por qué voraz puede repartir mal</span></span>
-<span id="cb20-439"><a href="#cb20-439" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-440"><a href="#cb20-440" aria-hidden="true" tabindex="-1"></a>Voraz minimiza **el incremento estimado restante**, pero ignora el horizonte que ya acumuló. Puede preferir un plan con g alto y h bajo frente a otro con g menor y h mayor. Una h admisible **no garantiza que voraz sea óptima**.</span>
-<span id="cb20-441"><a href="#cb20-441" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-442"><a href="#cb20-442" aria-hidden="true" tabindex="-1"></a>Por ejemplo, después de asignar E1 a una GPU, estas son las dos alternativas para E2:</span>
-<span id="cb20-443"><a href="#cb20-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-444"><a href="#cb20-444" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Cargas después de E2 <span class="pp">|</span> g <span class="pp">|</span> h <span class="pp">|</span> f = g + h <span class="pp">|</span></span>
-<span id="cb20-445"><a href="#cb20-445" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---:|---:|---:|</span></span>
-<span id="cb20-446"><a href="#cb20-446" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Juntos: (0, 15) <span class="pp">|</span> 15 <span class="pp">|</span> 2 <span class="pp">|</span> 17 <span class="pp">|</span></span>
-<span id="cb20-447"><a href="#cb20-447" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Repartidos: (7, 8) <span class="pp">|</span> 8 <span class="pp">|</span> 9 <span class="pp">|</span> 17 <span class="pp">|</span></span>
-<span id="cb20-448"><a href="#cb20-448" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-449"><a href="#cb20-449" aria-hidden="true" tabindex="-1"></a>Voraz prefiere juntar ambos porque h=2 es menor que h=9. A* ve una cota de 17 en los dos casos: no confunde «poco costo adicional» con «buen costo total».</span>
-<span id="cb20-450"><a href="#cb20-450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-453"><a href="#cb20-453" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-454"><a href="#cb20-454" aria-hidden="true" tabindex="-1"></a>display(Markdown(</span>
-<span id="cb20-455"><a href="#cb20-455" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f&quot;Con esta h y los desempates de la versión utilizada, voraz termina en &quot;</span></span>
-<span id="cb20-456"><a href="#cb20-456" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f&quot;**</span><span class="sc">{</span>soluciones_gpu[<span class="st">&#39;Voraz&#39;</span>]<span class="sc">.</span>path_cost<span class="sc">}</span><span class="ss"> horas**, mientras que A* termina en &quot;</span></span>
-<span id="cb20-457"><a href="#cb20-457" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f&quot;**</span><span class="sc">{</span>soluciones_gpu[<span class="st">&#39;A*&#39;</span>]<span class="sc">.</span>path_cost<span class="sc">}</span><span class="ss"> horas**.&quot;</span></span>
-<span id="cb20-458"><a href="#cb20-458" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb20-459"><a href="#cb20-459" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-460"><a href="#cb20-460" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-461"><a href="#cb20-461" aria-hidden="true" tabindex="-1"></a>Esta es **una resolución posible**, no la única h válida para la consigna. Una propuesta diferente debe mantener coherencia entre objetivo, costos y estimación; conviene comparar sus resultados y justificar qué propiedades conserva.</span>
-<span id="cb20-462"><a href="#cb20-462" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-463"><a href="#cb20-463" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementación · Ver g, h y f en el plan de A*</span></span>
-<span id="cb20-464"><a href="#cb20-464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-467"><a href="#cb20-467" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-468"><a href="#cb20-468" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> PlanGPU()</span>
-<span id="cb20-469"><a href="#cb20-469" aria-hidden="true" tabindex="-1"></a>pasos <span class="op">=</span> []</span>
-<span id="cb20-470"><a href="#cb20-470" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nodo <span class="kw">in</span> soluciones_gpu[<span class="st">&quot;A*&quot;</span>].path():</span>
-<span id="cb20-471"><a href="#cb20-471" aria-hidden="true" tabindex="-1"></a>    k, carga1, carga2 <span class="op">=</span> nodo.state</span>
-<span id="cb20-472"><a href="#cb20-472" aria-hidden="true" tabindex="-1"></a>    decision <span class="op">=</span> <span class="st">&quot;Inicio&quot;</span> <span class="cf">if</span> k <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="ss">f&quot;</span><span class="sc">{</span>EXPERIMENTOS[k <span class="op">-</span> <span class="dv">1</span>]<span class="sc">}</span><span class="ss"> → GPU </span><span class="sc">{</span>nodo<span class="sc">.</span>action <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">&quot;</span></span>
-<span id="cb20-473"><a href="#cb20-473" aria-hidden="true" tabindex="-1"></a>    pasos.append({<span class="st">&quot;Decisión&quot;</span>: decision, <span class="st">&quot;Estado&quot;</span>: <span class="bu">str</span>(nodo.state),</span>
-<span id="cb20-474"><a href="#cb20-474" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;g (h)&quot;</span>: nodo.path_cost, <span class="st">&quot;h (h)&quot;</span>: modelo.h(nodo),</span>
-<span id="cb20-475"><a href="#cb20-475" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;f (h)&quot;</span>: nodo.path_cost <span class="op">+</span> modelo.h(nodo)})</span>
-<span id="cb20-476"><a href="#cb20-476" aria-hidden="true" tabindex="-1"></a>tabla(pasos)</span>
-<span id="cb20-477"><a href="#cb20-477" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-478"><a href="#cb20-478" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-479"><a href="#cb20-479" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estética · Ver los cronogramas resultantes</span></span>
-<span id="cb20-480"><a href="#cb20-480" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-481"><a href="#cb20-481" aria-hidden="true" tabindex="-1"></a>El eje horizontal representa horas reales de ejecución. Cada barra es un experimento. Este gráfico se construye a partir del plan encontrado: no modifica la búsqueda.</span>
-<span id="cb20-482"><a href="#cb20-482" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-485"><a href="#cb20-485" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-486"><a href="#cb20-486" aria-hidden="true" tabindex="-1"></a>fig, ejes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>), constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb20-487"><a href="#cb20-487" aria-hidden="true" tabindex="-1"></a>colores <span class="op">=</span> [<span class="st">&quot;#2f8193&quot;</span>, <span class="st">&quot;#6a5987&quot;</span>, <span class="st">&quot;#5b99aa&quot;</span>, <span class="st">&quot;#8e7fa8&quot;</span>, <span class="st">&quot;#638b83&quot;</span>, <span class="st">&quot;#967339&quot;</span>]</span>
-<span id="cb20-488"><a href="#cb20-488" aria-hidden="true" tabindex="-1"></a>limite <span class="op">=</span> <span class="bu">max</span>(s.path_cost <span class="cf">for</span> s <span class="kw">in</span> soluciones_gpu.values()) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb20-489"><a href="#cb20-489" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (estrategia, solucion) <span class="kw">in</span> <span class="bu">zip</span>(ejes, soluciones_gpu.items()):</span>
-<span id="cb20-490"><a href="#cb20-490" aria-hidden="true" tabindex="-1"></a>    cargas <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">0</span>]</span>
-<span id="cb20-491"><a href="#cb20-491" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, gpu <span class="kw">in</span> <span class="bu">enumerate</span>(solucion.solution()):</span>
-<span id="cb20-492"><a href="#cb20-492" aria-hidden="true" tabindex="-1"></a>        duracion <span class="op">=</span> DURACIONES[i]</span>
-<span id="cb20-493"><a href="#cb20-493" aria-hidden="true" tabindex="-1"></a>        ax.barh(gpu, duracion, left<span class="op">=</span>cargas[gpu], height<span class="op">=</span><span class="fl">.55</span>,</span>
-<span id="cb20-494"><a href="#cb20-494" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span>colores[i], edgecolor<span class="op">=</span><span class="st">&quot;white&quot;</span>)</span>
-<span id="cb20-495"><a href="#cb20-495" aria-hidden="true" tabindex="-1"></a>        ax.text(cargas[gpu] <span class="op">+</span> duracion <span class="op">/</span> <span class="dv">2</span>, gpu, EXPERIMENTOS[i],</span>
-<span id="cb20-496"><a href="#cb20-496" aria-hidden="true" tabindex="-1"></a>                ha<span class="op">=</span><span class="st">&quot;center&quot;</span>, va<span class="op">=</span><span class="st">&quot;center&quot;</span>, color<span class="op">=</span><span class="st">&quot;white&quot;</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)</span>
-<span id="cb20-497"><a href="#cb20-497" aria-hidden="true" tabindex="-1"></a>        cargas[gpu] <span class="op">+=</span> duracion</span>
-<span id="cb20-498"><a href="#cb20-498" aria-hidden="true" tabindex="-1"></a>    ax.axvline(solucion.path_cost, color<span class="op">=</span><span class="st">&quot;#163e50&quot;</span>, linestyle<span class="op">=</span><span class="st">&quot;--&quot;</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb20-499"><a href="#cb20-499" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f&quot;</span><span class="sc">{</span>estrategia<span class="sc">}</span><span class="ss"> · finaliza en </span><span class="sc">{</span>solucion<span class="sc">.</span>path_cost<span class="sc">}</span><span class="ss"> h&quot;</span>, loc<span class="op">=</span><span class="st">&quot;left&quot;</span>)</span>
-<span id="cb20-500"><a href="#cb20-500" aria-hidden="true" tabindex="-1"></a>    ax.set_yticks([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="st">&quot;GPU 1&quot;</span>, <span class="st">&quot;GPU 2&quot;</span>])</span>
-<span id="cb20-501"><a href="#cb20-501" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="op">-</span><span class="fl">.65</span>, <span class="fl">1.65</span>)</span>
-<span id="cb20-502"><a href="#cb20-502" aria-hidden="true" tabindex="-1"></a>    ax.invert_yaxis()</span>
-<span id="cb20-503"><a href="#cb20-503" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">0</span>, limite)</span>
-<span id="cb20-504"><a href="#cb20-504" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">&quot;Horas desde el comienzo&quot;</span>)</span>
-<span id="cb20-505"><a href="#cb20-505" aria-hidden="true" tabindex="-1"></a>    ax.set_axisbelow(<span class="va">True</span>)</span>
-<span id="cb20-506"><a href="#cb20-506" aria-hidden="true" tabindex="-1"></a>    ax.grid(axis<span class="op">=</span><span class="st">&quot;x&quot;</span>, alpha<span class="op">=</span><span class="fl">.2</span>)</span>
-<span id="cb20-507"><a href="#cb20-507" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb20-508"><a href="#cb20-508" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-509"><a href="#cb20-509" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-510"><a href="#cb20-510" aria-hidden="true" tabindex="-1"></a><span class="fu">### Verificación · Demostrar el óptimo y comprobar h</span></span>
-<span id="cb20-511"><a href="#cb20-511" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-512"><a href="#cb20-512" aria-hidden="true" tabindex="-1"></a>Un reparto de **17 y 16 horas** alcanza la cota inferior 17, por lo que es óptimo. Por ejemplo, E1+E3+E6 suman 17 y E2+E4+E5 suman 16. Hay más de una asignación óptima.</span>
-<span id="cb20-513"><a href="#cb20-513" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-514"><a href="#cb20-514" aria-hidden="true" tabindex="-1"></a>Como hay solo seis experimentos, podemos verificar independientemente los resultados enumerando las 64 asignaciones. **Esto es una comprobación del ejemplo pequeño, no la estrategia con la que resolvimos la consigna.**</span>
-<span id="cb20-515"><a href="#cb20-515" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-518"><a href="#cb20-518" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb20-519"><a href="#cb20-519" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> PlanGPU()</span>
-<span id="cb20-520"><a href="#cb20-520" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-521"><a href="#cb20-521" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estado_tras(decisiones, inicial<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)):</span>
-<span id="cb20-522"><a href="#cb20-522" aria-hidden="true" tabindex="-1"></a>    estado <span class="op">=</span> inicial</span>
-<span id="cb20-523"><a href="#cb20-523" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> gpu <span class="kw">in</span> decisiones:</span>
-<span id="cb20-524"><a href="#cb20-524" aria-hidden="true" tabindex="-1"></a>        estado <span class="op">=</span> modelo.result(estado, gpu)</span>
-<span id="cb20-525"><a href="#cb20-525" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> estado</span>
-<span id="cb20-526"><a href="#cb20-526" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-527"><a href="#cb20-527" aria-hidden="true" tabindex="-1"></a>finales <span class="op">=</span> [estado_tras(decisiones) <span class="cf">for</span> decisiones <span class="kw">in</span> product((<span class="dv">0</span>, <span class="dv">1</span>), repeat<span class="op">=</span><span class="dv">6</span>)]</span>
-<span id="cb20-528"><a href="#cb20-528" aria-hidden="true" tabindex="-1"></a>optimo_exhaustivo <span class="op">=</span> <span class="bu">min</span>(<span class="bu">max</span>(estado[<span class="dv">1</span>:]) <span class="cf">for</span> estado <span class="kw">in</span> finales)</span>
-<span id="cb20-529"><a href="#cb20-529" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(finales) <span class="op">==</span> <span class="dv">64</span></span>
-<span id="cb20-530"><a href="#cb20-530" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> optimo_exhaustivo <span class="op">==</span> <span class="dv">17</span> <span class="op">==</span> soluciones_gpu[<span class="st">&quot;A*&quot;</span>].path_cost</span>
-<span id="cb20-531"><a href="#cb20-531" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-532"><a href="#cb20-532" aria-hidden="true" tabindex="-1"></a><span class="co"># Todos los estados parciales que pueden alcanzarse en este modelo.</span></span>
-<span id="cb20-533"><a href="#cb20-533" aria-hidden="true" tabindex="-1"></a>estados <span class="op">=</span> {estado_tras(decisiones)</span>
-<span id="cb20-534"><a href="#cb20-534" aria-hidden="true" tabindex="-1"></a>           <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>) <span class="cf">for</span> decisiones <span class="kw">in</span> product((<span class="dv">0</span>, <span class="dv">1</span>), repeat<span class="op">=</span>k)}</span>
-<span id="cb20-535"><a href="#cb20-535" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> estado <span class="kw">in</span> estados:</span>
-<span id="cb20-536"><a href="#cb20-536" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> estado[<span class="dv">0</span>]</span>
-<span id="cb20-537"><a href="#cb20-537" aria-hidden="true" tabindex="-1"></a>    g_actual <span class="op">=</span> <span class="bu">max</span>(estado[<span class="dv">1</span>:])</span>
-<span id="cb20-538"><a href="#cb20-538" aria-hidden="true" tabindex="-1"></a>    h_actual <span class="op">=</span> modelo.h(Node(estado))</span>
-<span id="cb20-539"><a href="#cb20-539" aria-hidden="true" tabindex="-1"></a>    mejor_final <span class="op">=</span> <span class="bu">min</span>(<span class="bu">max</span>(estado_tras(resto, estado)[<span class="dv">1</span>:])</span>
-<span id="cb20-540"><a href="#cb20-540" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">for</span> resto <span class="kw">in</span> product((<span class="dv">0</span>, <span class="dv">1</span>), repeat<span class="op">=</span><span class="dv">6</span> <span class="op">-</span> k))</span>
-<span id="cb20-541"><a href="#cb20-541" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="dv">0</span> <span class="op">&lt;=</span> h_actual <span class="op">&lt;=</span> mejor_final <span class="op">-</span> g_actual  <span class="co"># Admisibilidad.</span></span>
-<span id="cb20-542"><a href="#cb20-542" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> k <span class="op">==</span> <span class="dv">6</span>:</span>
-<span id="cb20-543"><a href="#cb20-543" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> h_actual <span class="op">==</span> <span class="dv">0</span></span>
-<span id="cb20-544"><a href="#cb20-544" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb20-545"><a href="#cb20-545" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> gpu <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">1</span>):</span>
-<span id="cb20-546"><a href="#cb20-546" aria-hidden="true" tabindex="-1"></a>            siguiente <span class="op">=</span> modelo.result(estado, gpu)</span>
-<span id="cb20-547"><a href="#cb20-547" aria-hidden="true" tabindex="-1"></a>            costo <span class="op">=</span> modelo.path_cost(<span class="dv">0</span>, estado, gpu, siguiente)</span>
-<span id="cb20-548"><a href="#cb20-548" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> costo <span class="op">&gt;=</span> <span class="dv">0</span></span>
-<span id="cb20-549"><a href="#cb20-549" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> h_actual <span class="op">&lt;=</span> costo <span class="op">+</span> modelo.h(Node(siguiente))  <span class="co"># Consistencia.</span></span>
-<span id="cb20-550"><a href="#cb20-550" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-551"><a href="#cb20-551" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;64 asignaciones verificadas. Óptimo: 17 horas.&quot;</span>)</span>
-<span id="cb20-552"><a href="#cb20-552" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;h admisible y consistente en los </span><span class="sc">{</span><span class="bu">len</span>(estados)<span class="sc">}</span><span class="ss"> estados distintos: OK.&quot;</span>)</span>
-<span id="cb20-553"><a href="#cb20-553" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-554"><a href="#cb20-554" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-555"><a href="#cb20-555" aria-hidden="true" tabindex="-1"></a>::: {.callout-note title=&quot;Qué conecta los tres ejercicios&quot;}</span>
-<span id="cb20-556"><a href="#cb20-556" aria-hidden="true" tabindex="-1"></a>El problema original no tiene que parecer un mapa. En el laboratorio, los estados son **planes parciales**, las acciones son decisiones de asignación y la solución es un cronograma. Lo fundamental es que la formulación permita comparar correctamente la calidad de esos planes.</span>
-<span id="cb20-557"><a href="#cb20-557" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb20-558"><a href="#cb20-558" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-559"><a href="#cb20-559" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fuentes y reproducción</span></span>
-<span id="cb20-560"><a href="#cb20-560" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-561"><a href="#cb20-561" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Enunciados: <span class="co">[</span><span class="ot">TP02 · Agentes y búsqueda informada</span><span class="co">](https://docs.google.com/document/d/1uJCXqUj6Nwt5LlmBcrseCsHDT8cMdheaAZtNVNMWSJI/edit)</span>, ejercicios 1 a 3, consultados el 3 de septiembre de 2026.</span>
-<span id="cb20-562"><a href="#cb20-562" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Algoritmos y mapa: <span class="co">[</span><span class="ot">aima-python</span><span class="co">](https://github.com/aimacode/aima-python)</span>, versión local <span class="in">`f104e03fdc1582f014b3a4c93f1a9b7d2da70114`</span>. Los módulos copiados se conservan sin cambios; su licencia MIT está en <span class="in">`_vendor/LICENSE`</span>.</span>
-<span id="cb20-563"><a href="#cb20-563" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>El modelo de planificación y la heurística propuesta son parte de esta resolución, no una solución atribuida al libro.</span>
-<span id="cb20-564"><a href="#cb20-564" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-565"><a href="#cb20-565" aria-hidden="true" tabindex="-1"></a>El HTML se puede leer sin Quarto ni Python y contiene los resultados calculados. Para regenerarlo, conservar <span class="in">`_vendor`</span> junto al <span class="in">`.qmd`</span>, usar Python 3.10 o posterior con Jupyter, NumPy, pandas, Matplotlib y NetworkX, y ejecutar:</span>
-<span id="cb20-566"><a href="#cb20-566" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-567"><a href="#cb20-567" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
-<span id="cb20-568"><a href="#cb20-568" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render index.qmd</span>
-<span id="cb20-569"><a href="#cb20-569" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-570"><a href="#cb20-570" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-571"><a href="#cb20-571" aria-hidden="true" tabindex="-1"></a>El código de modelado, verificación y estética está desplegado. Esta resolución se preparó como material local de apoyo; no se publicó en el campus.</span>
-</code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
-</div></div></div></div></div>
+  </script>
 </div> <!-- /content -->
 
 

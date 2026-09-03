@@ -11,7 +11,6 @@ format:
     code-fold: false
     code-copy: true
     code-overflow: wrap
-    code-tools: true
     embed-resources: true
 jupyter: python3
 execute:
@@ -73,9 +72,10 @@ def aplicar(problema, estrategia):
 
 ### Estética · Presentación de tablas y figuras
 
-Este bloque solo configura la apariencia. Todo el código permanece desplegado.
+Este bloque solo configura la apariencia; su código queda oculto para no interrumpir la lectura.
 
 ```{python}
+#| echo: false
 display(HTML("""
 <style>
  h1,h2,h3 { color: #163e50; }
@@ -105,6 +105,7 @@ Tenemos dos alternativas desde Inicio: pasar por A o pasar por B. Los costos son
 **Estética.** Dibujamos el grafo y sus etiquetas. Este dibujo no ejecuta la búsqueda.
 
 ```{python}
+#| echo: false
 aristas = [("Inicio", "A", 2), ("A", "Objetivo", 6),
            ("Inicio", "B", 5), ("B", "Objetivo", 2)]
 grafo = nx.DiGraph()
@@ -255,6 +256,7 @@ En Lugoj → Arad coinciden: pasan por Timisoara y recorren **229 km**. En Arad 
 **Verificación.** Para los destinos utilizados comprobamos la consistencia de la heurística en cada arista: `h(u) ≤ costo(u,v) + h(v)`. Además, arriba contrastamos el costo devuelto por A* con costo uniforme.
 
 ```{python}
+#| echo: false
 for destino in ("Bucharest", "Arad", "Pitesti"):
     p = GraphProblem("Arad", destino, romania_map)
     assert p.h(Node(destino)) == 0
@@ -427,6 +429,7 @@ Por ejemplo, después de asignar E1 a una GPU, estas son las dos alternativas pa
 Voraz prefiere juntar ambos porque h=2 es menor que h=9. A* ve una cota de 17 en los dos casos: no confunde «poco costo adicional» con «buen costo total».
 
 ```{python}
+#| echo: false
 display(Markdown(
     f"Con esta h y los desempates de la versión utilizada, voraz termina en "
     f"**{soluciones_gpu['Voraz'].path_cost} horas**, mientras que A* termina en "
@@ -455,6 +458,7 @@ tabla(pasos)
 El eje horizontal representa horas reales de ejecución. Cada barra es un experimento. Este gráfico se construye a partir del plan encontrado: no modifica la búsqueda.
 
 ```{python}
+#| echo: false
 fig, ejes = plt.subplots(2, 1, figsize=(10, 5.5), constrained_layout=True)
 colores = ["#2f8193", "#6a5987", "#5b99aa", "#8e7fa8", "#638b83", "#967339"]
 limite = max(s.path_cost for s in soluciones_gpu.values()) + 1
@@ -486,6 +490,7 @@ Un reparto de **17 y 16 horas** alcanza la cota inferior 17, por lo que es ópti
 Como hay solo seis experimentos, podemos verificar independientemente los resultados enumerando las 64 asignaciones. **Esto es una comprobación del ejemplo pequeño, no la estrategia con la que resolvimos la consigna.**
 
 ```{python}
+#| echo: false
 modelo = PlanGPU()
 
 def estado_tras(decisiones, inicial=(0, 0, 0)):
