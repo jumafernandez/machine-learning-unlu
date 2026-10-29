@@ -243,12 +243,32 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .codigo { position: relative; margin-top: 8px; }
 .codigo pre {
   background: #f6f9fa; border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; padding-top: 40px;
-  overflow-x: auto; font-size: .82rem; line-height: 1.45; margin: 0; max-height: 620px;
+  overflow-x: auto; font-size: .82rem; line-height: 1.45; margin: 0; max-height: 620px; padding-top: 50px;
 }
-.codigo .boton { position: absolute; top: 8px; right: 8px; }
+.codigo-acciones { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .pie { color: var(--secundario); font-size: .9rem; border-top: 1px solid var(--borde); padding-top: 14px; padding-bottom: 30px; }
 .pie p { text-align: left; }
 
+
+
+/* Dataset y columnas */
+.dataset { border: 1px dashed #b9cfd7; border-radius: 12px; padding: 12px 16px; margin: 4px 0 14px; background: #fafcfd; transition: background .15s, border-color .15s; }
+.dataset.arrastrando { background: var(--suave); border-color: var(--titulo); }
+.dataset-info { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.dataset-info strong { color: var(--titulo); font-size: 1.05rem; overflow-wrap: anywhere; }
+.dataset-info > span:last-child { color: var(--secundario); font-size: .92rem; flex-basis: 100%; }
+.dataset .acciones { margin: 8px 0 4px; }
+.dataset label.boton { cursor: pointer; position: relative; }
+.chip { display: inline-block; font-size: .76rem; font-weight: 600; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+.tipo-numero { background: var(--suave); color: var(--titulo); }
+.tipo-texto { background: #fdf3e2; color: #8a5a12; }
+.rol-entrada { background: var(--titulo); color: #fff; }
+.rol-objetivo { background: var(--violeta); color: #fff; }
+.rol-particion { background: #e7eef1; color: var(--secundario); }
+.rol-sin-uso { background: #f1f4f5; color: #8a9ca3; }
+.vacio { color: #a2b2b8; font-style: italic; }
+.sensor.reservada { opacity: .6; cursor: not-allowed; }
+input[type=number] { padding: 6px 10px; border: 1px solid #b9cfd7; border-radius: 8px; min-height: 38px; max-width: 100%; background: #fff; }
 
 /* Modo configuración / estudio */
 .encabezado-fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px 28px; flex-wrap: wrap; }
@@ -456,14 +476,43 @@ function barajar(v, rng = Math.random) {
 // =====================================================================
 // Dataset
 // El dataset es un objeto independiente de la interfaz: columnas con sus
-// valores, variables candidatas a entrada, tareas posibles y partición.
-// Un importador de CSV solo tiene que devolver un objeto con esta forma.
+// valores, la descripción de cada columna, las variables candidatas a
+// entrada, sugerencias de variable objetivo y la fuente. Sale del CSV
+// embebido o de un archivo que se sube en la primera pantalla.
 // =====================================================================
 const PARTES = ["entrenamiento", "validacion", "prueba"];
+const URL_CSV = "https://raw.githubusercontent.com/jumafernandez/machine-learning-unlu/main/2026/taller-redes-neuronales/datos/inspeccion_sensores.csv";
+const LIMITES = { entradasRecomendadas: 20, filasRecomendadas: 10000, filasMaximas: 200000, columnasMaximas: 200, megasMaximos: 25 };
+const ALIAS_PARTES = {
+  entrenamiento: ["entrenamiento", "train", "training", "entrenar"],
+  validacion: ["validacion", "validación", "val", "valid", "validation"],
+  prueba: ["prueba", "test", "testing"],
+};
+const NULOS = new Set(["", "na", "nan", "null", "none", "?", "-"]);
+const esValido = (v) => v != null && (typeof v !== "number" || Number.isFinite(v));
 
-function crearDataset({ nombre, descripcion, columnas, variables, tareas, particion }) {
-  const n = columnas[variables[0].columna].length;
-  return { nombre, descripcion, n, columnas, variables, tareas, particion };
+function describirColumna(valores) {
+  const presentes = valores.filter(esValido);
+  const numerica = presentes.length > 0 && presentes.every((v) => typeof v === "number");
+  const distintos = [...new Set(presentes)].sort(numerica ? (a, b) => a - b : (a, b) => String(a).localeCompare(String(b), "es"));
+  const info = { tipo: numerica ? "numero" : "texto", distintos, nDistintos: distintos.length, nulos: valores.length - presentes.length };
+  if (numerica) {
+    info.min = distintos[0];
+    info.max = distintos.at(-1);
+    info.enteros = presentes.every(Number.isInteger);
+    info.decimales = Math.min(3, Math.max(0, ...presentes.slice(0, 500).map((v) => (String(v).split(".")[1] || "").length)));
+  }
+  return info;
+}
+
+function crearDataset({ nombre, descripcion, columnas, orden, variables, entradasPorDefecto, sugeridos = {}, etiquetas = {}, ordenClases = {}, unidades = {}, columnaParticion = null, valoresParticion = null, fuente, nota = null }) {
+  const info = Object.fromEntries(orden.map((c) => [c, describirColumna(columnas[c])]));
+  for (const [c, valores] of Object.entries(ordenClases)) info[c].distintos = valores.filter((v) => info[c].distintos.includes(v));
+  return {
+    id: Math.random().toString(36).slice(2), nombre, descripcion, n: columnas[orden[0]].length, columnas, orden, info, variables,
+    entradasPorDefecto: entradasPorDefecto || variables.map((v) => v.columna), sugeridos, etiquetas, unidades,
+    columnaParticion, valoresParticion, fuente, nota, embebido: fuente.tipo === "url",
+  };
 }
 
 function cargarDatosEmbebidos() {
@@ -472,91 +521,240 @@ function cargarDatosEmbebidos() {
   for (const [columna, categorias] of Object.entries(crudo.categorias)) {
     columnas[columna] = columnas[columna].map((i) => categorias[i]);
   }
-  const estados = ["normal", "termico", "electrico", "almacenamiento", "red"];
-  const nombresEstados = ["normal", "térmico", "eléctrico", "almacenamiento", "red"];
   return crearDataset({
     nombre: "inspeccion_sensores.csv",
-    descripcion: "Lecturas de sensores de racks de un centro de datos: 1500 filas con 8 variables numéricas y 3 columnas que pueden ser variable objetivo",
+    descripcion: "Lecturas de sensores de racks de un centro de datos: 1500 filas, 8 variables numéricas y 3 columnas que pueden ser variable objetivo",
     columnas,
+    orden: Object.keys(crudo.columnas),
     variables: [
-      { columna: "temperatura", etiqueta: "Temperatura", unidad: "°C", corto: "temp.", decimales: 1 },
-      { columna: "humedad", etiqueta: "Humedad", unidad: "%", corto: "hum.", decimales: 1 },
-      { columna: "carga_cpu", etiqueta: "Carga de CPU", unidad: "%", corto: "cpu", decimales: 1 },
-      { columna: "ventiladores_rpm", etiqueta: "Ventiladores", unidad: "rpm", corto: "vent.", decimales: 0 },
-      { columna: "consumo_w", etiqueta: "Consumo", unidad: "W", corto: "cons.", decimales: 0 },
-      { columna: "errores_disco", etiqueta: "Errores de disco", unidad: "por hora", corto: "disco", decimales: 0 },
-      { columna: "latencia_ms", etiqueta: "Latencia", unidad: "ms", corto: "lat.", decimales: 1 },
-      { columna: "vibracion", etiqueta: "Vibración", unidad: "mm/s", corto: "vib.", decimales: 2 },
+      { columna: "temperatura", unidad: "°C", corto: "temp.", decimales: 1 },
+      { columna: "humedad", unidad: "%", corto: "hum.", decimales: 1 },
+      { columna: "carga_cpu", unidad: "%", corto: "cpu", decimales: 1 },
+      { columna: "ventiladores_rpm", unidad: "rpm", corto: "vent.", decimales: 0 },
+      { columna: "consumo_w", unidad: "W", corto: "cons.", decimales: 0 },
+      { columna: "errores_disco", unidad: "por hora", corto: "disco", decimales: 0 },
+      { columna: "latencia_ms", unidad: "ms", corto: "lat.", decimales: 1 },
+      { columna: "vibracion", unidad: "mm/s", corto: "vib.", decimales: 2 },
     ],
-    tareas: {
-      binaria: { tipo: "binaria", objetivo: "alerta_real", clases: [0, 1], nombresClases: ["sin alerta", "alerta"] },
-      multiclase: { tipo: "multiclase", objetivo: "estado", clases: estados, nombresClases: nombresEstados },
-      regresion: { tipo: "regresion", objetivo: "tiempo_reparacion_min", unidad: "minutos", soloConObjetivo: true },
-      clustering: { tipo: "clustering", referencia: "estado", clasesReferencia: estados, nombresReferencia: nombresEstados },
-    },
-    particion: { columna: "particion", entrenamiento: "entrenamiento", validacion: "validacion", prueba: "prueba" },
+    sugeridos: { binaria: "alerta_real", multiclase: "estado", regresion: "tiempo_reparacion_min", clustering: "estado" },
+    etiquetas: { alerta_real: { 0: "sin alerta", 1: "alerta" }, estado: { termico: "térmico", electrico: "eléctrico" } },
+    ordenClases: { estado: ["normal", "termico", "electrico", "almacenamiento", "red"] },
+    unidades: { tiempo_reparacion_min: "minutos" },
+    columnaParticion: "particion",
+    valoresParticion: { entrenamiento: "entrenamiento", validacion: "validacion", prueba: "prueba" },
+    fuente: { tipo: "url", url: URL_CSV },
+    nota: "El 6% de las etiquetas se registró mal a propósito: es error irreducible. Ningún modelo puede acertar el 100% en prueba, y si una red llega al 100% en entrenamiento, está memorizando esos errores.",
   });
 }
 
-function filasDeTarea(ds, clave) {
-  const tarea = ds.tareas[clave];
-  const filas = { entrenamiento: [], validacion: [], prueba: [] };
-  for (let i = 0; i < ds.n; i++) {
-    if (tarea.soloConObjetivo && ds.columnas[tarea.objetivo][i] == null) continue;
-    const parte = PARTES.find((p) => ds.particion[p] === ds.columnas[ds.particion.columna][i]);
-    if (parte) filas[parte].push(i);
+// ---------------------------------------------------------------------
+// Importador de CSV: separador , ; o tabulación, comillas, decimal con coma.
+// ---------------------------------------------------------------------
+function leerCSV(texto) {
+  texto = texto.replace(/^﻿/, "");
+  const fin = texto.search(/\r?\n/);
+  const primera = fin === -1 ? texto : texto.slice(0, fin);
+  const separador = [",", ";", "\t"].map((s) => [s, primera.split(s).length]).sort((a, b) => b[1] - a[1])[0][0];
+  const filas = [];
+  let fila = [], campo = "", comillas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const ch = texto[i];
+    if (comillas) {
+      if (ch === '"') {
+        if (texto[i + 1] === '"') { campo += '"'; i++; } else comillas = false;
+      } else campo += ch;
+    } else if (ch === '"') comillas = true;
+    else if (ch === separador) { fila.push(campo); campo = ""; }
+    else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && texto[i + 1] === "\n") i++;
+      fila.push(campo); filas.push(fila); fila = []; campo = "";
+    } else campo += ch;
   }
+  if (campo !== "" || fila.length) { fila.push(campo); filas.push(fila); }
+  return { separador, filas: filas.filter((f) => f.some((c) => c.trim() !== "")) };
+}
+
+function datasetDesdeCSV(nombre, texto) {
+  const { separador, filas } = leerCSV(texto);
+  if (filas.length < 11) throw new Error("El archivo necesita una fila de encabezado y al menos 10 filas de datos.");
+  const vistos = {};
+  const orden = filas[0].map((h, j) => {
+    const base = h.trim() || `columna_${j + 1}`;
+    vistos[base] = (vistos[base] || 0) + 1;
+    return vistos[base] > 1 ? `${base}_${vistos[base]}` : base;
+  });
+  if (orden.length < 2) throw new Error("No se reconocieron columnas: revisá que el separador sea coma, punto y coma o tabulación.");
+  if (orden.length > LIMITES.columnasMaximas) throw new Error(`El archivo tiene ${orden.length} columnas; el máximo es ${LIMITES.columnasMaximas}.`);
+  const datos = filas.slice(1);
+  if (datos.length > LIMITES.filasMaximas) throw new Error(`El archivo tiene ${num(datos.length)} filas; el máximo es ${num(LIMITES.filasMaximas)}.`);
+  const crudas = orden.map((_, j) => datos.map((f) => (f[j] ?? "").trim()));
+  const decimal = separador === ";" && crudas.some((c) => c.some((v) => /^-?\d+,\d+$/.test(v))) ? "," : ".";
+  const comoNumero = (t) => Number(decimal === "," ? t.replace(/\./g, "").replace(",", ".") : t);
+  const columnas = {};
+  orden.forEach((c, j) => {
+    const vacio = crudas[j].map((t) => NULOS.has(t.toLowerCase()));
+    const numeros = crudas[j].map((t, i) => (vacio[i] ? null : comoNumero(t)));
+    const numerica = numeros.some((v) => v !== null) && numeros.every((v) => v === null || Number.isFinite(v));
+    columnas[c] = numerica ? numeros : crudas[j].map((t, i) => (vacio[i] ? null : t));
+  });
+  // Columna de partición: un nombre conocido y valores como train / val / test.
+  let columnaParticion = null, valoresParticion = null;
+  for (const c of orden) {
+    if (!/^(particion|partición|split|partition|conjunto|subset)$/i.test(c)) continue;
+    const valores = [...new Set(columnas[c].filter(esValido).map(String))];
+    const mapa = {};
+    for (const v of valores) {
+      const parte = PARTES.find((p) => ALIAS_PARTES[p].includes(v.toLowerCase()));
+      if (parte) mapa[parte] = v;
+    }
+    if (Object.keys(mapa).length === 3 && valores.length === 3) {
+      columnaParticion = c;
+      valoresParticion = mapa;
+      columnas[c] = columnas[c].map((v) => (v == null ? null : PARTES.find((p) => mapa[p] === String(v))));
+    }
+  }
+  const info = Object.fromEntries(orden.map((c) => [c, describirColumna(columnas[c])]));
+  const numericas = orden.filter((c) => c !== columnaParticion && info[c].tipo === "numero");
+  const pareceId = (c) => /^(id|index|indice|índice|unnamed: ?0|row|fila)$/i.test(c) || (info[c].enteros && info[c].nDistintos === datos.length && info[c].nulos === 0);
+  const ultima = (filtro) => [...orden].reverse().find((c) => c !== columnaParticion && filtro(info[c], c)) || null;
+  const sugeridos = {
+    binaria: ultima((i) => i.nDistintos === 2),
+    multiclase: ultima((i) => i.tipo === "texto" && i.nDistintos >= 3 && i.nDistintos <= 20) || ultima((i) => i.enteros && i.nDistintos >= 3 && i.nDistintos <= 10),
+    regresion: ultima((i, c) => i.tipo === "numero" && i.nDistintos > 20 && !pareceId(c)),
+  };
+  sugeridos.clustering = sugeridos.multiclase || sugeridos.binaria;
+  const textos = orden.length - numericas.length - (columnaParticion ? 1 : 0);
+  return crearDataset({
+    nombre,
+    descripcion: `${num(datos.length)} filas y ${orden.length} columnas: ${numericas.length} numéricas${textos ? ` y ${textos} de texto` : ""}${columnaParticion ? `, más la columna de partición ${columnaParticion}` : ""}`,
+    columnas,
+    orden,
+    variables: numericas.map((c) => ({ columna: c, unidad: "", corto: c.length > 7 ? `${c.slice(0, 6)}.` : c, decimales: info[c].decimales })),
+    entradasPorDefecto: numericas.filter((c) => !pareceId(c)).slice(0, LIMITES.entradasRecomendadas),
+    sugeridos,
+    columnaParticion,
+    valoresParticion,
+    fuente: { tipo: "archivo", nombre, separador, decimal },
+  });
+}
+
+// ---------------------------------------------------------------------
+// Tarea, partición y matrices para entrenar
+// ---------------------------------------------------------------------
+const nombreValor = (col, v) => DATASET.etiquetas[col]?.[v] ?? String(v);
+
+function compatible(col, tarea) {
+  const i = DATASET.info[col];
+  if (!i || col === DATASET.columnaParticion) return false;
+  if (tarea === "binaria") return i.nDistintos === 2;
+  if (tarea === "multiclase") return i.nDistintos >= 3 && i.nDistintos <= 20 && (i.tipo === "texto" || i.enteros);
+  if (tarea === "regresion") return i.tipo === "numero" && i.nDistintos > 2;
+  if (tarea === "clustering") return i.nDistintos >= 2 && i.nDistintos <= 20;
+  return false;
+}
+
+const columnasCompatibles = (tarea) => DATASET.orden.filter((c) => compatible(c, tarea));
+
+function objetivoPorDefecto(tarea) {
+  const sugerido = DATASET.sugeridos[tarea];
+  if (sugerido && compatible(sugerido, tarea)) return sugerido;
+  return tarea === "clustering" ? null : columnasCompatibles(tarea).at(-1) ?? null;
+}
+
+// La tarea elegida, con su variable objetivo (o la columna de referencia en clustering) y sus clases.
+function definirTarea(cfg = E) {
+  if (!cfg.tarea) return null;
+  const col = cfg.objetivo && DATASET.info[cfg.objetivo] ? cfg.objetivo : null;
+  const def = { tipo: cfg.tarea, objetivo: cfg.tarea === "clustering" ? null : col, referencia: cfg.tarea === "clustering" ? col : null };
+  const conClases = def.referencia || (cfg.tarea !== "regresion" ? def.objetivo : null);
+  if (conClases) {
+    def.clases = DATASET.info[conClases].distintos;
+    def.nombresClases = def.clases.map((v) => nombreValor(conClases, v));
+  }
+  if (cfg.tarea === "regresion" && def.objetivo) {
+    const i = DATASET.info[def.objetivo];
+    Object.assign(def, { unidad: DATASET.unidades[def.objetivo] || null, min: i.min, max: i.max });
+  }
+  return def;
+}
+
+const colorClase = (k, total) => (total === 2 ? ["#8eb9c3", "#d08c2f"][k] : COLORES[k % COLORES.length]);
+
+// Tamaños como train_test_split de sklearn: primero entrenamiento y después
+// el resto se divide entre validación y prueba.
+function fraccionesParticion(p) {
+  return { entrenamiento: p.entrenamiento / 100, validacion: Number((p.validacion / (100 - p.entrenamiento)).toFixed(4)) };
+}
+
+const cacheParticion = new Map();
+function particionar(cfg = E) {
+  const def = definirTarea(cfg);
+  const usadas = [...cfg.entradas, ...(def?.objetivo ? [def.objetivo] : [])];
+  const clave = JSON.stringify([DATASET.id, usadas, cfg.particion, cfg.muestra]);
+  if (cacheParticion.has(clave)) return cacheParticion.get(clave);
+  const col = DATASET.columnas;
+  let validas = [];
+  for (let i = 0; i < DATASET.n; i++) if (usadas.every((c) => esValido(col[c][i]))) validas.push(i);
+  if (cfg.muestra && validas.length > LIMITES.filasRecomendadas) {
+    validas = barajar([...validas], mulberry32(cfg.particion.semilla + 1)).slice(0, LIMITES.filasRecomendadas).sort((a, b) => a - b);
+  }
+  const filas = { entrenamiento: [], validacion: [], prueba: [] };
+  if (cfg.particion.modo === "columna" && DATASET.columnaParticion) {
+    for (const i of validas) { const p = col[DATASET.columnaParticion][i]; if (filas[p]) filas[p].push(i); }
+  } else {
+    const orden = barajar([...validas], mulberry32(cfg.particion.semilla));
+    const f = fraccionesParticion(cfg.particion);
+    const nTr = Math.floor(orden.length * f.entrenamiento);
+    const nVa = Math.floor((orden.length - nTr) * f.validacion);
+    filas.entrenamiento = orden.slice(0, nTr);
+    filas.validacion = orden.slice(nTr, nTr + nVa);
+    filas.prueba = orden.slice(nTr + nVa);
+  }
+  cacheParticion.set(clave, filas);
   return filas;
 }
 
+const conteo = (cfg = E) => Object.fromEntries(PARTES.map((p) => [p, particionar(cfg)[p].length]));
+
 // Matrices de entrada (normalizadas o no) y objetivos codificados por partición.
-function prepararDatos(ds, clave, entradas, normalizar) {
-  const tarea = ds.tareas[clave];
-  const col = ds.columnas;
-  const filas = filasDeTarea(ds, clave);
+function prepararDatos(cfg) {
+  const def = definirTarea(cfg);
+  const col = DATASET.columnas, entradas = cfg.entradas;
+  const filas = particionar(cfg);
   const tr = filas.entrenamiento;
   const media = entradas.map((c) => promedio(tr.map((i) => col[c][i])));
   const desvio = entradas.map((c, j) => Math.sqrt(promedio(tr.map((i) => (col[c][i] - media[j]) ** 2))) || 1);
   const X = {}, y = {}, referencia = {};
   for (const p of PARTES) {
-    X[p] = filas[p].map((i) => entradas.map((c, j) => (normalizar ? (col[c][i] - media[j]) / desvio[j] : col[c][i])));
-    if (tarea.objetivo) y[p] = filas[p].map((i) => (tarea.clases ? tarea.clases.indexOf(col[tarea.objetivo][i]) : col[tarea.objetivo][i]));
-    if (tarea.referencia) referencia[p] = filas[p].map((i) => tarea.clasesReferencia.indexOf(col[tarea.referencia][i]));
+    X[p] = filas[p].map((i) => entradas.map((c, j) => (cfg.normalizar ? (col[c][i] - media[j]) / desvio[j] : col[c][i])));
+    if (def?.objetivo) y[p] = filas[p].map((i) => (def.clases ? def.clases.indexOf(col[def.objetivo][i]) : col[def.objetivo][i]));
+    if (def?.referencia) referencia[p] = filas[p].map((i) => def.clases.indexOf(col[def.referencia][i]));
   }
-  return { tarea, entradas, d: entradas.length, filas, X, y, referencia, media, desvio, normalizar };
+  return { tarea: def, entradas, d: entradas.length, filas, X, y, referencia, media, desvio, normalizar: cfg.normalizar };
 }
 
-const DATASET = cargarDatosEmbebidos();
-const cacheConteo = {};
-function contarPartes(clave) {
-  if (!cacheConteo[clave]) {
-    const filas = filasDeTarea(DATASET, clave);
-    cacheConteo[clave] = Object.fromEntries(PARTES.map((p) => [p, filas[p].length]));
-  }
-  return cacheConteo[clave];
-}
+let DATASET = cargarDatosEmbebidos();
 
 // =====================================================================
 // Catálogos
 // =====================================================================
-const URL_CSV = "https://raw.githubusercontent.com/jumafernandez/machine-learning-unlu/main/2026/taller-redes-neuronales/datos/inspeccion_sensores.csv";
 const PASOS = ["Datos y tarea", "Capa de entrada", "Capas ocultas", "Capa de salida", "Función de pérdida", "Regularización", "Entrenamiento", "Resumen del modelo"];
 const TAREAS = {
   binaria: {
     titulo: "Clasificación binaria", modelo: "MLP_alerta", objetivo: "alerta_real",
-    texto: "Predecir si la lectura corresponde a un incidente: dos clases, 0 o 1.",
+    texto: "Predecir una de dos clases.",
   },
   multiclase: {
     titulo: "Clasificación multiclase", modelo: "MLP_estado", objetivo: "estado",
-    texto: "Predecir el estado del equipo: una clase entre cinco.",
+    texto: "Predecir una clase entre varias.",
   },
   regresion: {
     titulo: "Regresión", modelo: "MLP_reparacion", objetivo: "tiempo_reparacion_min",
-    texto: "Predecir el tiempo de reparación en minutos. Solo las lecturas con incidente.",
+    texto: "Predecir un valor numérico continuo.",
   },
   clustering: {
     titulo: "Clustering", modelo: "MLP_clustering", objetivo: null,
-    texto: "Agrupar las lecturas en k grupos sin usar ninguna variable objetivo.",
+    texto: "Agrupar los ejemplos en k grupos sin usar ninguna variable objetivo.",
   },
 };
 const ACTIVACIONES = {
@@ -599,7 +797,7 @@ const PERDIDAS = {
   centroides: {
     nombre: "MSE contra centroides", corto: "MSE contra centroides", keras: null,
     formula: "Σⱼ qⱼ ‖x − cⱼ‖²",
-    texto: "Para clustering: distancia de cada lectura a los centroides, ponderada por su pertenencia a cada grupo. Los centroides también se aprenden.",
+    texto: "Para clustering: distancia de cada ejemplo a los centroides, ponderada por su pertenencia a cada grupo. Los centroides también se aprenden.",
   },
 };
 const OPTIMIZADORES = {
@@ -622,7 +820,11 @@ const E = {
   paso: 0,
   maxPaso: 0,
   tarea: null,
-  entradas: DATASET.variables.map((v) => v.columna),
+  objetivo: null,
+  entradasElegidas: [...DATASET.entradasPorDefecto],
+  entradas: [...DATASET.entradasPorDefecto],
+  particion: { modo: "columna", entrenamiento: 60, validacion: 20, semilla: 2026 },
+  muestra: true,
   normalizar: true,
   ocultas: [{ neuronas: 16, activacion: "relu", dropout: 0 }],
   salida: { neuronas: null, activacion: null },
@@ -656,12 +858,17 @@ function modoInicial() {
 
 function configActual() {
   return {
-    tarea: E.tarea, entradas: [...E.entradas], normalizar: E.normalizar,
+    dataset: DATASET.id, tarea: E.tarea, objetivo: E.objetivo, entradas: [...E.entradas], particion: { ...E.particion }, muestra: E.muestra, normalizar: E.normalizar,
     ocultas: E.ocultas.map((c) => ({ ...c })), salida: { ...E.salida }, perdida: E.perdida,
     l2: E.l2, early: { ...E.early }, optimizador: E.optimizador, lr: E.lr, epocas: E.epocas, batch: E.batch,
   };
 }
 const firma = (cfg) => JSON.stringify(cfg);
+
+// Las entradas efectivas son las elegidas menos la variable objetivo.
+function sincronizarEntradas() {
+  E.entradas = E.entradasElegidas.filter((c) => c !== E.objetivo);
+}
 const arquitectura = (cfg) => [cfg.entradas.length, ...cfg.ocultas.map((c) => c.neuronas), cfg.salida.neuronas ?? "?"].join("-");
 
 // =====================================================================
@@ -696,20 +903,48 @@ function desglose(cfg = E) {
 // =====================================================================
 // Diagnóstico: errores (bloquean) y avisos (dejan seguir), por paso
 // =====================================================================
+function lista(v, maximo = 6) {
+  const items = v.length > maximo ? [...v.slice(0, maximo - 1), `${v.length - maximo + 1} más`] : v;
+  return items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} y ${items.at(-1)}`;
+}
+
+const valorColumna = (col, v) => (typeof v === "number" ? num(v, DATASET.info[col].decimales ?? 0) : v);
+
 function diagnosticar() {
   const D = PASOS.map(() => ({ errores: [], avisos: [] }));
   const error = (p, titulo, texto) => D[p].errores.push({ titulo, texto });
   const aviso = (p, titulo, texto) => D[p].avisos.push({ titulo, texto });
   const m = E.tarea, k = E.salida.neuronas, act = E.salida.activacion, perdida = E.perdida, ocultas = E.ocultas;
+  const def = definirTarea();
+  const obj = def?.objetivo ? `<code>${esc(def.objetivo)}</code>` : "";
 
   // Datos y tarea
   if (!m) error(0, "Falta elegir la tarea", "La tarea define qué variable aprende a predecir la red y, con eso, cuántas neuronas de salida necesita y qué función de pérdida corresponde.");
+  if (m && m !== "clustering" && !def.objetivo) {
+    error(0, "Falta la variable objetivo", columnasCompatibles(m).length
+      ? "Elegí qué columna tiene que predecir la red."
+      : `Ninguna columna del archivo sirve para ${TAREAS[m].titulo.toLowerCase()}: ${{ binaria: "hace falta una con exactamente dos valores", multiclase: "hace falta una con entre 3 y 20 clases", regresion: "hace falta una numérica" }[m]}.`);
+  }
+  const partes = conteo();
+  if (m && E.entradas.length && Math.min(partes.entrenamiento, partes.validacion, partes.prueba) < 10) {
+    error(0, "Muy pocos ejemplos", `Con esta partición quedan ${num(partes.entrenamiento)} ejemplos de entrenamiento, ${num(partes.validacion)} de validación y ${num(partes.prueba)} de prueba. Cada conjunto necesita al menos 10 para que las curvas y el resultado signifiquen algo.`);
+  }
+  if (!E.muestra && DATASET.n > LIMITES.filasRecomendadas) {
+    aviso(0, "Muchas filas para el navegador", `El archivo tiene ${num(DATASET.n)} filas y se recomiendan hasta ${num(LIMITES.filasRecomendadas)}. Entrenar con todas en el navegador puede tardar varios segundos por época. Con la muestra al azar, el entrenamiento es más ágil y el código Keras usa la misma muestra.`);
+  }
 
-  // Entradas
-  if (!E.entradas.length) error(1, "No hay entradas", "Marcá al menos un sensor. Sin variables de entrada, la red no tiene información con la cual decidir.");
-  if (!E.normalizar) {
-    aviso(1, "Entradas sin normalizar", "Las escalas son muy distintas: los ventiladores giran a miles de rpm y la vibración ronda 1 mm/s. Los pesos que multiplican a las variables grandes reciben gradientes mucho mayores, así que el descenso por gradiente oscila o diverge, sobre todo con SGD y un learning rate alto."
-      + (m === "clustering" ? " En clustering, además, las distancias a los centroides quedan dominadas por las variables de valores grandes." : ""));
+  // Capa de entrada
+  if (!E.entradas.length) error(1, "No hay entradas", "Marcá al menos una variable. Sin variables de entrada, la red no tiene información con la cual decidir.");
+  if (E.entradas.length > LIMITES.entradasRecomendadas) {
+    aviso(1, "Muchas variables de entrada", `Elegiste ${E.entradas.length} variables y se recomiendan hasta ${LIMITES.entradasRecomendadas}. Cada una suma una neurona de entrada y un peso por neurona de la primera capa oculta: con muchas variables y pocos ejemplos crece el riesgo de sobreajuste.`);
+  }
+  if (!E.normalizar && E.entradas.length > 1) {
+    const rangos = E.entradas.map((c) => ({ c, min: DATASET.info[c].min, max: DATASET.info[c].max, r: DATASET.info[c].max - DATASET.info[c].min }));
+    const grande = rangos.reduce((a, b) => (b.r > a.r ? b : a)), chica = rangos.reduce((a, b) => (b.r < a.r ? b : a));
+    if (grande.r > 10 * Math.max(chica.r, 1e-9)) {
+      aviso(1, "Entradas sin normalizar", `Las escalas son muy distintas: <code>${esc(grande.c)}</code> va de ${valorColumna(grande.c, grande.min)} a ${valorColumna(grande.c, grande.max)} y <code>${esc(chica.c)}</code>, de ${valorColumna(chica.c, chica.min)} a ${valorColumna(chica.c, chica.max)}. Los pesos que multiplican a las variables grandes reciben gradientes mucho mayores, así que el descenso por gradiente oscila o diverge, sobre todo con SGD y un learning rate alto.`
+        + (m === "clustering" ? " En clustering, además, las distancias a los centroides quedan dominadas por las variables de valores grandes." : ""));
+    }
   }
 
   // Capas ocultas
@@ -722,52 +957,60 @@ function diagnosticar() {
   if (saturables >= 2) {
     aviso(2, "Riesgo de saturación", `Hay ${saturables} capas con sigmoide o tanh. Para entradas grandes, estas funciones se aplanan y su derivada queda casi en cero. Backpropagation multiplica esas derivadas capa tras capa, así que el gradiente que llega a las primeras capas se achica y esas capas aprenden muy lento. Por eso en las capas ocultas se prefiere ReLU.`);
   }
-  if (m) {
-    const total = desglose().total, n = contarPartes(m).entrenamiento;
+  if (m && partes.entrenamiento) {
+    const total = desglose().total, n = partes.entrenamiento;
     if (total > n) {
-      aviso(2, "Muchos parámetros para pocos ejemplos", `La red tiene ${num(total)} parámetros entrenables y hay ${num(n)} ejemplos de entrenamiento: unos ${num(total / n, 1)} parámetros por ejemplo. Con tanta capacidad puede memorizar el entrenamiento, incluidas las etiquetas mal registradas, y generalizar peor. Mirá la curva de validación y probá dropout, L2 o early stopping.`);
+      aviso(2, "Muchos parámetros para pocos ejemplos", `La red tiene ${num(total)} parámetros entrenables y hay ${num(n)} ejemplos de entrenamiento: unos ${num(total / n, 1)} parámetros por ejemplo. Con tanta capacidad puede memorizar el entrenamiento, incluido el ruido de las etiquetas, y generalizar peor. Mirá la curva de validación y probá dropout, L2 o early stopping.`);
     }
   }
 
-  // Salida
+  // Capa de salida
   if (m) {
     if (!k) error(3, m === "clustering" ? "Falta elegir k" : "Faltan las neuronas de salida", m === "clustering" ? "Elegí cuántos grupos querés descubrir: la capa de salida tiene una neurona por grupo." : "Elegí cuántas neuronas tiene la capa de salida.");
     if (!act) error(3, "Falta la activación de salida", "Elegí la activación de la capa de salida: define el rango de valores que puede devolver la red.");
   }
-  if (m === "binaria") {
-    if (k > 2) error(3, "Demasiadas neuronas para una decisión binaria", `alerta_real solo vale 0 o 1. Alcanza con 1 neurona, que da la probabilidad de alerta, o con 2, una por clase. Con ${k}, ${k === 3 ? "sobra una salida que no corresponde" : `sobran ${k - 2} salidas que no corresponden`} a ninguna clase.`);
+  if (m === "binaria" && def.clases) {
+    const [a, b] = def.nombresClases;
+    if (k > 2) error(3, "Demasiadas neuronas para una decisión binaria", `${obj} tiene dos valores (${esc(a)} y ${esc(b)}). Alcanza con 1 neurona, que da la probabilidad de ${esc(b)}, o con 2, una por clase. Con ${k}, ${k === 3 ? "sobra una salida que no corresponde" : `sobran ${k - 2} salidas que no corresponden`} a ninguna clase.`);
     if (["lineal", "relu", "tanh"].includes(act)) error(3, "La salida no es una probabilidad", `${RANGO_INCOMPATIBLE[act]} La entropía cruzada y el umbral de 0,5 necesitan una probabilidad entre 0 y 1: usá sigmoide con 1 neurona o softmax con 2.`);
     if (act === "softmax" && k === 1) aviso(3, "Softmax con una sola neurona", "Softmax normaliza las salidas para que sumen 1. Con una sola neurona, la salida vale 1 para cualquier entrada: el gradiente es cero y la red no puede aprender. Te dejamos entrenar para que veas la curva plana.");
-    if (act === "sigmoide" && k === 2) aviso(3, "Dos sigmoides para clases excluyentes", "Cada sigmoide decide por su cuenta: las dos salidas no suman 1, y la red podría dar alta probabilidad a “alerta” y a “sin alerta” al mismo tiempo. Para dos clases excluyentes, usá softmax con 2 neuronas o sigmoide con 1.");
+    if (act === "sigmoide" && k === 2) aviso(3, "Dos sigmoides para clases excluyentes", `Cada sigmoide decide por su cuenta: las dos salidas no suman 1, y la red podría dar alta probabilidad a “${esc(b)}” y a “${esc(a)}” al mismo tiempo. Para dos clases excluyentes, usá softmax con 2 neuronas o sigmoide con 1.`);
   }
-  if (m === "multiclase") {
-    if (k && k !== 5) error(3, "Las neuronas no coinciden con las clases", `El estado tiene 5 clases (normal, térmico, eléctrico, almacenamiento y red) y hace falta una neurona por clase. Con ${k}, ${k < 5 ? "algunos estados se quedarían sin su salida" : "sobrarían salidas que no corresponden a ningún estado"}.`);
-    if (["lineal", "relu", "tanh"].includes(act)) error(3, "Las salidas no forman una distribución", `${RANGO_INCOMPATIBLE[act]} Para elegir entre 5 estados, las salidas tienen que ser probabilidades que sumen 1, y eso es lo que hace softmax.`);
-    if (act === "sigmoide") aviso(3, "Sigmoide en multiclase es multietiqueta", "Con sigmoide, cada salida es una probabilidad independiente: es el planteo multietiqueta, en el que una lectura podría tener varios estados a la vez. Acá cada lectura tiene un solo estado, así que lo esperable es softmax.");
+  if (m === "multiclase" && def.clases) {
+    const C = def.clases.length;
+    if (k && k !== C) error(3, "Las neuronas no coinciden con las clases", `${obj} tiene ${C} clases (${esc(lista(def.nombresClases))}) y hace falta una neurona por clase. Con ${k}, ${k < C ? "algunas clases se quedarían sin su salida" : "sobrarían salidas que no corresponden a ninguna clase"}.`);
+    if (["lineal", "relu", "tanh"].includes(act)) error(3, "Las salidas no forman una distribución", `${RANGO_INCOMPATIBLE[act]} Para elegir entre ${C} clases, las salidas tienen que ser probabilidades que sumen 1, y eso es lo que hace softmax.`);
+    if (act === "sigmoide") aviso(3, "Sigmoide en multiclase es multietiqueta", "Con sigmoide, cada salida es una probabilidad independiente: es el planteo multietiqueta, en el que un ejemplo podría pertenecer a varias clases a la vez. Acá cada ejemplo tiene una sola clase, así que lo esperable es softmax.");
   }
-  if (m === "regresion") {
-    if (k && k !== 1) error(3, "Se predice un solo número", `La red tiene que devolver los minutos de reparación, un único valor: la salida lleva 1 neurona y no ${k}.`);
-    if (["sigmoide", "tanh", "softmax"].includes(act)) error(3, "Rango de salida incompatible", `${act === "softmax" ? "Softmax hace que las salidas sumen 1: con una sola neurona, la salida vale siempre 1." : RANGO_INCOMPATIBLE[act]} Los tiempos de reparación van de 5 a más de 150 minutos, así que la red nunca podría alcanzarlos.`);
-    if (act === "relu") aviso(3, "ReLU en la salida", "Es válida acá porque los tiempos de reparación son siempre positivos: ReLU impide predecir minutos negativos. El riesgo es que, si la entrada de la neurona queda negativa para todos los ejemplos, su gradiente es cero y deja de aprender. Lo habitual en regresión es la salida lineal.");
+  if (m === "regresion" && def.objetivo) {
+    const rango = `${obj} va de ${valorColumna(def.objetivo, def.min)} a ${valorColumna(def.objetivo, def.max)}`;
+    const cabe = { sigmoide: def.min >= 0 && def.max <= 1, tanh: def.min >= -1 && def.max <= 1, relu: def.min >= 0 };
+    if (k && k !== 1) error(3, "Se predice un solo número", `La red tiene que devolver un único valor, ${obj}: la salida lleva 1 neurona y no ${k}.`);
+    if (act === "softmax") error(3, "Rango de salida incompatible", `Softmax hace que las salidas sumen 1: con una sola neurona, la salida vale siempre 1. ${rango}, así que la red no podría seguir sus variaciones.`);
+    if ((act === "sigmoide" || act === "tanh") && !cabe[act]) error(3, "Rango de salida incompatible", `${RANGO_INCOMPATIBLE[act]} ${rango}, así que la red nunca podría alcanzar esos valores.`);
+    if ((act === "sigmoide" || act === "tanh") && cabe[act]) aviso(3, `${ACTIVACIONES[act].nombre} en regresión`, `Funciona porque ${rango}, dentro del rango de ${ACTIVACIONES[act].nombre}. Igual, lo habitual en regresión es la salida lineal, que no limita los valores.`);
+    if (act === "relu" && cabe.relu) aviso(3, "ReLU en la salida", `Es válida acá porque ${obj} nunca es negativa: ReLU impide predecir valores negativos. El riesgo es que, si la entrada de la neurona queda negativa para todos los ejemplos, su gradiente es cero y deja de aprender. Lo habitual en regresión es la salida lineal.`);
+    if (act === "relu" && !cabe.relu) error(3, "Rango de salida incompatible", `${RANGO_INCOMPATIBLE.relu} ${rango}: la red no podría predecir los valores negativos.`);
   }
   if (m === "clustering" && act && act !== "softmax") {
-    error(3, "En clustering la salida es una pertenencia", `Cada neurona de salida indica cuánto pertenece la lectura a un grupo, y softmax devuelve valores entre 0 y 1 que suman 1, como vimos en C5. ${RANGO_INCOMPATIBLE[act]} Así, las salidas no son grados de pertenencia y la pérdida contra centroides pierde sentido.`);
+    error(3, "En clustering la salida es una pertenencia", `Cada neurona de salida indica cuánto pertenece el ejemplo a un grupo, y softmax devuelve valores entre 0 y 1 que suman 1, como vimos en C5. ${RANGO_INCOMPATIBLE[act]} Así, las salidas no son grados de pertenencia y la pérdida contra centroides pierde sentido.`);
   }
 
-  // Pérdida
+  // Función de pérdida
   if (m && !perdida) error(4, "Falta elegir la pérdida", "La pérdida mide qué tan lejos están las predicciones de los valores reales: es lo que el entrenamiento minimiza.");
-  if (m && m !== "clustering" && perdida === "centroides") error(4, "La pérdida contra centroides es para clustering", `No usa etiquetas: mide distancias entre las lecturas y los centroides. En esta tarea hay una variable objetivo (${DATASET.tareas[m].objetivo}) y la pérdida tiene que compararla con la salida de la red.`);
+  if (m && m !== "clustering" && perdida === "centroides") error(4, "La pérdida contra centroides es para clustering", `No usa etiquetas: mide distancias entre los ejemplos y los centroides. En esta tarea hay una variable objetivo${obj ? ` (${obj})` : ""} y la pérdida tiene que compararla con la salida de la red.`);
   if (m === "binaria") {
     if (perdida === "cce" && k === 1) error(4, "CCE con una sola neurona", "La entropía cruzada categórica normaliza las salidas para que sumen 1. Con una neurona, eso da siempre 1 y la pérdida vale 0 para cualquier peso: no hay nada que aprender. Usá BCE con 1 neurona o CCE con 2 neuronas softmax.");
     if (perdida === "mse" || perdida === "mae") aviso(4, `${PERDIDAS[perdida].corto} para una probabilidad`, "Funciona, pero la entropía cruzada es la pérdida natural para probabilidades: penaliza mucho cuando la red está segura y se equivoca, y con sigmoide da gradientes más grandes al principio. Con MSE o MAE, el aprendizaje suele ser más lento.");
     if (perdida === "bce" && k === 2 && act === "softmax") aviso(4, "BCE con 2 neuronas softmax", "Lo habitual con 2 neuronas softmax es CCE. BCE evalúa cada salida como una decisión separada: funciona, pero repite la información, porque con softmax una salida es 1 menos la otra.");
   }
   if (m === "multiclase") {
-    if (perdida === "bce") aviso(4, "BCE en multiclase", "BCE evalúa cada una de las 5 salidas como un sí o no independiente, que es el planteo multietiqueta. Si cada lectura tiene un solo estado, la pérdida esperable es CCE con softmax.");
-    if (perdida === "mse" || perdida === "mae") aviso(4, `${PERDIDAS[perdida].corto} en multiclase`, "Compara las 5 salidas con el vector one-hot como si fueran números cualesquiera. Funciona, pero no castiga tanto los errores cometidos con seguridad como la entropía cruzada, y aprende más lento.");
+    const C = def.clases ? def.clases.length : k;
+    if (perdida === "bce") aviso(4, "BCE en multiclase", `BCE evalúa cada una de las ${C} salidas como un sí o no independiente, que es el planteo multietiqueta. Si cada ejemplo tiene una sola clase, la pérdida esperable es CCE con softmax.`);
+    if (perdida === "mse" || perdida === "mae") aviso(4, `${PERDIDAS[perdida].corto} en multiclase`, `Compara las ${C} salidas con el vector one-hot como si fueran números cualesquiera. Funciona, pero no castiga tanto los errores cometidos con seguridad como la entropía cruzada, y aprende más lento.`);
   }
-  if (m === "regresion" && (perdida === "bce" || perdida === "cce")) error(4, "La entropía cruzada es para probabilidades", "Compara probabilidades entre 0 y 1 con etiquetas de clase. Los minutos de reparación son un número continuo: usá MSE o MAE.");
-  if (m === "clustering" && perdida && perdida !== "centroides") error(4, "En clustering no hay etiquetas", `${PERDIDAS[perdida].corto} necesita un valor real y con el cual comparar la salida, y en clustering no lo hay. La pérdida contra centroides usa solo las entradas: mide qué tan cerca está cada lectura de los centroides de sus grupos.`);
+  if (m === "regresion" && (perdida === "bce" || perdida === "cce")) error(4, "La entropía cruzada es para probabilidades", `Compara probabilidades entre 0 y 1 con etiquetas de clase. ${obj || "La variable objetivo"} es un número continuo: usá MSE o MAE.`);
+  if (m === "clustering" && perdida && perdida !== "centroides") error(4, "En clustering no hay etiquetas", `${PERDIDAS[perdida].corto} necesita un valor real y con el cual comparar la salida, y en clustering no lo hay. La pérdida contra centroides usa solo las entradas: mide qué tan cerca está cada ejemplo de los centroides de sus grupos.`);
 
   // Regularización
   if (E.l2 > 0 && !ocultas.length) aviso(5, "L2 sin capas ocultas", "En este configurador, L2 penaliza los pesos de las capas ocultas, y esta red no tiene ninguna: la penalización no va a cambiar nada.");
@@ -796,7 +1039,7 @@ function pasosConErrores(D, hasta = 6) {
 // con el tiempo real de cada corrida en esta computadora.
 function estimarSegundos() {
   if (!E.tarea) return 0;
-  const n = contarPartes(E.tarea).entrenamiento;
+  const n = conteo().entrenamiento;
   const W = desglose().total;
   const lotes = Math.ceil(n / E.batch);
   const computo = 0.0004 * lotes + 1.3e-8 * n * W * Math.pow(32 / E.batch, 0.2) * (E.tarea === "clustering" ? 1.2 : 1);
@@ -807,13 +1050,17 @@ function estimarSegundos() {
 // Vista previa: dibujo de la red en SVG
 // =====================================================================
 function etiquetasSalida(compacto) {
-  const n = E.salida.neuronas, m = E.tarea;
+  const n = E.salida.neuronas, m = E.tarea, def = definirTarea();
+  const corto = (t, max) => (compacto && t.length > max ? `${t.slice(0, max - 1)}.` : t);
   if (!n) return [];
-  if (m === "binaria" && n === 1) return [compacto ? "P(alerta)" : "probabilidad de alerta"];
-  if (m === "binaria" && n === 2) return ["sin alerta", "alerta"];
-  if (m === "multiclase" && n === 5) return compacto ? ["normal", "térmico", "eléctrico", "almac.", "red"] : DATASET.tareas.multiclase.nombresClases;
-  if (m === "regresion" && n === 1) return ["minutos"];
   if (m === "clustering") return Array.from({ length: n }, (_, i) => `grupo ${i + 1}`);
+  if (m === "binaria" && def?.clases && n === 1) {
+    const positiva = def.nombresClases[1];
+    if (compacto) return [`P(${corto(positiva, 8)})`];
+    return [DATASET.etiquetas[def.objetivo] ? `probabilidad de ${positiva}` : `P(${def.objetivo} = ${positiva})`];
+  }
+  if (def?.clases && n === def.clases.length) return def.nombresClases.map((t) => corto(t, 8));
+  if (m === "regresion" && def?.objetivo && n === 1) return [corto(def.unidad || def.objetivo, 9)];
   return Array.from({ length: n }, (_, i) => `salida ${i + 1}`);
 }
 
@@ -885,10 +1132,11 @@ function dibujarRed() {
     }
     if (c.n > 8) textos += `<text x="${c.x}" y="${c.y(6) + 6}" text-anchor="middle" class="t-puntos">⋮</text>`;
     if (c.nombres) {
-      c.slots.forEach((s, j) => {
-        if (!c.nombres[j]) return;
-        if (c.tipo === "entrada") textos += `<text x="${c.x - R - 6}" y="${c.y(s) + 4}" text-anchor="end" class="t-nombre">${esc(c.nombres[j])}</text>`;
-        else textos += textoEnLineas(c.nombres[j], c.x + R + 6, c.y(s) + 4, "start", "t-nombre", compacto ? 10 : 12);
+      c.slots.forEach((s) => {
+        const nombre = c.nombres[c.n > 8 && s === 7 ? c.n - 1 : s];
+        if (!nombre) return;
+        if (c.tipo === "entrada") textos += `<text x="${c.x - R - 6}" y="${c.y(s) + 4}" text-anchor="end" class="t-nombre">${esc(nombre)}</text>`;
+        else textos += textoEnLineas(nombre, c.x + R + 6, c.y(s) + 4, "start", "t-nombre", compacto ? 10 : 12);
       });
     }
     // Rótulos: dropout arriba; nombre, neuronas y activación abajo.
@@ -948,7 +1196,7 @@ function renderPrecio() {
     return `<li class="${f.tipo || ""}"><span>${texto}</span><strong>${num(f.valor)}</strong></li>`;
   }).join("");
   $("#precio-parcial").textContent = completo ? "" : "parcial";
-  const n = contarPartes(E.tarea || "binaria").entrenamiento;
+  const n = conteo().entrenamiento;
   $("#precio-nota").textContent = completo
     ? `Cada parámetro se ajusta con ${num(n)} ejemplos de entrenamiento: ${num(total / n, 2)} parámetros por ejemplo. Dropout no suma parámetros.`
     : "El total se completa cuando elijas la capa de salida.";
@@ -1053,92 +1301,9 @@ function svgCurvaPerdida(clave, ancho = 150, alto = 84) {
   return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true">${base}${cuerpo}</svg>`;
 }
 
-// Histograma de cada variable, coloreado por la clase de la tarea elegida.
-function histogramasVariables(clave) {
-  const tarea = clave ? DATASET.tareas[clave] : null;
-  const filas = filasDeTarea(DATASET, clave || "binaria").entrenamiento;
-  const colores = clave && COLORES_CLASE[clave];
-  const claseDe = colores ? (i) => tarea.clases.indexOf(DATASET.columnas[tarea.objetivo][i]) : () => 0;
-  const nClases = colores ? colores.length : 1;
-  const colorUnico = clave === "regresion" ? "#59717c" : "#9fb3bb";
-  const ancho = 160, alto = 62, bins = 16;
-  const graficos = DATASET.variables.map((v) => {
-    const valores = filas.map((i) => DATASET.columnas[v.columna][i]);
-    const minimo = Math.min(...valores), maximo = Math.max(...valores), paso = (maximo - minimo) / bins || 1;
-    const cuentas = Array.from({ length: bins }, () => Array(nClases).fill(0));
-    filas.forEach((i, j) => { cuentas[Math.min(bins - 1, Math.floor((valores[j] - minimo) / paso))][claseDe(i)]++; });
-    const tope = Math.max(...cuentas.map((c) => c.reduce((a, b) => a + b, 0)));
-    const anchoBin = ancho / bins;
-    let barras = "";
-    cuentas.forEach((c, b) => {
-      let y = alto;
-      c.forEach((n, k) => {
-        if (!n) return;
-        const h = (n / tope) * (alto - 4);
-        y -= h;
-        barras += `<rect x="${(b * anchoBin + 0.5).toFixed(1)}" y="${y.toFixed(1)}" width="${(anchoBin - 1).toFixed(1)}" height="${h.toFixed(1)}" fill="${colores ? colores[k] : colorUnico}"/>`;
-      });
-    });
-    return `<figure class="histograma"><figcaption><code>${v.columna}</code> <span>${v.unidad}</span></figcaption>
-      <svg viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none" aria-hidden="true">${barras}</svg>
-      <div class="extremos"><span>${num(minimo, v.decimales)}</span><span>${num(maximo, v.decimales)}</span></div></figure>`;
-  }).join("");
-  const leyenda = colores
-    ? leyendaGrafico(tarea.nombresClases.map((nombre, k) => ({ nombre: clave === "binaria" ? `${k}: ${nombre}` : nombre, color: colores[k] })))
-    : `<p class="leyenda">${!clave ? "Elegí una tarea para colorear las distribuciones según la variable objetivo." : clave === "regresion" ? "Solo las lecturas con incidente, que son las que tienen tiempo de reparación." : "Sin variable objetivo: no hay clases con qué colorear."}</p>`;
-  return `<div class="histogramas">${graficos}</div>${leyenda}`;
-}
 
-function distribucionObjetivo(clave) {
-  const tarea = DATASET.tareas[clave];
-  const filas = filasDeTarea(DATASET, clave).entrenamiento;
-  if (clave === "clustering") return "";
-  const valores = filas.map((i) => DATASET.columnas[tarea.objetivo][i]);
-  let cuerpo;
-  if (tarea.clases) {
-    const cuentas = tarea.clases.map((c) => valores.filter((v) => v === c).length);
-    const tope = Math.max(...cuentas);
-    cuerpo = `<div class="barras">${cuentas.map((n, k) => `<div class="barra"><span>${esc(clave === "binaria" ? `${k}: ${tarea.nombresClases[k]}` : tarea.nombresClases[k])}</span><span class="relleno" style="width:${(100 * n) / tope}%; background:${COLORES_CLASE[clave][k]}"></span><span class="num">${num(n)}</span></div>`).join("")}</div>`;
-  } else {
-    const bins = 18, minimo = Math.min(...valores), maximo = Math.max(...valores), paso = (maximo - minimo) / bins;
-    const cuentas = Array(bins).fill(0);
-    valores.forEach((v) => { cuentas[Math.min(bins - 1, Math.floor((v - minimo) / paso))]++; });
-    const tope = Math.max(...cuentas), ancho = 360, alto = 70;
-    cuerpo = `<svg class="histograma-objetivo" viewBox="0 0 ${ancho} ${alto + 16}" aria-hidden="true">${cuentas.map((n, b) => `<rect x="${(b * ancho) / bins + 1}" y="${alto - (n / tope) * (alto - 4)}" width="${ancho / bins - 2}" height="${(n / tope) * (alto - 4)}" fill="#163e50"/>`).join("")}
-      <text x="0" y="${alto + 13}" class="t-curva">${num(minimo)} min</text><text x="${ancho}" y="${alto + 13}" text-anchor="end" class="t-curva">${num(maximo)} min</text></svg>`;
-  }
-  return `<figure class="objetivo-dist"><figcaption>Variable objetivo: <code>${tarea.objetivo}</code>, en entrenamiento</figcaption>${cuerpo}</figure>`;
-}
 
-function barraParticion(clave) {
-  const c = contarPartes(clave), total = c.entrenamiento + c.validacion + c.prueba;
-  const partes = [["entrenamiento", "Entrenamiento", "#163e50"], ["validacion", "Validación", "#6fa6b4"], ["prueba", "Prueba", "#5f5078"]];
-  return `<div class="particion" role="img" aria-label="Partición: ${partes.map(([p, n]) => `${n} ${c[p]}`).join(", ")}">${partes.map(([p, nombre, color]) => `<div style="flex:${c[p]}; background:${color}"><strong>${nombre}</strong><span>${num(c[p])} (${Math.round((100 * c[p]) / total)}%)</span></div>`).join("")}</div>`;
-}
 
-// Rango de cada variable de entrada en entrenamiento, con o sin z-score.
-function escalasEntradas(ancho) {
-  if (!E.entradas.length) return "";
-  const datos = prepararDatos(DATASET, E.tarea || "binaria", E.entradas, E.normalizar);
-  const filas = E.entradas.map((c, j) => {
-    const v = datos.X.entrenamiento.map((f) => f[j]);
-    return { c, min: Math.min(...v), max: Math.max(...v), media: promedio(v) };
-  });
-  const lo = Math.min(0, ...filas.map((f) => f.min)), hi = Math.max(...filas.map((f) => f.max));
-  const mIzq = ancho < 420 ? 104 : 120, alto = 26 + filas.length * 22;
-  const X = (v) => mIzq + ((v - lo) / (hi - lo)) * (ancho - mIzq - 14);
-  let svg = "";
-  for (const t of ticksLindos(lo, hi, 4)) svg += `<line x1="${X(t).toFixed(1)}" x2="${X(t).toFixed(1)}" y1="4" y2="${alto - 18}" class="grilla"/><text class="eje" x="${X(t).toFixed(1)}" y="${alto - 4}" text-anchor="middle">${numEje(t)}</text>`;
-  filas.forEach((f, i) => {
-    const y = 14 + i * 22;
-    svg += `<text class="eje" x="${mIzq - 8}" y="${y + 4}" text-anchor="end">${f.c}</text>
-      <line x1="${X(f.min).toFixed(1)}" x2="${Math.max(X(f.max), X(f.min) + 2).toFixed(1)}" y1="${y}" y2="${y}" stroke="#8eb9c3" stroke-width="8" stroke-linecap="round"/>
-      <circle cx="${X(f.media).toFixed(1)}" cy="${y}" r="3.5" fill="#163e50"/>`;
-  });
-  return `<figure class="grafico escalas"><figcaption>Rango de cada entrada en entrenamiento, ${E.normalizar ? "con z-score" : "sin normalizar"}</figcaption>
-    <svg viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Rango de cada variable de entrada">${svg}</svg>
-    <p class="leyenda">La barra va del mínimo al máximo y el punto marca la media.${E.normalizar ? " Con z-score, todas quedan en la misma escala." : " Sin normalizar, los ventiladores (en miles de rpm) aplastan al resto."}</p></figure>`;
-}
 
 // =====================================================================
 // Modo estudio: conceptos y explicaciones plegables
@@ -1231,67 +1396,300 @@ function concepto(paso) {
 
 // =====================================================================
 // Pantallas
-// =====================================================================
+
+
+
+function extremos(valores) {
+  let minimo = Infinity, maximo = -Infinity;
+  for (const v of valores) { if (v < minimo) minimo = v; if (v > maximo) maximo = v; }
+  return [minimo, maximo];
+}
+
+function pearson(x, y) {
+  const n = x.length, mx = promedio(x), my = promedio(y);
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) { const a = x[i] - mx, b = y[i] - my; sxy += a * b; sxx += a * a; syy += b * b; }
+  return sxx && syy ? sxy / Math.sqrt(sxx * syy) : 0;
+}
+
+// Razón de correlación η: qué parte de la variación de x se explica por la clase.
+function razonCorrelacion(x, clases, k) {
+  const media = promedio(x), suma = Array(k).fill(0), cuenta = Array(k).fill(0);
+  x.forEach((v, i) => { suma[clases[i]] += v; cuenta[clases[i]]++; });
+  let entre = 0, total = 0;
+  suma.forEach((s, c) => { if (cuenta[c]) entre += cuenta[c] * (s / cuenta[c] - media) ** 2; });
+  x.forEach((v) => { total += (v - media) ** 2; });
+  return total ? Math.sqrt(entre / total) : 0;
+}
+
+function tarjetaDataset() {
+  return `<div class="dataset" id="zona-archivo">
+    <div class="dataset-info"><span class="etiqueta">Dataset</span><strong>${esc(DATASET.nombre)}</strong><span>${esc(DATASET.descripcion)}</span></div>
+    <div class="acciones">
+      <label class="boton primario">Subir un CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>
+      ${DATASET.embebido ? "" : '<button type="button" class="boton" data-accion="dataset-taller">Usar el dataset del taller</button>'}
+    </div>
+    <p class="leyenda">También podés arrastrar el archivo acá. Se lee en tu navegador y no se sube a ningún servidor. Recomendado: hasta ${LIMITES.entradasRecomendadas} variables de entrada y ${num(LIMITES.filasRecomendadas)} filas.</p>
+    <div id="error-archivo" aria-live="polite"></div>
+  </div>`;
+}
+
+function tablaMuestra() {
+  const col = DATASET.columnas, def = definirTarea();
+  const deEntrenamiento = (i) => !DATASET.columnaParticion || col[DATASET.columnaParticion][i] === "entrenamiento";
+  const colMuestra = DATASET.sugeridos.multiclase || DATASET.sugeridos.binaria;
+  let filas = [];
+  if (colMuestra && DATASET.info[colMuestra].nDistintos <= 5) {
+    for (const v of DATASET.info[colMuestra].distintos) {
+      const i = col[colMuestra].findIndex((x, j) => x === v && deEntrenamiento(j));
+      if (i >= 0) filas.push(i);
+    }
+  }
+  for (let i = 0; filas.length < 5 && i < DATASET.n; i++) if (!filas.includes(i)) filas.push(i);
+  filas = filas.slice(0, 5);
+  const rol = (c) => {
+    if (c === def?.objetivo) return ["objetivo", "objetivo"];
+    if (c === def?.referencia) return ["referencia", "objetivo"];
+    if (c === DATASET.columnaParticion) return ["partición", "particion"];
+    if (E.entradas.includes(c)) return ["entrada", "entrada"];
+    return [DATASET.info[c].tipo === "texto" ? "texto: no entra" : "no se usa", "sin-uso"];
+  };
+  const visibles = DATASET.orden.slice(0, 16);
+  const cuerpo = visibles.map((c) => {
+    const [texto, clase] = rol(c), info = DATASET.info[c];
+    const unidad = DATASET.variables.find((v) => v.columna === c)?.unidad;
+    const valores = filas.map((i) => {
+      const v = col[c][i];
+      return `<td class="num">${v == null ? '<span class="vacio">vacío</span>' : esc(typeof v === "number" ? num(v, info.decimales ?? 0) : v)}</td>`;
+    }).join("");
+    return `<tr class="${clase === "objetivo" ? "objetivo" : ""}"><th><code>${esc(c)}</code>${unidad ? ` <span class="unidad">${unidad}</span>` : ""}</th>
+      <td><span class="chip tipo-${info.tipo}">${info.tipo === "numero" ? "número" : "texto"}</span></td><td><span class="chip rol-${clase}">${texto}</span></td>${valores}</tr>`;
+  }).join("");
+  const pie = !def ? "Cinco ejemplos del archivo, uno por columna en cada fila. El rol de cada columna cambia según la tarea y las entradas que elijas."
+    : def.objetivo ? `La fila resaltada, <code>${esc(def.objetivo)}</code>, es la variable objetivo.`
+    : def.referencia ? `En clustering no hay variable objetivo: <code>${esc(def.referencia)}</code> solo se usa al final para interpretar los grupos.`
+    : "En clustering no hay variable objetivo.";
+  return `<div class="tabla-scroll"><table class="tabla muestra"><thead><tr><th>Columna</th><th>Tipo</th><th>Rol</th>${filas.map((_, j) => `<th class="num">Ejemplo ${j + 1}</th>`).join("")}</tr></thead>
+    <tbody>${cuerpo}</tbody></table></div>
+    ${DATASET.orden.length > visibles.length ? `<p class="leyenda">Y ${DATASET.orden.length - visibles.length} columnas más.</p>` : ""}<p class="leyenda">${pie}</p>`;
+}
+
+function selectorObjetivo() {
+  const opciones = columnasCompatibles(E.tarea);
+  const resumen = (c) => {
+    const i = DATASET.info[c];
+    if (i.tipo === "numero" && i.nDistintos > 20) return `numérica, de ${valorColumna(c, i.min)} a ${valorColumna(c, i.max)}`;
+    return `${i.nDistintos} valores: ${lista(i.distintos.map((v) => nombreValor(c, v)), 4)}`;
+  };
+  const rotulo = E.tarea === "clustering" ? "Columna para interpretar los grupos (opcional)" : "Variable objetivo";
+  const ninguna = E.tarea === "clustering" ? `<option value="" ${E.objetivo ? "" : "selected"}>Ninguna</option>` : "";
+  return `<div class="grilla-campos"><label class="campo ancho">${rotulo}<select data-campo="objetivo">${ninguna}${opciones.map((c) => `<option value="${esc(c)}" ${c === E.objetivo ? "selected" : ""}>${esc(c)} (${esc(resumen(c))})</option>`).join("")}</select></label></div>`;
+}
+
+// Histogramas por clase en clasificación; en regresión, cada variable contra el objetivo.
+function histogramasVariables() {
+  const def = definirTarea();
+  const filas = particionar().entrenamiento, col = DATASET.columnas;
+  const variables = DATASET.variables.filter((v) => v.columna !== def?.objetivo && v.columna !== def?.referencia);
+  const visibles = variables.slice(0, 12);
+  const colClase = def?.objetivo && def.clases ? def.objetivo : null;
+  const nClases = colClase ? def.clases.length : 1;
+  const regresion = def?.tipo === "regresion" && def.objetivo;
+  const paso = Math.max(1, Math.ceil(filas.length / 400)), muestra = filas.filter((_, j) => j % paso === 0);
+  const ancho = 160, alto = 62, bins = 16;
+  const graficos = visibles.map((v) => {
+    const [minimo, maximo] = extremos(filas.map((i) => col[v.columna][i]));
+    const rango = maximo - minimo || 1;
+    let cuerpo = "";
+    if (regresion) {
+      const yRango = def.max - def.min || 1;
+      cuerpo = muestra.map((i) => `<circle cx="${(3 + ((col[v.columna][i] - minimo) / rango) * (ancho - 6)).toFixed(1)}" cy="${(alto - 3 - ((col[def.objetivo][i] - def.min) / yRango) * (alto - 6)).toFixed(1)}" r="1.7" fill="#163e50" fill-opacity=".3"/>`).join("");
+    } else {
+      const cuentas = Array.from({ length: bins }, () => Array(nClases).fill(0));
+      for (const i of filas) {
+        const b = Math.min(bins - 1, Math.floor(((col[v.columna][i] - minimo) / rango) * bins));
+        cuentas[b][colClase ? def.clases.indexOf(col[colClase][i]) : 0]++;
+      }
+      const tope = Math.max(...cuentas.map((c) => c.reduce((a, b) => a + b, 0)), 1), anchoBin = ancho / bins;
+      cuentas.forEach((c, b) => {
+        let y = alto;
+        c.forEach((n, k) => {
+          if (!n) return;
+          const h = (n / tope) * (alto - 4);
+          y -= h;
+          cuerpo += `<rect x="${(b * anchoBin + 0.5).toFixed(1)}" y="${y.toFixed(1)}" width="${(anchoBin - 1).toFixed(1)}" height="${h.toFixed(1)}" fill="${colClase ? colorClase(k, nClases) : "#9fb3bb"}"/>`;
+        });
+      });
+    }
+    return `<figure class="histograma"><figcaption><code>${esc(v.columna)}</code> <span>${v.unidad || ""}</span></figcaption>
+      <svg viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none" aria-hidden="true">${cuerpo}</svg>
+      <div class="extremos"><span>${valorColumna(v.columna, minimo)}</span><span>${valorColumna(v.columna, maximo)}</span></div></figure>`;
+  }).join("");
+  let leyenda;
+  if (colClase) leyenda = leyendaGrafico(def.nombresClases.slice(0, 12).map((nombre, k) => ({ nombre: nClases === 2 ? `${valorColumna(colClase, def.clases[k])}: ${nombre}` : nombre, color: colorClase(k, nClases) })));
+  else if (regresion) leyenda = `<p class="leyenda">Cada punto es un ejemplo de entrenamiento: la variable en el eje horizontal y <code>${esc(def.objetivo)}</code> en el vertical.</p>`;
+  else leyenda = `<p class="leyenda">${!def ? "Elegí una tarea para colorear las distribuciones según la variable objetivo." : "Sin variable objetivo: no hay clases con qué colorear."}</p>`;
+  const resto = variables.length > visibles.length ? `<p class="leyenda">Se muestran ${visibles.length} de ${variables.length} variables numéricas.</p>` : "";
+  return `<div class="histogramas">${graficos}</div>${leyenda}${resto}`;
+}
+
+function distribucionObjetivo() {
+  const def = definirTarea();
+  if (!def) return "";
+  if (!def.objetivo) return "";
+  const filas = particionar().entrenamiento;
+  const valores = filas.map((i) => DATASET.columnas[def.objetivo][i]);
+  let cuerpo;
+  if (def.clases) {
+    const cuentas = def.clases.map((c) => valores.filter((v) => v === c).length);
+    const tope = Math.max(...cuentas, 1), total = def.clases.length;
+    cuerpo = `<div class="barras">${cuentas.map((n, k) => `<div class="barra"><span>${esc(total === 2 ? `${valorColumna(def.objetivo, def.clases[k])}: ${def.nombresClases[k]}` : def.nombresClases[k])}</span><span class="relleno" style="width:${(100 * n) / tope}%; background:${colorClase(k, total)}"></span><span class="num">${num(n)}</span></div>`).join("")}</div>`;
+  } else {
+    const bins = 18, [minimo, maximo] = extremos(valores), paso = (maximo - minimo) / bins || 1;
+    const cuentas = Array(bins).fill(0);
+    valores.forEach((v) => { cuentas[Math.min(bins - 1, Math.floor((v - minimo) / paso))]++; });
+    const tope = Math.max(...cuentas), ancho = 360, alto = 70, unidad = def.unidad ? ` ${def.unidad}` : "";
+    cuerpo = `<svg class="histograma-objetivo" viewBox="0 0 ${ancho} ${alto + 16}" aria-hidden="true">${cuentas.map((n, b) => `<rect x="${(b * ancho) / bins + 1}" y="${alto - (n / tope) * (alto - 4)}" width="${ancho / bins - 2}" height="${(n / tope) * (alto - 4)}" fill="#163e50"/>`).join("")}
+      <text x="0" y="${alto + 13}" class="t-curva">${valorColumna(def.objetivo, minimo)}${unidad}</text><text x="${ancho}" y="${alto + 13}" text-anchor="end" class="t-curva">${valorColumna(def.objetivo, maximo)}${unidad}</text></svg>`;
+  }
+  return `<figure class="objetivo-dist"><figcaption>Variable objetivo: <code>${esc(def.objetivo)}</code>, en entrenamiento</figcaption>${cuerpo}</figure>`;
+}
+
+function barraParticion() {
+  const c = conteo(), total = c.entrenamiento + c.validacion + c.prueba;
+  if (!total) return '<p class="nota">No quedan filas para entrenar: revisá las columnas elegidas.</p>';
+  const partes = [["entrenamiento", "Entrenamiento", "#163e50"], ["validacion", "Validación", "#6fa6b4"], ["prueba", "Prueba", "#5f5078"]];
+  const descartadas = DATASET.n - total;
+  const detalle = [];
+  if (E.muestra && DATASET.n > LIMITES.filasRecomendadas) detalle.push(`una muestra al azar de ${num(LIMITES.filasRecomendadas)} filas`);
+  if (descartadas > 0 && !(E.muestra && DATASET.n > LIMITES.filasRecomendadas)) detalle.push(`se descartan ${num(descartadas)} filas con valores vacíos en las columnas usadas`);
+  return `<div class="particion" role="img" aria-label="Partición: ${partes.map(([p, n]) => `${n} ${c[p]}`).join(", ")}">${partes.map(([p, nombre, color]) => `<div style="flex:${Math.max(c[p], 1)}; background:${color}"><strong>${nombre}</strong><span>${num(c[p])} (${Math.round((100 * c[p]) / total)}%)</span></div>`).join("")}</div>
+    <p class="leyenda">Se usan ${num(total)} ejemplos${detalle.length ? `: ${detalle.join("; ")}` : ""}.</p>`;
+}
+
+function controlesParticion() {
+  const p = E.particion, conColumna = !!DATASET.columnaParticion, modo = conColumna ? p.modo : "azar";
+  const selectorModo = conColumna ? `<div class="segmentado" role="radiogroup" aria-label="Origen de la partición">
+      <label class="opcion"><input type="radio" name="particion-modo" value="columna" data-campo="particion-modo" ${modo === "columna" ? "checked" : ""}>Usar la columna <code>${esc(DATASET.columnaParticion)}</code></label>
+      <label class="opcion"><input type="radio" name="particion-modo" value="azar" data-campo="particion-modo" ${modo === "azar" ? "checked" : ""}>Generar al azar</label></div>` : "";
+  return `${selectorModo}
+    <div class="grilla-campos particion-azar" ${modo === "columna" ? "hidden" : ""}>
+      <label class="campo"><span>Entrenamiento: <output id="salida-p-entrenamiento">${p.entrenamiento}%</output></span><input type="range" min="40" max="80" step="5" value="${p.entrenamiento}" data-campo="p-entrenamiento"></label>
+      <label class="campo"><span>Validación: <output id="salida-p-validacion">${p.validacion}%</output></span><input type="range" min="5" max="30" step="5" value="${p.validacion}" data-campo="p-validacion"></label>
+      <div class="campo"><span>Prueba: <output id="salida-p-prueba">${100 - p.entrenamiento - p.validacion}%</output></span><span class="ayuda">lo que queda</span></div>
+      <label class="campo">Semilla<input type="number" min="0" max="999999" step="1" value="${p.semilla}" data-campo="semilla"></label>
+    </div>
+    ${DATASET.n > LIMITES.filasRecomendadas ? `<label class="casilla"><input type="checkbox" data-campo="muestra" ${E.muestra ? "checked" : ""}>Entrenar con una muestra al azar de ${num(LIMITES.filasRecomendadas)} filas</label>` : ""}
+    <div id="barra-particion">${barraParticion()}</div>`;
+}
+
+// Asociación de cada entrada candidata con la variable objetivo, en entrenamiento.
+function asociacionEntradas(ancho) {
+  const def = definirTarea();
+  if (!def?.objetivo) return `<p class="leyenda">${def?.tipo === "clustering" ? "En clustering no hay variable objetivo con la cual medir la asociación." : "Elegí una tarea y una variable objetivo para ver la asociación de cada entrada."}</p>`;
+  const candidatas = DATASET.variables.map((v) => v.columna).filter((c) => c !== def.objetivo);
+  if (!candidatas.length) return "";
+  const filas = particionar({ ...configActual(), entradas: candidatas }).entrenamiento, col = DATASET.columnas;
+  const y = filas.map((i) => (def.clases ? def.clases.indexOf(col[def.objetivo][i]) : col[def.objetivo][i]));
+  const multiclase = def.tipo === "multiclase";
+  const medidas = candidatas.map((c) => {
+    const x = filas.map((i) => col[c][i]);
+    return { c, v: multiclase ? razonCorrelacion(x, y, def.clases.length) : Math.abs(pearson(x, y)) };
+  }).sort((a, b) => b.v - a.v).slice(0, 15);
+  const mIzq = ancho < 420 ? 104 : 130, fila = 22, alto = medidas.length * fila + 22;
+  const X = (v) => mIzq + v * (ancho - mIzq - 44);
+  let svg = "";
+  for (const t of [0, 0.25, 0.5, 0.75, 1]) svg += `<line class="grilla" x1="${X(t)}" x2="${X(t)}" y1="2" y2="${alto - 18}"/><text class="eje" x="${X(t)}" y="${alto - 4}" text-anchor="middle">${num(t, 2)}</text>`;
+  medidas.forEach(({ c, v }, i) => {
+    const y0 = 6 + i * fila, elegida = E.entradas.includes(c);
+    svg += `<text class="eje" x="${mIzq - 8}" y="${y0 + 11}" text-anchor="end">${esc(c.length > 18 ? `${c.slice(0, 17)}.` : c)}</text>
+      <rect x="${mIzq}" y="${y0 + 2}" width="${Math.max(1, X(v) - mIzq).toFixed(1)}" height="12" rx="3" fill="${elegida ? "#163e50" : "#c8d6db"}"/>
+      <text class="eje" x="${(X(v) + 5).toFixed(1)}" y="${y0 + 12}">${num(v, 2)}</text>`;
+  });
+  const explicacion = multiclase
+    ? "η (razón de correlación) mide cuánto de la variación de cada variable se explica por la clase: 0 si las clases no se distinguen y 1 si la separan por completo."
+    : "|r| es el valor absoluto de la correlación de Pearson: 0 es ninguna relación lineal y 1, una relación lineal perfecta.";
+  return `<figure class="grafico escalas"><figcaption>Asociación de cada variable con <code>${esc(def.objetivo)}</code> (${multiclase ? "η" : "|r|"}, en entrenamiento)</figcaption>
+    <svg viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Asociación de cada variable con la variable objetivo">${svg}</svg>
+    <p class="leyenda">${explicacion} En gris, las variables que no elegiste. Una asociación baja no descarta una variable: la red puede combinarla con otras de forma no lineal.</p></figure>`;
+}
+
+// Rango de cada variable de entrada en entrenamiento, con o sin z-score.
+function escalasEntradas(ancho) {
+  if (!E.entradas.length) return "";
+  const datos = prepararDatos(E);
+  const filas = E.entradas.slice(0, 15).map((c, j) => {
+    const v = datos.X.entrenamiento.map((f) => f[j]);
+    const [minimo, maximo] = extremos(v);
+    return { c, min: minimo, max: maximo, media: promedio(v) };
+  });
+  const lo = Math.min(0, ...filas.map((f) => f.min)), hi = Math.max(...filas.map((f) => f.max));
+  const mIzq = ancho < 420 ? 104 : 130, alto = 26 + filas.length * 22;
+  const X = (v) => mIzq + ((v - lo) / (hi - lo || 1)) * (ancho - mIzq - 14);
+  let svg = "";
+  for (const t of ticksLindos(lo, hi, 4)) svg += `<line x1="${X(t).toFixed(1)}" x2="${X(t).toFixed(1)}" y1="4" y2="${alto - 18}" class="grilla"/><text class="eje" x="${X(t).toFixed(1)}" y="${alto - 4}" text-anchor="middle">${numEje(t)}</text>`;
+  filas.forEach((f, i) => {
+    const y = 14 + i * 22;
+    svg += `<text class="eje" x="${mIzq - 8}" y="${y + 4}" text-anchor="end">${esc(f.c.length > 18 ? `${f.c.slice(0, 17)}.` : f.c)}</text>
+      <line x1="${X(f.min).toFixed(1)}" x2="${Math.max(X(f.max), X(f.min) + 2).toFixed(1)}" y1="${y}" y2="${y}" stroke="#8eb9c3" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="${X(f.media).toFixed(1)}" cy="${y}" r="3.5" fill="#163e50"/>`;
+  });
+  const grande = filas.reduce((a, b) => (b.max - b.min > a.max - a.min ? b : a));
+  const nota = E.normalizar ? "Con z-score, todas quedan en la misma escala." : `Sin normalizar, las variables de valores grandes, como <code>${esc(grande.c)}</code>, aplastan al resto.`;
+  return `<figure class="grafico escalas"><figcaption>Rango de cada entrada en entrenamiento, ${E.normalizar ? "con z-score" : "sin normalizar"}</figcaption>
+    <svg viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Rango de cada variable de entrada">${svg}</svg>
+    <p class="leyenda">La barra va del mínimo al máximo y el punto marca la media. ${nota}${E.entradas.length > filas.length ? ` Se muestran ${filas.length} de ${E.entradas.length} entradas.` : ""}</p></figure>`;
+}
+
 function pasoDatos() {
   const tarjeta = (clave) => {
-    const t = TAREAS[clave], elegida = E.tarea === clave, n = contarPartes(clave).entrenamiento;
-    return `<button type="button" class="tarjeta-tarea${elegida ? " elegida" : ""}" data-accion="tarea" data-valor="${clave}" aria-pressed="${elegida}">
-      ${svgIconoTarea(clave)}<strong>${t.titulo}</strong><span class="texto">${t.texto}</span>
-      <span class="pie-tarjeta">${t.objetivo ? `Objetivo: <code>${t.objetivo}</code>` : "Sin variable objetivo"} - ${num(n)} ejemplos</span></button>`;
+    const t = TAREAS[clave], elegida = E.tarea === clave;
+    const sugerido = objetivoPorDefecto(clave);
+    const posible = clave === "clustering" || columnasCompatibles(clave).length > 0;
+    const pie = clave === "clustering" ? "Sin variable objetivo" : posible ? `Objetivo sugerido: <code>${esc(sugerido)}</code>` : "Ninguna columna sirve como objetivo";
+    return `<button type="button" class="tarjeta-tarea${elegida ? " elegida" : ""}" data-accion="tarea" data-valor="${clave}" aria-pressed="${elegida}" ${posible ? "" : "disabled"}>
+      ${svgIconoTarea(clave)}<strong>${t.titulo}</strong><span class="texto">${t.texto}</span><span class="pie-tarjeta">${pie}</span></button>`;
   };
   return `<h2>Datos y tarea</h2>
-    <p class="bajada">${DATASET.descripcion}. Mirá los datos y elegí qué querés que prediga la red.</p>
+    <p class="bajada">Cargá un dataset o usá el del taller, y elegí qué querés que prediga la red.</p>
     ${concepto(0)}
+    ${tarjetaDataset()}
     ${tablaMuestra()}
     <h3>Tarea</h3>
     <p class="familia">Aprendizaje supervisado</p>
     <div class="tarjetas">${["binaria", "multiclase", "regresion"].map(tarjeta).join("")}</div>
     <p class="familia">Aprendizaje no supervisado</p>
     <div class="tarjetas">${tarjeta("clustering")}</div>
+    ${E.tarea ? selectorObjetivo() : ""}
     <h3>Distribuciones</h3>
-    ${E.tarea ? distribucionObjetivo(E.tarea) : ""}
-    ${histogramasVariables(E.tarea)}
+    ${distribucionObjetivo()}
+    ${histogramasVariables()}
     <h3>Partición</h3>
-    ${barraParticion(E.tarea || "binaria")}
-    <p class="nota">El 6% de las etiquetas se registró mal a propósito: es error irreducible. Ningún modelo puede acertar el 100% en prueba, y si una red llega al 100% en entrenamiento, está memorizando esos errores.</p>`;
-}
-
-function tablaMuestra() {
-  const col = DATASET.columnas;
-  const filas = DATASET.tareas.multiclase.clases
-    .map((estado) => { for (let i = 0; i < DATASET.n; i++) if (col.particion[i] === "entrenamiento" && col.estado[i] === estado) return i; return null; })
-    .filter((i) => i !== null);
-  const objetivo = E.tarea ? DATASET.tareas[E.tarea].objetivo : null;
-  const etiquetas = ["estado", "alerta_real", "tiempo_reparacion_min"];
-  const clase = (c) => (c === objetivo ? "objetivo" : E.tarea ? "sin-uso" : "");
-  const entrada = (v) => `<tr><th><code>${v.columna}</code> <span class="unidad">${v.unidad}</span></th>${filas.map((i) => `<td class="num">${num(col[v.columna][i], v.decimales)}</td>`).join("")}</tr>`;
-  const etiqueta = (c) => `<tr class="${clase(c)}"><th><code>${c}</code></th>${filas.map((i) => {
-    const v = col[c][i];
-    return `<td class="num">${v == null ? "vacío" : c === "tiempo_reparacion_min" ? num(v) : esc(v)}</td>`;
-  }).join("")}</tr>`;
-  const pie = !E.tarea ? "Un ejemplo de cada estado, tomados del conjunto de entrenamiento."
-    : E.tarea === "clustering" ? "En clustering no se usa ninguna variable objetivo: el estado real solo sirve al final para interpretar los grupos."
-    : `La fila resaltada, <code>${objetivo}</code>, es la variable objetivo; las otras dos no se usan en esta tarea.`;
-  return `<div class="tabla-scroll"><table class="tabla muestra"><thead><tr><th>Columna</th>${filas.map((_, j) => `<th class="num">Ejemplo ${j + 1}</th>`).join("")}</tr></thead><tbody>
-    <tr class="grupo"><th colspan="${filas.length + 1}">Variables de entrada</th></tr>${DATASET.variables.map(entrada).join("")}
-    <tr class="grupo"><th colspan="${filas.length + 1}">Posibles variables objetivo</th></tr>${etiquetas.map(etiqueta).join("")}
-  </tbody></table></div><p class="leyenda">${pie}</p>`;
+    ${controlesParticion()}
+    ${DATASET.nota ? `<p class="nota">${DATASET.nota}</p>` : ""}`;
 }
 
 function pasoEntrada() {
-  const tr = filasDeTarea(DATASET, E.tarea || "binaria").entrenamiento;
+  const def = definirTarea();
   const sensores = DATASET.variables.map((v) => {
-    const valores = tr.map((i) => DATASET.columnas[v.columna][i]);
-    return `<label class="sensor"><input type="checkbox" data-campo="entrada" value="${v.columna}" ${E.entradas.includes(v.columna) ? "checked" : ""}>
-      <span><strong>${v.columna}</strong> <span class="unidad">(${v.unidad})</span><span class="rango">de ${num(Math.min(...valores), v.decimales)} a ${num(Math.max(...valores), v.decimales)}</span></span></label>`;
+    const reservada = v.columna === def?.objetivo || v.columna === def?.referencia;
+    const i = DATASET.info[v.columna];
+    const detalle = reservada ? (v.columna === def.objetivo ? "es la variable objetivo" : "es la columna para interpretar los grupos") : `de ${valorColumna(v.columna, i.min)} a ${valorColumna(v.columna, i.max)}${i.nulos ? `, ${num(i.nulos)} vacíos` : ""}`;
+    return `<label class="sensor${reservada ? " reservada" : ""}"><input type="checkbox" data-campo="entrada" value="${esc(v.columna)}" ${E.entradas.includes(v.columna) ? "checked" : ""} ${reservada ? "disabled" : ""}>
+      <span><strong>${esc(v.columna)}</strong>${v.unidad ? ` <span class="unidad">(${v.unidad})</span>` : ""}<span class="rango">${detalle}</span></span></label>`;
   }).join("");
+  const textos = DATASET.orden.filter((c) => DATASET.info[c].tipo === "texto" && c !== DATASET.columnaParticion && c !== def?.objetivo && c !== def?.referencia);
   const ancho = Math.max(300, Math.min(640, Math.round($("#contenido-paso").clientWidth || 600) - 4));
   return `<h2>Capa de entrada</h2>
     <p class="bajada">Elegí las variables de entrada y si se normalizan.</p>
     ${concepto(1)}
     <div class="sensores">${sensores}</div>
+    ${textos.length ? `<p class="leyenda">Las columnas de texto (${textos.map((c) => `<code>${esc(c)}</code>`).join(", ")}) no pueden ser entradas: la red solo opera con números.</p>` : ""}
     <div class="acciones"><button type="button" class="boton chico" data-accion="todas-entradas">Marcar todas</button>
+      <button type="button" class="boton chico" data-accion="ninguna-entrada">Desmarcar todas</button>
       <span class="dimension">Dimensión de entrada: <strong id="dimension-entrada">d = ${E.entradas.length}</strong></span></div>
+    <h3>Asociación con la variable objetivo</h3>
+    <div id="asociacion">${asociacionEntradas(ancho)}</div>
     <h3>Normalización</h3>
     <label class="interruptor"><input type="checkbox" data-campo="normalizar" ${E.normalizar ? "checked" : ""}><span class="pista"></span>Normalizar con z-score</label>
     <div id="escalas">${escalasEntradas(ancho)}</div>`;
@@ -1312,16 +1710,18 @@ function pasoCapas() {
 }
 
 function pasoSalida() {
-  const m = E.tarea, k = E.salida.neuronas;
+  const m = E.tarea, k = E.salida.neuronas, def = definirTarea();
+  const obj = def.objetivo ? `<code>${esc(def.objetivo)}</code>` : "";
   const bajadas = {
-    binaria: "<code>alerta_real</code> vale 0 o 1.",
-    multiclase: "<code>estado</code> tiene 5 clases y cada lectura tiene exactamente una.",
-    regresion: "<code>tiempo_reparacion_min</code> es un número positivo, sin un máximo fijo.",
+    binaria: def.clases ? `${obj} tiene dos valores: ${esc(def.nombresClases[0])} y ${esc(def.nombresClases[1])}.` : "",
+    multiclase: def.clases ? `${obj} tiene ${def.clases.length} clases y cada ejemplo tiene exactamente una.` : "",
+    regresion: def.objetivo ? `${obj} es numérica: va de ${valorColumna(def.objetivo, def.min)} a ${valorColumna(def.objetivo, def.max)}.` : "",
     clustering: "No hay variable objetivo: cada neurona de salida es el grado de pertenencia a un grupo, y la cantidad de neuronas es k.",
   };
+  const maximo = Math.max(8, def.clases?.length || 0);
   const neuronas = m === "clustering"
     ? `<label class="campo">Cantidad de grupos (k)<select data-campo="salida-neuronas"><option value="" ${k ? "" : "selected"} disabled>Elegí k</option>${[2, 3, 4, 5, 6, 7, 8].map((n) => `<option value="${n}" ${n === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>`
-    : `<label class="campo">Neuronas de salida<select data-campo="salida-neuronas"><option value="" ${k ? "" : "selected"} disabled>Elegí</option>${[1, 2, 3, 4, 5, 6, 7, 8].map((n) => `<option value="${n}" ${n === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>`;
+    : `<label class="campo">Neuronas de salida<select data-campo="salida-neuronas"><option value="" ${k ? "" : "selected"} disabled>Elegí</option>${Array.from({ length: maximo }, (_, i) => i + 1).map((n) => `<option value="${n}" ${n === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>`;
   const activaciones = ACT_SALIDA.map((a) => `<label class="opcion con-curva"><input type="radio" name="salida-activacion" value="${a}" data-campo="salida-activacion" ${E.salida.activacion === a ? "checked" : ""}>
       ${svgCurvaActivacion(a, 84, 52)}<span><strong>${ACTIVACIONES[a].nombre}</strong><span class="texto">${ACTIVACIONES[a].rango}</span></span></label>`).join("");
   return `<h2>Capa de salida</h2>
@@ -1332,11 +1732,14 @@ function pasoSalida() {
 }
 
 function textoMetrica(m) {
+  const def = definirTarea();
   return {
-    binaria: "<strong>Exactitud</strong>: proporción de lecturas bien clasificadas. Con 1 neurona, la red predice la clase 1 cuando la probabilidad es al menos 0,5; con 2, elige la clase de mayor probabilidad.",
-    multiclase: "<strong>Exactitud</strong>: proporción de lecturas con el estado correcto, tomando la clase de mayor probabilidad.",
-    regresion: "<strong>MAE en minutos</strong>: cuánto se equivoca la red en promedio. Se informa aunque entrenes con MSE, porque se lee directamente en minutos.",
-    clustering: "<strong>ARI</strong> (índice de Rand ajustado) entre los grupos y el estado real. La red nunca ve el estado: se usa solo para interpretar los grupos. Vale 1 si los grupos coinciden con los estados y alrededor de 0 si se parecen a un reparto al azar.",
+    binaria: "<strong>Exactitud</strong>: proporción de ejemplos bien clasificados. Con 1 neurona, la red predice la segunda clase cuando la probabilidad es al menos 0,5; con 2, elige la clase de mayor probabilidad.",
+    multiclase: "<strong>Exactitud</strong>: proporción de ejemplos con la clase correcta, tomando la de mayor probabilidad.",
+    regresion: `<strong>MAE${def?.unidad ? ` en ${def.unidad}` : ""}</strong>: cuánto se equivoca la red en promedio, en las unidades de la variable objetivo. Se informa aunque entrenes con MSE, porque se lee directamente.`,
+    clustering: def?.referencia
+      ? `<strong>ARI</strong> (índice de Rand ajustado) entre los grupos y <code>${esc(def.referencia)}</code>. La red nunca ve esa columna: se usa solo para interpretar los grupos. Vale 1 si los grupos coinciden con sus valores y alrededor de 0 si se parecen a un reparto al azar.`
+      : "Sin columna de referencia no hay métrica externa: se informan la pérdida contra centroides y el tamaño de cada grupo.",
   }[m];
 }
 
@@ -1344,7 +1747,7 @@ function pasoPerdida() {
   const opciones = Object.entries(PERDIDAS).map(([clave, p]) => `<label class="opcion con-curva"><input type="radio" name="perdida" value="${clave}" data-campo="perdida" ${E.perdida === clave ? "checked" : ""}>
       ${svgCurvaPerdida(clave)}<span><strong>${p.nombre}${p.corto !== p.nombre ? ` (${p.corto})` : ""}</strong><span class="formula">${p.formula}</span><span class="texto solo-estudio">${p.texto}</span></span></label>`).join("");
   const centroides = E.tarea === "clustering"
-    ? `<div class="nota">Es la formulación de C5: softmax da la pertenencia q de cada lectura a cada grupo, y los centroides c también se entrenan. ${porque("centroides", "<p>La pérdida es mean(Σⱼ qᵢⱼ ‖xᵢ − cⱼ‖²). No es la única forma de agrupar: también están k-means y los autoencoders. Los centroides arrancan con k-means++ sobre entrenamiento, porque con una inicialización al azar puede quedar un grupo vacío.</p>")}</div>`
+    ? `<div class="nota">Es la formulación de C5: softmax da la pertenencia q de cada ejemplo a cada grupo, y los centroides c también se entrenan. ${porque("centroides", "<p>La pérdida es mean(Σⱼ qᵢⱼ ‖xᵢ − cⱼ‖²). No es la única forma de agrupar: también están k-means y los autoencoders. Los centroides arrancan con k-means++ sobre entrenamiento, porque con una inicialización al azar puede quedar un grupo vacío.</p>")}</div>`
     : "";
   return `<h2>Función de pérdida</h2>
     <p class="bajada">Elegí qué minimiza el entrenamiento. Cada gráfico muestra la pérdida en función de la predicción.</p>
@@ -1414,12 +1817,8 @@ function pasoEntrenamiento() {
     <section class="garage" id="garage"></section>`;
 }
 
-function pasoResumen() {
-  const errores = pasosConErrores(diagnosticar());
-  if (errores.length) {
-    return `<h2>Resumen del modelo</h2><div class="mensaje error"><strong>La configuración tiene errores</strong><p>Corregí lo marcado en: ${errores.join(", ")}. El resumen se arma cuando todas las decisiones son compatibles.</p></div>`;
-  }
-  const m = E.tarea, c = contarPartes(m);
+function filasResumen() {
+  const m = E.tarea, c = conteo(), def = definirTarea();
   const ocultas = E.ocultas.length
     ? E.ocultas.map((o, i) => `Oculta ${i + 1}: ${o.neuronas} neuronas ${ACTIVACIONES[o.activacion].nombre}${o.dropout > 0 ? `, dropout ${decimal(o.dropout)}` : ""}`).join("<br>")
     : "Sin capas ocultas (perceptrón)";
@@ -1427,17 +1826,26 @@ function pasoResumen() {
   const corrida = E.corrida && E.corrida.resultado && firma(E.corrida.config) === firma(configActual())
     ? `${textoMetricaCorta(m, E.corrida.resultado.prueba.metrica)} en prueba, pesos de la época ${E.corrida.epocaFinal}`
     : "Todavía no entrenaste esta configuración.";
-  const filas = [
-    ["Tarea", `${TAREAS[m].titulo}${TAREAS[m].objetivo ? ` de ${TAREAS[m].objetivo}` : ""}`],
-    ["Datos", `${DATASET.nombre}: ${num(c.entrenamiento)} de entrenamiento, ${num(c.validacion)} de validación y ${num(c.prueba)} de prueba`],
-    ["Capa de entrada", `${E.entradas.length} variables (${E.entradas.join(", ")}), ${E.normalizar ? "normalizadas con z-score" : "sin normalizar"}`],
+  return [
+    ["Tarea", `${TAREAS[m].titulo}${def.objetivo ? ` de <code>${esc(def.objetivo)}</code>` : def.referencia ? `, interpretada con <code>${esc(def.referencia)}</code>` : ""}`],
+    ["Datos", `${esc(DATASET.nombre)}: ${num(c.entrenamiento)} de entrenamiento, ${num(c.validacion)} de validación y ${num(c.prueba)} de prueba (${E.particion.modo === "columna" && DATASET.columnaParticion ? `columna <code>${esc(DATASET.columnaParticion)}</code>` : `al azar, semilla ${E.particion.semilla}`})`],
+    ["Capa de entrada", `${E.entradas.length} variables (${esc(lista(E.entradas, 12))}), ${E.normalizar ? "normalizadas con z-score" : "sin normalizar"}`],
     ["Capas ocultas", ocultas],
     ["Capa de salida", `${E.salida.neuronas} ${E.salida.neuronas === 1 ? "neurona" : "neuronas"} ${ACTIVACIONES[E.salida.activacion].nombre}${m === "clustering" ? `, más ${E.salida.neuronas} centroides de dimensión ${E.entradas.length}` : ""}`],
-    ["Función de pérdida", `${PERDIDAS[E.perdida].nombre}; se reporta ${{ binaria: "exactitud", multiclase: "exactitud", regresion: "MAE en minutos", clustering: "ARI contra el estado real" }[m]}`],
+    ["Función de pérdida", `${PERDIDAS[E.perdida].nombre}; se reporta ${{ binaria: "exactitud", multiclase: "exactitud", regresion: `MAE${def.unidad ? ` en ${def.unidad}` : ""}`, clustering: def.referencia ? "ARI" : "el tamaño de cada grupo" }[m]}`],
     ["Regularización", `L2 ${E.l2 > 0 ? decimal(E.l2) : "no"}; ${early}`],
     ["Entrenamiento", `${OPTIMIZADORES[E.optimizador].nombre}, learning rate ${decimal(E.lr)}, ${E.epocas} épocas, batch ${E.batch}`],
     ["Último entrenamiento", corrida],
-  ].map(([dt, dd]) => `<div class="hoja-fila"><dt>${dt}</dt><dd>${dd}</dd></div>`).join("");
+  ];
+}
+
+function pasoResumen() {
+  const errores = pasosConErrores(diagnosticar());
+  if (errores.length) {
+    return `<h2>Resumen del modelo</h2><div class="mensaje error"><strong>La configuración tiene errores</strong><p>Corregí lo marcado en: ${errores.join(", ")}. El resumen se arma cuando todas las decisiones son compatibles.</p></div>`;
+  }
+  const m = E.tarea;
+  const filas = filasResumen().map(([dt, dd]) => `<div class="hoja-fila"><dt>${dt}</dt><dd>${dd}</dd></div>`).join("");
   const total = desglose().total;
   const tablaResumen = resumenKeras().map((f) => `<tr><td>${f.nombre} (${f.tipo})</td><td>${f.forma}</td><td class="num">${num(f.params)}</td></tr>`).join("");
   const calculo = desglose().filas.map((f) => `<tr><td>${f.nombre}</td><td class="num">${f.entradas ?? "-"}</td><td class="num">${f.neuronas ?? "-"}</td><td>${f.formula ?? "sin pesos"}</td><td class="num">${num(f.valor)}</td></tr>`).join("");
@@ -1451,8 +1859,8 @@ function pasoResumen() {
     <h3>Cálculo por capa</h3>
     <div class="tabla-scroll"><table class="tabla"><thead><tr><th>Capa</th><th class="num">Entradas</th><th class="num">Neuronas</th><th>Cálculo</th><th class="num">Parámetros</th></tr></thead><tbody>${calculo}<tr><th colspan="4">Total</th><th class="num">${num(total)}</th></tr></tbody></table></div>
     <h3>Código Keras para Colab</h3>
-    <p class="bajada">Lee el CSV desde GitHub, arma la partición, normaliza con la media y el desvío de entrenamiento y entrena la misma red, en el estilo de la notebook N02.</p>
-    <div class="codigo"><button type="button" class="boton chico" data-accion="copiar">Copiar</button><pre><code id="codigo-keras">${esc(codigoKeras())}</code></pre></div>`;
+    <p class="bajada">Arma la partición, normaliza con la media y el desvío de entrenamiento y entrena la misma red, en el estilo de la notebook N02. Podés copiarlo o descargarlo como notebook: en Colab, se abre desde Archivo → Subir notebook${DATASET.fuente.tipo === "archivo" ? ", y después hay que subir el CSV al entorno" : ""}.</p>
+    <div class="codigo"><div class="codigo-acciones"><button type="button" class="boton chico" data-accion="copiar">Copiar</button><button type="button" class="boton chico primario" data-accion="notebook">Descargar notebook (.ipynb)</button></div><pre><code id="codigo-keras">${esc(codigoKeras())}</code></pre></div>`;
 }
 
 function textoMetricaCorta(m, valor) {
@@ -1483,169 +1891,173 @@ function resumenKeras() {
   return filas;
 }
 
+const py = (v) => (typeof v === "number" ? String(v) : JSON.stringify(v));
+
 function listaPython(valores, sangria) {
-  const partes = valores.map((v) => `"${v}"`);
   const lineas = [];
-  for (let i = 0; i < partes.length; i += 4) lineas.push(partes.slice(i, i + 4).join(", "));
+  let actual = "";
+  for (const t of valores.map(py)) {
+    if (actual && `${actual}, ${t}`.length > 66) { lineas.push(actual); actual = t; } else actual = actual ? `${actual}, ${t}` : t;
+  }
+  if (actual) lineas.push(actual);
   return `[${lineas.join(`,\n${" ".repeat(sangria)}`)}]`;
 }
 
-function codigoKeras() {
-  const m = E.tarea, d = E.entradas.length, k = E.salida.neuronas;
+// El código se arma por secciones: se copia entero o se descarga como notebook.
+function seccionesCodigo() {
+  const m = E.tarea, d = E.entradas.length, k = E.salida.neuronas, def = definirTarea();
   const hayDropout = E.ocultas.some((c) => c.dropout > 0);
   const hayL2 = E.l2 > 0 && E.ocultas.length > 0;
   const categorica = m === "multiclase" || (m === "binaria" && k === 2);
   const opt = OPTIMIZADORES[E.optimizador];
   const regularizador = hayL2 ? `, kernel_regularizer=l2(${E.l2})` : "";
-  const L = [];
-  L.push(`# Red generada con el configurador de redes neuronales (taller de Aprendizaje Automático, UNLu)`);
-  L.push(`# Tarea: ${TAREAS[m].titulo.toLowerCase()}${TAREAS[m].objetivo ? ` de ${TAREAS[m].objetivo}` : " (sin variable objetivo)"}`);
-  L.push("import numpy as np");
-  L.push("import pandas as pd");
-  L.push("import matplotlib.pyplot as plt");
-  if (m === "clustering") {
-    L.push("import tensorflow as tf");
-    L.push("from sklearn.cluster import kmeans_plusplus");
-    L.push("from sklearn.metrics import adjusted_rand_score");
-    L.push("from tensorflow.keras import Input, Model, layers");
+  const azar = !(E.particion.modo === "columna" && DATASET.columnaParticion);
+  const muestra = E.muestra && DATASET.n > LIMITES.filasRecomendadas;
+  const usadas = [...E.entradas, ...(def.objetivo ? [def.objetivo] : [])];
+  const hayVacios = usadas.some((c) => DATASET.info[c].nulos > 0);
+  const S = [];
+
+  const librerias = ["import numpy as np", "import pandas as pd", "import matplotlib.pyplot as plt"];
+  if (m === "clustering") librerias.push("import tensorflow as tf", "from sklearn.cluster import kmeans_plusplus");
+  if (m === "clustering" && def.referencia) librerias.push("from sklearn.metrics import adjusted_rand_score");
+  if (azar) librerias.push("from sklearn.model_selection import train_test_split");
+  librerias.push(m === "clustering" ? "from tensorflow.keras import Input, Model, layers" : "from tensorflow.keras import Sequential, Input");
+  librerias.push(`from tensorflow.keras.layers import Dense${hayDropout ? ", Dropout" : ""}`, `from tensorflow.keras.optimizers import ${opt.clase}`);
+  if (hayL2) librerias.push("from tensorflow.keras.regularizers import l2");
+  if (E.early.activo) librerias.push("from tensorflow.keras.callbacks import EarlyStopping");
+  if (categorica) librerias.push("from tensorflow.keras.utils import to_categorical");
+  S.push({ titulo: "Librerías", lineas: librerias });
+
+  const datos = [];
+  if (DATASET.fuente.tipo === "url") {
+    datos.push(`URL = "${DATASET.fuente.url}"`, "df = pd.read_csv(URL)");
   } else {
-    L.push("from tensorflow.keras import Sequential, Input");
+    const f = DATASET.fuente;
+    const opciones = [f.separador !== "," ? `sep=${py(f.separador)}` : null, f.decimal !== "." ? `decimal=${py(f.decimal)}` : null].filter(Boolean);
+    datos.push("# Subí el archivo al entorno antes de ejecutar (en Colab, desde el panel Archivos)", `ARCHIVO = ${py(f.nombre)}`, `df = pd.read_csv(ARCHIVO${opciones.length ? `, ${opciones.join(", ")}` : ""})`);
   }
-  L.push(`from tensorflow.keras.layers import Dense${hayDropout ? ", Dropout" : ""}`);
-  L.push(`from tensorflow.keras.optimizers import ${opt.clase}`);
-  if (hayL2) L.push("from tensorflow.keras.regularizers import l2");
-  if (E.early.activo) L.push("from tensorflow.keras.callbacks import EarlyStopping");
-  if (categorica) L.push("from tensorflow.keras.utils import to_categorical");
-  L.push("");
-  L.push(`URL = "${URL_CSV}"`);
-  L.push("df = pd.read_csv(URL)");
-  if (m === "regresion") {
-    L.push("# Solo las lecturas con incidente tienen tiempo de reparación");
-    L.push("df = df[df.tiempo_reparacion_min.notna()]");
+  datos.push("");
+  if (azar || muestra) datos.push(`SEMILLA = ${E.particion.semilla}`);
+  datos.push(`ENTRADAS = ${listaPython(E.entradas, 12)}`);
+  if (def.objetivo) datos.push(`OBJETIVO = ${py(def.objetivo)}`);
+  if (def.referencia) datos.push(`REFERENCIA = ${py(def.referencia)}  # solo para interpretar los grupos`);
+  if (def.clases && m !== "clustering") datos.push(`CLASES = ${listaPython(def.clases, 10)}`);
+  if (hayVacios) datos.push(`df = df.dropna(subset=ENTRADAS${def.objetivo ? " + [OBJETIVO]" : ""})  # descarta las filas con valores vacíos`);
+  if (muestra) datos.push(`df = df.sample(n=${LIMITES.filasRecomendadas}, random_state=SEMILLA)  # muestra al azar`);
+  S.push({ titulo: "Datos", lineas: datos, nota: DATASET.fuente.tipo === "archivo" ? "Antes de ejecutar, subí el CSV al entorno: en Colab, desde el panel Archivos." : null });
+
+  const particion = [];
+  if (azar) {
+    const f = fraccionesParticion(E.particion);
+    particion.push(`entrenamiento, resto = train_test_split(df, train_size=${f.entrenamiento}, random_state=SEMILLA)`,
+      `validacion, prueba = train_test_split(resto, train_size=${f.validacion}, random_state=SEMILLA)`);
+  } else {
+    const c = py(DATASET.columnaParticion), v = DATASET.valoresParticion;
+    particion.push(`entrenamiento = df[df[${c}] == ${py(v.entrenamiento)}]`, `validacion = df[df[${c}] == ${py(v.validacion)}]`, `prueba = df[df[${c}] == ${py(v.prueba)}]`);
   }
-  L.push("");
-  L.push(`ENTRADAS = ${listaPython(E.entradas, 12)}`);
-  if (m === "multiclase") L.push('ESTADOS = ["normal", "termico", "electrico", "almacenamiento", "red"]');
-  L.push('entrenamiento = df[df.particion == "entrenamiento"]');
-  L.push('validacion = df[df.particion == "validacion"]');
-  L.push('prueba = df[df.particion == "prueba"]');
-  L.push("");
+  particion.push('print(len(entrenamiento), "de entrenamiento,", len(validacion), "de validación y", len(prueba), "de prueba")');
+  S.push({ titulo: "Partición", lineas: particion, nota: azar ? "Con los mismos porcentajes y la misma semilla que en el configurador: los tamaños coinciden, aunque las filas elegidas pueden no ser las mismas." : null });
+
+  const prep = [];
   if (E.normalizar) {
-    L.push("# Normalización z-score con la media y el desvío de entrenamiento");
-    L.push("media = entrenamiento[ENTRADAS].mean()");
-    L.push("desvio = entrenamiento[ENTRADAS].std(ddof=0)");
-    L.push("");
-    L.push("def preparar_X(d):");
-    L.push('    return ((d[ENTRADAS] - media) / desvio).to_numpy("float32")');
+    prep.push("# Normalización z-score con la media y el desvío de entrenamiento", "media = entrenamiento[ENTRADAS].mean()", "desvio = entrenamiento[ENTRADAS].std(ddof=0)", "",
+      "def preparar_X(d):", '    return ((d[ENTRADAS] - media) / desvio).to_numpy("float32")');
   } else {
-    L.push("# Entradas sin normalizar, con sus escalas originales");
-    L.push("def preparar_X(d):");
-    L.push('    return d[ENTRADAS].to_numpy("float32")');
+    prep.push("# Entradas sin normalizar, con sus escalas originales", "def preparar_X(d):", '    return d[ENTRADAS].to_numpy("float32")');
   }
-  L.push("");
+  prep.push("");
   if (m === "clustering") {
-    L.push("X_train = preparar_X(entrenamiento)");
-    L.push("X_val = preparar_X(validacion)");
-    L.push("X_test = preparar_X(prueba)");
+    prep.push("X_train = preparar_X(entrenamiento)", "X_val = preparar_X(validacion)", "X_test = preparar_X(prueba)");
   } else {
-    L.push("def preparar_y(d):");
-    if (m === "binaria" && k === 1) L.push('    return d.alerta_real.to_numpy("float32")');
-    if (m === "binaria" && k === 2) L.push("    return to_categorical(d.alerta_real, num_classes=2)");
-    if (m === "multiclase") L.push("    return to_categorical(d.estado.map(ESTADOS.index), num_classes=5)");
-    if (m === "regresion") L.push('    return d.tiempo_reparacion_min.to_numpy("float32")');
-    L.push("");
-    L.push("X_train, y_train = preparar_X(entrenamiento), preparar_y(entrenamiento)");
-    L.push("X_val, y_val = preparar_X(validacion), preparar_y(validacion)");
-    L.push("X_test, y_test = preparar_X(prueba), preparar_y(prueba)");
+    prep.push("def preparar_y(d):");
+    if (m === "binaria" && k === 1) prep.push('    return d[OBJETIVO].map(CLASES.index).to_numpy("float32")');
+    if (m === "binaria" && k === 2) prep.push("    return to_categorical(d[OBJETIVO].map(CLASES.index), num_classes=2)");
+    if (m === "multiclase") prep.push("    return to_categorical(d[OBJETIVO].map(CLASES.index), num_classes=len(CLASES))");
+    if (m === "regresion") prep.push('    return d[OBJETIVO].to_numpy("float32")');
+    prep.push("", "X_train, y_train = preparar_X(entrenamiento), preparar_y(entrenamiento)",
+      "X_val, y_val = preparar_X(validacion), preparar_y(validacion)", "X_test, y_test = preparar_X(prueba), preparar_y(prueba)");
   }
-  L.push("");
+  S.push({ titulo: "Preparación de las matrices", lineas: prep });
+
+  const modelo = [];
   const optimizador = opt.codigo(E.lr);
   if (m === "clustering") {
-    L.push("# Capa que guarda los k centroides y suma la pérdida MSE contra centroides (C5)");
-    L.push("class Centroides(layers.Layer):");
-    L.push("    def __init__(self, k, d, **kwargs):");
-    L.push("        super().__init__(**kwargs)");
-    L.push('        self.c = self.add_weight(name="centroides", shape=(k, d), initializer="random_normal", trainable=True)');
-    L.push("");
-    L.push("    def call(self, entradas):");
-    L.push("        x, q = entradas");
-    L.push("        d2 = tf.reduce_sum(tf.square(tf.expand_dims(x, 1) - self.c), axis=-1)  # (n, k)");
-    L.push("        self.add_loss(tf.reduce_mean(tf.reduce_sum(q * d2, axis=-1)))");
-    L.push("        return q");
-    L.push("");
-    L.push(`K = ${k}`);
-    L.push(`x = Input(shape=(${d},))`);
+    modelo.push("# Capa que guarda los k centroides y suma la pérdida MSE contra centroides (C5)", "class Centroides(layers.Layer):",
+      "    def __init__(self, k, d, **kwargs):", "        super().__init__(**kwargs)",
+      '        self.c = self.add_weight(name="centroides", shape=(k, d), initializer="random_normal", trainable=True)', "",
+      "    def call(self, entradas):", "        x, q = entradas", "        d2 = tf.reduce_sum(tf.square(tf.expand_dims(x, 1) - self.c), axis=-1)  # (n, k)",
+      "        self.add_loss(tf.reduce_mean(tf.reduce_sum(q * d2, axis=-1)))", "        return q", "", `K = ${k}`, `x = Input(shape=(${d},))`);
     let previa = "x";
     for (const c of E.ocultas) {
-      L.push(`h = Dense(${c.neuronas}, activation="${ACTIVACIONES[c.activacion].keras}"${regularizador})(${previa})`);
+      modelo.push(`h = Dense(${c.neuronas}, activation="${ACTIVACIONES[c.activacion].keras}"${regularizador})(${previa})`);
       previa = "h";
-      if (c.dropout > 0) L.push(`h = Dropout(${c.dropout})(h)`);
+      if (c.dropout > 0) modelo.push(`h = Dropout(${c.dropout})(h)`);
     }
-    L.push(`q = Dense(K, activation="softmax", name="pertenencia")(${previa})`);
-    L.push(`salida = Centroides(K, ${d}, name="centroides")([x, q])`);
-    L.push(`model = Model(x, salida, name="${TAREAS[m].modelo}")`);
-    L.push("");
-    L.push("# Centroides iniciales con k-means++ sobre entrenamiento");
-    L.push("centros, _ = kmeans_plusplus(X_train, n_clusters=K, random_state=0)");
-    L.push('model.get_layer("centroides").c.assign(centros)');
-    L.push(`model.compile(optimizer=${optimizador})`);
+    modelo.push(`q = Dense(K, activation="softmax", name="pertenencia")(${previa})`, `salida = Centroides(K, ${d}, name="centroides")([x, q])`,
+      `model = Model(x, salida, name="${TAREAS[m].modelo}")`, "", "# Centroides iniciales con k-means++ sobre entrenamiento",
+      "centros, _ = kmeans_plusplus(X_train, n_clusters=K, random_state=0)", 'model.get_layer("centroides").c.assign(centros)', `model.compile(optimizer=${optimizador})`);
   } else {
-    L.push(`model = Sequential(name="${TAREAS[m].modelo}")`);
-    L.push(`model.add(Input(shape=(${d},)))`);
+    modelo.push(`model = Sequential(name="${TAREAS[m].modelo}")`, `model.add(Input(shape=(${d},)))`);
     for (const c of E.ocultas) {
-      L.push(`model.add(Dense(${c.neuronas}, activation="${ACTIVACIONES[c.activacion].keras}"${regularizador}))`);
-      if (c.dropout > 0) L.push(`model.add(Dropout(${c.dropout}))`);
+      modelo.push(`model.add(Dense(${c.neuronas}, activation="${ACTIVACIONES[c.activacion].keras}"${regularizador}))`);
+      if (c.dropout > 0) modelo.push(`model.add(Dropout(${c.dropout}))`);
     }
-    L.push(`model.add(Dense(${k}, activation="${ACTIVACIONES[E.salida.activacion].keras}"))`);
-    const metrica = m === "regresion" ? '"mae"' : '"accuracy"';
-    L.push(`model.compile(optimizer=${optimizador}, loss="${PERDIDAS[E.perdida].keras}", metrics=[${metrica}])`);
+    modelo.push(`model.add(Dense(${k}, activation="${ACTIVACIONES[E.salida.activacion].keras}"))`,
+      `model.compile(optimizer=${optimizador}, loss="${PERDIDAS[E.perdida].keras}", metrics=[${m === "regresion" ? '"mae"' : '"accuracy"'}])`);
   }
-  L.push("model.summary()");
-  L.push("");
-  const callbacks = E.early.activo ? ", callbacks=[early]" : "";
-  if (E.early.activo) L.push(`early = EarlyStopping(monitor="val_loss", patience=${E.early.paciencia}, restore_best_weights=${E.early.restaurar ? "True" : "False"})`);
-  if (m === "clustering") {
-    L.push("history = model.fit(X_train, validation_data=(X_val,),");
-  } else {
-    L.push("history = model.fit(X_train, y_train, validation_data=(X_val, y_val),");
-  }
-  L.push(`                    epochs=${E.epocas}, batch_size=${E.batch}${callbacks}, verbose=0)`);
-  L.push('print("Épocas entrenadas:", len(history.history["loss"]))');
-  L.push("");
-  L.push('plt.plot(history.history["loss"], label="entrenamiento")');
-  L.push('plt.plot(history.history["val_loss"], label="validación")');
-  L.push('plt.xlabel("Época")');
-  L.push('plt.ylabel("Pérdida")');
-  L.push("plt.legend()");
-  L.push("plt.show()");
-  L.push("");
-  L.push("# Evaluación en el conjunto de prueba");
-  if (m === "binaria") {
-    L.push("loss, acc = model.evaluate(X_test, y_test, verbose=0)");
-    L.push('print(f"Exactitud en prueba: {acc:.3f}")');
-    L.push(k === 1 ? "pred = (model.predict(X_test, verbose=0)[:, 0] >= 0.5).astype(int)" : "pred = model.predict(X_test, verbose=0).argmax(axis=1)");
-    L.push('print(pd.crosstab(prueba.alerta_real.to_numpy(), pred, rownames=["real"], colnames=["predicho"]))');
-  } else if (m === "multiclase") {
-    L.push("loss, acc = model.evaluate(X_test, y_test, verbose=0)");
-    L.push('print(f"Exactitud en prueba: {acc:.3f}")');
-    L.push("pred = model.predict(X_test, verbose=0).argmax(axis=1)");
-    L.push('print(pd.crosstab(prueba.estado.to_numpy(), np.array(ESTADOS)[pred], rownames=["real"], colnames=["predicho"]))');
+  modelo.push("model.summary()");
+  S.push({ titulo: "Modelo", lineas: modelo });
+
+  const entrenamiento = [];
+  if (E.early.activo) entrenamiento.push(`early = EarlyStopping(monitor="val_loss", patience=${E.early.paciencia}, restore_best_weights=${E.early.restaurar ? "True" : "False"})`);
+  entrenamiento.push(m === "clustering" ? "history = model.fit(X_train, validation_data=(X_val,)," : "history = model.fit(X_train, y_train, validation_data=(X_val, y_val),",
+    `                    epochs=${E.epocas}, batch_size=${E.batch}${E.early.activo ? ", callbacks=[early]" : ""}, verbose=0)`,
+    'print("Épocas entrenadas:", len(history.history["loss"]))', "",
+    'plt.plot(history.history["loss"], label="entrenamiento")', 'plt.plot(history.history["val_loss"], label="validación")',
+    'plt.xlabel("Época")', 'plt.ylabel("Pérdida")', "plt.legend()", "plt.show()");
+  S.push({ titulo: "Entrenamiento", lineas: entrenamiento });
+
+  const evaluacion = [];
+  if (m === "binaria" || m === "multiclase") {
+    evaluacion.push("loss, acc = model.evaluate(X_test, y_test, verbose=0)", 'print(f"Exactitud en prueba: {acc:.3f}")',
+      m === "binaria" && k === 1 ? "pred = (model.predict(X_test, verbose=0)[:, 0] >= 0.5).astype(int)" : "pred = model.predict(X_test, verbose=0).argmax(axis=1)",
+      'print(pd.crosstab(prueba[OBJETIVO].to_numpy(), np.array(CLASES)[pred], rownames=["real"], colnames=["predicho"]))');
   } else if (m === "regresion") {
-    L.push("loss, mae = model.evaluate(X_test, y_test, verbose=0)");
-    L.push('print(f"MAE en prueba: {mae:.1f} minutos")');
-    L.push("pred = model.predict(X_test, verbose=0)[:, 0]");
-    L.push("plt.scatter(y_test, pred, s=12, alpha=0.6)");
-    L.push('plt.plot([0, y_test.max()], [0, y_test.max()], "--", color="gray")');
-    L.push('plt.xlabel("Tiempo real (min)")');
-    L.push('plt.ylabel("Tiempo predicho (min)")');
-    L.push("plt.show()");
+    evaluacion.push("loss, mae = model.evaluate(X_test, y_test, verbose=0)", `print(f"MAE en prueba: {mae:.1f}${def.unidad ? ` ${def.unidad}` : ""}")`,
+      "pred = model.predict(X_test, verbose=0)[:, 0]", "plt.scatter(y_test, pred, s=12, alpha=0.6)",
+      'plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], "--", color="gray")',
+      'plt.xlabel(f"{OBJETIVO} real")', 'plt.ylabel(f"{OBJETIVO} predicho")', "plt.show()");
   } else {
-    L.push("grupos = model.predict(X_test, verbose=0).argmax(axis=1)");
-    L.push('print("Tamaño de cada grupo:", np.bincount(grupos, minlength=K))');
-    L.push('print(pd.crosstab(grupos, prueba.estado.to_numpy(), rownames=["grupo"], colnames=["estado real"]))');
-    L.push('print("ARI contra el estado real:", round(adjusted_rand_score(prueba.estado, grupos), 3))');
+    evaluacion.push("grupos = model.predict(X_test, verbose=0).argmax(axis=1)", 'print("Tamaño de cada grupo:", np.bincount(grupos, minlength=K))');
+    if (def.referencia) {
+      evaluacion.push("referencia = prueba[REFERENCIA].to_numpy()", "validos = prueba[REFERENCIA].notna().to_numpy()",
+        'print(pd.crosstab(grupos[validos], referencia[validos], rownames=["grupo"], colnames=[REFERENCIA]))',
+        'print("ARI contra", REFERENCIA + ":", round(adjusted_rand_score(referencia[validos], grupos[validos]), 3))');
+    }
   }
-  return L.join("\n");
+  S.push({ titulo: "Evaluación en el conjunto de prueba", lineas: evaluacion });
+  return S;
+}
+
+function encabezadoCodigo() {
+  const def = definirTarea();
+  return [`# Red generada con el configurador de redes neuronales (Aprendizaje Automático, UNLu)`,
+    `# Tarea: ${TAREAS[E.tarea].titulo.toLowerCase()}${def.objetivo ? ` de ${def.objetivo}` : ""}`];
+}
+
+function codigoKeras() {
+  return [encabezadoCodigo().join("\n"), ...seccionesCodigo().map((s) => `# ${s.titulo}\n${s.lineas.join("\n")}`)].join("\n\n");
+}
+
+function notebookKeras() {
+  const fuente = (texto) => texto.split("\n").map((l, i, a) => (i < a.length - 1 ? `${l}\n` : l));
+  const markdown = (texto) => ({ cell_type: "markdown", metadata: {}, source: fuente(texto) });
+  const codigo = (texto) => ({ cell_type: "code", execution_count: null, metadata: {}, outputs: [], source: fuente(texto) });
+  const plano = (html) => { const d = document.createElement("div"); d.innerHTML = html.replace(/<br>/g, "; "); return d.textContent; };
+  const resumen = filasResumen().map(([dt, dd]) => `- **${dt}**: ${plano(dd)}`).join("\n");
+  const celdas = [markdown(`# ${TAREAS[E.tarea].titulo}\n\nRed generada con el configurador de redes neuronales del curso Aprendizaje Automático (UNLu).\n\n${resumen}\n- **Parámetros entrenables**: ${num(desglose().total)}`)];
+  for (const s of seccionesCodigo()) celdas.push(markdown(`## ${s.titulo}${s.nota ? `\n\n${s.nota}` : ""}`), codigo(s.lineas.join("\n")));
+  return { cells: celdas, metadata: { kernelspec: { display_name: "Python 3", language: "python", name: "python3" }, language_info: { name: "python" }, colab: { provenance: [] } }, nbformat: 4, nbformat_minor: 4 };
 }
 
 // =====================================================================
@@ -1725,7 +2137,12 @@ function ari(a, b) {
 
 function calcularMetrica(tipo, k, pred, datos, parte) {
   if (tipo === "regresion") return promedio(pred.map((f, i) => Math.abs(f[0] - datos.y[parte][i])));
-  if (tipo === "clustering") return ari(pred.map(argmax), datos.referencia[parte]);
+  if (tipo === "clustering") {
+    const ref = datos.referencia[parte];
+    if (!ref) return NaN;
+    const validos = ref.map((r, i) => i).filter((i) => ref[i] >= 0);
+    return validos.length ? ari(validos.map((i) => argmax(pred[i])), validos.map((i) => ref[i])) : NaN;
+  }
   const clases = pred.map((f) => (k === 1 ? (f[0] >= 0.5 ? 1 : 0) : argmax(f)));
   return promedio(clases.map((c, i) => (c === datos.y[parte][i] ? 1 : 0)));
 }
@@ -1976,7 +2393,7 @@ function graficoDispersion({ puntos, etiquetaX, etiquetaY, diagonal = false, anc
 
 function matrizConfusion(reales, predichos, nombres, nombresColumnas = nombres, encabezado = "Real / predicho") {
   const M = nombres.map(() => nombresColumnas.map(() => 0));
-  reales.forEach((r, i) => { M[r][predichos[i]]++; });
+  reales.forEach((r, i) => { if (r >= 0 && predichos[i] >= 0) M[r][predichos[i]]++; });
   const filas = M.map((fila, i) => {
     const total = fila.reduce((a, b) => a + b, 0) || 1;
     return `<tr><th>${esc(nombres[i])}</th>${fila.map((v, j) => {
@@ -2073,7 +2490,7 @@ function renderResultado() {
   const mejorVal = h.perdidaVal[c.mejorEpoca - 1];
   if (c.motivo === "divergencia") {
     const ultima = Number.isFinite(h.perdidaVal.at(-1)) ? h.perdida.at(-1) : h.perdidaVal.at(-1);
-    partes.push(`<div class="mensaje error"><strong>El entrenamiento divergió en la época ${h.perdida.length}</strong><p>Con los pesos iniciales, la pérdida de validación era ${valorPerdida(c.perdidaInicial)}; en la época ${h.perdida.length} llegó a ${valorPerdida(ultima)}. En lugar de bajar, se disparó, así que el entrenamiento se detuvo. Pasa cuando los pasos del optimizador son demasiado grandes: por un learning rate alto o por entradas sin normalizar, donde las variables grandes (los ventiladores, en miles de rpm) generan gradientes enormes. Probá bajar el learning rate o activar la normalización.</p></div>`);
+    partes.push(`<div class="mensaje error"><strong>El entrenamiento divergió en la época ${h.perdida.length}</strong><p>Con los pesos iniciales, la pérdida de validación era ${valorPerdida(c.perdidaInicial)}; en la época ${h.perdida.length} llegó a ${valorPerdida(ultima)}. En lugar de bajar, se disparó, así que el entrenamiento se detuvo. Pasa cuando los pasos del optimizador son demasiado grandes: por un learning rate alto o por entradas sin normalizar, donde las variables de valores grandes generan gradientes enormes. Probá bajar el learning rate o activar la normalización.</p></div>`);
   } else if (c.motivo === "early") {
     partes.push(`<div class="mensaje info"><strong>Early stopping cortó en la época ${c.corte}</strong><p>La pérdida de validación no mejoró durante ${cfg.early.paciencia} épocas desde la ${c.mejorEpoca}, donde valía ${valorPerdida(mejorVal)}. ${c.restaurada ? `Se restauraron los pesos de la época ${c.mejorEpoca}: con ellos, la pérdida de validación es ${valorPerdida(c.resultado.validacion.perdida)}.` : `No se restauraron los pesos: la red se queda con los de la época ${c.corte}.`}</p></div>`);
   } else if (c.motivo === "detenida") {
@@ -2090,7 +2507,7 @@ function renderResultado() {
   if (plana(h.perdida) && plana(h.perdidaVal)) {
     let texto = "La pérdida no cambió en ninguna época: los gradientes son nulos y los pesos no se mueven.";
     if (m === "binaria" && k === 1 && cfg.salida.activacion === "softmax") {
-      texto = "Con una sola neurona softmax, la salida vale 1 para cualquier entrada: el gradiente es cero y los pesos no cambian. La red predice “alerta” para todas las lecturas, así que su exactitud es la proporción de alertas en prueba.";
+      texto = "Con una sola neurona softmax, la salida vale 1 para cualquier entrada: el gradiente es cero y los pesos no cambian. La red predice la segunda clase para todos los ejemplos, así que su exactitud es la proporción de esa clase en prueba.";
     } else if (["sigmoide", "softmax"].includes(cfg.salida.activacion)) {
       texto = `La red quedó trabada desde las primeras iteraciones: las activaciones se saturaron. ${cfg.normalizar ? "Con pasos muy grandes" : "Con entradas sin normalizar"}${cfg.lr >= 0.03 ? " y un learning rate alto" : ""}, los primeros pasos llevan los pesos a valores enormes y la salida queda pegada en 0 o en 1. Ahí la entropía cruzada se recorta para no calcular log(0), su gradiente se anula y la red predice siempre la misma clase. Probá activar la normalización o bajar el learning rate.`;
     }
@@ -2105,50 +2522,52 @@ function renderResultado() {
   // Resultado en prueba
   const r = c.resultado, pred = r.prueba.pred;
   const anchoDispersion = Math.max(280, Math.min(460, Math.round(cont.clientWidth)));
-  const datos = prepararDatos(DATASET, m, cfg.entradas, cfg.normalizar);
+  const datos = prepararDatos(cfg), def = datos.tarea;
+  const unidad = def.unidad ? ` ${def.unidad}` : "";
   let cuerpo = "";
   if (m === "binaria" || m === "multiclase") {
-    const nombres = DATASET.tareas[m].nombresClases;
+    const nombres = def.nombresClases;
     const predichos = pred.map((f) => (k === 1 ? (f[0] >= 0.5 ? 1 : 0) : argmax(f)));
     cuerpo += `<div class="cifras">
       <div class="cifra"><span class="valor">${porcentaje(r.prueba.metrica)}</span><span class="rotulo">exactitud en prueba</span></div>
       <div class="cifra secundaria"><span class="valor">${porcentaje(r.entrenamiento.metrica)}</span><span class="rotulo">en entrenamiento</span></div>
       <div class="cifra secundaria"><span class="valor">${porcentaje(r.validacion.metrica)}</span><span class="rotulo">en validación</span></div></div>`;
-    cuerpo += `<h4>Matriz de confusión en prueba (${num(pred.length)} lecturas)</h4>${matrizConfusion(datos.y.prueba, predichos, nombres)}<p class="leyenda">Filas: valor real. Columnas: predicción de la red. La diagonal son los aciertos.</p>`;
+    cuerpo += `<h4>Matriz de confusión en prueba (${num(pred.length)} ejemplos)</h4>${matrizConfusion(datos.y.prueba, predichos, nombres)}<p class="leyenda">Filas: valor real. Columnas: predicción de la red. La diagonal son los aciertos.</p>`;
     if (r.entrenamiento.metrica >= 0.99) cuerpo += `<p class="nota">En entrenamiento acertó el ${porcentaje(r.entrenamiento.metrica)}. Con un 6% de etiquetas mal registradas, eso indica que la red memorizó también esos errores.</p>`;
   } else if (m === "regresion") {
     cuerpo += `<div class="cifras">
-      <div class="cifra"><span class="valor">${num(r.prueba.metrica, 1)} min</span><span class="rotulo">MAE en prueba</span></div>
-      <div class="cifra secundaria"><span class="valor">${num(r.entrenamiento.metrica, 1)} min</span><span class="rotulo">en entrenamiento</span></div>
-      <div class="cifra secundaria"><span class="valor">${num(r.validacion.metrica, 1)} min</span><span class="rotulo">en validación</span></div></div>`;
+      <div class="cifra"><span class="valor">${num(r.prueba.metrica, 1)}${unidad}</span><span class="rotulo">MAE en prueba</span></div>
+      <div class="cifra secundaria"><span class="valor">${num(r.entrenamiento.metrica, 1)}${unidad}</span><span class="rotulo">en entrenamiento</span></div>
+      <div class="cifra secundaria"><span class="valor">${num(r.validacion.metrica, 1)}${unidad}</span><span class="rotulo">en validación</span></div></div>`;
     const puntos = pred.map((f, i) => ({ x: datos.y.prueba[i], y: f[0], color: COLOR_VAL }));
-    cuerpo += `<h4>Valor real contra predicho en prueba</h4><div class="dispersion-cont">${graficoDispersion({ puntos, ancho: anchoDispersion, alto: Math.round(anchoDispersion * 0.75), etiquetaX: "Tiempo real (min)", etiquetaY: "Tiempo predicho (min)", diagonal: true })}</div>
-      <p class="leyenda">Cada punto es una lectura de prueba. Sobre la diagonal punteada, la predicción coincide con el valor real.</p>`;
+    cuerpo += `<h4>Valor real contra predicho en prueba</h4><div class="dispersion-cont">${graficoDispersion({ puntos, ancho: anchoDispersion, alto: Math.round(anchoDispersion * 0.75), etiquetaX: `${def.objetivo} real`, etiquetaY: `${def.objetivo} predicho`, diagonal: true })}</div>
+      <p class="leyenda">Cada punto es un ejemplo de prueba. Sobre la diagonal punteada, la predicción coincide con el valor real.</p>`;
   } else {
     const grupos = pred.map(argmax);
     const tamanos = Array.from({ length: k }, (_, g) => grupos.filter((x) => x === g).length);
     const maximo = Math.max(...tamanos, 1);
     const vacios = tamanos.map((t, g) => (t === 0 ? g + 1 : null)).filter(Boolean);
     cuerpo += `<div class="cifras">
-      <div class="cifra"><span class="valor">${num(r.prueba.metrica, 2)}</span><span class="rotulo">ARI en prueba</span></div>
-      <div class="cifra secundaria"><span class="valor">${k}</span><span class="rotulo">grupos</span></div>
+      ${def.referencia ? `<div class="cifra"><span class="valor">${num(r.prueba.metrica, 2)}</span><span class="rotulo">ARI en prueba</span></div>` : ""}
+      <div class="cifra${def.referencia ? " secundaria" : ""}"><span class="valor">${k}</span><span class="rotulo">grupos</span></div>
       <div class="cifra secundaria"><span class="valor">${valorPerdida(r.prueba.perdida)}</span><span class="rotulo">pérdida en prueba</span></div></div>`;
     cuerpo += `<h4>Tamaño de cada grupo en prueba</h4><div class="barras">${tamanos.map((t, g) => `<div class="barra"><span>grupo ${g + 1}</span><span class="relleno" style="width:${(100 * t) / maximo}%; background:${COLORES[g]}"></span><span class="num">${t}</span></div>`).join("")}</div>`;
-    if (vacios.length) cuerpo += `<p class="nota">${vacios.length === 1 ? `El grupo ${vacios[0]} quedó vacío` : `Los grupos ${vacios.join(", ")} quedaron vacíos`} en prueba: ninguna lectura tiene allí su mayor pertenencia. Es una debilidad conocida de esta formulación: si al principio un centroide pierde todas las lecturas, deja de recibir gradiente y no se recupera. El resultado depende de la inicialización, así que conviene entrenar de nuevo o probar otro k.</p>`;
-    cuerpo += `<h4>Grupos contra estados reales</h4>${matrizConfusion(grupos, datos.referencia.prueba, tamanos.map((_, g) => `grupo ${g + 1}`), DATASET.tareas.clustering.nombresReferencia, "Grupo / estado")}<p class="leyenda">La red no vio el estado: la tabla muestra a posteriori qué estados cayeron en cada grupo.</p>`;
-    const estandar = cfg.normalizar ? datos : prepararDatos(DATASET, m, cfg.entradas, true);
+    if (vacios.length) cuerpo += `<p class="nota">${vacios.length === 1 ? `El grupo ${vacios[0]} quedó vacío` : `Los grupos ${vacios.join(", ")} quedaron vacíos`} en prueba: ningún ejemplo tiene allí su mayor pertenencia. Es una debilidad conocida de esta formulación: si al principio un centroide pierde todos los ejemplos, deja de recibir gradiente y no se recupera. El resultado depende de la inicialización, así que conviene entrenar de nuevo o probar otro k.</p>`;
+    if (def.referencia) cuerpo += `<h4>Grupos contra <code>${esc(def.referencia)}</code></h4>${matrizConfusion(grupos, datos.referencia.prueba, tamanos.map((_, g) => `grupo ${g + 1}`), def.nombresClases, "Grupo / clase")}<p class="leyenda">La red no vio esa columna: la tabla muestra a posteriori qué valores cayeron en cada grupo.</p>`;
+    const estandar = cfg.normalizar ? datos : prepararDatos({ ...cfg, normalizar: true });
     const proyectar = componentesPrincipales(estandar.X.entrenamiento);
-    const porEstado = E.colorearPor === "estado";
+    const porEstado = def.referencia && E.colorearPor === "estado";
     const puntos = estandar.X.prueba.map((f, i) => {
       const [x, y] = proyectar(f);
-      return { x, y, color: COLORES[porEstado ? datos.referencia.prueba[i] : grupos[i]] };
+      const indice = porEstado ? datos.referencia.prueba[i] : grupos[i];
+      return { x, y, color: indice >= 0 ? COLORES[indice % COLORES.length] : "#c8d6db" };
     });
-    const leyendaColores = (porEstado ? DATASET.tareas.clustering.nombresReferencia : tamanos.map((_, g) => `grupo ${g + 1}`)).map((nombre, i) => ({ nombre, color: COLORES[i] }));
+    const leyendaColores = (porEstado ? def.nombresClases : tamanos.map((_, g) => `grupo ${g + 1}`)).slice(0, 12).map((nombre, i) => ({ nombre, color: COLORES[i % COLORES.length] }));
     cuerpo += `<h4>Dispersión en las 2 primeras componentes principales</h4>
-      <div class="segmentado" role="radiogroup" aria-label="Colorear los puntos">
+      ${def.referencia ? `<div class="segmentado" role="radiogroup" aria-label="Colorear los puntos">
         <label class="opcion"><input type="radio" name="colorear" value="grupo" data-campo="colorear" ${porEstado ? "" : "checked"}>Colorear por grupo</label>
-        <label class="opcion"><input type="radio" name="colorear" value="estado" data-campo="colorear" ${porEstado ? "checked" : ""}>Colorear por estado real</label>
-      </div>
+        <label class="opcion"><input type="radio" name="colorear" value="estado" data-campo="colorear" ${porEstado ? "checked" : ""}>Colorear por <code>${esc(def.referencia)}</code></label>
+      </div>` : ""}
       <div class="dispersion-cont">${graficoDispersion({ puntos, ancho: anchoDispersion, alto: Math.round(anchoDispersion * 0.75), etiquetaX: "Componente principal 1", etiquetaY: "Componente principal 2" })}</div>
       ${leyendaGrafico(leyendaColores)}
       <p class="leyenda">Las componentes principales resumen las entradas estandarizadas en 2 ejes para poder dibujarlas; la red trabaja con las ${cfg.entradas.length} entradas.</p>`;
@@ -2211,7 +2630,7 @@ async function alternarEntrenamiento() {
   }
   if (pasosConErrores(diagnosticar()).length) return;
   const cfg = configActual();
-  const datos = prepararDatos(DATASET, cfg.tarea, cfg.entradas, cfg.normalizar);
+  const datos = prepararDatos(cfg);
   const estimado = estimarSegundos() / E.factorTiempo;
   E.entrenando = true;
   E.detener = false;
@@ -2338,6 +2757,8 @@ const ACCIONES = {
       E.avisoTarea = "Se limpiaron la capa de salida y la función de pérdida, porque dependen de qué se predice. Volvé a elegirlas en los pasos 4 y 5.";
     }
     E.tarea = nueva;
+    E.objetivo = objetivoPorDefecto(nueva);
+    sincronizarEntradas();
     E.salida = { neuronas: null, activacion: null };
     E.perdida = null;
     E.corrida = null;
@@ -2345,9 +2766,26 @@ const ACCIONES = {
     refrescar();
   },
   "todas-entradas"() {
-    E.entradas = DATASET.variables.map((v) => v.columna);
+    E.entradasElegidas = DATASET.variables.map((v) => v.columna);
+    sincronizarEntradas();
     renderPaso();
     refrescar();
+  },
+  "ninguna-entrada"() {
+    E.entradasElegidas = [];
+    sincronizarEntradas();
+    renderPaso();
+    refrescar();
+  },
+  "dataset-taller"() { cargarDataset(cargarDatosEmbebidos()); },
+  notebook() {
+    const enlace = document.createElement("a");
+    enlace.href = URL.createObjectURL(new Blob([JSON.stringify(notebookKeras(), null, 1)], { type: "application/x-ipynb+json" }));
+    enlace.download = `red_${E.tarea}.ipynb`;
+    document.body.append(enlace);
+    enlace.click();
+    enlace.remove();
+    setTimeout(() => URL.revokeObjectURL(enlace.href), 2000);
   },
   "agregar-capa"() {
     if (E.ocultas.length >= 3) return;
@@ -2402,9 +2840,45 @@ const ACCIONES = {
   },
 };
 
+function actualizarParticion() {
+  for (const p of ["entrenamiento", "validacion"]) $(`#salida-p-${p}`).textContent = `${E.particion[p]}%`;
+  $("#salida-p-prueba").textContent = `${100 - E.particion.entrenamiento - E.particion.validacion}%`;
+  $("#barra-particion").innerHTML = barraParticion();
+  E.corrida = null;
+}
+
+// Un dataset nuevo reinicia las decisiones que dependen de sus columnas.
+function cargarDataset(ds) {
+  if (E.entrenando) return;
+  DATASET = ds;
+  cacheParticion.clear();
+  Object.assign(E, {
+    paso: 0, maxPaso: 0, tarea: null, objetivo: null, entradasElegidas: [...ds.entradasPorDefecto],
+    particion: { ...E.particion, modo: ds.columnaParticion ? "columna" : "azar" }, muestra: true,
+    salida: { neuronas: null, activacion: null }, perdida: null, corrida: null, vivo: null, simulacion: null, avisoTarea: null,
+    garage: { binaria: [], multiclase: [], regresion: [], clustering: [] }, cuentaGarage: {},
+  });
+  sincronizarEntradas();
+  renderPaso();
+  refrescar();
+}
+
+async function leerArchivo(archivo) {
+  const fallar = (texto) => { $("#error-archivo").innerHTML = `<div class="mensaje error"><strong>No se pudo usar el archivo</strong><p>${esc(texto)}</p></div>`; };
+  if (!archivo) return;
+  if (E.entrenando) return fallar("Esperá a que termine el entrenamiento.");
+  if (archivo.size > LIMITES.megasMaximos * 1048576) return fallar(`Pesa ${num(archivo.size / 1048576, 1)} MB y el máximo es ${LIMITES.megasMaximos} MB.`);
+  try {
+    cargarDataset(datasetDesdeCSV(archivo.name, await archivo.text()));
+  } catch (e) {
+    fallar(e.message);
+  }
+}
+
 function actualizarEscalas() {
-  const cont = $("#escalas");
-  if (cont) cont.innerHTML = escalasEntradas(Math.max(300, Math.min(640, Math.round($("#contenido-paso").clientWidth) - 4)));
+  const cont = $("#escalas"), ancho = Math.max(300, Math.min(640, Math.round($("#contenido-paso").clientWidth) - 4));
+  if (cont) cont.innerHTML = escalasEntradas(ancho);
+  if ($("#asociacion")) $("#asociacion").innerHTML = asociacionEntradas(ancho);
 }
 
 function aplicarModo() {
@@ -2418,11 +2892,43 @@ function cambiarCampo(el) {
   switch (campo) {
     case "entrada": {
       const marcadas = new Set($$('[data-campo="entrada"]').filter((x) => x.checked).map((x) => x.value));
-      E.entradas = DATASET.variables.map((v) => v.columna).filter((c) => marcadas.has(c));
+      E.entradasElegidas = DATASET.variables.map((v) => v.columna).filter((c) => marcadas.has(c) || (c === E.objetivo && E.entradasElegidas.includes(c)));
+      sincronizarEntradas();
       $("#dimension-entrada").textContent = `d = ${E.entradas.length}`;
       actualizarEscalas();
       break;
     }
+    case "objetivo":
+      E.objetivo = el.value || null;
+      sincronizarEntradas();
+      E.corrida = null;
+      renderPaso();
+      break;
+    case "particion-modo":
+      E.particion.modo = el.value;
+      $(".particion-azar").hidden = el.value === "columna";
+      actualizarParticion();
+      break;
+    case "p-entrenamiento":
+    case "p-validacion": {
+      const clave = campo === "p-entrenamiento" ? "entrenamiento" : "validacion";
+      E.particion[clave] = Number(el.value);
+      // La prueba conserva al menos el 10%.
+      const otra = clave === "entrenamiento" ? "validacion" : "entrenamiento";
+      if (E.particion.entrenamiento + E.particion.validacion > 90) {
+        E.particion[otra] = 90 - E.particion[clave];
+        $(`[data-campo="p-${otra}"]`).value = E.particion[otra];
+      }
+      actualizarParticion();
+      break;
+    }
+    case "semilla":
+      E.particion.semilla = Math.max(0, Math.min(999999, Math.round(Number(el.value) || 0)));
+      el.value = E.particion.semilla;
+      actualizarParticion();
+      break;
+    case "muestra": E.muestra = el.checked; actualizarParticion(); break;
+    case "archivo": leerArchivo(el.files[0]); el.value = ""; return;
     case "normalizar": E.normalizar = el.checked; actualizarEscalas(); break;
     case "neuronas": E.ocultas[i].neuronas = Number(el.value); break;
     case "activacion":
@@ -2469,6 +2975,21 @@ function iniciar() {
   });
   $("#anterior").addEventListener("click", () => irA(E.paso - 1));
   $("#siguiente").addEventListener("click", () => irA(E.paso + 1));
+  // Arrastrar y soltar un CSV sobre la tarjeta del dataset.
+  panel.addEventListener("dragover", (ev) => {
+    const zona = ev.target.closest("#zona-archivo");
+    if (!zona) return;
+    ev.preventDefault();
+    zona.classList.add("arrastrando");
+  });
+  panel.addEventListener("dragleave", (ev) => { ev.target.closest("#zona-archivo")?.classList.remove("arrastrando"); });
+  panel.addEventListener("drop", (ev) => {
+    const zona = ev.target.closest("#zona-archivo");
+    if (!zona) return;
+    ev.preventDefault();
+    zona.classList.remove("arrastrando");
+    leerArchivo(ev.dataTransfer.files[0]);
+  });
   // Las explicaciones que alguien abre quedan abiertas al volver a dibujar el paso.
   panel.addEventListener("toggle", (ev) => {
     const d = ev.target;
@@ -2492,7 +3013,7 @@ function iniciar() {
 }
 
 // Acceso para depurar desde la consola y para las pruebas automáticas.
-window.configurador = { estado: E, dataset: DATASET, prepararDatos, entrenarRed, codigoKeras, desglose, diagnosticar };
+window.configurador = { estado: E, dataset: () => DATASET, conteo, prepararDatos, entrenarRed, codigoKeras, notebookKeras, desglose, diagnosticar };
 iniciar();
 </script>
 </body>
