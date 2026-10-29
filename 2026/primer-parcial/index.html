@@ -2400,7 +2400,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <h3 class="anchored" data-anchor-id="c-consulta-ask">c) Consulta ASK</h3>
 <p>El agente consultaría ASK(KB, D), es decir, “¿se habilita la descarga?”. Como D se deduce de la base, la respuesta es afirmativa. TELL agrega sentencias a la base y ASK consulta qué se puede deducir de ella: la respuesta sale de la inferencia, no de encontrar D almacenado entre los hechos.</p>
 <div class="lecturas">
-<p><strong>Para repasar.</strong> Clase C4, <em>Agentes basados en conocimiento</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch5.S1.html">5.1</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch5.S3.html">5.3</a>. Russell y Norvig, secciones 7.1, 7.3 y 7.5.1.</p>
+<p><strong>Para repasar.</strong> Clase C4, <em>Agentes basados en conocimiento</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch5.S1.html">5.1</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch5.S3.html">5.3</a>. Russell y Norvig, secciones 7.1, 7.3 y 7.5.</p>
 </div>
 </section>
 </section>
@@ -2414,7 +2414,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </ol>
 </blockquote>
 <p>Los números sobre las aristas son costos; h es la heurística de cada nodo.</p>
-<div id="af03233b" class="cell" data-execution_count="1">
+<div id="06566cb0" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2564,7 +2564,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </ul>
 <p>Juntas permiten fronteras de decisión no lineales. Para XOR alcanza una capa oculta de dos neuronas: una se activa cuando al menos una entrada vale 1 (OR), otra cuando las dos valen 1 (AND), y la salida responde 1 cuando se activa la primera y no la segunda.</p>
 <div class="lecturas">
-<p><strong>Para repasar.</strong> Clase C5, <em>Perceptrón y MLP</em>. Poole y Mackworth, sección <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S1.html">8.1</a>. Russell y Norvig, secciones 19.6.4 y 21.1.</p>
+<p><strong>Para repasar.</strong> Clase C5, <em>Perceptrón y MLP</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch7.S3.html">7.3</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S1.html">8.1</a>. Russell y Norvig, secciones 19.6 y 22.1.</p>
 </div>
 </section>
 </section>
@@ -2621,7 +2621,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <h3 class="anchored" data-anchor-id="c-rango-y-función-de-pérdida">c) Rango y función de pérdida</h3>
 <p>La sigmoide produce valores entre 0 y 1. Para asignar la clase se aplica un umbral, en general 0,5. La pérdida adecuada es la <strong>entropía cruzada binaria</strong> (<em>binary cross-entropy</em>): es chica cuando el modelo asigna alta probabilidad a la respuesta correcta y grande cuando está seguro pero se equivoca.</p>
 <div class="lecturas">
-<p><strong>Para repasar.</strong> Clase C5, <em>Perceptrón y MLP</em>. Poole y Mackworth, sección <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S1.html">8.1</a>. Russell y Norvig, secciones 21.1 y 21.2.2.</p>
+<p><strong>Para repasar.</strong> Clase C5, <em>Perceptrón y MLP</em>. Poole y Mackworth, sección <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S1.html">8.1</a>. Russell y Norvig, secciones 22.1 y 22.2.</p>
 </div>
 </section>
 </section>
@@ -2651,14 +2651,14 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <p>La <strong>función de pérdida</strong> mide qué tan lejos están las predicciones de los valores reales: dice cuán bueno es el modelo y es lo que el entrenamiento minimiza. Se elige según el problema: error cuadrático medio en regresión, entropía cruzada en clasificación.</p>
 <p>El <strong>learning rate</strong> (tasa de aprendizaje) no mide el error: es el tamaño del paso con que el descenso por gradiente mueve los pesos, en la dirección contraria al gradiente de la pérdida. La pérdida indica cuánto se equivoca el modelo y hacia dónde corregir; el learning rate, cuánto se corrige en cada paso. Si es muy alto, el entrenamiento oscila o diverge; si es muy bajo, avanza demasiado lento.</p>
 <div class="lecturas">
-<p><strong>Para repasar.</strong> Clase C6, <em>Entrenamiento de redes neuronales</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch7.S4.html">7.4</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S3.html">8.3</a>. Russell y Norvig, secciones 19.4.3, 19.6.2, 21.5.3 y 21.5.4.</p>
+<p><strong>Para repasar.</strong> Clase C6, <em>Entrenamiento de redes neuronales</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch7.S4.html">7.4</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S3.html">8.3</a>. Russell y Norvig, secciones 19.4, 19.6 y 22.5.</p>
 </div>
 </section>
 </section>
 <section id="notas-y-fuentes" class="level2">
 <h2 class="anchored" data-anchor-id="notas-y-fuentes">Notas y fuentes</h2>
 <ul>
-<li>Las referencias de libros corresponden a Poole y Mackworth, <em>Artificial Intelligence: Foundations of Computational Agents</em>, 3.ª edición, de acceso libre en <a href="https://artint.info/3e/html/ArtInt3e.html">artint.info</a>, y a Russell y Norvig, <em>Artificial Intelligence: A Modern Approach</em>, 4.ª edición.</li>
+<li>Las referencias de libros corresponden a Poole y Mackworth, <em>Artificial Intelligence: Foundations of Computational Agents</em>, 3.ª edición, de acceso libre en <a href="https://artint.info/3e/html/ArtInt3e.html">artint.info</a>, y a Russell y Norvig, <em>Artificial Intelligence: A Modern Approach</em>, 4.ª edición, Global Edition, la que usamos en el curso. En la edición estadounidense, el capítulo de deep learning es el 21 en lugar del 22.</li>
 <li>Las clases citadas son las presentaciones de la cursada 2026.</li>
 <li>El grafo del ejercicio 4 se dibuja con NetworkX y Matplotlib; el dibujo no ejecuta la búsqueda.</li>
 </ul>

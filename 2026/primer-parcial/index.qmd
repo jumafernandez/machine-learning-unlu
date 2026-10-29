@@ -143,7 +143,7 @@ La conclusión depende de que ¬B esté en la base. Si la base no dijera nada so
 El agente consultaría ASK(KB, D), es decir, "¿se habilita la descarga?". Como D se deduce de la base, la respuesta es afirmativa. TELL agrega sentencias a la base y ASK consulta qué se puede deducir de ella: la respuesta sale de la inferencia, no de encontrar D almacenado entre los hechos.
 
 ::: {.lecturas}
-**Para repasar.** Clase C4, *Agentes basados en conocimiento*. Poole y Mackworth, secciones [5.1](https://artint.info/3e/html/ArtInt3e.Ch5.S1.html) y [5.3](https://artint.info/3e/html/ArtInt3e.Ch5.S3.html). Russell y Norvig, secciones 7.1, 7.3 y 7.5.1.
+**Para repasar.** Clase C4, *Agentes basados en conocimiento*. Poole y Mackworth, secciones [5.1](https://artint.info/3e/html/ArtInt3e.Ch5.S1.html) y [5.3](https://artint.info/3e/html/ArtInt3e.Ch5.S3.html). Russell y Norvig, secciones 7.1, 7.3 y 7.5.
 :::
 
 ## Ejercicio 4 - Modelado de problemas como problemas de búsqueda
@@ -247,7 +247,7 @@ La solución es combinar varios perceptrones en una red multicapa (MLP), con una
 Juntas permiten fronteras de decisión no lineales. Para XOR alcanza una capa oculta de dos neuronas: una se activa cuando al menos una entrada vale 1 (OR), otra cuando las dos valen 1 (AND), y la salida responde 1 cuando se activa la primera y no la segunda.
 
 ::: {.lecturas}
-**Para repasar.** Clase C5, *Perceptrón y MLP*. Poole y Mackworth, sección [8.1](https://artint.info/3e/html/ArtInt3e.Ch8.S1.html). Russell y Norvig, secciones 19.6.4 y 21.1.
+**Para repasar.** Clase C5, *Perceptrón y MLP*. Poole y Mackworth, secciones [7.3](https://artint.info/3e/html/ArtInt3e.Ch7.S3.html) y [8.1](https://artint.info/3e/html/ArtInt3e.Ch8.S1.html). Russell y Norvig, secciones 19.6 y 22.1.
 :::
 
 ## Ejercicio 6 - Redes neuronales
@@ -279,7 +279,7 @@ Clasificación binaria: una única neurona de salida con activación sigmoide, c
 La sigmoide produce valores entre 0 y 1. Para asignar la clase se aplica un umbral, en general 0,5. La pérdida adecuada es la **entropía cruzada binaria** (*binary cross-entropy*): es chica cuando el modelo asigna alta probabilidad a la respuesta correcta y grande cuando está seguro pero se equivoca.
 
 ::: {.lecturas}
-**Para repasar.** Clase C5, *Perceptrón y MLP*. Poole y Mackworth, sección [8.1](https://artint.info/3e/html/ArtInt3e.Ch8.S1.html). Russell y Norvig, secciones 21.1 y 21.2.2.
+**Para repasar.** Clase C5, *Perceptrón y MLP*. Poole y Mackworth, sección [8.1](https://artint.info/3e/html/ArtInt3e.Ch8.S1.html). Russell y Norvig, secciones 22.1 y 22.2.
 :::
 
 ## Ejercicio 7 - Entrenamiento y generalización
@@ -306,12 +306,12 @@ La **función de pérdida** mide qué tan lejos están las predicciones de los v
 El **learning rate** (tasa de aprendizaje) no mide el error: es el tamaño del paso con que el descenso por gradiente mueve los pesos, en la dirección contraria al gradiente de la pérdida. La pérdida indica cuánto se equivoca el modelo y hacia dónde corregir; el learning rate, cuánto se corrige en cada paso. Si es muy alto, el entrenamiento oscila o diverge; si es muy bajo, avanza demasiado lento.
 
 ::: {.lecturas}
-**Para repasar.** Clase C6, *Entrenamiento de redes neuronales*. Poole y Mackworth, secciones [7.4](https://artint.info/3e/html/ArtInt3e.Ch7.S4.html) y [8.3](https://artint.info/3e/html/ArtInt3e.Ch8.S3.html). Russell y Norvig, secciones 19.4.3, 19.6.2, 21.5.3 y 21.5.4.
+**Para repasar.** Clase C6, *Entrenamiento de redes neuronales*. Poole y Mackworth, secciones [7.4](https://artint.info/3e/html/ArtInt3e.Ch7.S4.html) y [8.3](https://artint.info/3e/html/ArtInt3e.Ch8.S3.html). Russell y Norvig, secciones 19.4, 19.6 y 22.5.
 :::
 
 ## Notas y fuentes
 
-- Las referencias de libros corresponden a Poole y Mackworth, *Artificial Intelligence: Foundations of Computational Agents*, 3.ª edición, de acceso libre en [artint.info](https://artint.info/3e/html/ArtInt3e.html), y a Russell y Norvig, *Artificial Intelligence: A Modern Approach*, 4.ª edición.
+- Las referencias de libros corresponden a Poole y Mackworth, *Artificial Intelligence: Foundations of Computational Agents*, 3.ª edición, de acceso libre en [artint.info](https://artint.info/3e/html/ArtInt3e.html), y a Russell y Norvig, *Artificial Intelligence: A Modern Approach*, 4.ª edición, Global Edition, la que usamos en el curso. En la edición estadounidense, el capítulo de deep learning es el 21 en lugar del 22.
 - Las clases citadas son las presentaciones de la cursada 2026.
 - El grafo del ejercicio 4 se dibuja con NetworkX y Matplotlib; el dibujo no ejecuta la búsqueda.
 
