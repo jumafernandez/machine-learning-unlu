@@ -17,6 +17,17 @@ Las versiones HTML listas para lectura están en [`taller-busqueda/`](taller-bus
 
 El directorio [`primer-parcial/`](primer-parcial/) contiene la resolución del primer parcial: `index.qmd` es la fuente Quarto e [`index.html`](primer-parcial/index.html), la versión lista para leer.
 
+## Taller de redes neuronales feed-forward
+
+El directorio [`taller-redes-neuronales/`](taller-redes-neuronales/) reúne los materiales del taller de apoyo del 3 de noviembre:
+
+- `index.html`: configurador interactivo de redes feed-forward, con vista previa, precio en parámetros, entrenamiento en el navegador y ficha técnica con código Keras.
+- `generar_datos.py`: generador del dataset sintético del agente de inspección.
+- `embeber_datos.py`: copia el dataset dentro de `index.html`.
+- `datos/`: lecturas de sensores en CSV.
+
+El configurador se usa directamente desde [GitHub Pages](https://jumafernandez.github.io/machine-learning-unlu/2026/taller-redes-neuronales/), sin instalar nada.
+
 ## Trabajo práctico integrador
 
 El directorio [`trabajo-integrador/`](trabajo-integrador/) reúne la consigna, las plantillas opcionales de propuesta e informe, sus fuentes LaTeX y los paquetes para Overleaf. Los PDF listos para leer están en [`trabajo-integrador/pdf/`](trabajo-integrador/pdf/).
