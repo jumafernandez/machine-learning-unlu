@@ -1,6 +1,6 @@
 ---
-title: "Resolución del primer parcial"
-subtitle: "Aprendizaje Automático - 2/2026"
+title: "De los agentes a las redes neuronales"
+subtitle: "Resolución paso a paso - Primer parcial 2/2026"
 lang: es
 format:
   html:
@@ -8,6 +8,9 @@ format:
     toc: true
     toc-depth: 2
     toc-title: "Recorrido"
+    code-fold: false
+    code-copy: true
+    code-overflow: wrap
     embed-resources: true
     number-sections: false
     fig-cap-location: bottom
@@ -15,51 +18,64 @@ format:
       - text: |
           <style>
             h1, h2, h3 { color: #163e50; }
-            p.subtitle { color: #59717c; }
-            body { line-height: 1.5; }
-            #quarto-document-content p,
-            #quarto-document-content li { text-align: justify; hyphens: auto; }
+            h1.title { font-size: 2.15rem; }
+            p, #quarto-document-content li { text-align: justify; }
+            p.subtitle { text-align: left; color: #59717c; }
+            blockquote { border-left-color: #8eb9c3; color: #48616c; }
+            .lecturas { font-size: .92rem; color: #48616c; border-top: 1px solid #d7e6eb;
+                        padding-top: .6rem; margin-top: 1.4rem; }
+            .lecturas p { text-align: left; }
             #quarto-document-content table th { color: #163e50; background: #edf5f7; }
-            #fig-grafo svg { max-width: 100% !important; height: auto; }
-            mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
             #quarto-document-content :not(pre) > code { white-space: pre-wrap; overflow-wrap: anywhere; }
           </style>
+jupyter: python3
+execute:
+  echo: false
+  error: false
+  cache: false
+  daemon: false
 ---
 
-Resolución de referencia del primer parcial. Cada ejercicio transcribe la consigna y desarrolla una respuesta posible. En las preguntas abiertas hay otras respuestas igualmente correctas.
+Esta guía resuelve los siete ejercicios del **primer parcial de 2026**. Cada respuesta retoma los conceptos tal como los trabajamos en clase y, al final de cada ejercicio, indica dónde repasarlos: la presentación del curso y las secciones de Poole y Mackworth y de Russell y Norvig.
 
-## 1. Paradigmas de IA
-
-::: {.callout-note title="Consigna"}
-Compare los enfoques simbólico, estadístico y conexionista. Para cada uno indique qué representa como conocimiento, cómo obtiene o ajusta ese conocimiento y una situación en la que resulte adecuado.
+::: {.callout-note title="Una resolución posible"}
+Las consignas abiertas (1, 2 y 7) admiten otras respuestas correctas. **Lo importante es justificar con los conceptos del curso**, no reproducir esta redacción.
 :::
+
+## Ejercicio 1 - Paradigmas de IA
+
+> Compare los enfoques simbólico, estadístico y conexionista. Para cada uno indique qué representa como conocimiento, cómo obtiene o ajusta ese conocimiento y una situación en la que resulte adecuado.
+
+En clase presentamos los tres paradigmas como enfoques históricos de la IA. Todos buscan comportamiento inteligente, pero difieren en dónde está el conocimiento y en cómo se obtiene.
 
 ::: {.table-responsive}
-| Enfoque | Qué representa como conocimiento | Cómo lo obtiene o ajusta | Situación adecuada |
+| Paradigma | Qué representa como conocimiento | Cómo lo obtiene o ajusta | Situación adecuada |
 |---|---|---|---|
-| **Simbólico** | Hechos y reglas explícitos sobre símbolos con significado: lógica, reglas si-entonces, ontologías. | Lo formula un experto o se induce de ejemplos; el sistema deriva conclusiones nuevas por inferencia lógica. | Dominios con reglas claras que deben poder auditarse: normativa, permisos de acceso, sistemas expertos. |
-| **Estadístico** | Distribuciones de probabilidad y parámetros de un modelo: coeficientes de una regresión, probabilidades condicionales. | Estima los parámetros a partir de datos, por ejemplo por máxima verosimilitud, y cuantifica la incertidumbre. | Decisiones bajo incertidumbre con datos de tamaño moderado, donde importa cuantificar probabilidades: filtro de spam, scoring crediticio, pronóstico de demanda. |
-| **Conexionista** | Pesos y sesgos de una red de neuronas artificiales; el conocimiento queda distribuido y no se lee directamente. | Ajusta los pesos con ejemplos, minimizando una función de pérdida con descenso por gradiente y retropropagación. | Grandes volúmenes de datos no estructurados con patrones no lineales: imágenes, audio, texto. |
+| **Simbólico** | Reglas y estructuras lógicas explícitas: una base de hechos y una base de reglas "si... entonces...". | Lo codifica un experto humano; un motor de inferencia deriva conclusiones por encadenamiento hacia adelante o hacia atrás. No aprende de los datos. | Dominios con reglas claras que deben poder explicarse: sistemas expertos como MYCIN, reglamentos, permisos de acceso. |
+| **Estadístico** (*machine learning*) | Modelos probabilísticos y estadísticos que generalizan a partir de ejemplos. | Aprende de los datos, generalmente tabulares (instancias y características), y razona bajo incertidumbre. | Predicción con datos tabulares: detección de fraudes, predicción de demanda, sistemas de recomendación. |
+| **Conexionista** | Pesos de las conexiones de una red de unidades simples interconectadas, inspiradas en las neuronas. | Ajusta esos pesos según la experiencia, mediante retropropagación. | Grandes volúmenes de datos no estructurados y mucho cómputo: imágenes, texto y audio. |
 :::
 
-La diferencia de fondo está en la representación. En el enfoque simbólico el conocimiento es explícito y cada paso del razonamiento puede seguirse. Los otros dos aprenden de los datos: el estadístico parte de un modelo con supuestos explícitos y parámetros interpretables, mientras que el conexionista aprende sus propias representaciones intermedias, con muchos más parámetros y a costa de interpretabilidad.
+En síntesis, la IA simbólica razona con reglas explícitas, la estadística aprende calculando probabilidades a partir de los datos y el conexionismo aprende ajustando conexiones, inspirado en cómo lo hace el cerebro.
 
-## 2. Teoría de agentes
-
-::: {.callout-note title="Consigna"}
-Un robot traslada materiales entre aulas, evita obstáculos y recibe pedidos de distinta urgencia.
-
-a. ¿Qué debería percibir y qué acciones podría realizar?
-b. Proponga una regla de un agente reflejo simple.
-c. ¿Qué debería agregar para que sea un agente basado en utilidades? Indique qué criterios usaría para decidir.
+::: {.lecturas}
+PENDIENTE_REF1
 :::
+
+## Ejercicio 2 - Teoría de agentes
+
+> Un robot traslada materiales entre aulas, evita obstáculos y recibe pedidos de distinta urgencia.
+>
+> a. ¿Qué debería percibir y qué acciones podría realizar?
+> b. Proponga una regla de un agente reflejo simple.
+> c. ¿Qué debería agregar para que sea un agente basado en utilidades? Indique qué criterios usaría para decidir.
 
 ### a) Percepciones y acciones
 
-El robot debería percibir:
+Un agente percibe su entorno mediante sensores y actúa sobre él mediante actuadores. El robot debería percibir:
 
-- su ubicación en el edificio (aula o tramo de pasillo);
-- los obstáculos cercanos y su distancia;
+- su posición y orientación en el edificio;
+- los obstáculos cercanos, con sensores de proximidad o de contacto;
 - si lleva material y cuál;
 - los pedidos que recibe, con origen, destino y urgencia;
 - su nivel de batería.
@@ -73,19 +89,18 @@ Y podría realizar estas acciones:
 
 ### b) Regla de un agente reflejo simple
 
-Un agente reflejo simple decide solo con la percepción actual, mediante reglas condición-acción y sin memoria. Por ejemplo:
+Un agente reflejo (o reactivo) simple actúa solo en función de la percepción actual, con reglas condición-acción y sin memoria ni estado interno. Por ejemplo:
 
 > **Si** hay un obstáculo adelante, **entonces** detenerse y girar.
 
-Otra regla válida sería: si está en el aula de destino y lleva el material, entonces descargarlo. Este tipo de agente no alcanza para manejar la urgencia, porque ordenar los pedidos exige recordar cuáles están pendientes, es decir, mantener un estado interno.
+Otra regla válida sería: si está en el aula de destino y lleva el material, entonces descargarlo. La limitación aparece con la urgencia: ordenar los pedidos exige recordar cuáles están pendientes, y este agente no guarda historia.
 
 ### c) Agente basado en utilidades
 
-Hay que agregarle tres elementos:
+Un agente basado en objetivos solo distingue si cumple o no un pedido; uno basado en utilidades busca, además, maximizar su desempeño. Para eso hay que agregarle:
 
-1. **Estado interno y modelo del entorno**: un mapa del edificio, su posición, los pedidos pendientes y el efecto de sus acciones (por ejemplo, cuánto tarda en recorrer cada tramo), para anticipar el resultado de cada alternativa.
-2. **Objetivos**: los pedidos por entregar.
-3. **Una función de utilidad** que asigne un valor a cada estado o plan. Cuando hay varias formas de cumplir los objetivos, o objetivos en conflicto, el agente elige la de mayor utilidad (esperada, si hay incertidumbre).
+1. **Un modelo del entorno**: un mapa del edificio, su posición, los pedidos pendientes y el efecto de sus acciones, para anticipar el resultado de cada alternativa.
+2. **Una función de utilidad** que evalúe qué acción o qué plan es mejor según sus preferencias. Es útil cuando hay varias formas de cumplir los pedidos y unas son mejores que otras.
 
 Como criterios para decidir usaría:
 
@@ -95,197 +110,137 @@ Como criterios para decidir usaría:
 - el consumo de batería;
 - la posibilidad de agrupar entregas en un mismo recorrido.
 
-Una forma simple de combinarlos es una suma ponderada:
+Es la idea del vehículo autónomo que vimos en clase, que no solo busca llegar a destino, sino también minimizar el tiempo y el consumo. La dificultad está en diseñar la función de utilidad: decidir cuánto pesa cada criterio frente a los demás.
 
-$$
-U(\text{plan}) = w_1\,\text{urgencia atendida} - w_2\,\text{tiempo} - w_3\,\text{riesgo} - w_4\,\text{energía}
-$$
-
-Los pesos expresan las prioridades: con $w_1$ alto, el robot posterga un pedido común para atender uno urgente aunque quede más lejos.
-
-## 3. Aprendizaje simbólico
-
-::: {.callout-note title="Consigna"}
-Considere las proposiciones: *A: la cuenta está activa; M: el material está publicado; B: la cuenta está bloqueada; D: se habilita la descarga.* La base contiene los hechos A, M y ¬B, y la regla: $A \land M \land \neg B \rightarrow D$
-
-a. Distinga los hechos de la regla.
-b. Determine si la base permite inferir D y justifique brevemente.
-c. ¿Qué consulta realizaría un agente mediante la interfaz ASK?
+::: {.lecturas}
+PENDIENTE_REF2
 :::
 
-### a) Hechos y regla
+## Ejercicio 3 - Aprendizaje simbólico
 
-- **Hechos**: $A$, $M$ y $\neg B$. Son afirmaciones incondicionales: la cuenta está activa, el material está publicado y la cuenta no está bloqueada.
-- **Regla**: $A \land M \land \neg B \rightarrow D$. Es una implicación: si se cumplen las tres condiciones del antecedente, se concluye el consecuente $D$.
+> Considere las proposiciones: *A: la cuenta está activa; M: el material está publicado; B: la cuenta está bloqueada; D: se habilita la descarga.* La base contiene los hechos A, M y ¬B, y la regla A ∧ M ∧ ¬B → D.
+>
+> a. Distinga los hechos de la regla.
+> b. Determine si la base permite inferir D y justifique brevemente.
+> c. ¿Qué consulta realizaría un agente mediante la interfaz ASK?
 
-Un hecho afirma algo sobre el mundo; una regla permite derivar hechos nuevos a partir de otros.
+PENDIENTE_EJ3
 
-### b) Inferencia de D
+## Ejercicio 4 - Modelado de problemas como problemas de búsqueda
 
-Sí, la base permite inferir $D$. Los tres literales del antecedente están en la base, así que $A \land M \land \neg B$ es verdadero, y por *modus ponens*:
+> Considere el siguiente problema modelado como un grafo:
+>
+> a. Sin usar heurística, ¿qué estrategia garantiza el camino de menor costo entre S y G: BFS, DFS o costo uniforme? Indique el camino y costo que devolverían BFS y costo uniforme.
+> b. Indique el camino y costo que devolverían búsqueda voraz y A\*.
 
-$$
-\frac{A \land M \land \neg B \qquad A \land M \land \neg B \rightarrow D}{D}
-$$
+Los números sobre las aristas son costos; h es la heurística de cada nodo.
 
-Es decir, $KB \models D$: en todo modelo en el que la base es verdadera, $D$ también lo es. La negación es la clave del ejercicio: si la base tuviera $B$ en lugar de $\neg B$, el antecedente sería falso y no podría inferirse $D$ (ni tampoco $\neg D$).
+```{python}
+import matplotlib.pyplot as plt
+import networkx as nx
 
-### c) Consulta ASK
-
-El agente consultaría $\text{ASK}(KB, D)$, es decir, si se habilita la descarga. La base responde **verdadero** por lo visto en b). La respuesta no surge de buscar $D$ entre los hechos almacenados, porque no está entre ellos, sino de inferirlo: TELL agrega sentencias a la base y ASK pregunta si una sentencia es consecuencia lógica de ella.
-
-## 4. Modelado de problemas como problemas de búsqueda
-
-::: {.callout-note title="Consigna"}
-Considere el siguiente problema modelado como un grafo (@fig-grafo):
-
-a. Sin usar heurística, ¿qué estrategia garantiza el camino de menor costo entre S y G: BFS, DFS o costo uniforme? Indique el camino y costo que devolverían BFS y costo uniforme.
-b. Indique el camino y costo que devolverían búsqueda voraz y A\*.
-:::
-
-```{dot}
-//| label: fig-grafo
-//| fig-cap: "Grafo del ejercicio 4. Los números sobre las aristas son costos y h es la heurística de cada nodo."
-//| fig-width: 7
-//| fig-height: 1.55
-digraph busqueda {
-  rankdir=LR;
-  bgcolor="transparent";
-  nodesep=0.6;
-  ranksep=0.9;
-  node [shape=box, style="rounded,filled", fillcolor="#edf5f7", color="#8eb9c3",
-        fontcolor="#163e50", fontname="Helvetica", fontsize=13, width=1.2, height=0.65];
-  edge [color="#5f7f8a", fontcolor="#5f5078", fontname="Helvetica", fontsize=13, arrowsize=0.8];
-  S [label="S\nh(S) = 3"];
-  A [label="A\nh(A) = 5"];
-  B [label="B\nh(B) = 2"];
-  C [label="C\nh(C) = 3"];
-  G [label="G\nh(G) = 0"];
-  S -> A [label="2"];
-  S -> B [label="1"];
-  A -> C [label="2"];
-  C -> G [label="3"];
-  B -> G [label="10"];
-}
+plt.rcParams.update({"font.size": 11, "figure.facecolor": "white"})
+aristas = [("S", "A", 2), ("S", "B", 1), ("A", "C", 2), ("C", "G", 3), ("B", "G", 10)]
+heuristica = {"S": 3, "A": 5, "B": 2, "C": 3, "G": 0}
+grafo = nx.DiGraph()
+grafo.add_weighted_edges_from(aristas)
+posiciones = {"S": (0, 0), "A": (1, 1), "C": (2, 1), "B": (1.5, -1), "G": (3, 0)}
+etiquetas = {nodo: f"{nodo}\nh = {h}" for nodo, h in heuristica.items()}
+fig, ax = plt.subplots(figsize=(9, 4.2))
+nx.draw_networkx(grafo, posiciones, labels=etiquetas, ax=ax,
+                 node_size=2900, node_color="#edf5f7", edgecolors="#8eb9c3",
+                 font_color="#163e50", arrowsize=22, node_shape="o")
+nx.draw_networkx_edge_labels(grafo, posiciones, ax=ax,
+                             edge_labels=nx.get_edge_attributes(grafo, "weight"),
+                             rotate=False, font_color="#5f5078")
+ax.set_xlim(-.4, 3.4)
+ax.set_ylim(-1.5, 1.5)
+ax.axis("off")
+plt.show()
 ```
 
 ### a) Búsqueda sin heurística
 
-**Costo uniforme** es la estrategia que garantiza el camino de menor costo. Expande siempre el nodo con menor costo acumulado $g(n)$, de modo que, con costos positivos, el primer camino a G que extrae de la frontera es el más barato. BFS minimiza la cantidad de aristas, no el costo, y solo es óptima si todas las aristas cuestan lo mismo. DFS no garantiza optimalidad.
+**Costo uniforme** (algoritmo de Dijkstra) es la estrategia que garantiza el camino de menor costo. Selecciona de la frontera el camino con menor costo acumulado g. Como los costos son positivos, el primer camino que se retira de la frontera y llega a G es una solución de costo mínimo.
 
-**BFS** explora por niveles con una frontera FIFO:
+BFS selecciona el camino con menos aristas: ignora los costos, así que solo garantiza el menor costo cuando todas las acciones cuestan lo mismo. DFS no garantiza optimalidad: su resultado depende del orden en que se exploran los vecinos.
 
-| Paso | Expande | Frontera resultante |
+**BFS.** Avanza por niveles: primero S; después S → A y S → B; luego S → A → C y S → B → G. Llega a G con dos aristas y devuelve **S → B → G, con costo 1 + 10 = 11**. Es la solución con menos acciones, no la más barata.
+
+**Costo uniforme.** Ordena la frontera por g:
+
+| Paso | Frontera, ordenada por g | Camino elegido |
 |---:|---|---|
-| 1 | S | A, B |
-| 2 | A | B, C |
-| 3 | B | C, G |
+| 1 | S: 0 | S |
+| 2 | S → B: 1; S → A: 2 | S → B |
+| 3 | S → A: 2; S → B → G: 11 | S → A |
+| 4 | S → A → C: 4; S → B → G: 11 | S → A → C |
+| 5 | S → A → C → G: 7; S → B → G: 11 | S → A → C → G |
 
-Al generar G desde B encuentra el objetivo y devuelve **S-B-G, con costo 1 + 10 = 11**. Si el test de objetivo se hace al expandir, el resultado es el mismo: el G alcanzado desde B está antes en la cola que cualquier camino que pase por C.
-
-**Costo uniforme** ordena la frontera por $g(n)$:
-
-| Paso | Expande | $g$ | Frontera resultante, con $g$ |
-|---:|---|---:|---|
-| 1 | S | 0 | B (1), A (2) |
-| 2 | B | 1 | A (2), G (11) |
-| 3 | A | 2 | C (4), G (11) |
-| 4 | C | 4 | G (7) |
-| 5 | G | 7 | se alcanza el objetivo |
-
-En el paso 4, el camino a G por C (costo 7) reemplaza al que pasaba por B (costo 11). Costo uniforme devuelve **S-A-C-G, con costo 2 + 2 + 3 = 7**. El test de objetivo debe hacerse al extraer el nodo de la frontera: si se hiciera al generarlo, se detendría en el paso 2 con S-B-G.
+Al extender B aparece una llegada a G de costo 11, pero la búsqueda no termina allí: todavía hay caminos más baratos en la frontera. Devuelve **S → A → C → G, con costo 2 + 2 + 3 = 7**. La prueba de objetivo se hace al retirar el camino de la frontera; si se hiciera al generarlo, terminaría con el camino de costo 11.
 
 ### b) Búsqueda voraz y A\*
 
-**Búsqueda voraz** ordena la frontera solo por $h(n)$:
+**Voraz.** Ordena la frontera solo por h. Desde S compara h(B) = 2 con h(A) = 5 y elige B; desde B genera G, cuya h es cero, y termina. Devuelve **S → B → G, con costo 11**. Mira solo cuánto parece faltar e ignora lo que ya costó el camino.
 
-| Paso | Expande | $h$ | Frontera resultante, con $h$ |
-|---:|---|---:|---|
-| 1 | S | 3 | B (2), A (5) |
-| 2 | B | 2 | G (0), A (5) |
-| 3 | G | 0 | se alcanza el objetivo |
+**A\*.** Ordena la frontera por f(n) = g(n) + h(n): lo recorrido más lo que se estima que falta. Compara f(B) = 1 + 2 = 3 con f(A) = 2 + 5 = 7 y elige B. Desde B genera G con f = 11, pero no lo acepta todavía, porque A tiene f = 7. Sigue por A, luego por C (f = 4 + 3 = 7) y llega a G con f = 7. Devuelve **S → A → C → G, con costo 7**.
 
-Devuelve **S-B-G, con costo 11**. Elige B porque $h(B) = 2$ es la menor estimación, sin considerar que la arista de B a G cuesta 10.
+La heurística es **admisible**: ninguna estimación supera el costo real que falta hasta G (7 desde S, 5 desde A, 10 desde B y 3 desde C). Con una heurística admisible, A\* garantiza el camino de menor costo; voraz, con la misma h, no tiene esa garantía.
 
-**A\*** ordena la frontera por $f(n) = g(n) + h(n)$:
+| Estrategia | Ordena la frontera por | Camino | Costo |
+|---|---|---|---:|
+| BFS | Cantidad de aristas | S → B → G | 11 |
+| Costo uniforme | g(n) | S → A → C → G | 7 |
+| Voraz | h(n) | S → B → G | 11 |
+| A\* | f(n) = g(n) + h(n) | S → A → C → G | 7 |
 
-| Paso | Expande | $g$ | $h$ | $f$ | Frontera resultante, con $f$ |
-|---:|---|---:|---:|---:|---|
-| 1 | S | 0 | 3 | 3 | B (1 + 2 = 3), A (2 + 5 = 7) |
-| 2 | B | 1 | 2 | 3 | A (7), G (11 + 0 = 11) |
-| 3 | A | 2 | 5 | 7 | C (4 + 3 = 7), G (11) |
-| 4 | C | 4 | 3 | 7 | G (7 + 0 = 7) |
-| 5 | G | 7 | 0 | 7 | se alcanza el objetivo |
+BFS y voraz caen en la misma trampa por razones distintas: BFS cuenta aristas y voraz confía solo en h.
 
-A\* también empieza por B, pero el G al que llega por ese lado tiene $f = 11$, mayor que $f(A) = 7$, así que sigue por A. Devuelve **S-A-C-G, con costo 7**, el óptimo. La heurística es admisible, porque ningún $h(n)$ supera el costo real que falta desde $n$ (7 desde S, 5 desde A, 10 desde B y 3 desde C), y en ese caso A\* garantiza el camino de menor costo.
-
-| Estrategia | Camino | Costo | ¿Óptimo? |
-|---|---|---:|---|
-| BFS | S-B-G | 11 | No |
-| Costo uniforme | S-A-C-G | 7 | Sí |
-| Voraz | S-B-G | 11 | No |
-| A\* | S-A-C-G | 7 | Sí |
-
-BFS y la búsqueda voraz caen en la misma trampa por razones distintas: BFS porque S-B-G tiene menos aristas, la voraz porque B parece el nodo más cercano a G.
-
-## 5. Perceptrón y MLP
-
-::: {.callout-note title="Consigna"}
-Explique por qué un perceptrón simple solo puede aprender fronteras de decisión lineales. ¿Qué aportan las capas ocultas y las funciones de activación no lineales en una red multicapa?
+::: {.lecturas}
+PENDIENTE_REF4
 :::
 
-### Fronteras lineales
+## Ejercicio 5 - Perceptrón y MLP
 
-Un perceptrón calcula una combinación lineal de las entradas y la compara con un umbral:
+> Explique por qué un perceptrón simple solo puede aprender fronteras de decisión lineales. ¿Qué aportan las capas ocultas y las funciones de activación no lineales en una red multicapa?
 
-$$
-\hat{y} =
-\begin{cases}
-1 & \text{si } \mathbf{w}^\top \mathbf{x} + b \ge 0\\
-0 & \text{en otro caso}
-\end{cases}
-$$
+### Por qué el perceptrón solo traza fronteras lineales
 
-La salida cambia de clase donde $\mathbf{w}^\top \mathbf{x} + b = 0$, que es una recta en dos dimensiones y un hiperplano en general. Entrenar el perceptrón solo cambia la posición y la orientación de ese hiperplano: la función escalón decide de qué lado queda cada punto, pero no curva la frontera. Por eso solo resuelve problemas linealmente separables. El contraejemplo clásico es XOR:
+El perceptrón combina las entradas ponderadas por sus pesos, les suma el sesgo y aplica una función de activación. En el perceptrón clásico es el escalón, que decide si la neurona se activa (devuelve 1) o no (devuelve 0). La decisión depende de una única combinación lineal de las entradas, así que la **frontera de decisión es una recta en dos dimensiones y un hiperplano en general**. Los pesos la orientan y el sesgo la desplaza para que no pase necesariamente por el origen, pero el entrenamiento nunca la curva.
 
-| $x_1$ | $x_2$ | XOR |
+Por eso el perceptrón resuelve problemas linealmente separables, como AND u OR, y no puede aprender XOR: ninguna recta deja de un lado a (0, 1) y (1, 0) y del otro a (0, 0) y (1, 1). Es el problema que señalaron Minsky y Papert en 1969.
+
+| x₁ | x₂ | XOR |
 |:---:|:---:|:---:|
 | 0 | 0 | 0 |
 | 0 | 1 | 1 |
 | 1 | 0 | 1 |
 | 1 | 1 | 0 |
 
-Ninguna recta deja de un lado a $(0, 1)$ y $(1, 0)$, y del otro a $(0, 0)$ y $(1, 1)$.
-
 ### Capas ocultas y activaciones no lineales
 
-- Las **capas ocultas** transforman las entradas en representaciones intermedias. En ese nuevo espacio, un problema que no era linealmente separable puede pasar a serlo, y la capa de salida lo resuelve con una frontera lineal sobre esas representaciones.
-- Las **activaciones no lineales** son las que hacen posible esa transformación. Sin ellas, apilar capas no agrega nada, porque la composición de funciones lineales es lineal: $W_2(W_1\mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2 = W\mathbf{x} + \mathbf{b}$, con $W = W_2 W_1$ y $\mathbf{b} = W_2\mathbf{b}_1 + \mathbf{b}_2$. La red equivaldría a una sola capa.
-- Juntas permiten fronteras de decisión no lineales. Con una capa oculta suficientemente ancha, un MLP puede aproximar cualquier función continua con la precisión deseada (teorema de aproximación universal).
+La solución es combinar varios perceptrones en una red multicapa (MLP), con una capa de entrada, una o más capas ocultas y una capa de salida, entrenada con retropropagación (*backpropagation*).
 
-Por ejemplo, una capa oculta de dos neuronas con función escalón resuelve XOR: $h_1$ calcula OR, $h_2$ calcula AND y la salida vale 1 cuando $h_1 = 1$ y $h_2 = 0$.
+- Las **capas ocultas** procesan las entradas con pesos entrenables y funciones de activación, y pasan a la capa siguiente una nueva representación de los datos. Capa tras capa, la red aprende patrones cada vez más complejos.
+- Las **activaciones no lineales** hacen útil esa profundidad. Si cada capa solo calculara combinaciones lineales, varias capas equivaldrían a una sola capa lineal y la red se comportaría como una regresión lineal multivariada. Con activaciones como ReLU o la sigmoide, la composición de capas puede representar curvas y regiones no convexas.
 
-$$
-\begin{aligned}
-h_1 &= \text{escalón}(x_1 + x_2 - 0{,}5)\\
-h_2 &= \text{escalón}(x_1 + x_2 - 1{,}5)\\
-\hat{y} &= \text{escalón}(h_1 - h_2 - 0{,}5)
-\end{aligned}
-$$
+Juntas permiten fronteras de decisión no lineales. Para XOR alcanza una capa oculta de dos neuronas: una se activa cuando al menos una entrada vale 1 (OR), otra cuando las dos valen 1 (AND), y la salida responde 1 cuando se activa la primera y no la segunda.
 
-## 6. Redes neuronales
-
-::: {.callout-note title="Consigna"}
-Considere la siguiente red fully-connected, que recibe 8 variables independientes: Input → Dense(4, ReLU) → Dense(1, sigmoid).
-
-a. ¿Cuántos parámetros entrenables posee la red neuronal en una configuración convencional?
-b. ¿Qué tipo de tarea resuelve?
-c. ¿Qué rango tiene su salida y qué función de pérdida usaría?
+::: {.lecturas}
+PENDIENTE_REF5
 :::
+
+## Ejercicio 6 - Redes neuronales
+
+> Considere la siguiente red fully-connected, que recibe 8 variables independientes: Input → Dense(4, ReLU) → Dense(1, sigmoid).
+>
+> a. ¿Cuántos parámetros entrenables posee la red neuronal en una configuración convencional?
+> b. ¿Qué tipo de tarea resuelve?
+> c. ¿Qué rango tiene su salida y qué función de pérdida usaría?
 
 ### a) Parámetros entrenables
 
-En una capa densa, cada neurona tiene un peso por cada entrada más un sesgo. Con $n$ entradas y $m$ neuronas, la capa tiene $(n + 1)\,m$ parámetros.
+Cada neurona de una capa densa tiene un peso por cada entrada y un sesgo. La aclaración del enunciado se debe a que el sesgo se representa de formas diversas según el autor o el software; en la configuración convencional, cada capa densa lo incluye.
 
 | Capa | Pesos | Sesgos | Parámetros |
 |---|---:|---:|---:|
@@ -293,50 +248,55 @@ En una capa densa, cada neurona tiene un peso por cada entrada más un sesgo. Co
 | Dense(1, sigmoid) | 4 × 1 = 4 | 1 | 5 |
 | **Total** | | | **41** |
 
-La entrada no tiene parámetros: solo recibe las 8 variables. Un error frecuente es olvidar los sesgos, que lleva a 36 en lugar de 41.
+La capa de entrada no tiene parámetros: solo recibe las 8 variables. Un error frecuente es olvidar los sesgos, que lleva a 36 en lugar de 41.
 
 ### b) Tipo de tarea
 
-Clasificación binaria. Una única neurona de salida con sigmoide produce un valor que se interpreta como la probabilidad de la clase positiva, $P(y = 1 \mid \mathbf{x})$. Para asignar la clase se aplica un umbral, en general 0,5.
+Clasificación binaria: una única neurona de salida con activación sigmoide, cuya salida se interpreta como la probabilidad de la clase positiva.
 
 ### c) Rango y función de pérdida
 
-La sigmoide $\sigma(z) = 1/(1 + e^{-z})$ toma valores en el intervalo abierto $(0, 1)$. La pérdida adecuada es la **entropía cruzada binaria** (*binary cross-entropy*):
+La sigmoide produce valores entre 0 y 1. Para asignar la clase se aplica un umbral, en general 0,5. La pérdida adecuada es la **entropía cruzada binaria** (*binary cross-entropy*): es chica cuando el modelo asigna alta probabilidad a la respuesta correcta y grande cuando está seguro pero se equivoca.
 
-$$
-L = -\frac{1}{N}\sum_{i=1}^{N}\Big[y_i \log \hat{y}_i + (1 - y_i)\log(1 - \hat{y}_i)\Big]
-$$
-
-Es la pérdida natural para una salida probabilística binaria: penaliza fuerte las predicciones seguras y equivocadas.
-
-## 7. Entrenamiento y generalización
-
-::: {.callout-note title="Consigna"}
-Durante 200 épocas, la pérdida de entrenamiento sigue disminuyendo, pero la pérdida de validación deja de mejorar en la época 35 y luego aumenta.
-
-a. Identifique el fenómeno.
-b. Proponga dos decisiones concretas para mitigarlo.
-c. Explique brevemente la diferencia entre función de pérdida y learning rate.
+::: {.lecturas}
+PENDIENTE_REF6
 :::
+
+## Ejercicio 7 - Entrenamiento y generalización
+
+> Durante 200 épocas, la pérdida de entrenamiento sigue disminuyendo, pero la pérdida de validación deja de mejorar en la época 35 y luego aumenta.
+>
+> a. Identifique el fenómeno.
+> b. Proponga dos decisiones concretas para mitigarlo.
+> c. Explique brevemente la diferencia entre función de pérdida y learning rate.
 
 ### a) Fenómeno
 
-**Sobreajuste** (*overfitting*). A partir de la época 35 el modelo sigue ajustándose a los datos de entrenamiento, incluido su ruido, pero pierde capacidad de generalizar: la pérdida de entrenamiento baja, la de validación sube y la brecha entre ambas crece. La época 35 marca el punto de mejor generalización.
+**Sobreajuste** (*overfitting*). Desde la época 35 el modelo sigue ajustándose a los datos de entrenamiento y memoriza patrones específicos de ese conjunto, pero pierde capacidad de generalización: la pérdida de entrenamiento baja mientras la de validación sube. La época 35 es el punto de mejor generalización.
 
 ### b) Decisiones para mitigarlo
 
-- **Early stopping**: monitorear la pérdida de validación y detener el entrenamiento cuando deja de mejorar durante cierta cantidad de épocas (la paciencia), restaurando los pesos de la mejor época. En Keras: `EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)`.
-- **Regularización**: agregar *dropout* entre capas o una penalización L2 sobre los pesos, para limitar la capacidad efectiva del modelo.
-
-También son válidas otras decisiones, como reducir la cantidad de capas o neuronas, conseguir más datos o aplicar *data augmentation*.
+- **Early stopping**: detener el entrenamiento cuando la pérdida de validación deja de mejorar durante algunas épocas y conservar los pesos de la mejor época, la 35. Se entrena hasta el mejor punto, no hasta el final. En Keras: `EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)`.
+- **Regularización**: agregar una penalización sobre los pesos (L2 los achica; L1 puede anular algunos) o usar dropout, que desactiva neuronas al azar durante el entrenamiento para que la red no dependa de combinaciones específicas.
 
 ### c) Función de pérdida y learning rate
 
-- La **función de pérdida** mide cuánto se alejan las predicciones de los valores reales. Es lo que el entrenamiento minimiza y define qué se considera un buen modelo.
-- El **learning rate** $\eta$ es un hiperparámetro del optimizador: fija el tamaño del paso con que se actualizan los pesos en la dirección opuesta al gradiente de la pérdida.
+La **función de pérdida** mide qué tan lejos están las predicciones de los valores reales: dice cuán bueno es el modelo y es lo que el entrenamiento minimiza. Se elige según el problema: error cuadrático medio en regresión, entropía cruzada en clasificación.
 
-$$
-\mathbf{w} \leftarrow \mathbf{w} - \eta\,\nabla_{\mathbf{w}} L
-$$
+El **learning rate** (tasa de aprendizaje) no mide el error: es el tamaño del paso con que el descenso por gradiente mueve los pesos, en la dirección contraria al gradiente de la pérdida. La pérdida indica cuánto se equivoca el modelo y hacia dónde corregir; el learning rate, cuánto se corrige en cada paso. Si es muy alto, el entrenamiento oscila o diverge; si es muy bajo, avanza demasiado lento.
 
-Un learning rate demasiado alto hace que el entrenamiento oscile o diverja; uno demasiado bajo, que converja muy lento. La pérdida define *qué* se optimiza; el learning rate, *cuánto* se avanza en cada paso.
+::: {.lecturas}
+PENDIENTE_REF7
+:::
+
+## Notas y fuentes
+
+- Las referencias de libros corresponden a Poole y Mackworth, *Artificial Intelligence: Foundations of Computational Agents*, 3.ª edición, de acceso libre en [artint.info](https://artint.info/3e/html/ArtInt3e.html), y a Russell y Norvig, *Artificial Intelligence: A Modern Approach*, 4.ª edición.
+- Las clases citadas son las presentaciones de la cursada 2026.
+- El grafo del ejercicio 4 se dibuja con NetworkX y Matplotlib; el dibujo no ejecuta la búsqueda.
+
+Para **leer**, alcanza con abrir el HTML. Para **volver a generarlo**, se necesita Quarto con Python, Matplotlib y NetworkX:
+
+```bash
+quarto render index.qmd
+```
