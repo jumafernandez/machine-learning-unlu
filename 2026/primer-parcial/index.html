@@ -2315,7 +2315,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </div>
 <p>En síntesis, la IA simbólica razona con reglas explícitas, la estadística aprende calculando probabilidades a partir de los datos y el conexionismo aprende ajustando conexiones, inspirado en cómo lo hace el cerebro.</p>
 <div class="lecturas">
-<p>PENDIENTE_REF1</p>
+<p><strong>Para repasar.</strong> Clase C1-1, <em>Fundamentos de IA</em>. Poole y Mackworth, sección <a href="https://artint.info/3e/html/ArtInt3e.Ch1.S2.html">1.2</a>. Russell y Norvig, secciones 1.3.4 a 1.3.6.</p>
 </div>
 </section>
 <section id="ejercicio-2---teoría-de-agentes" class="level2">
@@ -2371,7 +2371,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </ul>
 <p>Es la idea del vehículo autónomo que vimos en clase, que no solo busca llegar a destino, sino también minimizar el tiempo y el consumo. La dificultad está en diseñar la función de utilidad: decidir cuánto pesa cada criterio frente a los demás.</p>
 <div class="lecturas">
-<p>PENDIENTE_REF2</p>
+<p><strong>Para repasar.</strong> Clase C2-1, <em>Teoría de agentes</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch2.S1.html">2.1</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch2.S2.html">2.2</a>, con el robot de reparto. Russell y Norvig, secciones 2.4.2 y 2.4.5.</p>
 </div>
 </section>
 </section>
@@ -2385,7 +2385,24 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <li>¿Qué consulta realizaría un agente mediante la interfaz ASK?</li>
 </ol>
 </blockquote>
-<p>PENDIENTE_EJ3</p>
+<section id="a-hechos-y-regla" class="level3">
+<h3 class="anchored" data-anchor-id="a-hechos-y-regla">a) Hechos y regla</h3>
+<p>Los <strong>hechos</strong> son A, M y ¬B: la cuenta está activa, el material está publicado y la cuenta no está bloqueada. Son sentencias que afirman directamente algo sobre el mundo, sin premisa.</p>
+<p>La <strong>regla</strong> es A ∧ M ∧ ¬B → D, una sentencia de la forma “si… entonces…”. Su premisa es que la cuenta esté activa, el material publicado y la cuenta no bloqueada; su conclusión, que se habilita la descarga. Por sí sola no afirma D: dice que, si se cumple la premisa, también se cumple la conclusión.</p>
+</section>
+<section id="b-inferencia-de-d" class="level3">
+<h3 class="anchored" data-anchor-id="b-inferencia-de-d">b) Inferencia de D</h3>
+<p>Sí, la base permite inferir D. La premisa de la regla exige tres condiciones y la base afirma las tres como hechos. Como la premisa se cumple por completo, la regla se aplica y, por Modus Ponens, se concluye D: se habilita la descarga.</p>
+<p>Dicho de otro modo, D está implicada lógicamente por la base (KB ⊨ D): en todo modelo en el que la base es verdadera, A y M son verdaderas y B es falsa, de modo que D también lo es.</p>
+<p>La conclusión depende de que ¬B esté en la base. Si la base no dijera nada sobre B, D quedaría desconocida: no podría afirmarse ni negarse.</p>
+</section>
+<section id="c-consulta-ask" class="level3">
+<h3 class="anchored" data-anchor-id="c-consulta-ask">c) Consulta ASK</h3>
+<p>El agente consultaría ASK(KB, D), es decir, “¿se habilita la descarga?”. Como D se deduce de la base, la respuesta es afirmativa. TELL agrega sentencias a la base y ASK consulta qué se puede deducir de ella: la respuesta sale de la inferencia, no de encontrar D almacenado entre los hechos.</p>
+<div class="lecturas">
+<p><strong>Para repasar.</strong> Clase C4, <em>Agentes basados en conocimiento</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch5.S1.html">5.1</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch5.S3.html">5.3</a>. Russell y Norvig, secciones 7.1, 7.3 y 7.5.1.</p>
+</div>
+</section>
 </section>
 <section id="ejercicio-4---modelado-de-problemas-como-problemas-de-búsqueda" class="level2">
 <h2 class="anchored" data-anchor-id="ejercicio-4---modelado-de-problemas-como-problemas-de-búsqueda">Ejercicio 4 - Modelado de problemas como problemas de búsqueda</h2>
@@ -2397,7 +2414,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </ol>
 </blockquote>
 <p>Los números sobre las aristas son costos; h es la heurística de cada nodo.</p>
-<div id="6f6bbbcc" class="cell" data-execution_count="1">
+<div id="af03233b" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2493,7 +2510,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </table>
 <p>BFS y voraz caen en la misma trampa por razones distintas: BFS cuenta aristas y voraz confía solo en h.</p>
 <div class="lecturas">
-<p>PENDIENTE_REF4</p>
+<p><strong>Para repasar.</strong> Clases C2-2, <em>Problemas de búsqueda (no informada)</em>, y C3, <em>Problemas de búsqueda (informada)</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch3.S5.html">3.5</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch3.S6.html">3.6</a>. Russell y Norvig, secciones 3.4.1 a 3.4.3, 3.5.1 y 3.5.2.</p>
 </div>
 </section>
 </section>
@@ -2547,7 +2564,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </ul>
 <p>Juntas permiten fronteras de decisión no lineales. Para XOR alcanza una capa oculta de dos neuronas: una se activa cuando al menos una entrada vale 1 (OR), otra cuando las dos valen 1 (AND), y la salida responde 1 cuando se activa la primera y no la segunda.</p>
 <div class="lecturas">
-<p>PENDIENTE_REF5</p>
+<p><strong>Para repasar.</strong> Clase C5, <em>Perceptrón y MLP</em>. Poole y Mackworth, sección <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S1.html">8.1</a>. Russell y Norvig, secciones 19.6.4 y 21.1.</p>
 </div>
 </section>
 </section>
@@ -2604,7 +2621,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <h3 class="anchored" data-anchor-id="c-rango-y-función-de-pérdida">c) Rango y función de pérdida</h3>
 <p>La sigmoide produce valores entre 0 y 1. Para asignar la clase se aplica un umbral, en general 0,5. La pérdida adecuada es la <strong>entropía cruzada binaria</strong> (<em>binary cross-entropy</em>): es chica cuando el modelo asigna alta probabilidad a la respuesta correcta y grande cuando está seguro pero se equivoca.</p>
 <div class="lecturas">
-<p>PENDIENTE_REF6</p>
+<p><strong>Para repasar.</strong> Clase C5, <em>Perceptrón y MLP</em>. Poole y Mackworth, sección <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S1.html">8.1</a>. Russell y Norvig, secciones 21.1 y 21.2.2.</p>
 </div>
 </section>
 </section>
@@ -2634,7 +2651,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <p>La <strong>función de pérdida</strong> mide qué tan lejos están las predicciones de los valores reales: dice cuán bueno es el modelo y es lo que el entrenamiento minimiza. Se elige según el problema: error cuadrático medio en regresión, entropía cruzada en clasificación.</p>
 <p>El <strong>learning rate</strong> (tasa de aprendizaje) no mide el error: es el tamaño del paso con que el descenso por gradiente mueve los pesos, en la dirección contraria al gradiente de la pérdida. La pérdida indica cuánto se equivoca el modelo y hacia dónde corregir; el learning rate, cuánto se corrige en cada paso. Si es muy alto, el entrenamiento oscila o diverge; si es muy bajo, avanza demasiado lento.</p>
 <div class="lecturas">
-<p>PENDIENTE_REF7</p>
+<p><strong>Para repasar.</strong> Clase C6, <em>Entrenamiento de redes neuronales</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch7.S4.html">7.4</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S3.html">8.3</a>. Russell y Norvig, secciones 19.4.3, 19.6.2, 21.5.3 y 21.5.4.</p>
 </div>
 </section>
 </section>

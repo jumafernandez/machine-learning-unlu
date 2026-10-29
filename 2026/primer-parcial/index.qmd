@@ -59,7 +59,7 @@ En clase presentamos los tres paradigmas como enfoques históricos de la IA. Tod
 En síntesis, la IA simbólica razona con reglas explícitas, la estadística aprende calculando probabilidades a partir de los datos y el conexionismo aprende ajustando conexiones, inspirado en cómo lo hace el cerebro.
 
 ::: {.lecturas}
-PENDIENTE_REF1
+**Para repasar.** Clase C1-1, *Fundamentos de IA*. Poole y Mackworth, sección [1.2](https://artint.info/3e/html/ArtInt3e.Ch1.S2.html). Russell y Norvig, secciones 1.3.4 a 1.3.6.
 :::
 
 ## Ejercicio 2 - Teoría de agentes
@@ -113,7 +113,7 @@ Como criterios para decidir usaría:
 Es la idea del vehículo autónomo que vimos en clase, que no solo busca llegar a destino, sino también minimizar el tiempo y el consumo. La dificultad está en diseñar la función de utilidad: decidir cuánto pesa cada criterio frente a los demás.
 
 ::: {.lecturas}
-PENDIENTE_REF2
+**Para repasar.** Clase C2-1, *Teoría de agentes*. Poole y Mackworth, secciones [2.1](https://artint.info/3e/html/ArtInt3e.Ch2.S1.html) y [2.2](https://artint.info/3e/html/ArtInt3e.Ch2.S2.html), con el robot de reparto. Russell y Norvig, secciones 2.4.2 y 2.4.5.
 :::
 
 ## Ejercicio 3 - Aprendizaje simbólico
@@ -124,7 +124,27 @@ PENDIENTE_REF2
 > b. Determine si la base permite inferir D y justifique brevemente.
 > c. ¿Qué consulta realizaría un agente mediante la interfaz ASK?
 
-PENDIENTE_EJ3
+### a) Hechos y regla
+
+Los **hechos** son A, M y ¬B: la cuenta está activa, el material está publicado y la cuenta no está bloqueada. Son sentencias que afirman directamente algo sobre el mundo, sin premisa.
+
+La **regla** es A ∧ M ∧ ¬B → D, una sentencia de la forma "si... entonces...". Su premisa es que la cuenta esté activa, el material publicado y la cuenta no bloqueada; su conclusión, que se habilita la descarga. Por sí sola no afirma D: dice que, si se cumple la premisa, también se cumple la conclusión.
+
+### b) Inferencia de D
+
+Sí, la base permite inferir D. La premisa de la regla exige tres condiciones y la base afirma las tres como hechos. Como la premisa se cumple por completo, la regla se aplica y, por Modus Ponens, se concluye D: se habilita la descarga.
+
+Dicho de otro modo, D está implicada lógicamente por la base (KB ⊨ D): en todo modelo en el que la base es verdadera, A y M son verdaderas y B es falsa, de modo que D también lo es.
+
+La conclusión depende de que ¬B esté en la base. Si la base no dijera nada sobre B, D quedaría desconocida: no podría afirmarse ni negarse.
+
+### c) Consulta ASK
+
+El agente consultaría ASK(KB, D), es decir, "¿se habilita la descarga?". Como D se deduce de la base, la respuesta es afirmativa. TELL agrega sentencias a la base y ASK consulta qué se puede deducir de ella: la respuesta sale de la inferencia, no de encontrar D almacenado entre los hechos.
+
+::: {.lecturas}
+**Para repasar.** Clase C4, *Agentes basados en conocimiento*. Poole y Mackworth, secciones [5.1](https://artint.info/3e/html/ArtInt3e.Ch5.S1.html) y [5.3](https://artint.info/3e/html/ArtInt3e.Ch5.S3.html). Russell y Norvig, secciones 7.1, 7.3 y 7.5.1.
+:::
 
 ## Ejercicio 4 - Modelado de problemas como problemas de búsqueda
 
@@ -197,7 +217,7 @@ La heurística es **admisible**: ninguna estimación supera el costo real que fa
 BFS y voraz caen en la misma trampa por razones distintas: BFS cuenta aristas y voraz confía solo en h.
 
 ::: {.lecturas}
-PENDIENTE_REF4
+**Para repasar.** Clases C2-2, *Problemas de búsqueda (no informada)*, y C3, *Problemas de búsqueda (informada)*. Poole y Mackworth, secciones [3.5](https://artint.info/3e/html/ArtInt3e.Ch3.S5.html) y [3.6](https://artint.info/3e/html/ArtInt3e.Ch3.S6.html). Russell y Norvig, secciones 3.4.1 a 3.4.3, 3.5.1 y 3.5.2.
 :::
 
 ## Ejercicio 5 - Perceptrón y MLP
@@ -227,7 +247,7 @@ La solución es combinar varios perceptrones en una red multicapa (MLP), con una
 Juntas permiten fronteras de decisión no lineales. Para XOR alcanza una capa oculta de dos neuronas: una se activa cuando al menos una entrada vale 1 (OR), otra cuando las dos valen 1 (AND), y la salida responde 1 cuando se activa la primera y no la segunda.
 
 ::: {.lecturas}
-PENDIENTE_REF5
+**Para repasar.** Clase C5, *Perceptrón y MLP*. Poole y Mackworth, sección [8.1](https://artint.info/3e/html/ArtInt3e.Ch8.S1.html). Russell y Norvig, secciones 19.6.4 y 21.1.
 :::
 
 ## Ejercicio 6 - Redes neuronales
@@ -259,7 +279,7 @@ Clasificación binaria: una única neurona de salida con activación sigmoide, c
 La sigmoide produce valores entre 0 y 1. Para asignar la clase se aplica un umbral, en general 0,5. La pérdida adecuada es la **entropía cruzada binaria** (*binary cross-entropy*): es chica cuando el modelo asigna alta probabilidad a la respuesta correcta y grande cuando está seguro pero se equivoca.
 
 ::: {.lecturas}
-PENDIENTE_REF6
+**Para repasar.** Clase C5, *Perceptrón y MLP*. Poole y Mackworth, sección [8.1](https://artint.info/3e/html/ArtInt3e.Ch8.S1.html). Russell y Norvig, secciones 21.1 y 21.2.2.
 :::
 
 ## Ejercicio 7 - Entrenamiento y generalización
@@ -286,7 +306,7 @@ La **función de pérdida** mide qué tan lejos están las predicciones de los v
 El **learning rate** (tasa de aprendizaje) no mide el error: es el tamaño del paso con que el descenso por gradiente mueve los pesos, en la dirección contraria al gradiente de la pérdida. La pérdida indica cuánto se equivoca el modelo y hacia dónde corregir; el learning rate, cuánto se corrige en cada paso. Si es muy alto, el entrenamiento oscila o diverge; si es muy bajo, avanza demasiado lento.
 
 ::: {.lecturas}
-PENDIENTE_REF7
+**Para repasar.** Clase C6, *Entrenamiento de redes neuronales*. Poole y Mackworth, secciones [7.4](https://artint.info/3e/html/ArtInt3e.Ch7.S4.html) y [8.3](https://artint.info/3e/html/ArtInt3e.Ch8.S3.html). Russell y Norvig, secciones 19.4.3, 19.6.2, 21.5.3 y 21.5.4.
 :::
 
 ## Notas y fuentes
