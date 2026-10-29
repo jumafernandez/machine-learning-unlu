@@ -1,0 +1,89 @@
+\documentclass[11pt,a4paper]{article}
+\input{estilo.tex}
+\renewcommand{\pieDocumento}{Plantilla de informe · Trabajo práctico integrador}
+\hypersetup{pdftitle={Plantilla de informe - Aprendizaje Automático}}
+
+% Adaptación del short paper del Seminario Agentes Inteligentes y LLM.
+% Se conserva la secuencia problema -> metodología -> implementación -> evidencia.
+% Se simplifican el estado del arte y la arquitectura y se centra el informe
+% en los datos reales, la evaluación y el uso de la solución.
+% El informe acompaña obligatoriamente al proyecto; usar LaTeX es opcional.
+
+\begin{document}
+\cabecera{Trabajo práctico integrador}{\campo{Título del proyecto}}{Aprendizaje Automático · Universidad Nacional de Luján · 2026}
+\textbf{Estudiante/s:} \campo{Nombre y apellido}\par
+\textbf{Repositorio:} \campo{Enlace a GitHub o plataforma equivalente}\par
+
+\begin{destacado}{Cómo utilizar esta plantilla}
+Reemplacen los campos y las orientaciones por el contenido del proyecto. La estructura es una guía adaptable: ajusten los apartados al enfoque y la extensión al trabajo realizado. El informe en PDF acompaña obligatoriamente al proyecto y debe estar enlazado desde el README; no reemplaza la solución reproducible. Usar LaTeX es opcional.
+\end{destacado}
+
+\section*{Resumen}
+\orientacion{Presenten el problema real, los datos utilizados, el enfoque de IA y la principal evidencia obtenida. Escriban el resumen al finalizar el trabajo y distingan lo implementado de aquello que proponen como continuación.}
+\campo{Resumen del trabajo.}
+
+\section{Situación, objetivo y alcance}
+\orientacion{Describan dónde aparece el problema, a quién afecta y qué tarea se busca apoyar. Formulen un objetivo concreto y expliquen cómo reconocerían un resultado útil. Delimiten qué parte de la situación resuelve el prototipo y qué queda fuera de su alcance.}
+\campo{Contexto real, destinatario, objetivo y alcance.}
+
+\section{Datos y representación del problema}
+\orientacion{Identifiquen las fuentes reales, la fecha o versión del conjunto utilizado y las condiciones de acceso. Describan los atributos, clases, imágenes, textos o registros relevantes, los problemas de calidad encontrados y la preparación realizada. Si trabajan con reglas, estados o acciones, expliquen su significado y la evidencia del dominio que sustenta esa representación.}
+\campo{Fuentes, características, preparación y representación.}
+
+\newpage
+\section{Enfoque y metodología}
+\orientacion{Justifiquen el enfoque y su relación con los conceptos del curso. Si requiere aprendizaje, describan cómo entrenaron o ajustaron el modelo: datos, arquitectura o técnica, función de pérdida, hiperparámetros relevantes y criterio para elegir la configuración final. Analicen la evolución del entrenamiento cuando corresponda. Si utilizaron un modelo preentrenado sin ajustarlo, justifiquen esa decisión. En soluciones simbólicas o de búsqueda, expliquen las reglas, la representación y los criterios de decisión.}
+\campo{Técnica elegida, entrenamiento o ajuste cuando corresponda, justificación y principales decisiones.}
+
+\subsection{Diseño de la evaluación}
+\orientacion{Indiquen qué van a medir u observar y por qué permite evaluar el objetivo. Si existe entrenamiento, expliquen la separación de los datos y cómo evitan usar información de prueba durante el ajuste. En otras soluciones, describan los casos de prueba y sus resultados esperados. Si comparan con una referencia, expliciten cuál es y por qué resulta pertinente.}
+\campo{Criterios, datos de evaluación, casos de prueba y referencia de comparación.}
+
+\section{Implementación y funcionamiento}
+\orientacion{Expliquen qué construyeron y cómo se utiliza. Presenten las entradas, las transformaciones principales y las salidas. Un esquema sencillo puede ayudar, pero debe estar acompañado por una explicación. No es necesario copiar el código completo: indiquen dónde está en el repositorio y cuáles son las decisiones que ayudan a comprenderlo.}
+\campo{Flujo de funcionamiento y decisiones de implementación.}
+
+\subsection{Reproducción}
+\orientacion{Indiquen el entorno, las dependencias, cómo obtener los datos y el orden de ejecución. Pueden remitir al README para el detalle operativo. Si utilizan modelos o servicios externos, identifíquenlos e indiquen qué se necesita para reproducir los pasos.}
+\campo{Instrucciones o referencia a la sección correspondiente del README.}
+
+\section{Resultados y análisis de errores}
+\orientacion{Presenten evidencia de la versión ejecutada: métricas, tablas, visualizaciones o ejemplos analizados. Expliquen qué muestran y cómo se relacionan con el objetivo. Incluyan aciertos y fallos, condiciones en las que la solución funciona peor y límites de las conclusiones. No completen este apartado con resultados hipotéticos.}
+\campo{Resultados reales del prototipo e interpretación.}
+
+\newpage
+\section{Uso de la solución en el contexto real}
+\orientacion{Expliquen quién utilizaría el modelo o sistema, qué entrada aportaría, qué recibiría y qué haría con la salida. Distingan la decisión del modelo de la decisión de la persona. Señalen qué revisión humana sería necesaria y qué faltaría para integrar el prototipo a la situación real. No es obligatorio desplegar una aplicación para desarrollar esta reflexión.}
+\campo{Escenario de uso, intervención prevista y condiciones de implementación.}
+
+\section{Limitaciones, conclusiones y mejoras}
+\orientacion{Retomen el objetivo y expliquen qué lograron demostrar. Consideren límites de los datos y de la evaluación, sesgos, errores, costos o condiciones de uso relevantes. Propongan mejoras vinculadas con la evidencia obtenida; eviten presentar como resuelto aquello que no evaluaron.}
+\campo{Conclusiones sustentadas, limitaciones y mejoras.}
+
+\section*{Declaración de uso de IA}
+\orientacion{Un disclaimer o declaración de uso de IA es una nota de transparencia sobre la asistencia recibida durante la elaboración del trabajo. Identifiquen las herramientas o modelos utilizados (y la versión, si la conocen), las tareas en las que intervinieron, los aportes incorporados y cómo los revisaron o verificaron. No es una exención de responsabilidad: deben comprender y poder explicar lo entregado. Los modelos que integran la solución se describen además en la metodología. Si no utilizaron IA como asistencia, indíquenlo expresamente.}
+\campo{Declaración que refleje el uso real de herramientas de IA.}
+
+\begin{destacado}{Ejemplo para adaptar, no para copiar automáticamente}
+Utilizamos [herramienta/modelo] para consultar errores de código y revisar la redacción. Incorporamos sugerencias en [partes del trabajo], luego de comprobar su funcionamiento mediante [pruebas] y contrastar las afirmaciones con [fuentes]. Las decisiones metodológicas y el análisis de los resultados fueron realizados por el equipo.
+\end{destacado}
+
+\section*{Fuentes y recursos utilizados}
+\orientacion{Identifiquen los datos, libros, artículos, modelos, bibliotecas y fragmentos de código utilizados. Incluyan referencias o enlaces que permitan localizar los recursos. Las referencias deben corresponder a materiales efectivamente empleados en el trabajo.}
+\begin{itemize}
+\item \campo{Fuente de datos: responsable, nombre, versión o fecha y enlace.}
+\item \campo{Fuente conceptual o técnica utilizada.}
+\item \campo{Modelo, biblioteca o código reutilizado, cuando corresponda.}
+\end{itemize}
+
+% Si prefieren citas bibliográficas formales, pueden reemplazar el apartado
+% anterior por thebibliography o por una bibliografía BibTeX propia.
+% Ejemplo para insertar una figura real (requiere el archivo en el proyecto):
+% \begin{figure}[htbp]
+%   \centering
+%   \includegraphics[width=0.85\linewidth]{figuras/resultado.png}
+%   \caption{Descripción del resultado observado.}
+%   \label{fig:resultado}
+% \end{figure}
+
+\end{document}

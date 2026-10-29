@@ -1,0 +1,72 @@
+% Estilo común. Editar aquí para mantener coherentes los tres documentos.
+% Adaptación de las plantillas del Seminario Agentes Inteligentes y LLM (UNLu).
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[default]{sourcesans}
+\usepackage{microtype}
+\usepackage[a4paper,left=23mm,right=23mm,top=23mm,bottom=23mm,headheight=15pt,headsep=8mm,footskip=11mm]{geometry}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{xurl}
+
+\definecolor{azul}{HTML}{1A465E}
+\definecolor{petroleo}{HTML}{2F859A}
+\definecolor{texto}{HTML}{294D60}
+\definecolor{suave}{HTML}{EFF7F9}
+\definecolor{borde}{HTML}{CFE2E8}
+\definecolor{gris}{HTML}{586D79}
+
+\hypersetup{colorlinks=true,urlcolor=petroleo,linkcolor=azul,citecolor=azul,
+  pdfauthor={Aprendizaje Automático - Universidad Nacional de Luján}}
+\urlstyle{same}
+\color{texto}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\linespread{1.10}
+\setlength{\emergencystretch}{1.5em}
+\clubpenalty=10000
+\widowpenalty=10000
+
+% Más aire antes del título que después: el título acompaña su contenido.
+\titleformat{\section}{\Large\bfseries\color{azul}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{24pt}{0pt}
+\titleformat{\subsection}{\large\bfseries\color{azul}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{18pt}{0pt}
+\setlist[itemize]{leftmargin=16pt,itemsep=4pt,topsep=4pt,parsep=0pt,label=\textcolor{petroleo}{\textbullet}}
+\setlist[enumerate]{leftmargin=20pt,itemsep=6pt,topsep=4pt,parsep=0pt,label=\textcolor{petroleo}{\bfseries\arabic*.}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gris}Universidad Nacional de Luján}
+\fancyhead[R]{\small\color{gris}Aprendizaje Automático · 2026}
+\fancyfoot[L]{\small\color{gris}\pieDocumento}
+\fancyfoot[R]{\small\color{petroleo}\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\footrulewidth}{0pt}
+\newcommand{\pieDocumento}{Trabajo práctico integrador}
+
+\newcommand{\cabecera}[3]{%
+  {\small\bfseries\color{petroleo}\MakeUppercase{#1}\par}
+  \vspace{4pt}
+  {\fontsize{24}{28}\selectfont\bfseries\color{azul}#2\par}
+  \vspace{7pt}
+  {\large\color{gris}#3\par}
+  \vspace{6pt}}
+
+\newtcolorbox{destacado}[1]{enhanced,breakable,colback=suave,colframe=borde,
+  boxrule=0.5pt,arc=2mm,left=12pt,right=12pt,top=9pt,bottom=9pt,
+  borderline west={2pt}{0pt}{petroleo},before skip=12pt,after skip=10pt,
+  title={#1},colbacktitle=suave,coltitle=azul,fonttitle=\bfseries,
+  attach title to upper={\par\smallskip},fontupper=\normalsize}
+
+\newcommand{\orientacion}[1]{{\color{gris}#1}\par}
+\newcommand{\campo}[1]{\textcolor{petroleo}{\textit{[#1]}}}
+% Encabezado compacto para los ejemplos consecutivos de la consigna.
+\newcommand{\lineadesarrollo}[1]{\par\vspace{12pt}\noindent{\large\bfseries\color{azul}#1\par}\nopagebreak\vspace{-2pt}}

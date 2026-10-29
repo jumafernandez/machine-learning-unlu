@@ -12,3 +12,7 @@ El directorio [`taller-busqueda/`](taller-busqueda/) reúne los materiales de lo
 - `datos/`: grafos y heurísticas en CSV.
 
 Las versiones HTML listas para lectura están en [`taller-busqueda/`](taller-busqueda/).
+
+## Trabajo práctico integrador
+
+El directorio [`trabajo-integrador/`](trabajo-integrador/) reúne la consigna, las plantillas opcionales de propuesta e informe, sus fuentes LaTeX y los paquetes para Overleaf. Los PDF listos para leer están en [`trabajo-integrador/pdf/`](trabajo-integrador/pdf/).

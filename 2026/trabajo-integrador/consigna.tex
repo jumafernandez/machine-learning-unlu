@@ -1,0 +1,95 @@
+\documentclass[11pt,a4paper]{article}
+\input{estilo.tex}
+\hypersetup{pdftitle={Trabajo práctico integrador - Aprendizaje Automático 2026}}
+
+\begin{document}
+\cabecera{Trabajo práctico integrador}{De una situación real\ a una solución de IA}{Consigna y orientaciones para el desarrollo}
+
+\begin{destacado}{La propuesta}
+Diseñen e implementen una solución de inteligencia artificial para abordar una situación concreta, utilizando \textbf{datos reales}. El resultado será una prueba de concepto reproducible, acompañada por una explicación de sus decisiones, resultados y posibles usos.
+\end{destacado}
+
+\section*{Qué buscamos con este trabajo}
+El trabajo propone conectar los conceptos del curso con una necesidad reconocible: una pregunta, una tarea o una decisión que podría beneficiarse de un modelo o sistema de IA. Interesa que puedan pasar del problema a su representación, elegir un enfoque pertinente y analizar qué aporta la solución obtenida.
+
+El alcance debe ser realizable con los recursos disponibles. Una notebook bien construida puede ser suficiente, pero también pueden desarrollar scripts, una aplicación u otra forma de prototipo. La complejidad de la interfaz o la cantidad de técnicas utilizadas no reemplazan la calidad del planteo y de la evaluación.
+
+\section*{Componentes del trabajo}
+\begin{enumerate}
+\item \textbf{Situación y propósito.} Describan el contexto, quién podría utilizar la solución y qué necesidad atendería. Delimiten una tarea concreta y expliquen qué resultado sería útil para esa persona u organización.
+\item \textbf{Datos y representación.} Identifiquen la fuente, las características y las limitaciones de los datos. Expliquen cómo los transforman en una representación adecuada: atributos, imágenes, textos, estados, acciones o hechos y reglas, según corresponda.
+\item \textbf{Enfoque, entrenamiento e implementación.} Justifiquen la técnica y construyan una prueba de concepto. Cuando corresponda, entrenen o ajusten el modelo y documenten los datos, la configuración y el procedimiento seguido. Si usan un modelo preentrenado sin ajustarlo, justifiquen esa decisión.
+\item \textbf{Evidencia y uso.} Evalúen el resultado con criterios apropiados. Analicen errores y limitaciones, e imaginen cómo se integraría el modelo o sistema en la situación planteada.
+\end{enumerate}
+
+\begin{destacado}{Datos reales, con procedencia identificable}
+Pueden usar fuentes públicas, institucionales, científicas o un relevamiento propio. Deben indicar de dónde provienen los datos y cómo acceder a ellos. \textbf{No se admitirán datos sintéticos ni generados artificialmente.} Si utilizan conocimiento simbólico, identifiquen también la procedencia de los hechos y reglas del dominio.
+\end{destacado}
+
+\newpage
+\cabecera{Elección del problema}{Líneas posibles de desarrollo}{Orientaciones para encontrar un alcance propio}
+
+Las siguientes líneas son ejemplos, no una lista cerrada. Elijan una situación que puedan explicar y un conjunto de datos que permita trabajar sobre ella. No es necesario utilizar todos los contenidos del curso ni combinar enfoques si esa combinación no aporta al problema.
+
+\lineadesarrollo{Aprendizaje sobre datos estructurados}
+Abordar una tarea de clasificación, predicción o análisis a partir de registros reales. Por ejemplo, estimar la demanda de un servicio con datos históricos, clasificar eventos registrados o reconocer patrones en un conjunto de mediciones. La pregunta debe permitir interpretar para qué serviría la predicción y qué consecuencias tendría equivocarse.
+
+\lineadesarrollo{Visión por computadora}
+Analizar imágenes de un dominio concreto: residuos, especies, productos o defectos registrados, entre otras posibilidades. Pueden entrenar una red o adaptar un modelo preentrenado. Expliquen qué información contienen las imágenes, cómo se obtuvieron las etiquetas y en qué condiciones podría fallar el modelo.
+
+\lineadesarrollo{Procesamiento del lenguaje natural}
+Clasificar, recuperar o analizar textos, voz o audio provenientes de una fuente identificada. Por ejemplo, organizar consultas de soporte, reconocer temas en documentos o analizar opiniones. También pueden explorar generación de lenguaje, siempre que definan qué esperan de la salida y cómo comprobarán su utilidad, sus errores y su relación con la información de origen.
+
+\lineadesarrollo{Conocimiento, agentes y búsqueda}
+Modelar una situación real mediante estados y acciones, o representar conocimiento explícito para responder consultas y obtener conclusiones. Por ejemplo, planificar una asignación con restricciones y datos operativos, o construir una base de conocimiento a partir de un procedimiento documentado. La calidad de la representación y la justificación de los costos, reglas o criterios de decisión son parte central del trabajo.
+
+\lineadesarrollo{Decisiones y aprendizaje por refuerzo}
+Estudiar una decisión secuencial vinculada con un dominio real, utilizando registros o parámetros documentados. Expliciten qué observa el agente, qué acciones puede realizar y qué criterio de recompensa orienta su comportamiento. Justifiquen qué aspectos de la situación representa el entorno de prueba y qué limitaciones introduce esa representación.
+
+\newpage
+\cabecera{Desarrollo y evaluación}{Cómo sostener la solución}{Decisiones justificadas y evidencia comprensible}
+
+\section*{Un recorrido de trabajo posible}
+Comiencen con una tarea acotada y una primera solución ejecutable de principio a fin. En enfoques que requieren aprendizaje, preparen los datos y entrenen o ajusten el modelo. Documenten la arquitectura o técnica, los hiperparámetros relevantes y el criterio de selección de la configuración final; analicen la evolución de la pérdida o las métricas cuando corresponda.
+
+Cuando corresponda, separen los datos de entrenamiento, validación y prueba y eviten que la información de prueba intervenga en el ajuste. En problemas temporales, consideren el orden de los registros. En sistemas basados en conocimiento o búsqueda, preparen casos reales documentados que permitan observar tanto el comportamiento esperado como las limitaciones.
+
+\section*{Qué evidencia presentar}
+La evaluación debe responder si la solución ayuda con la tarea planteada. Elijan medidas y ejemplos que se puedan interpretar en ese contexto:
+\begin{itemize}
+\item \textbf{Clasificación o predicción:} métricas pertinentes, errores y ejemplos de aciertos y fallos. Una matriz de confusión o una comparación con una referencia sencilla puede ayudar a explicar el resultado.
+\item \textbf{Búsqueda, reglas o decisiones:} casos de prueba, soluciones obtenidas, cumplimiento de restricciones, costos o conclusiones producidas y su explicación.
+\item \textbf{Lenguaje o generación:} ejemplos analizados con criterios explícitos, incluyendo salidas incorrectas, información no sustentada o respuestas poco útiles.
+\end{itemize}
+Comparar con una alternativa simple, cuando sea pertinente, ayuda a reconocer qué aporta el enfoque elegido. No se espera un resultado perfecto: también importa identificar por qué falla, en qué situaciones y qué podrían mejorar.
+
+\section*{Qué se tendrá en cuenta}
+Se valorarán la claridad del problema, la procedencia y adecuación de los datos, la relación entre el enfoque y la tarea, el funcionamiento reproducible del prototipo y la calidad del análisis. Las conclusiones deberán apoyarse en la evidencia presentada. Consideren además posibles sesgos, límites de uso, costos y consecuencias de los errores que resulten relevantes para su caso.
+
+Expliquen también cómo imaginan la intervención de la solución: \textbf{quién aporta la entrada, qué devuelve el sistema y qué decisión o acción habilita}. Señalen qué debería revisar una persona y qué faltaría para utilizarlo en el contexto real. No es obligatorio desplegar un servicio de producción.
+
+\newpage
+\cabecera{Entrega y documentación}{Un repositorio que se pueda recorrer}{Código, datos identificables e instrucciones de ejecución}
+
+\begin{destacado}{Dos instancias en el campus}
+\textbf{Propuesta opcional:} hasta 200 palabras con el problema, los datos, el enfoque previsto y el resultado esperado. Permite recibir una devolución previa, no tiene una fecha de entrega obligatoria y no es requisito para presentar el trabajo final.
+
+\textbf{Entrega final obligatoria:} enlace a un repositorio de GitHub o plataforma equivalente con la solución, un README y un \textbf{informe en PDF}, accesible para su revisión, hasta el \textbf{2 de diciembre de 2026 a las 23:59 h}.
+\end{destacado}
+
+Incluyan el código, las dependencias y las instrucciones para ejecutar la solución. Si los datos son voluminosos o no pueden redistribuirse, indiquen la fuente, la versión y los pasos de acceso. Eviten publicar credenciales o información personal que no corresponda difundir.
+
+\section*{El README como puerta de entrada}
+Presenten brevemente el problema y la solución, identifiquen los archivos principales y enlacen el informe. Detallen el entorno, las dependencias, los datos de entrada y el orden de ejecución, de modo que otra persona pueda reproducir el trabajo. El análisis y la fundamentación se desarrollan en el informe; no hace falta duplicarlos completos en el README.
+
+\section*{Informe y plantilla LaTeX}
+El proyecto debe estar acompañado por un \textbf{informe en PDF}, incluido en el repositorio y enlazado desde el README. Desarrollen allí el problema, los datos, el enfoque, la implementación, los resultados, las limitaciones y el uso previsto de la solución. No es necesario copiar el código completo.
+
+Se ofrecen plantillas LaTeX para la propuesta y el informe, adaptadas del Seminario Agentes Inteligentes y LLM. Pueden editarse en Overleaf sin instalar LaTeX. \textbf{El informe es obligatorio; el uso de LaTeX es opcional.} También pueden usar otro editor y exportar a PDF.
+
+\section*{Declaración de uso de IA}
+Incluyan en el informe un \textit{disclaimer} o declaración de uso de IA: una nota que indique qué herramientas o modelos utilizaron como asistencia, para qué tareas, qué aportes incorporaron y cómo los verificaron. No es una exención de responsabilidad: deben comprender y poder explicar lo entregado. Si no utilizaron IA como apoyo, indíquenlo expresamente. Los modelos que integran la solución se describen, además, en la metodología.
+
+\textbf{Antes de entregar,} comprueben el acceso al enlace y la ejecución de la solución. Identifiquen las fuentes de datos, modelos, código y documentación utilizados.
+
+\end{document}

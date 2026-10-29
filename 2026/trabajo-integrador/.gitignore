@@ -1,0 +1,17 @@
+.DS_Store
+build/
+tmp/
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+
+# Los PDF y ZIP de distribución sí se versionan.
