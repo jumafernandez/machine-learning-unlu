@@ -2266,7 +2266,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Las consignas abiertas (1, 2 y 7) admiten otras respuestas correctas. <strong>Lo importante es justificar con los conceptos del curso</strong>, no reproducir esta redacción.</p>
+<p>Las consignas abiertas (1, 2, 5 y 7) admiten otras respuestas correctas. <strong>Lo importante es justificar con los conceptos del curso</strong>, no reproducir esta redacción.</p>
 </div>
 </div>
 <section id="ejercicio-1---paradigmas-de-ia" class="level2">
@@ -2295,7 +2295,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <tr class="odd">
 <td><strong>Simbólico</strong></td>
 <td>Reglas y estructuras lógicas explícitas: una base de hechos y una base de reglas “si… entonces…”.</td>
-<td>Lo codifica un experto humano; un motor de inferencia deriva conclusiones por encadenamiento hacia adelante o hacia atrás. No aprende de los datos.</td>
+<td>Lo codifica un experto humano; un motor de inferencia deriva conclusiones por encadenamiento hacia adelante o hacia atrás. También puede inducirse a partir de ejemplos, como en los árboles de decisión o el aprendizaje de reglas.</td>
 <td>Dominios con reglas claras que deben poder explicarse: sistemas expertos como MYCIN, reglamentos, permisos de acceso.</td>
 </tr>
 <tr class="even">
@@ -2352,7 +2352,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <blockquote class="blockquote">
 <p><strong>Si</strong> hay un obstáculo adelante, <strong>entonces</strong> detenerse y girar.</p>
 </blockquote>
-<p>Otra regla válida sería: si está en el aula de destino y lleva el material, entonces descargarlo. La limitación aparece con la urgencia: ordenar los pedidos exige recordar cuáles están pendientes, y este agente no guarda historia.</p>
+<p>Otra regla válida sería: si el aula en la que está coincide con el destino indicado en el material que lleva, entonces descargarlo. La limitación aparece con la urgencia: ordenar los pedidos exige recordar cuáles están pendientes, y este agente no guarda historia.</p>
 </section>
 <section id="c-agente-basado-en-utilidades" class="level3">
 <h3 class="anchored" data-anchor-id="c-agente-basado-en-utilidades">c) Agente basado en utilidades</h3>
@@ -2393,7 +2393,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <section id="b-inferencia-de-d" class="level3">
 <h3 class="anchored" data-anchor-id="b-inferencia-de-d">b) Inferencia de D</h3>
 <p>Sí, la base permite inferir D. La premisa de la regla exige tres condiciones y la base afirma las tres como hechos. Como la premisa se cumple por completo, la regla se aplica y, por Modus Ponens, se concluye D: se habilita la descarga.</p>
-<p>Dicho de otro modo, D está implicada lógicamente por la base (KB ⊨ D): en todo modelo en el que la base es verdadera, A y M son verdaderas y B es falsa, de modo que D también lo es.</p>
+<p>Como el Modus Ponens es sólido, D además está implicada lógicamente por la base (KB ⊨ D): en todo modelo en el que la base es verdadera, A y M son verdaderas y B es falsa, de modo que D también lo es.</p>
 <p>La conclusión depende de que ¬B esté en la base. Si la base no dijera nada sobre B, D quedaría desconocida: no podría afirmarse ni negarse.</p>
 </section>
 <section id="c-consulta-ask" class="level3">
@@ -2414,7 +2414,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </ol>
 </blockquote>
 <p>Los números sobre las aristas son costos; h es la heurística de cada nodo.</p>
-<div id="06566cb0" class="cell" data-execution_count="1">
+<div id="fb23505d" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2469,7 +2469,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </section>
 <section id="b-búsqueda-voraz-y-a" class="level3">
 <h3 class="anchored" data-anchor-id="b-búsqueda-voraz-y-a">b) Búsqueda voraz y A*</h3>
-<p><strong>Voraz.</strong> Ordena la frontera solo por h. Desde S compara h(B) = 2 con h(A) = 5 y elige B; desde B genera G, cuya h es cero, y termina. Devuelve <strong>S → B → G, con costo 11</strong>. Mira solo cuánto parece faltar e ignora lo que ya costó el camino.</p>
+<p><strong>Voraz.</strong> Ordena la frontera solo por h. Desde S compara h(B) = 2 con h(A) = 5 y elige B; desde B genera G, cuya h es cero, que queda primera en la frontera; al retirarla, termina. Devuelve <strong>S → B → G, con costo 11</strong>. Mira solo cuánto parece faltar e ignora lo que ya costó el camino.</p>
 <p><strong>A*.</strong> Ordena la frontera por f(n) = g(n) + h(n): lo recorrido más lo que se estima que falta. Compara f(B) = 1 + 2 = 3 con f(A) = 2 + 5 = 7 y elige B. Desde B genera G con f = 11, pero no lo acepta todavía, porque A tiene f = 7. Sigue por A, luego por C (f = 4 + 3 = 7) y llega a G con f = 7. Devuelve <strong>S → A → C → G, con costo 7</strong>.</p>
 <p>La heurística es <strong>admisible</strong>: ninguna estimación supera el costo real que falta hasta G (7 desde S, 5 desde A, 10 desde B y 3 desde C). Con una heurística admisible, A* garantiza el camino de menor costo; voraz, con la misma h, no tiene esa garantía.</p>
 <table class="caption-top table">
@@ -2557,7 +2557,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </section>
 <section id="capas-ocultas-y-activaciones-no-lineales" class="level3">
 <h3 class="anchored" data-anchor-id="capas-ocultas-y-activaciones-no-lineales">Capas ocultas y activaciones no lineales</h3>
-<p>La solución es combinar varios perceptrones en una red multicapa (MLP), con una capa de entrada, una o más capas ocultas y una capa de salida, entrenada con retropropagación (<em>backpropagation</em>).</p>
+<p>La solución es combinar varios perceptrones en una red multicapa (MLP), con una capa de entrada, una o más capas ocultas y una capa de salida, entrenada con retropropagación (<em>backpropagation</em>). Para entrenarla así, el escalón se reemplaza por activaciones derivables, como la sigmoide o ReLU.</p>
 <ul>
 <li>Las <strong>capas ocultas</strong> procesan las entradas con pesos entrenables y funciones de activación, y pasan a la capa siguiente una nueva representación de los datos. Capa tras capa, la red aprende patrones cada vez más complejos.</li>
 <li>Las <strong>activaciones no lineales</strong> hacen útil esa profundidad. Si cada capa solo calculara combinaciones lineales, varias capas equivaldrían a una sola capa lineal y la red se comportaría como una regresión lineal multivariada. Con activaciones como ReLU o la sigmoide, la composición de capas puede representar curvas y regiones no convexas.</li>
@@ -2619,7 +2619,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 </section>
 <section id="c-rango-y-función-de-pérdida" class="level3">
 <h3 class="anchored" data-anchor-id="c-rango-y-función-de-pérdida">c) Rango y función de pérdida</h3>
-<p>La sigmoide produce valores entre 0 y 1. Para asignar la clase se aplica un umbral, en general 0,5. La pérdida adecuada es la <strong>entropía cruzada binaria</strong> (<em>binary cross-entropy</em>): es chica cuando el modelo asigna alta probabilidad a la respuesta correcta y grande cuando está seguro pero se equivoca.</p>
+<p>La sigmoide produce valores entre 0 y 1, sin alcanzar los extremos. Para asignar la clase se aplica un umbral, en general 0,5. La pérdida adecuada es la <strong>entropía cruzada binaria</strong> (<em>binary cross-entropy</em>): es chica cuando el modelo asigna alta probabilidad a la respuesta correcta y grande cuando está seguro pero se equivoca.</p>
 <div class="lecturas">
 <p><strong>Para repasar.</strong> Clase C5, <em>Perceptrón y MLP</em>. Poole y Mackworth, sección <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S1.html">8.1</a>. Russell y Norvig, secciones 22.1 y 22.2.</p>
 </div>
@@ -2649,7 +2649,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <section id="c-función-de-pérdida-y-learning-rate" class="level3">
 <h3 class="anchored" data-anchor-id="c-función-de-pérdida-y-learning-rate">c) Función de pérdida y learning rate</h3>
 <p>La <strong>función de pérdida</strong> mide qué tan lejos están las predicciones de los valores reales: dice cuán bueno es el modelo y es lo que el entrenamiento minimiza. Se elige según el problema: error cuadrático medio en regresión, entropía cruzada en clasificación.</p>
-<p>El <strong>learning rate</strong> (tasa de aprendizaje) no mide el error: es el tamaño del paso con que el descenso por gradiente mueve los pesos, en la dirección contraria al gradiente de la pérdida. La pérdida indica cuánto se equivoca el modelo y hacia dónde corregir; el learning rate, cuánto se corrige en cada paso. Si es muy alto, el entrenamiento oscila o diverge; si es muy bajo, avanza demasiado lento.</p>
+<p>El <strong>learning rate</strong> (tasa de aprendizaje) no mide el error: regula el tamaño del paso con que el descenso por gradiente mueve los pesos, en la dirección contraria al gradiente de la pérdida. La pérdida indica cuánto se equivoca el modelo y, a través de su gradiente, hacia dónde corregir; el learning rate, cuánto se corrige en cada paso. Si es muy alto, el entrenamiento oscila o diverge; si es muy bajo, avanza demasiado lento.</p>
 <div class="lecturas">
 <p><strong>Para repasar.</strong> Clase C6, <em>Entrenamiento de redes neuronales</em>. Poole y Mackworth, secciones <a href="https://artint.info/3e/html/ArtInt3e.Ch7.S4.html">7.4</a> y <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S3.html">8.3</a>. Russell y Norvig, secciones 19.4, 19.6 y 22.5.</p>
 </div>
@@ -2662,7 +2662,7 @@ padding-top: .6rem; margin-top: 1.4rem; }
 <li>Las clases citadas son las presentaciones de la cursada 2026.</li>
 <li>El grafo del ejercicio 4 se dibuja con NetworkX y Matplotlib; el dibujo no ejecuta la búsqueda.</li>
 </ul>
-<p>Para <strong>leer</strong>, alcanza con abrir el HTML. Para <strong>volver a generarlo</strong>, se necesita Quarto con Python, Matplotlib y NetworkX:</p>
+<p>Para <strong>leer</strong>, alcanza con abrir el HTML. Para <strong>volver a generarlo</strong>, se necesita Quarto con Python y Jupyter, Matplotlib y NetworkX:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render index.qmd</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 
