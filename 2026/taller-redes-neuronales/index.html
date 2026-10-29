@@ -102,7 +102,7 @@ button, input, select { font: inherit; color: inherit; }
 
 /* Mensajes */
 .mensaje { border: 1px solid; border-left-width: 4px; border-radius: 8px; padding: 10px 14px; margin: 12px 0; }
-.mensaje strong { display: block; margin-bottom: 2px; }
+.mensaje > strong { display: block; margin-bottom: 2px; }
 .mensaje p { margin: 0; }
 .mensaje.error { background: var(--error-fondo); border-color: var(--error-borde); color: var(--error-texto); }
 .mensaje.aviso { background: var(--aviso-fondo); border-color: var(--aviso-borde); color: var(--aviso-texto); }
@@ -144,18 +144,18 @@ input[type=checkbox] { accent-color: var(--titulo); width: 17px; height: 17px; }
 .interruptor input:focus-visible + .pista { outline: 2px solid var(--acento); outline-offset: 2px; }
 .casilla { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
 
-/* Tarjetas de misión */
-.familia { font-size: .95rem; text-transform: uppercase; letter-spacing: .05em; color: var(--violeta); margin: 1.3em 0 .6em; }
+/* Tarjetas de tarea */
+.familia { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--violeta); margin: 1.1em 0 .5em; text-align: left; }
 .tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
-.tarjeta-mision {
+.tarjeta-tarea {
   text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border: 1px solid var(--borde);
   border-radius: 12px; background: #fff; cursor: pointer; transition: border-color .15s, box-shadow .15s;
 }
-.tarjeta-mision:hover { border-color: var(--acento); }
-.tarjeta-mision.elegida { border-color: var(--titulo); box-shadow: inset 0 0 0 1px var(--titulo); background: var(--suave); }
-.tarjeta-mision strong { color: var(--titulo); font-size: 1.08rem; }
-.tarjeta-mision .texto { font-size: .95rem; }
-.tarjeta-mision .pie-tarjeta { color: var(--secundario); font-size: .85rem; margin-top: auto; }
+.tarjeta-tarea:hover { border-color: var(--acento); }
+.tarjeta-tarea.elegida { border-color: var(--titulo); box-shadow: inset 0 0 0 1px var(--titulo); background: var(--suave); }
+.tarjeta-tarea strong { color: var(--titulo); font-size: 1.08rem; }
+.tarjeta-tarea .texto { font-size: .95rem; }
+.tarjeta-tarea .pie-tarjeta { color: var(--secundario); font-size: .85rem; margin-top: auto; }
 .etiqueta { display: inline-block; align-self: flex-start; font-size: .78rem; font-weight: 600; color: var(--violeta); background: var(--violeta-suave); border-radius: 999px; padding: 1px 9px; }
 
 /* Tablas */
@@ -249,6 +249,69 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .pie { color: var(--secundario); font-size: .9rem; border-top: 1px solid var(--borde); padding-top: 14px; padding-bottom: 30px; }
 .pie p { text-align: left; }
 
+
+/* Modo configuración / estudio */
+.encabezado-fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px 28px; flex-wrap: wrap; }
+.modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--titulo); border-radius: 10px; overflow: hidden; align-self: center; max-width: 320px; }
+.modo-opcion { position: relative; cursor: pointer; flex: 1; }
+.modo-opcion input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.modo-opcion span { display: block; padding: 8px 18px; font-weight: 600; color: var(--titulo); text-align: center; background: #fff; }
+.modo-opcion:has(input:checked) span { background: var(--titulo); color: #fff; }
+.modo-opcion:has(input:focus-visible) span { outline: 2px solid var(--acento); outline-offset: -4px; }
+.modo-ayuda { flex-basis: 100%; margin: 0; padding: 4px 10px; font-size: .82rem; color: var(--secundario); text-align: center; background: #fff; border-top: 1px solid var(--borde); hyphens: manual; }
+body:not(.modo-estudio) .solo-estudio { display: none !important; }
+.bajada { color: var(--secundario); text-align: left; hyphens: manual; }
+.concepto { background: #f8f6fb; border: 1px solid #e3dcec; border-left: 4px solid var(--violeta); border-radius: 10px; padding: 12px 16px 4px; margin: 6px 0 16px; }
+.concepto-titulo { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-bottom: 8px; }
+.concepto-titulo strong { color: var(--violeta); font-size: 1.05rem; }
+details.porque { margin-top: 2px; }
+details.porque summary { cursor: pointer; font-size: .88rem; font-weight: 600; opacity: .85; width: fit-content; }
+details.porque[open] summary { margin-bottom: 4px; }
+details.porque p { margin: 0; }
+.nota details.porque { display: inline; }
+.nota details.porque[open] { display: block; margin-top: 4px; }
+
+/* Gráficos de las pantallas */
+svg .t-curva { font-size: 10px; fill: #59717c; }
+svg .t-diagrama { font-size: 14px; fill: #163e50; font-weight: 600; }
+svg .t-diagrama.violeta { fill: #5f5078; font-size: 12px; }
+svg .t-diagrama.grande { font-size: 22px; }
+.icono-tarea { width: 100%; max-width: 150px; height: 70px; display: block; margin-bottom: 4px; }
+.histogramas { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px 14px; margin: 8px 0 6px; }
+.histograma { margin: 0; min-width: 0; }
+.histograma figcaption { font-size: .85rem; color: var(--secundario); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.histograma svg { width: 100%; height: 56px; display: block; border-bottom: 1px solid #b9cfd7; }
+.histograma .extremos { display: flex; justify-content: space-between; font-size: .75rem; color: var(--secundario); font-variant-numeric: tabular-nums; }
+.objetivo-dist { margin: 6px 0 14px; max-width: 520px; }
+.objetivo-dist figcaption { font-weight: 600; color: var(--titulo); font-size: .95rem; margin-bottom: 6px; }
+.objetivo-dist .barra { grid-template-columns: 120px minmax(0, 1fr) 44px; }
+.histograma-objetivo { width: 100%; max-width: 420px; height: auto; display: block; }
+.particion { display: flex; border-radius: 10px; overflow: hidden; margin: 8px 0 12px; color: #fff; font-size: .88rem; line-height: 1.25; }
+.particion div { padding: 8px 10px; min-width: 0; }
+.particion strong { display: block; }
+.escalas { margin-top: 10px; }
+.capa-curva { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; color: var(--secundario); font-size: .88rem; }
+.curva { flex: none; display: block; }
+.opcion.con-curva { display: flex; gap: 12px; align-items: center; }
+.opciones-perdida { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.opciones-perdida .opcion.con-curva { flex-direction: column; align-items: flex-start; gap: 6px; }
+.tabla.muestra { width: auto; }
+.tabla.muestra tbody th { background: #fff; font-weight: 400; }
+.tabla.muestra .unidad { color: var(--secundario); font-size: .85em; }
+.tabla.muestra tr.grupo th { color: var(--violeta); font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding-top: 10px; }
+.tabla tr.objetivo th, .tabla tr.objetivo td { background: var(--violeta-suave); color: var(--violeta); font-weight: 600; }
+.tabla tr.sin-uso th, .tabla tr.sin-uso td { color: #a2b2b8; }
+.curvas-ref { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 6px 0 12px; }
+.curvas-ref figure { margin: 0; }
+.curvas-ref figcaption { font-size: .82rem; color: var(--secundario); line-height: 1.3; }
+.diagrama { width: 100%; max-width: 330px; height: auto; display: block; margin: 4px 0 8px; }
+.ilustracion { max-width: 460px; margin: 4px 0 10px; background: #fff; }
+.ciclo { list-style: none; padding: 0; margin: 4px 0 12px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; counter-reset: ciclo; }
+.ciclo li { background: #fff; border: 1px solid #e3dcec; border-radius: 10px; padding: 8px 10px; font-size: .88rem; position: relative; counter-increment: ciclo; }
+.ciclo li strong { display: block; color: var(--violeta); }
+.ciclo li strong::before { content: counter(ciclo) ". "; }
+.ciclo li span { color: var(--secundario); }
+
 @media (max-width: 980px) {
   html { scroll-padding-top: 56px; }
   .marco { grid-template-columns: minmax(0, 1fr); }
@@ -276,6 +339,9 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
   .precio-total { font-size: 2.2rem; }
   .cifra { min-width: 0; flex: 1 1 120px; }
   .navegacion .estado { display: none; }
+  .ciclo { grid-template-columns: minmax(0, 1fr); }
+  .modo { max-width: none; width: 100%; }
+  .objetivo-dist .barra { grid-template-columns: 96px minmax(0, 1fr) 40px; }
 }
 </style>
 </head>
@@ -283,8 +349,17 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 <header class="encabezado">
   <div class="contenedor">
     <p class="volanta">Aprendizaje Automático - UNLu</p>
-    <h1>Configurador de redes neuronales</h1>
-    <p class="subtitulo">Armá una red feed-forward decisión por decisión, mirá cuántos parámetros cuesta y entrenala con las lecturas del agente de inspección del centro de datos.</p>
+    <div class="encabezado-fila">
+      <div>
+        <h1>Configurador de redes neuronales</h1>
+        <p class="subtitulo">Diseñá un perceptrón multicapa capa por capa, mirá cuántos parámetros entrenables tiene y entrenalo en el navegador.</p>
+      </div>
+      <div class="modo" role="radiogroup" aria-label="Modo de uso">
+        <label class="modo-opcion"><input type="radio" name="modo" value="configuracion"><span>Configuración</span></label>
+        <label class="modo-opcion"><input type="radio" name="modo" value="estudio"><span>Estudio</span></label>
+        <p class="modo-ayuda" id="modo-ayuda"></p>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -298,7 +373,7 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 
 <div class="contenedor marco">
   <main class="panel" id="panel">
-    <div id="aviso-mision"></div>
+    <div id="aviso-tarea"></div>
     <section id="contenido-paso"></section>
     <div id="mensajes" aria-live="polite"></div>
     <div class="navegacion">
@@ -308,14 +383,14 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
     </div>
   </main>
 
-  <aside class="vista" aria-label="Vista previa y precio de la red">
+  <aside class="vista" aria-label="Vista previa y parámetros de la red">
     <section class="tarjeta">
       <h2 class="titulo-chico">Vista previa</h2>
       <div id="red"></div>
       <p class="leyenda" id="leyenda-red"></p>
     </section>
     <section class="tarjeta" id="precio">
-      <h2 class="titulo-chico">Precio en parámetros entrenables</h2>
+      <h2 class="titulo-chico">Parámetros entrenables</h2>
       <div><span class="precio-total" id="precio-total" data-total="0">0</span><span class="precio-parcial" id="precio-parcial"></span></div>
       <ul class="precio-lista" id="precio-lista"></ul>
       <p class="precio-nota" id="precio-nota"></p>
@@ -386,9 +461,9 @@ function barajar(v, rng = Math.random) {
 // =====================================================================
 const PARTES = ["entrenamiento", "validacion", "prueba"];
 
-function crearDataset({ nombre, columnas, variables, tareas, particion }) {
+function crearDataset({ nombre, descripcion, columnas, variables, tareas, particion }) {
   const n = columnas[variables[0].columna].length;
-  return { nombre, n, columnas, variables, tareas, particion };
+  return { nombre, descripcion, n, columnas, variables, tareas, particion };
 }
 
 function cargarDatosEmbebidos() {
@@ -401,6 +476,7 @@ function cargarDatosEmbebidos() {
   const nombresEstados = ["normal", "térmico", "eléctrico", "almacenamiento", "red"];
   return crearDataset({
     nombre: "inspeccion_sensores.csv",
+    descripcion: "Lecturas de sensores de racks de un centro de datos: 1500 filas con 8 variables numéricas y 3 columnas que pueden ser variable objetivo",
     columnas,
     variables: [
       { columna: "temperatura", etiqueta: "Temperatura", unidad: "°C", corto: "temp.", decimales: 1 },
@@ -464,23 +540,23 @@ function contarPartes(clave) {
 // Catálogos
 // =====================================================================
 const URL_CSV = "https://raw.githubusercontent.com/jumafernandez/machine-learning-unlu/main/2026/taller-redes-neuronales/datos/inspeccion_sensores.csv";
-const PASOS = ["Misión", "Entradas", "Capas ocultas", "Salida", "Pérdida", "Regularización", "Entrenamiento", "Ficha técnica"];
-const MISIONES = {
+const PASOS = ["Datos y tarea", "Capa de entrada", "Capas ocultas", "Capa de salida", "Función de pérdida", "Regularización", "Entrenamiento", "Resumen del modelo"];
+const TAREAS = {
   binaria: {
-    titulo: "Detectar alertas reales", tipo: "Clasificación binaria", modelo: "MLP_alerta",
-    texto: "¿La lectura corresponde a un incidente? La red estima la probabilidad de que <code>alerta_real</code> valga 1.",
+    titulo: "Clasificación binaria", modelo: "MLP_alerta", objetivo: "alerta_real",
+    texto: "Predecir si la lectura corresponde a un incidente: dos clases, 0 o 1.",
   },
   multiclase: {
-    titulo: "Diagnosticar el estado del equipo", tipo: "Clasificación multiclase", modelo: "MLP_estado",
-    texto: "¿Qué le pasa al equipo? La red elige uno de 5 estados: normal, térmico, eléctrico, almacenamiento o red.",
+    titulo: "Clasificación multiclase", modelo: "MLP_estado", objetivo: "estado",
+    texto: "Predecir el estado del equipo: una clase entre cinco.",
   },
   regresion: {
-    titulo: "Estimar el tiempo de reparación", tipo: "Regresión", modelo: "MLP_reparacion",
-    texto: "¿Cuántos minutos va a llevar la reparación? La red predice un número. Solo se usan las lecturas con incidente.",
+    titulo: "Regresión", modelo: "MLP_reparacion", objetivo: "tiempo_reparacion_min",
+    texto: "Predecir el tiempo de reparación en minutos. Solo las lecturas con incidente.",
   },
   clustering: {
-    titulo: "Descubrir perfiles de comportamiento", tipo: "Clustering", modelo: "MLP_clustering",
-    texto: "¿Qué perfiles aparecen en las lecturas? La red las agrupa en k grupos sin mirar ninguna etiqueta.",
+    titulo: "Clustering", modelo: "MLP_clustering", objetivo: null,
+    texto: "Agrupar las lecturas en k grupos sin usar ninguna variable objetivo.",
   },
 };
 const ACTIVACIONES = {
@@ -545,7 +621,7 @@ const COLOR_VAL = "#163e50";
 const E = {
   paso: 0,
   maxPaso: 0,
-  mision: null,
+  tarea: null,
   entradas: DATASET.variables.map((v) => v.columna),
   normalizar: true,
   ocultas: [{ neuronas: 16, activacion: "relu", dropout: 0 }],
@@ -557,7 +633,7 @@ const E = {
   lr: 0.01,
   epocas: 150,
   batch: 32,
-  avisoMision: null,
+  avisoTarea: null,
   simulacion: null,
   entrenando: false,
   detener: false,
@@ -566,12 +642,21 @@ const E = {
   garage: { binaria: [], multiclase: [], regresion: [], clustering: [] },
   cuentaGarage: {},
   colorearPor: "grupo",
+  modo: modoInicial(),
+  abiertos: new Set(),
   factorTiempo: 1,
 };
 
+// Modo de uso: ?modo=estudio en la URL o la última elección de este navegador.
+function modoInicial() {
+  const pedido = new URLSearchParams(location.search).get("modo");
+  if (pedido === "estudio" || pedido === "configuracion") return pedido;
+  try { return localStorage.getItem("configurador-modo") === "estudio" ? "estudio" : "configuracion"; } catch { return "configuracion"; }
+}
+
 function configActual() {
   return {
-    mision: E.mision, entradas: [...E.entradas], normalizar: E.normalizar,
+    tarea: E.tarea, entradas: [...E.entradas], normalizar: E.normalizar,
     ocultas: E.ocultas.map((c) => ({ ...c })), salida: { ...E.salida }, perdida: E.perdida,
     l2: E.l2, early: { ...E.early }, optimizador: E.optimizador, lr: E.lr, epocas: E.epocas, batch: E.batch,
   };
@@ -580,7 +665,7 @@ const firma = (cfg) => JSON.stringify(cfg);
 const arquitectura = (cfg) => [cfg.entradas.length, ...cfg.ocultas.map((c) => c.neuronas), cfg.salida.neuronas ?? "?"].join("-");
 
 // =====================================================================
-// Parámetros: el "precio" de la red
+// Parámetros entrenables de la red
 // =====================================================================
 function desglose(cfg = E) {
   const filas = [];
@@ -597,7 +682,7 @@ function desglose(cfg = E) {
     const valor = (previas + 1) * k;
     filas.push({ nombre: "Salida", formula: `(${previas} + 1) × ${k}`, valor, entradas: previas, neuronas: k });
     total += valor;
-    if (cfg.mision === "clustering") {
+    if (cfg.tarea === "clustering") {
       const v = k * cfg.entradas.length;
       filas.push({ nombre: "Centroides", formula: `${k} × ${cfg.entradas.length}`, valor: v, tipo: "centroides" });
       total += v;
@@ -615,10 +700,10 @@ function diagnosticar() {
   const D = PASOS.map(() => ({ errores: [], avisos: [] }));
   const error = (p, titulo, texto) => D[p].errores.push({ titulo, texto });
   const aviso = (p, titulo, texto) => D[p].avisos.push({ titulo, texto });
-  const m = E.mision, k = E.salida.neuronas, act = E.salida.activacion, perdida = E.perdida, ocultas = E.ocultas;
+  const m = E.tarea, k = E.salida.neuronas, act = E.salida.activacion, perdida = E.perdida, ocultas = E.ocultas;
 
-  // Misión
-  if (!m) error(0, "Falta elegir la misión", "La misión define qué columna aprende a predecir la red y, con eso, cuántas neuronas de salida necesita y qué pérdida corresponde.");
+  // Datos y tarea
+  if (!m) error(0, "Falta elegir la tarea", "La tarea define qué variable aprende a predecir la red y, con eso, cuántas neuronas de salida necesita y qué función de pérdida corresponde.");
 
   // Entradas
   if (!E.entradas.length) error(1, "No hay entradas", "Marcá al menos un sensor. Sin variables de entrada, la red no tiene información con la cual decidir.");
@@ -671,7 +756,7 @@ function diagnosticar() {
 
   // Pérdida
   if (m && !perdida) error(4, "Falta elegir la pérdida", "La pérdida mide qué tan lejos están las predicciones de los valores reales: es lo que el entrenamiento minimiza.");
-  if (m && m !== "clustering" && perdida === "centroides") error(4, "La pérdida contra centroides es para clustering", `No usa etiquetas: mide distancias entre las lecturas y los centroides. En esta misión hay una columna objetivo (${DATASET.tareas[m].objetivo}) y la pérdida tiene que compararla con la salida de la red.`);
+  if (m && m !== "clustering" && perdida === "centroides") error(4, "La pérdida contra centroides es para clustering", `No usa etiquetas: mide distancias entre las lecturas y los centroides. En esta tarea hay una variable objetivo (${DATASET.tareas[m].objetivo}) y la pérdida tiene que compararla con la salida de la red.`);
   if (m === "binaria") {
     if (perdida === "cce" && k === 1) error(4, "CCE con una sola neurona", "La entropía cruzada categórica normaliza las salidas para que sumen 1. Con una neurona, eso da siempre 1 y la pérdida vale 0 para cualquier peso: no hay nada que aprender. Usá BCE con 1 neurona o CCE con 2 neuronas softmax.");
     if (perdida === "mse" || perdida === "mae") aviso(4, `${PERDIDAS[perdida].corto} para una probabilidad`, "Funciona, pero la entropía cruzada es la pérdida natural para probabilidades: penaliza mucho cuando la red está segura y se equivoca, y con sigmoide da gradientes más grandes al principio. Con MSE o MAE, el aprendizaje suele ser más lento.");
@@ -710,11 +795,11 @@ function pasosConErrores(D, hasta = 6) {
 // Estimación calibrada con mediciones de TF.js (backend cpu); se ajusta
 // con el tiempo real de cada corrida en esta computadora.
 function estimarSegundos() {
-  if (!E.mision) return 0;
-  const n = contarPartes(E.mision).entrenamiento;
+  if (!E.tarea) return 0;
+  const n = contarPartes(E.tarea).entrenamiento;
   const W = desglose().total;
   const lotes = Math.ceil(n / E.batch);
-  const computo = 0.0004 * lotes + 1.3e-8 * n * W * Math.pow(32 / E.batch, 0.2) * (E.mision === "clustering" ? 1.2 : 1);
+  const computo = 0.0004 * lotes + 1.3e-8 * n * W * Math.pow(32 / E.batch, 0.2) * (E.tarea === "clustering" ? 1.2 : 1);
   return Math.max(0.017, computo) * E.epocas * E.factorTiempo;
 }
 
@@ -722,7 +807,7 @@ function estimarSegundos() {
 // Vista previa: dibujo de la red en SVG
 // =====================================================================
 function etiquetasSalida(compacto) {
-  const n = E.salida.neuronas, m = E.mision;
+  const n = E.salida.neuronas, m = E.tarea;
   if (!n) return [];
   if (m === "binaria" && n === 1) return [compacto ? "P(alerta)" : "probabilidad de alerta"];
   if (m === "binaria" && n === 2) return ["sin alerta", "alerta"];
@@ -813,7 +898,7 @@ function dibujarRed() {
     textos += `<text x="${c.x}" y="${yTitulo}" text-anchor="middle" class="t-titulo">${c.titulo}</text>`;
     textos += `<text x="${c.x}" y="${yTitulo + 17}" text-anchor="middle" class="t-sub">${neuronas}</text>`;
     textos += `<text x="${c.x}" y="${yTitulo + 33}" text-anchor="middle" class="t-act">${activacion}</text>`;
-    if (c.tipo === "salida" && E.mision === "clustering" && c.n) {
+    if (c.tipo === "salida" && E.tarea === "clustering" && c.n) {
       textos += `<text x="${c.x}" y="${yTitulo + 50}" text-anchor="middle" class="t-dropout">+ centroides ${c.n} × ${E.entradas.length}</text>`;
     }
   });
@@ -863,7 +948,7 @@ function renderPrecio() {
     return `<li class="${f.tipo || ""}"><span>${texto}</span><strong>${num(f.valor)}</strong></li>`;
   }).join("");
   $("#precio-parcial").textContent = completo ? "" : "parcial";
-  const n = contarPartes(E.mision || "binaria").entrenamiento;
+  const n = contarPartes(E.tarea || "binaria").entrenamiento;
   $("#precio-nota").textContent = completo
     ? `Cada parámetro se ajusta con ${num(n)} ejemplos de entrenamiento: ${num(total / n, 2)} parámetros por ejemplo. Dropout no suma parámetros.`
     : "El total se completa cuando elijas la capa de salida.";
@@ -882,26 +967,293 @@ function renderPrecio() {
 }
 
 // =====================================================================
-// Pasos
+// Elementos visuales de las pantallas
 // =====================================================================
-function pasoMision() {
-  const tarjeta = (clave) => {
-    const m = MISIONES[clave], elegida = E.mision === clave;
-    const tarea = DATASET.tareas[clave], n = contarPartes(clave).entrenamiento;
-    const pie = tarea.objetivo ? `Objetivo: <code>${tarea.objetivo}</code> - ${num(n)} ejemplos de entrenamiento` : `Sin columna objetivo - ${num(n)} ejemplos de entrenamiento`;
-    return `<button type="button" class="tarjeta-mision${elegida ? " elegida" : ""}" data-accion="mision" data-valor="${clave}" aria-pressed="${elegida}">
-      <span class="etiqueta">${m.tipo}</span><strong>${m.titulo}</strong><span class="texto">${m.texto}</span><span class="pie-tarjeta">${pie}</span>
-    </button>`;
+const COLORES_CLASE = {
+  binaria: ["#8eb9c3", "#d08c2f"],
+  multiclase: COLORES.slice(0, 5),
+};
+
+// Íconos de cada tarea: puntos sintéticos con una semilla fija.
+function svgIconoTarea(clave) {
+  const rng = mulberry32({ binaria: 3, multiclase: 7, regresion: 11, clustering: 5 }[clave]);
+  const normal = () => { let s = 0; for (let i = 0; i < 6; i++) s += rng(); return s - 3; };
+  const nube = (cx, cy, n, d, color) => Array.from({ length: n }, () => `<circle cx="${(cx + normal() * d).toFixed(1)}" cy="${(cy + normal() * d).toFixed(1)}" r="2.3" fill="${color}"/>`).join("");
+  let cuerpo = "";
+  if (clave === "binaria") {
+    cuerpo = nube(36, 44, 16, 7, "#8eb9c3") + nube(84, 22, 16, 7, "#d08c2f") + '<line x1="22" y1="8" x2="100" y2="62" stroke="#163e50" stroke-width="1.5" stroke-dasharray="4 3"/>';
+  } else if (clave === "multiclase") {
+    cuerpo = '<path d="M62 36 L62 2 M62 36 L22 66 M62 36 L110 62" stroke="#163e50" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>'
+      + nube(36, 22, 11, 6, COLORES[0]) + nube(90, 22, 11, 6, COLORES[1]) + nube(64, 54, 11, 6, COLORES[2]);
+  } else if (clave === "regresion") {
+    for (let i = 0; i < 22; i++) {
+      const x = 14 + i * 4.3, y = 58 - 0.45 * (x - 10) + normal() * 4;
+      cuerpo += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.3" fill="#59717c"/>`;
+    }
+    cuerpo += '<line x1="10" y1="60" x2="112" y2="14" stroke="#163e50" stroke-width="2"/>';
+  } else {
+    cuerpo = nube(30, 22, 10, 5, "#9fb3bb") + nube(86, 20, 10, 5, "#9fb3bb") + nube(58, 50, 10, 5, "#9fb3bb")
+      + [[30, 22], [86, 20], [58, 50]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="15" fill="none" stroke="#5f5078" stroke-width="1.3" stroke-dasharray="3 3"/>`).join("");
+  }
+  return `<svg class="icono-tarea" viewBox="0 0 120 70" aria-hidden="true">${cuerpo}</svg>`;
+}
+
+// Curva de una función de activación con su rango sombreado.
+function svgCurvaActivacion(clave, ancho = 96, alto = 60) {
+  const m = 5, xMin = -4, xMax = 4, yMin = -1.4, yMax = 1.4;
+  const X = (x) => m + ((x - xMin) / (xMax - xMin)) * (ancho - 2 * m);
+  const Y = (y) => m + (1 - (y - yMin) / (yMax - yMin)) * (alto - 2 * m);
+  const ejes = `<line x1="${m}" x2="${ancho - m}" y1="${Y(0)}" y2="${Y(0)}" stroke="#d7e6eb"/><line x1="${X(0)}" x2="${X(0)}" y1="${m}" y2="${alto - m}" stroke="#d7e6eb"/>`;
+  if (clave === "softmax") {
+    const p = [0.58, 0.27, 0.15], base = alto - m - 2, barra = (ancho - 2 * m) / 5;
+    const barras = p.map((v, i) => `<rect x="${(m + barra * (0.6 + i * 1.4)).toFixed(1)}" y="${(base - v * (alto - 2 * m - 6)).toFixed(1)}" width="${barra.toFixed(1)}" height="${(v * (alto - 2 * m - 6)).toFixed(1)}" fill="#163e50" rx="1.5"/>`).join("");
+    return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true"><line x1="${m}" x2="${ancho - m}" y1="${base}" y2="${base}" stroke="#d7e6eb"/>${barras}<text x="${ancho - m}" y="${m + 9}" text-anchor="end" class="t-curva">Σ = 1</text></svg>`;
+  }
+  const f = { relu: (x) => Math.max(0, x), tanh: Math.tanh, sigmoide: (x) => 1 / (1 + Math.exp(-1.6 * x)), lineal: (x) => x }[clave];
+  const banda = { relu: [0, yMax], tanh: [-1, 1], sigmoide: [0, 1], lineal: null }[clave];
+  let d = "";
+  for (let i = 0; i <= 80; i++) {
+    const x = xMin + (i / 80) * (xMax - xMin), y = f(x);
+    if (y < yMin || y > yMax) continue;
+    d += `${d ? "L" : "M"}${X(x).toFixed(1)},${Y(y).toFixed(1)}`;
+  }
+  const sombra = banda ? `<rect x="${m}" y="${Y(banda[1]).toFixed(1)}" width="${ancho - 2 * m}" height="${(Y(banda[0]) - Y(banda[1])).toFixed(1)}" fill="#efebf4"/>` : `<rect x="${m}" y="${m}" width="${ancho - 2 * m}" height="${alto - 2 * m}" fill="#efebf4"/>`;
+  return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true">${sombra}${ejes}<path d="${d}" fill="none" stroke="#163e50" stroke-width="2"/></svg>`;
+}
+
+// Pérdida en función de la predicción: cuánto castiga cada error.
+function svgCurvaPerdida(clave, ancho = 150, alto = 84) {
+  const m = { izq: 8, der: 8, sup: 8, inf: 16 };
+  const util = { ancho: ancho - m.izq - m.der, alto: alto - m.sup - m.inf };
+  const curva = (f, x0, x1, yMax, color) => {
+    let d = "";
+    for (let i = 0; i <= 60; i++) {
+      const x = x0 + (i / 60) * (x1 - x0), y = Math.min(f(x), yMax);
+      d += `${d ? "L" : "M"}${(m.izq + ((x - x0) / (x1 - x0)) * util.ancho).toFixed(1)},${(m.sup + (1 - y / yMax) * util.alto).toFixed(1)}`;
+    }
+    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2"/>`;
   };
-  return `<h2>Misión</h2>
-    <p>Retomamos el agente de inspección del taller de búsqueda. Ya llegó al centro de datos y ahora lee los sensores de cada rack: cada fila del archivo es una lectura con 8 variables medidas y, para las tareas supervisadas, lo que realmente le pasaba al equipo. Elegí qué querés que aprenda la red. Esa decisión condiciona la capa de salida y la pérdida de los pasos siguientes.</p>
-    <h3 class="familia">Aprendizaje supervisado</h3>
-    <div class="tarjetas">${["binaria", "multiclase", "regresion"].map(tarjeta).join("")}</div>
-    <h3 class="familia">Aprendizaje no supervisado</h3>
-    <div class="tarjetas">${tarjeta("clustering")}</div>
-    <h3>Cinco lecturas de ejemplo</h3>
+  const base = `<line x1="${m.izq}" x2="${ancho - m.der}" y1="${m.sup + util.alto}" y2="${m.sup + util.alto}" stroke="#b9cfd7"/>`;
+  const rotulo = (x, texto, ancla = "middle") => `<text x="${x}" y="${alto - 3}" text-anchor="${ancla}" class="t-curva">${texto}</text>`;
+  let cuerpo = "";
+  if (clave === "bce") {
+    cuerpo = curva((p) => -Math.log(p), 0.01, 0.99, 4.6, "#163e50") + curva((p) => -Math.log(1 - p), 0.01, 0.99, 4.6, "#d08c2f")
+      + `<text x="${m.izq + 4}" y="${m.sup + 9}" class="t-curva" fill="#163e50">y = 1</text><text x="${ancho - m.der - 4}" y="${m.sup + 9}" text-anchor="end" class="t-curva" fill="#d08c2f">y = 0</text>`
+      + rotulo(m.izq, "p = 0", "start") + rotulo(ancho - m.der, "p = 1", "end");
+  } else if (clave === "cce") {
+    cuerpo = curva((p) => -Math.log(p), 0.01, 0.99, 4.6, "#163e50") + rotulo(m.izq, "0", "start") + rotulo(ancho / 2, "p de la clase correcta") + rotulo(ancho - m.der, "1", "end");
+  } else if (clave === "mse" || clave === "mae") {
+    cuerpo = curva(clave === "mse" ? (e) => e * e : (e) => Math.abs(e), -2, 2, 4, "#163e50")
+      + `<line x1="${ancho / 2}" x2="${ancho / 2}" y1="${m.sup}" y2="${m.sup + util.alto}" stroke="#d7e6eb"/>` + rotulo(ancho / 2, "error ŷ − y");
+  } else {
+    const x = [40, 44], centros = [[16, 18, 0.7], [118, 26, 0.2], [96, 62, 0.1]];
+    cuerpo = centros.map(([cx, cy, q]) => `<line x1="${x[0]}" y1="${x[1]}" x2="${cx}" y2="${cy}" stroke="#5f5078" stroke-width="${(0.6 + q * 5).toFixed(1)}" opacity=".7"/><rect x="${cx - 5}" y="${cy - 5}" width="10" height="10" fill="#5f5078" transform="rotate(45 ${cx} ${cy})"/>`).join("")
+      + `<circle cx="${x[0]}" cy="${x[1]}" r="5" fill="#163e50"/>` + rotulo(ancho / 2, "grosor = pertenencia q");
+  }
+  return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true">${base}${cuerpo}</svg>`;
+}
+
+// Histograma de cada variable, coloreado por la clase de la tarea elegida.
+function histogramasVariables(clave) {
+  const tarea = clave ? DATASET.tareas[clave] : null;
+  const filas = filasDeTarea(DATASET, clave || "binaria").entrenamiento;
+  const colores = clave && COLORES_CLASE[clave];
+  const claseDe = colores ? (i) => tarea.clases.indexOf(DATASET.columnas[tarea.objetivo][i]) : () => 0;
+  const nClases = colores ? colores.length : 1;
+  const colorUnico = clave === "regresion" ? "#59717c" : "#9fb3bb";
+  const ancho = 160, alto = 62, bins = 16;
+  const graficos = DATASET.variables.map((v) => {
+    const valores = filas.map((i) => DATASET.columnas[v.columna][i]);
+    const minimo = Math.min(...valores), maximo = Math.max(...valores), paso = (maximo - minimo) / bins || 1;
+    const cuentas = Array.from({ length: bins }, () => Array(nClases).fill(0));
+    filas.forEach((i, j) => { cuentas[Math.min(bins - 1, Math.floor((valores[j] - minimo) / paso))][claseDe(i)]++; });
+    const tope = Math.max(...cuentas.map((c) => c.reduce((a, b) => a + b, 0)));
+    const anchoBin = ancho / bins;
+    let barras = "";
+    cuentas.forEach((c, b) => {
+      let y = alto;
+      c.forEach((n, k) => {
+        if (!n) return;
+        const h = (n / tope) * (alto - 4);
+        y -= h;
+        barras += `<rect x="${(b * anchoBin + 0.5).toFixed(1)}" y="${y.toFixed(1)}" width="${(anchoBin - 1).toFixed(1)}" height="${h.toFixed(1)}" fill="${colores ? colores[k] : colorUnico}"/>`;
+      });
+    });
+    return `<figure class="histograma"><figcaption><code>${v.columna}</code> <span>${v.unidad}</span></figcaption>
+      <svg viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none" aria-hidden="true">${barras}</svg>
+      <div class="extremos"><span>${num(minimo, v.decimales)}</span><span>${num(maximo, v.decimales)}</span></div></figure>`;
+  }).join("");
+  const leyenda = colores
+    ? leyendaGrafico(tarea.nombresClases.map((nombre, k) => ({ nombre: clave === "binaria" ? `${k}: ${nombre}` : nombre, color: colores[k] })))
+    : `<p class="leyenda">${!clave ? "Elegí una tarea para colorear las distribuciones según la variable objetivo." : clave === "regresion" ? "Solo las lecturas con incidente, que son las que tienen tiempo de reparación." : "Sin variable objetivo: no hay clases con qué colorear."}</p>`;
+  return `<div class="histogramas">${graficos}</div>${leyenda}`;
+}
+
+function distribucionObjetivo(clave) {
+  const tarea = DATASET.tareas[clave];
+  const filas = filasDeTarea(DATASET, clave).entrenamiento;
+  if (clave === "clustering") return "";
+  const valores = filas.map((i) => DATASET.columnas[tarea.objetivo][i]);
+  let cuerpo;
+  if (tarea.clases) {
+    const cuentas = tarea.clases.map((c) => valores.filter((v) => v === c).length);
+    const tope = Math.max(...cuentas);
+    cuerpo = `<div class="barras">${cuentas.map((n, k) => `<div class="barra"><span>${esc(clave === "binaria" ? `${k}: ${tarea.nombresClases[k]}` : tarea.nombresClases[k])}</span><span class="relleno" style="width:${(100 * n) / tope}%; background:${COLORES_CLASE[clave][k]}"></span><span class="num">${num(n)}</span></div>`).join("")}</div>`;
+  } else {
+    const bins = 18, minimo = Math.min(...valores), maximo = Math.max(...valores), paso = (maximo - minimo) / bins;
+    const cuentas = Array(bins).fill(0);
+    valores.forEach((v) => { cuentas[Math.min(bins - 1, Math.floor((v - minimo) / paso))]++; });
+    const tope = Math.max(...cuentas), ancho = 360, alto = 70;
+    cuerpo = `<svg class="histograma-objetivo" viewBox="0 0 ${ancho} ${alto + 16}" aria-hidden="true">${cuentas.map((n, b) => `<rect x="${(b * ancho) / bins + 1}" y="${alto - (n / tope) * (alto - 4)}" width="${ancho / bins - 2}" height="${(n / tope) * (alto - 4)}" fill="#163e50"/>`).join("")}
+      <text x="0" y="${alto + 13}" class="t-curva">${num(minimo)} min</text><text x="${ancho}" y="${alto + 13}" text-anchor="end" class="t-curva">${num(maximo)} min</text></svg>`;
+  }
+  return `<figure class="objetivo-dist"><figcaption>Variable objetivo: <code>${tarea.objetivo}</code>, en entrenamiento</figcaption>${cuerpo}</figure>`;
+}
+
+function barraParticion(clave) {
+  const c = contarPartes(clave), total = c.entrenamiento + c.validacion + c.prueba;
+  const partes = [["entrenamiento", "Entrenamiento", "#163e50"], ["validacion", "Validación", "#6fa6b4"], ["prueba", "Prueba", "#5f5078"]];
+  return `<div class="particion" role="img" aria-label="Partición: ${partes.map(([p, n]) => `${n} ${c[p]}`).join(", ")}">${partes.map(([p, nombre, color]) => `<div style="flex:${c[p]}; background:${color}"><strong>${nombre}</strong><span>${num(c[p])} (${Math.round((100 * c[p]) / total)}%)</span></div>`).join("")}</div>`;
+}
+
+// Rango de cada variable de entrada en entrenamiento, con o sin z-score.
+function escalasEntradas(ancho) {
+  if (!E.entradas.length) return "";
+  const datos = prepararDatos(DATASET, E.tarea || "binaria", E.entradas, E.normalizar);
+  const filas = E.entradas.map((c, j) => {
+    const v = datos.X.entrenamiento.map((f) => f[j]);
+    return { c, min: Math.min(...v), max: Math.max(...v), media: promedio(v) };
+  });
+  const lo = Math.min(0, ...filas.map((f) => f.min)), hi = Math.max(...filas.map((f) => f.max));
+  const mIzq = ancho < 420 ? 104 : 120, alto = 26 + filas.length * 22;
+  const X = (v) => mIzq + ((v - lo) / (hi - lo)) * (ancho - mIzq - 14);
+  let svg = "";
+  for (const t of ticksLindos(lo, hi, 4)) svg += `<line x1="${X(t).toFixed(1)}" x2="${X(t).toFixed(1)}" y1="4" y2="${alto - 18}" class="grilla"/><text class="eje" x="${X(t).toFixed(1)}" y="${alto - 4}" text-anchor="middle">${numEje(t)}</text>`;
+  filas.forEach((f, i) => {
+    const y = 14 + i * 22;
+    svg += `<text class="eje" x="${mIzq - 8}" y="${y + 4}" text-anchor="end">${f.c}</text>
+      <line x1="${X(f.min).toFixed(1)}" x2="${Math.max(X(f.max), X(f.min) + 2).toFixed(1)}" y1="${y}" y2="${y}" stroke="#8eb9c3" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="${X(f.media).toFixed(1)}" cy="${y}" r="3.5" fill="#163e50"/>`;
+  });
+  return `<figure class="grafico escalas"><figcaption>Rango de cada entrada en entrenamiento, ${E.normalizar ? "con z-score" : "sin normalizar"}</figcaption>
+    <svg viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Rango de cada variable de entrada">${svg}</svg>
+    <p class="leyenda">La barra va del mínimo al máximo y el punto marca la media.${E.normalizar ? " Con z-score, todas quedan en la misma escala." : " Sin normalizar, los ventiladores (en miles de rpm) aplastan al resto."}</p></figure>`;
+}
+
+// =====================================================================
+// Modo estudio: conceptos y explicaciones plegables
+// =====================================================================
+const estudio = () => E.modo === "estudio";
+
+function porque(clave, html) {
+  const abierto = estudio() || E.abiertos.has(clave);
+  return `<details class="porque" data-clave="${esc(clave)}" ${abierto ? "open" : ""}><summary>¿Por qué?</summary>${html}</details>`;
+}
+
+function conceptoNeurona() {
+  return `<svg class="diagrama" viewBox="0 0 330 112" role="img" aria-label="Neurona: entradas por pesos, más sesgo, función de activación">
+    ${[24, 56, 88].map((y, i) => `<text x="14" y="${y + 4}" class="t-diagrama">x${"₁₂₃"[i]}</text><line x1="30" y1="${y}" x2="140" y2="56" stroke="#8eb9c3" stroke-width="1.6"/><text x="${70}" y="${y + (i === 0 ? 10 : i === 2 ? -4 : -5)}" class="t-diagrama violeta">w${"₁₂₃"[i]}</text>`).join("")}
+    <circle cx="160" cy="56" r="22" fill="#fff" stroke="#163e50" stroke-width="1.8"/><text x="160" y="62" text-anchor="middle" class="t-diagrama grande">Σ</text>
+    <line x1="160" y1="10" x2="160" y2="34" stroke="#5f5078" stroke-dasharray="3 3"/><text x="160" y="9" text-anchor="middle" class="t-diagrama violeta">+ b</text>
+    <line x1="182" y1="56" x2="214" y2="56" stroke="#163e50" stroke-width="1.6"/>
+    <rect x="214" y="38" width="44" height="36" rx="8" fill="#edf5f7" stroke="#163e50" stroke-width="1.6"/><text x="236" y="61" text-anchor="middle" class="t-diagrama">f</text>
+    <line x1="258" y1="56" x2="296" y2="56" stroke="#163e50" stroke-width="1.6"/><text x="302" y="61" class="t-diagrama">a</text>
+  </svg>`;
+}
+
+function conceptoSobreajuste() {
+  const e = Array.from({ length: 60 }, (_, i) => i + 1);
+  const tr = e.map((x) => 0.55 * Math.exp(-x / 12) + 0.08);
+  const va = e.map((x) => 0.3 + 0.28 * Math.exp(-x / 5) + 0.0045 * Math.max(0, x - 10));
+  const mejor = va.indexOf(Math.min(...va)) + 1;
+  return `<figure class="grafico ilustracion">${graficoLineas({ series: [{ valores: tr, color: COLOR_TRAIN }, { valores: va, color: COLOR_VAL }], marcas: [{ epoca: mejor, color: "#5f5078", texto: "mejor punto de validación" }], xMax: 60, ancho: 420, alto: 170, etiqueta: "Curvas típicas de sobreajuste" })}
+    ${leyendaGrafico([{ nombre: "entrenamiento", color: COLOR_TRAIN }, { nombre: "validación", color: COLOR_VAL }])}</figure>`;
+}
+
+function conceptoAdaptacion() {
+  const filas = [
+    ["binaria", "Clasificación binaria", "1", "sigmoide", "entropía cruzada binaria"],
+    ["multiclase", "Clasificación multiclase", "una por clase", "softmax", "entropía cruzada categórica"],
+    ["regresion", "Regresión", "1", "lineal", "MSE o MAE"],
+    ["clustering", "Clustering", "k, una por grupo", "softmax", "MSE contra centroides"],
+  ];
+  return `<div class="tabla-scroll"><table class="tabla"><thead><tr><th>Tarea</th><th>Neuronas de salida</th><th>Activación</th><th>Pérdida</th></tr></thead><tbody>
+    ${filas.map(([clave, ...celdas]) => `<tr class="${clave === E.tarea ? "objetivo" : ""}">${celdas.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+const CONCEPTOS = [
+  {
+    titulo: "Aprendizaje supervisado y no supervisado", ref: "C5 y C6",
+    html: () => `<p>En el aprendizaje supervisado, cada ejemplo trae el valor que la red debe aprender a predecir: la <strong>variable objetivo</strong>. Su tipo define la tarea: una clase entre dos (clasificación binaria), una entre varias (multiclase) o un número continuo (regresión). En el no supervisado no hay variable objetivo: en clustering, la red agrupa los ejemplos según su parecido.</p>
+      <p>La partición separa tres conjuntos: el de <strong>entrenamiento</strong> ajusta los pesos, el de <strong>validación</strong> mide la generalización mientras se entrena y el de <strong>prueba</strong> se usa una sola vez, al final, para informar el desempeño.</p>`,
+  },
+  {
+    titulo: "Capa de entrada y normalización", ref: "C5 y C6",
+    html: () => `<p>La capa de entrada tiene una neurona por variable y no tiene parámetros: solo reparte los valores a la capa siguiente. Su tamaño, la dimensión de entrada d, define cuántos pesos tiene cada neurona de la primera capa oculta.</p>
+      <p>Si las escalas son muy distintas, los pesos de las variables grandes reciben gradientes mucho mayores y el descenso por gradiente avanza en zigzag o diverge. La normalización z-score, z = (x − media) / desvío, deja todas las variables centradas en 0 y con desvío 1. La media y el desvío se calculan solo con entrenamiento, para que nada de validación ni de prueba se filtre al modelo.</p>`,
+  },
+  {
+    titulo: "Neurona, pesos, sesgo y activación", ref: "C5",
+    html: () => `${conceptoNeurona()}
+      <p>Cada neurona combina sus entradas ponderadas por los pesos, les suma el sesgo y aplica la función de activación: a = f(Σ wᵢxᵢ + b). Por eso tiene un peso por entrada más el sesgo, (entradas + 1) parámetros, y una capa densa tiene (entradas + 1) × neuronas.</p>
+      <p>La activación tiene que ser no lineal: si cada capa solo calculara combinaciones lineales, varias capas equivaldrían a una sola y la red se comportaría como una regresión lineal multivariada.</p>
+      <div class="curvas-ref">${ACT_OCULTAS.map((a) => `<figure>${svgCurvaActivacion(a)}<figcaption><strong>${ACTIVACIONES[a].nombre}</strong> ${ACTIVACIONES[a].formula}<br>${ACTIVACIONES[a].rango}</figcaption></figure>`).join("")}</div>`,
+  },
+  {
+    titulo: "Adaptación del MLP a la tarea", ref: "C5",
+    html: () => `<p>La capa de salida tiene que devolver lo que la tarea necesita, y la pérdida tiene que poder compararlo con la variable objetivo:</p>${conceptoAdaptacion()}`,
+  },
+  {
+    titulo: "Función de pérdida", ref: "C6",
+    html: () => `<p>La función de pérdida mide la discrepancia entre la predicción y el valor real; sobre el conjunto de datos, es el promedio de la pérdida de cada ejemplo. Entrenar es buscar los pesos que la minimizan. Se elige según el problema: error cuadrático en regresión, entropía cruzada en clasificación.</p>
+      <p>Los gráficos de cada opción muestran cuánto castiga cada error. La entropía cruzada crece sin límite cuando la red está segura y se equivoca; MSE castiga los errores grandes más que MAE.</p>`,
+  },
+  {
+    titulo: "Sobreajuste y regularización", ref: "C6",
+    html: () => `${conceptoSobreajuste()}
+      <p>Hay sobreajuste cuando la pérdida de entrenamiento sigue bajando y la de validación sube: la red memoriza el entrenamiento y generaliza peor. La regularización favorece soluciones más simples. L2 suma una penalización a la pérdida que achica los pesos (L1 puede anular algunos y Elastic Net combina ambas). Dropout apaga neuronas al azar en cada iteración. Early stopping entrena hasta el mejor punto de validación, no hasta el final.</p>`,
+  },
+  {
+    titulo: "Ciclo de entrenamiento", ref: "C5 y C6",
+    html: () => `<ol class="ciclo"><li><strong>Forward pass</strong><span>la red calcula la predicción ŷ del lote</span></li><li><strong>Pérdida</strong><span>mide el error entre ŷ e y</span></li><li><strong>Backpropagation</strong><span>la regla de la cadena da el gradiente de la pérdida respecto de cada peso</span></li><li><strong>Optimizador</strong><span>mueve los pesos en contra del gradiente, con paso dado por el learning rate</span></li></ol>
+      <p>Cada vuelta usa un lote (batch) de ejemplos; una época es una pasada completa por el conjunto de entrenamiento. SGD da pasos proporcionales al gradiente del lote; momentum acumula la dirección de los pasos anteriores (β ≈ 0,9); Adam adapta el paso de cada peso según la historia de su gradiente.</p>`,
+  },
+  {
+    titulo: "Contar parámetros", ref: "N02",
+    html: () => `<p>Cada capa densa tiene (entradas + 1) × neuronas parámetros: un peso por conexión y un sesgo por neurona. La capa de entrada y dropout no tienen parámetros. Es el conteo que muestra <code>model.summary()</code> en Keras, como en la notebook N02.</p>`,
+  },
+];
+
+function concepto(paso) {
+  const c = CONCEPTOS[paso];
+  return `<aside class="concepto solo-estudio"><div class="concepto-titulo"><span class="etiqueta">Concepto - ${c.ref}</span><strong>${c.titulo}</strong></div>${estudio() ? c.html() : ""}</aside>`;
+}
+
+// =====================================================================
+// Pantallas
+// =====================================================================
+function pasoDatos() {
+  const tarjeta = (clave) => {
+    const t = TAREAS[clave], elegida = E.tarea === clave, n = contarPartes(clave).entrenamiento;
+    return `<button type="button" class="tarjeta-tarea${elegida ? " elegida" : ""}" data-accion="tarea" data-valor="${clave}" aria-pressed="${elegida}">
+      ${svgIconoTarea(clave)}<strong>${t.titulo}</strong><span class="texto">${t.texto}</span>
+      <span class="pie-tarjeta">${t.objetivo ? `Objetivo: <code>${t.objetivo}</code>` : "Sin variable objetivo"} - ${num(n)} ejemplos</span></button>`;
+  };
+  return `<h2>Datos y tarea</h2>
+    <p class="bajada">${DATASET.descripcion}. Mirá los datos y elegí qué querés que prediga la red.</p>
+    ${concepto(0)}
     ${tablaMuestra()}
-    <p class="nota">El 6% de las etiquetas se registró mal a propósito, como pasa con datos reales. Por eso ningún modelo puede acertar el 100% en prueba: si una red llega al 100% en entrenamiento, está memorizando también esos errores.</p>`;
+    <h3>Tarea</h3>
+    <p class="familia">Aprendizaje supervisado</p>
+    <div class="tarjetas">${["binaria", "multiclase", "regresion"].map(tarjeta).join("")}</div>
+    <p class="familia">Aprendizaje no supervisado</p>
+    <div class="tarjetas">${tarjeta("clustering")}</div>
+    <h3>Distribuciones</h3>
+    ${E.tarea ? distribucionObjetivo(E.tarea) : ""}
+    ${histogramasVariables(E.tarea)}
+    <h3>Partición</h3>
+    ${barraParticion(E.tarea || "binaria")}
+    <p class="nota">El 6% de las etiquetas se registró mal a propósito: es error irreducible. Ningún modelo puede acertar el 100% en prueba, y si una red llega al 100% en entrenamiento, está memorizando esos errores.</p>`;
 }
 
 function tablaMuestra() {
@@ -909,87 +1261,79 @@ function tablaMuestra() {
   const filas = DATASET.tareas.multiclase.clases
     .map((estado) => { for (let i = 0; i < DATASET.n; i++) if (col.particion[i] === "entrenamiento" && col.estado[i] === estado) return i; return null; })
     .filter((i) => i !== null);
-  const objetivo = E.mision ? DATASET.tareas[E.mision].objetivo : null;
+  const objetivo = E.tarea ? DATASET.tareas[E.tarea].objetivo : null;
   const etiquetas = ["estado", "alerta_real", "tiempo_reparacion_min"];
-  const clase = (c) => (E.mision === "clustering" && etiquetas.includes(c) ? "sin-uso" : c === objetivo ? "objetivo" : "");
-  const encabezado = DATASET.variables.map((v) => `<th class="num">${v.columna}</th>`).join("") + etiquetas.map((c) => `<th class="${clase(c)}">${c}</th>`).join("");
-  const cuerpo = filas.map((i) => "<tr>"
-    + DATASET.variables.map((v) => `<td class="num">${num(col[v.columna][i], v.decimales)}</td>`).join("")
-    + `<td class="${clase("estado")}">${col.estado[i]}</td><td class="num ${clase("alerta_real")}">${col.alerta_real[i]}</td>`
-    + `<td class="num ${clase("tiempo_reparacion_min")}">${col.tiempo_reparacion_min[i] == null ? '<span class="sin-uso">vacío</span>' : num(col.tiempo_reparacion_min[i])}</td></tr>`).join("");
-  const pie = !E.mision ? "Hay una lectura de cada estado. Las tres últimas columnas son las etiquetas."
-    : E.mision === "clustering" ? "En clustering, las columnas grises no se usan para entrenar: el estado real solo sirve al final para interpretar los grupos."
-    : `La columna resaltada, <code>${objetivo}</code>, es la que aprende a predecir la red.`;
-  return `<div class="tabla-scroll"><table class="tabla"><thead><tr>${encabezado}</tr></thead><tbody>${cuerpo}</tbody></table></div><p class="leyenda">${pie}</p>`;
+  const clase = (c) => (c === objetivo ? "objetivo" : E.tarea ? "sin-uso" : "");
+  const entrada = (v) => `<tr><th><code>${v.columna}</code> <span class="unidad">${v.unidad}</span></th>${filas.map((i) => `<td class="num">${num(col[v.columna][i], v.decimales)}</td>`).join("")}</tr>`;
+  const etiqueta = (c) => `<tr class="${clase(c)}"><th><code>${c}</code></th>${filas.map((i) => {
+    const v = col[c][i];
+    return `<td class="num">${v == null ? "vacío" : c === "tiempo_reparacion_min" ? num(v) : esc(v)}</td>`;
+  }).join("")}</tr>`;
+  const pie = !E.tarea ? "Un ejemplo de cada estado, tomados del conjunto de entrenamiento."
+    : E.tarea === "clustering" ? "En clustering no se usa ninguna variable objetivo: el estado real solo sirve al final para interpretar los grupos."
+    : `La fila resaltada, <code>${objetivo}</code>, es la variable objetivo; las otras dos no se usan en esta tarea.`;
+  return `<div class="tabla-scroll"><table class="tabla muestra"><thead><tr><th>Columna</th>${filas.map((_, j) => `<th class="num">Ejemplo ${j + 1}</th>`).join("")}</tr></thead><tbody>
+    <tr class="grupo"><th colspan="${filas.length + 1}">Variables de entrada</th></tr>${DATASET.variables.map(entrada).join("")}
+    <tr class="grupo"><th colspan="${filas.length + 1}">Posibles variables objetivo</th></tr>${etiquetas.map(etiqueta).join("")}
+  </tbody></table></div><p class="leyenda">${pie}</p>`;
 }
 
-function pasoEntradas() {
-  const tr = filasDeTarea(DATASET, E.mision || "binaria").entrenamiento;
+function pasoEntrada() {
+  const tr = filasDeTarea(DATASET, E.tarea || "binaria").entrenamiento;
   const sensores = DATASET.variables.map((v) => {
     const valores = tr.map((i) => DATASET.columnas[v.columna][i]);
-    const minimo = Math.min(...valores), maximo = Math.max(...valores);
     return `<label class="sensor"><input type="checkbox" data-campo="entrada" value="${v.columna}" ${E.entradas.includes(v.columna) ? "checked" : ""}>
-      <span><strong>${v.columna}</strong> <span class="unidad">(${v.unidad})</span><span class="rango">${v.etiqueta}: de ${num(minimo, v.decimales)} a ${num(maximo, v.decimales)} en entrenamiento</span></span></label>`;
+      <span><strong>${v.columna}</strong> <span class="unidad">(${v.unidad})</span><span class="rango">de ${num(Math.min(...valores), v.decimales)} a ${num(Math.max(...valores), v.decimales)}</span></span></label>`;
   }).join("");
-  const c = contarPartes(E.mision || "binaria");
-  const filasParticion = [
-    ["Entrenamiento", c.entrenamiento, "Ajusta los pesos: es lo único que ve el optimizador. También define la media y el desvío de la normalización."],
-    ["Validación", c.validacion, "Mide la generalización al final de cada época. Es la que mira early stopping y la que usás para comparar configuraciones."],
-    ["Prueba", c.prueba, "Se usa una sola vez, al final, para informar el desempeño de la configuración elegida."],
-  ].map(([nombre, n, uso]) => `<tr><th>${nombre}</th><td class="num">${num(n)}</td><td class="texto-largo">${uso}</td></tr>`).join("");
-  return `<h2>Entradas</h2>
-    <p>Cada sensor marcado es una neurona de la capa de entrada. La capa de entrada no tiene parámetros: solo reparte cada valor a todas las neuronas de la capa siguiente.</p>
+  const ancho = Math.max(300, Math.min(640, Math.round($("#contenido-paso").clientWidth || 600) - 4));
+  return `<h2>Capa de entrada</h2>
+    <p class="bajada">Elegí las variables de entrada y si se normalizan.</p>
+    ${concepto(1)}
     <div class="sensores">${sensores}</div>
-    <div class="acciones"><button type="button" class="boton chico" data-accion="todas-entradas">Marcar todos</button></div>
-    <p class="dimension">Dimensión de entrada: <strong id="dimension-entrada">d = ${E.entradas.length}</strong></p>
+    <div class="acciones"><button type="button" class="boton chico" data-accion="todas-entradas">Marcar todas</button>
+      <span class="dimension">Dimensión de entrada: <strong id="dimension-entrada">d = ${E.entradas.length}</strong></span></div>
     <h3>Normalización</h3>
     <label class="interruptor"><input type="checkbox" data-campo="normalizar" ${E.normalizar ? "checked" : ""}><span class="pista"></span>Normalizar con z-score</label>
-    <p>Cada variable se transforma con z = (x − media) / desvío, de modo que todas quedan centradas en 0 y con desvío 1. La media y el desvío se calculan solo con entrenamiento y se aplican igual a validación y prueba: así, nada de esos conjuntos se filtra al modelo.</p>
-    <h3>Partición</h3>
-    ${E.mision === "regresion" ? "<p>En regresión solo cuentan las lecturas con incidente, porque las normales no tienen tiempo de reparación.</p>" : ""}
-    <div class="tabla-scroll"><table class="tabla"><thead><tr><th>Conjunto</th><th class="num">Lecturas</th><th>Para qué se usa</th></tr></thead><tbody>${filasParticion}</tbody></table></div>`;
+    <div id="escalas">${escalasEntradas(ancho)}</div>`;
 }
 
 function pasoCapas() {
   const capas = E.ocultas.map((c, i) => `<div class="capa">
       <div class="capa-encabezado"><strong>Oculta ${i + 1}</strong><button type="button" class="boton chico" data-accion="quitar-capa" data-indice="${i}">Quitar</button></div>
       <label class="campo">Neuronas<select data-campo="neuronas" data-indice="${i}">${NEURONAS_OCULTAS.map((n) => `<option value="${n}" ${n === c.neuronas ? "selected" : ""}>${n}</option>`).join("")}</select></label>
-      <label class="campo">Activación<select data-campo="activacion" data-indice="${i}">${ACT_OCULTAS.map((a) => `<option value="${a}" ${a === c.activacion ? "selected" : ""}>${ACTIVACIONES[a].nombre}</option>`).join("")}</select></label>
+      <label class="campo">Función de activación<select data-campo="activacion" data-indice="${i}">${ACT_OCULTAS.map((a) => `<option value="${a}" ${a === c.activacion ? "selected" : ""}>${ACTIVACIONES[a].nombre}</option>`).join("")}</select></label>
+      <div class="capa-curva" id="curva-oculta-${i}">${svgCurvaActivacion(c.activacion)}<span>${ACTIVACIONES[c.activacion].rango}</span></div>
     </div>`).join("");
   return `<h2>Capas ocultas</h2>
-    <p>Cada capa oculta recibe la salida de la anterior, la combina con sus pesos y le aplica una activación: así construye una nueva representación de los datos. Podés usar de 0 a 3 capas y elegir, para cada una, cuántas neuronas tiene y qué activación aplica.</p>
-    <div class="capas">${capas || '<p class="nota">La red no tiene capas ocultas: las entradas van directo a la salida.</p>'}</div>
-    <div class="acciones"><button type="button" class="boton" data-accion="agregar-capa" ${E.ocultas.length >= 3 ? "disabled" : ""}>+ Agregar capa oculta</button></div>
-    <div class="tabla-scroll"><table class="tabla"><thead><tr><th>Activación</th><th>Fórmula</th><th>Rango</th><th>Uso habitual</th></tr></thead><tbody>
-      <tr><td>ReLU</td><td>max(0, a)</td><td>de 0 a infinito</td><td class="texto-largo">Capas ocultas: es simple, rápida y no se satura para valores positivos.</td></tr>
-      <tr><td>tanh</td><td>tanh(a)</td><td>de −1 a 1</td><td class="texto-largo">Capas ocultas, con riesgo de saturación en redes profundas.</td></tr>
-      <tr><td>sigmoide</td><td>1 / (1 + e^(−a))</td><td>de 0 a 1</td><td class="texto-largo">Salida de clasificación binaria; en ocultas, se satura.</td></tr>
-      <tr><td>lineal</td><td>a</td><td>cualquier real</td><td class="texto-largo">Salida de regresión; en ocultas no agrega no linealidad.</td></tr>
-    </tbody></table></div>`;
+    <p class="bajada">De 0 a 3 capas: para cada una, la cantidad de neuronas y la función de activación.</p>
+    ${concepto(2)}
+    <div class="capas">${capas || '<p class="nota">Sin capas ocultas: las entradas van directo a la salida, como en el perceptrón.</p>'}</div>
+    <div class="acciones"><button type="button" class="boton" data-accion="agregar-capa" ${E.ocultas.length >= 3 ? "disabled" : ""}>+ Agregar capa oculta</button></div>`;
 }
 
 function pasoSalida() {
-  const m = E.mision, k = E.salida.neuronas;
-  const textos = {
-    binaria: "La columna <code>alerta_real</code> vale 0 o 1. La red puede devolver la probabilidad de alerta con una neurona, o una probabilidad por clase con dos.",
-    multiclase: "El estado tiene 5 valores posibles y cada lectura tiene exactamente uno.",
-    regresion: "Se predicen minutos de reparación: un número positivo, sin un máximo fijo.",
-    clustering: "No hay etiquetas: la red reparte cada lectura entre k grupos, con un grado de pertenencia a cada uno, como vimos en C5. En clustering, la cantidad de neuronas de salida es k.",
+  const m = E.tarea, k = E.salida.neuronas;
+  const bajadas = {
+    binaria: "<code>alerta_real</code> vale 0 o 1.",
+    multiclase: "<code>estado</code> tiene 5 clases y cada lectura tiene exactamente una.",
+    regresion: "<code>tiempo_reparacion_min</code> es un número positivo, sin un máximo fijo.",
+    clustering: "No hay variable objetivo: cada neurona de salida es el grado de pertenencia a un grupo, y la cantidad de neuronas es k.",
   };
-  const opcionesNeuronas = m === "clustering"
-    ? `<label class="campo">Cantidad de grupos (k)<select data-campo="salida-neuronas"><option value="" ${k ? "" : "selected"} disabled>Elegí k</option>${[2, 3, 4, 5, 6, 7, 8].map((n) => `<option value="${n}" ${n === k ? "selected" : ""}>${n}</option>`).join("")}</select><span class="ayuda">Una neurona de salida por grupo.</span></label>`
+  const neuronas = m === "clustering"
+    ? `<label class="campo">Cantidad de grupos (k)<select data-campo="salida-neuronas"><option value="" ${k ? "" : "selected"} disabled>Elegí k</option>${[2, 3, 4, 5, 6, 7, 8].map((n) => `<option value="${n}" ${n === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>`
     : `<label class="campo">Neuronas de salida<select data-campo="salida-neuronas"><option value="" ${k ? "" : "selected"} disabled>Elegí</option>${[1, 2, 3, 4, 5, 6, 7, 8].map((n) => `<option value="${n}" ${n === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>`;
-  const activaciones = ACT_SALIDA.map((a) => `<label class="opcion"><input type="radio" name="salida-activacion" value="${a}" data-campo="salida-activacion" ${E.salida.activacion === a ? "checked" : ""}>
-      <strong>${ACTIVACIONES[a].nombre}</strong><span class="formula">${ACTIVACIONES[a].formula}</span><span class="texto">Rango: ${ACTIVACIONES[a].rango}.</span></label>`).join("");
+  const activaciones = ACT_SALIDA.map((a) => `<label class="opcion con-curva"><input type="radio" name="salida-activacion" value="${a}" data-campo="salida-activacion" ${E.salida.activacion === a ? "checked" : ""}>
+      ${svgCurvaActivacion(a, 84, 52)}<span><strong>${ACTIVACIONES[a].nombre}</strong><span class="texto">${ACTIVACIONES[a].rango}</span></span></label>`).join("");
   return `<h2>Capa de salida</h2>
-    <p>La salida tiene que hablar el idioma de la misión: cuántos valores devuelve y en qué rango. ${textos[m]}</p>
-    <div class="grilla-campos">${opcionesNeuronas}</div>
-    <fieldset class="opciones"><legend>Activación de salida</legend>${activaciones}</fieldset>`;
+    <p class="bajada">La salida tiene que devolver lo que pide la tarea. ${bajadas[m]}</p>
+    ${concepto(3)}
+    <div class="grilla-campos">${neuronas}</div>
+    <fieldset class="opciones"><legend>Función de activación de salida</legend>${activaciones}</fieldset>`;
 }
 
 function textoMetrica(m) {
   return {
-    binaria: "<strong>Exactitud</strong>: proporción de lecturas bien clasificadas. Con 1 neurona, la red predice alerta cuando la probabilidad es al menos 0,5; con 2, elige la clase de mayor probabilidad.",
+    binaria: "<strong>Exactitud</strong>: proporción de lecturas bien clasificadas. Con 1 neurona, la red predice la clase 1 cuando la probabilidad es al menos 0,5; con 2, elige la clase de mayor probabilidad.",
     multiclase: "<strong>Exactitud</strong>: proporción de lecturas con el estado correcto, tomando la clase de mayor probabilidad.",
     regresion: "<strong>MAE en minutos</strong>: cuánto se equivoca la red en promedio. Se informa aunque entrenes con MSE, porque se lee directamente en minutos.",
     clustering: "<strong>ARI</strong> (índice de Rand ajustado) entre los grupos y el estado real. La red nunca ve el estado: se usa solo para interpretar los grupos. Vale 1 si los grupos coinciden con los estados y alrededor de 0 si se parecen a un reparto al azar.",
@@ -997,16 +1341,17 @@ function textoMetrica(m) {
 }
 
 function pasoPerdida() {
-  const opciones = Object.entries(PERDIDAS).map(([clave, p]) => `<label class="opcion"><input type="radio" name="perdida" value="${clave}" data-campo="perdida" ${E.perdida === clave ? "checked" : ""}>
-      <strong>${p.nombre}${p.corto !== p.nombre ? ` (${p.corto})` : ""}</strong><span class="formula">${p.formula}</span><span class="texto">${p.texto}</span></label>`).join("");
-  const nota = E.mision === "clustering"
-    ? `<p class="nota">Es la formulación de C5: softmax da la pertenencia q de cada lectura a cada grupo y la pérdida es mean(Σⱼ qᵢⱼ ‖xᵢ − cⱼ‖²), con centroides c entrenables. No es la única forma de agrupar: también están k-means y los autoencoders. Los centroides arrancan con k-means++ sobre entrenamiento, porque con una inicialización al azar puede quedar un grupo vacío.</p>`
+  const opciones = Object.entries(PERDIDAS).map(([clave, p]) => `<label class="opcion con-curva"><input type="radio" name="perdida" value="${clave}" data-campo="perdida" ${E.perdida === clave ? "checked" : ""}>
+      ${svgCurvaPerdida(clave)}<span><strong>${p.nombre}${p.corto !== p.nombre ? ` (${p.corto})` : ""}</strong><span class="formula">${p.formula}</span><span class="texto solo-estudio">${p.texto}</span></span></label>`).join("");
+  const centroides = E.tarea === "clustering"
+    ? `<div class="nota">Es la formulación de C5: softmax da la pertenencia q de cada lectura a cada grupo, y los centroides c también se entrenan. ${porque("centroides", "<p>La pérdida es mean(Σⱼ qᵢⱼ ‖xᵢ − cⱼ‖²). No es la única forma de agrupar: también están k-means y los autoencoders. Los centroides arrancan con k-means++ sobre entrenamiento, porque con una inicialización al azar puede quedar un grupo vacío.</p>")}</div>`
     : "";
   return `<h2>Función de pérdida</h2>
-    <p>La pérdida mide qué tan lejos están las predicciones de los valores reales. Es lo que el entrenamiento minimiza: backpropagation calcula cuánto contribuye cada peso a ella y el optimizador los corrige en la dirección que la reduce.</p>
-    <fieldset class="opciones"><legend>Pérdida</legend>${opciones}</fieldset>
-    ${nota}
-    <div class="mensaje info"><strong>Métrica que se va a reportar</strong><p>${textoMetrica(E.mision)}</p></div>`;
+    <p class="bajada">Elegí qué minimiza el entrenamiento. Cada gráfico muestra la pérdida en función de la predicción.</p>
+    ${concepto(4)}
+    <fieldset class="opciones opciones-perdida"><legend>Función de pérdida</legend>${opciones}</fieldset>
+    ${centroides}
+    <div class="mensaje info"><strong>Métrica que se va a reportar</strong><p>${textoMetrica(E.tarea)}</p></div>`;
 }
 
 function pasoRegularizacion() {
@@ -1016,18 +1361,19 @@ function pasoRegularizacion() {
     : '<p class="nota">Sin capas ocultas no hay dónde aplicar dropout.</p>';
   const hayDropout = E.ocultas.some((c) => c.dropout > 0);
   return `<h2>Regularización</h2>
-    <p>La regularización evita que la red se ajuste demasiado a los datos de entrenamiento y favorece soluciones más simples, que generalizan mejor. Las tres técnicas de esta pantalla se pueden combinar.</p>
+    <p class="bajada">Tres técnicas contra el sobreajuste, que se pueden combinar.</p>
+    ${concepto(5)}
     <h3>Dropout</h3>
-    <p>En cada iteración del entrenamiento, cada neurona de la capa se apaga con probabilidad igual a la tasa: su salida se pone en cero. La red aprende a funcionar sin depender de combinaciones específicas de neuronas. Dropout no agrega parámetros.</p>
+    <p class="solo-estudio">En cada iteración del entrenamiento, cada neurona de la capa se apaga con probabilidad igual a la tasa: su salida se pone en cero. Probá simular una iteración y mirá la vista previa.</p>
     <div class="grilla-campos">${dropouts}</div>
     <div class="acciones">
       <button type="button" class="boton" data-accion="simular" ${hayDropout ? "" : "disabled"}>Simular una iteración</button>
       <button type="button" class="boton" data-accion="red-completa" ${E.simulacion ? "" : "disabled"}>Ver la red completa</button>
     </div>
-    <p class="nota">En predicción, es decir en validación y prueba, no se apaga ninguna neurona. Para compensar, durante el entrenamiento las salidas de las neuronas activas se escalan por 1 / (1 − tasa).</p>
+    <div class="nota">En predicción (validación y prueba) no se apaga ninguna neurona. ${porque("dropout-escala", "<p>Para compensar, durante el entrenamiento las salidas de las neuronas activas se escalan por 1 / (1 − tasa). Dropout no agrega parámetros.</p>")}</div>
     <h3>L2</h3>
     <label class="campo">Coeficiente λ<select data-campo="l2">${VALORES_L2.map((v) => `<option value="${v}" ${v === E.l2 ? "selected" : ""}>${v === 0 ? "0 (sin L2)" : decimal(v)}</option>`).join("")}</select></label>
-    <p style="margin-top: .6em">Suma λ ΣW² a la pérdida: penaliza los pesos grandes y los achica. Acá se aplica sobre los pesos de las capas ocultas (no sobre los sesgos), como <code>kernel_regularizer=l2(λ)</code> en Keras.</p>
+    <p class="solo-estudio" style="margin-top: .6em">Suma λ ΣW² a la pérdida: penaliza los pesos grandes y los achica. Acá se aplica sobre los pesos de las capas ocultas, no sobre los sesgos, como <code>kernel_regularizer=l2(λ)</code> en Keras.</p>
     <h3>Early stopping</h3>
     <label class="interruptor"><input type="checkbox" data-campo="early-activo" ${E.early.activo ? "checked" : ""}><span class="pista"></span>Activar early stopping</label>
     <div class="grilla-campos">
@@ -1035,19 +1381,19 @@ function pasoRegularizacion() {
         <input type="range" min="5" max="50" step="1" value="${E.early.paciencia}" data-campo="paciencia" ${E.early.activo ? "" : "disabled"}></label>
       <label class="casilla"><input type="checkbox" data-campo="restaurar" ${E.early.restaurar ? "checked" : ""} ${E.early.activo ? "" : "disabled"}>Restaurar los mejores pesos</label>
     </div>
-    <p>Mira la <strong>pérdida de validación</strong> al final de cada época. Si no mejora durante tantas épocas seguidas como indica la paciencia, corta el entrenamiento. Con “restaurar”, la red se queda con los pesos de la mejor época y no con los de la última.</p>`;
+    <div class="nota">Mira la <strong>pérdida de validación</strong> al final de cada época. ${porque("early", "<p>Si no mejora durante tantas épocas seguidas como indica la paciencia, corta el entrenamiento. Con “restaurar”, la red se queda con los pesos de la mejor época y no con los de la última.</p>")}</div>`;
 }
 
 function pasoEntrenamiento() {
   const bloqueo = E.entrenando ? "disabled" : "";
   const optimizadores = Object.entries(OPTIMIZADORES).map(([clave, o]) => `<label class="opcion"><input type="radio" name="optimizador" value="${clave}" data-campo="optimizador" ${E.optimizador === clave ? "checked" : ""}>${o.nombre}</label>`).join("");
   return `<h2>Entrenamiento</h2>
-    <p>En cada época, la red recorre todo el conjunto de entrenamiento en lotes de tamaño <em>batch</em>: por cada lote, backpropagation calcula los gradientes y el optimizador actualiza los pesos. Al cerrar la época se mide la pérdida en validación, que es la que mira early stopping.</p>
+    <p class="bajada">Elegí el optimizador, el learning rate, las épocas y el tamaño del batch, y entrená.</p>
+    ${concepto(6)}
     <fieldset class="opciones-entrenamiento" ${bloqueo}>
       <legend class="sr">Opciones de entrenamiento</legend>
       <div class="grilla-campos">
-        <div class="campo ancho"><span>Optimizador</span><div class="segmentado">${optimizadores}</div>
-          <span class="ayuda">SGD da pasos proporcionales al gradiente; momentum acumula la dirección de los pasos anteriores; Adam adapta el paso de cada peso según su historia.</span></div>
+        <div class="campo ancho"><span>Optimizador</span><div class="segmentado">${optimizadores}</div></div>
         <label class="campo">Learning rate<select data-campo="lr">${TASAS.map((t) => `<option value="${t}" ${t === E.lr ? "selected" : ""}>${decimal(t)}</option>`).join("")}</select></label>
         <label class="campo">Batch<select data-campo="batch">${BATCHES.map((b) => `<option value="${b}" ${b === E.batch ? "selected" : ""}>${b}</option>`).join("")}</select></label>
         <label class="campo ancho"><span>Épocas: <output id="salida-epocas">${E.epocas}</output></span>
@@ -1068,12 +1414,12 @@ function pasoEntrenamiento() {
     <section class="garage" id="garage"></section>`;
 }
 
-function pasoFicha() {
+function pasoResumen() {
   const errores = pasosConErrores(diagnosticar());
   if (errores.length) {
-    return `<h2>Ficha técnica</h2><div class="mensaje error"><strong>La configuración tiene errores</strong><p>Corregí lo marcado en: ${errores.join(", ")}. La ficha se arma cuando todas las decisiones son compatibles.</p></div>`;
+    return `<h2>Resumen del modelo</h2><div class="mensaje error"><strong>La configuración tiene errores</strong><p>Corregí lo marcado en: ${errores.join(", ")}. El resumen se arma cuando todas las decisiones son compatibles.</p></div>`;
   }
-  const m = E.mision, c = contarPartes(m);
+  const m = E.tarea, c = contarPartes(m);
   const ocultas = E.ocultas.length
     ? E.ocultas.map((o, i) => `Oculta ${i + 1}: ${o.neuronas} neuronas ${ACTIVACIONES[o.activacion].nombre}${o.dropout > 0 ? `, dropout ${decimal(o.dropout)}` : ""}`).join("<br>")
     : "Sin capas ocultas (perceptrón)";
@@ -1082,31 +1428,30 @@ function pasoFicha() {
     ? `${textoMetricaCorta(m, E.corrida.resultado.prueba.metrica)} en prueba, pesos de la época ${E.corrida.epocaFinal}`
     : "Todavía no entrenaste esta configuración.";
   const filas = [
-    ["Misión", `${MISIONES[m].titulo} (${MISIONES[m].tipo.toLowerCase()})`],
+    ["Tarea", `${TAREAS[m].titulo}${TAREAS[m].objetivo ? ` de ${TAREAS[m].objetivo}` : ""}`],
     ["Datos", `${DATASET.nombre}: ${num(c.entrenamiento)} de entrenamiento, ${num(c.validacion)} de validación y ${num(c.prueba)} de prueba`],
-    ["Entradas", `${E.entradas.length} sensores (${E.entradas.join(", ")}), ${E.normalizar ? "normalizados con z-score" : "sin normalizar"}`],
+    ["Capa de entrada", `${E.entradas.length} variables (${E.entradas.join(", ")}), ${E.normalizar ? "normalizadas con z-score" : "sin normalizar"}`],
     ["Capas ocultas", ocultas],
-    ["Salida", `${E.salida.neuronas} ${E.salida.neuronas === 1 ? "neurona" : "neuronas"} ${ACTIVACIONES[E.salida.activacion].nombre}${m === "clustering" ? `, más ${E.salida.neuronas} centroides de dimensión ${E.entradas.length}` : ""}`],
-    ["Pérdida y métrica", `${PERDIDAS[E.perdida].nombre}; se reporta ${{ binaria: "exactitud", multiclase: "exactitud", regresion: "MAE en minutos", clustering: "ARI contra el estado real" }[m]}`],
+    ["Capa de salida", `${E.salida.neuronas} ${E.salida.neuronas === 1 ? "neurona" : "neuronas"} ${ACTIVACIONES[E.salida.activacion].nombre}${m === "clustering" ? `, más ${E.salida.neuronas} centroides de dimensión ${E.entradas.length}` : ""}`],
+    ["Función de pérdida", `${PERDIDAS[E.perdida].nombre}; se reporta ${{ binaria: "exactitud", multiclase: "exactitud", regresion: "MAE en minutos", clustering: "ARI contra el estado real" }[m]}`],
     ["Regularización", `L2 ${E.l2 > 0 ? decimal(E.l2) : "no"}; ${early}`],
     ["Entrenamiento", `${OPTIMIZADORES[E.optimizador].nombre}, learning rate ${decimal(E.lr)}, ${E.epocas} épocas, batch ${E.batch}`],
-    ["Última corrida", corrida],
+    ["Último entrenamiento", corrida],
   ].map(([dt, dd]) => `<div class="hoja-fila"><dt>${dt}</dt><dd>${dd}</dd></div>`).join("");
   const total = desglose().total;
-  const resumen = resumenKeras();
-  const tablaResumen = resumen.map((f) => `<tr><td>${f.nombre} (${f.tipo})</td><td>${f.forma}</td><td class="num">${num(f.params)}</td></tr>`).join("");
+  const tablaResumen = resumenKeras().map((f) => `<tr><td>${f.nombre} (${f.tipo})</td><td>${f.forma}</td><td class="num">${num(f.params)}</td></tr>`).join("");
   const calculo = desglose().filas.map((f) => `<tr><td>${f.nombre}</td><td class="num">${f.entradas ?? "-"}</td><td class="num">${f.neuronas ?? "-"}</td><td>${f.formula ?? "sin pesos"}</td><td class="num">${num(f.valor)}</td></tr>`).join("");
-  return `<h2>Ficha técnica</h2>
-    <p>La hoja final del configurador reúne todas las decisiones, el resumen de capas tal como lo muestra <code>model.summary()</code> en Keras y el código para reproducir la red en Colab.</p>
+  return `<h2>Resumen del modelo</h2>
+    <p class="bajada">Todas las decisiones, el resumen de capas como lo muestra <code>model.summary()</code> y el código Keras para Colab.</p>
+    ${concepto(7)}
     <dl class="hoja">${filas}<div class="hoja-fila total"><dt>Parámetros entrenables</dt><dd>${num(total)}</dd></div></dl>
-    <h3>Resumen estilo Keras</h3>
+    <h3>model.summary()</h3>
     <div class="tabla-scroll"><table class="tabla mono"><thead><tr><th>Layer (type)</th><th>Output Shape</th><th class="num">Param #</th></tr></thead><tbody>${tablaResumen}</tbody></table></div>
     <p class="leyenda">Total params: ${num(total)} - Trainable params: ${num(total)} - Non-trainable params: 0${m === "clustering" ? ". Keras agrega la columna “Connected to”, porque el modelo de clustering usa la API funcional." : ""}</p>
     <h3>Cálculo por capa</h3>
-    <p>Cada neurona tiene un peso por cada entrada más un sesgo: por eso cada capa densa suma (entradas + 1) × neuronas.${m === "clustering" ? " Los centroides son k vectores de la misma dimensión que la entrada: k × d." : ""}</p>
     <div class="tabla-scroll"><table class="tabla"><thead><tr><th>Capa</th><th class="num">Entradas</th><th class="num">Neuronas</th><th>Cálculo</th><th class="num">Parámetros</th></tr></thead><tbody>${calculo}<tr><th colspan="4">Total</th><th class="num">${num(total)}</th></tr></tbody></table></div>
     <h3>Código Keras para Colab</h3>
-    <p>El código lee el CSV desde GitHub, arma la partición, normaliza con la media y el desvío de entrenamiento y define, compila y entrena la misma red, en el estilo de la notebook N02.</p>
+    <p class="bajada">Lee el CSV desde GitHub, arma la partición, normaliza con la media y el desvío de entrenamiento y entrena la misma red, en el estilo de la notebook N02.</p>
     <div class="codigo"><button type="button" class="boton chico" data-accion="copiar">Copiar</button><pre><code id="codigo-keras">${esc(codigoKeras())}</code></pre></div>`;
 }
 
@@ -1117,19 +1462,19 @@ function textoMetricaCorta(m, valor) {
 }
 
 // =====================================================================
-// Ficha: resumen tipo Keras y código
+// Resumen del modelo: summary tipo Keras y código
 // =====================================================================
 function resumenKeras() {
   const d = E.entradas.length, k = E.salida.neuronas, filas = [];
   let densas = 0, dropouts = 0, previas = d;
   const nombre = (base, i) => (i === 0 ? base : `${base}_${i}`);
-  if (E.mision === "clustering") filas.push({ nombre: "input_layer", tipo: "InputLayer", forma: `(None, ${d})`, params: 0 });
+  if (E.tarea === "clustering") filas.push({ nombre: "input_layer", tipo: "InputLayer", forma: `(None, ${d})`, params: 0 });
   for (const c of E.ocultas) {
     filas.push({ nombre: nombre("dense", densas++), tipo: "Dense", forma: `(None, ${c.neuronas})`, params: (previas + 1) * c.neuronas });
     if (c.dropout > 0) filas.push({ nombre: nombre("dropout", dropouts++), tipo: "Dropout", forma: `(None, ${c.neuronas})`, params: 0 });
     previas = c.neuronas;
   }
-  if (E.mision === "clustering") {
+  if (E.tarea === "clustering") {
     filas.push({ nombre: "pertenencia", tipo: "Dense", forma: `(None, ${k})`, params: (previas + 1) * k });
     filas.push({ nombre: "centroides", tipo: "Centroides", forma: `(None, ${k})`, params: k * d });
   } else {
@@ -1146,7 +1491,7 @@ function listaPython(valores, sangria) {
 }
 
 function codigoKeras() {
-  const m = E.mision, d = E.entradas.length, k = E.salida.neuronas;
+  const m = E.tarea, d = E.entradas.length, k = E.salida.neuronas;
   const hayDropout = E.ocultas.some((c) => c.dropout > 0);
   const hayL2 = E.l2 > 0 && E.ocultas.length > 0;
   const categorica = m === "multiclase" || (m === "binaria" && k === 2);
@@ -1154,7 +1499,7 @@ function codigoKeras() {
   const regularizador = hayL2 ? `, kernel_regularizer=l2(${E.l2})` : "";
   const L = [];
   L.push(`# Red generada con el configurador de redes neuronales (taller de Aprendizaje Automático, UNLu)`);
-  L.push(`# Misión: ${MISIONES[m].titulo} (${MISIONES[m].tipo.toLowerCase()})`);
+  L.push(`# Tarea: ${TAREAS[m].titulo.toLowerCase()}${TAREAS[m].objetivo ? ` de ${TAREAS[m].objetivo}` : " (sin variable objetivo)"}`);
   L.push("import numpy as np");
   L.push("import pandas as pd");
   L.push("import matplotlib.pyplot as plt");
@@ -1238,14 +1583,14 @@ function codigoKeras() {
     }
     L.push(`q = Dense(K, activation="softmax", name="pertenencia")(${previa})`);
     L.push(`salida = Centroides(K, ${d}, name="centroides")([x, q])`);
-    L.push(`model = Model(x, salida, name="${MISIONES[m].modelo}")`);
+    L.push(`model = Model(x, salida, name="${TAREAS[m].modelo}")`);
     L.push("");
     L.push("# Centroides iniciales con k-means++ sobre entrenamiento");
     L.push("centros, _ = kmeans_plusplus(X_train, n_clusters=K, random_state=0)");
     L.push('model.get_layer("centroides").c.assign(centros)');
     L.push(`model.compile(optimizer=${optimizador})`);
   } else {
-    L.push(`model = Sequential(name="${MISIONES[m].modelo}")`);
+    L.push(`model = Sequential(name="${TAREAS[m].modelo}")`);
     L.push(`model.add(Input(shape=(${d},)))`);
     for (const c of E.ocultas) {
       L.push(`model.add(Dense(${c.neuronas}, activation="${ACTIVACIONES[c.activacion].keras}"${regularizador}))`);
@@ -1387,7 +1732,7 @@ function calcularMetrica(tipo, k, pred, datos, parte) {
 
 async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () => false } = {}) {
   await prepararBackend();
-  const tipo = cfg.mision, k = cfg.salida.neuronas, n = datos.X.entrenamiento.length;
+  const tipo = cfg.tarea, k = cfg.salida.neuronas, n = datos.X.entrenamiento.length;
   const T = {};
   for (const p of PARTES) {
     T[p] = tf.tidy(() => {
@@ -1689,10 +2034,10 @@ function dibujarCurvas() {
   const datos = E.entrenando ? E.vivo : E.corrida;
   if (!datos || !datos.historia || !datos.historia.perdida.length) {
     gp.innerHTML = `<figcaption>Pérdida</figcaption><p class="vacio">Las curvas aparecen al entrenar.</p>`;
-    gm.innerHTML = `<figcaption>${nombreMetrica(E.mision) || "Métrica"}</figcaption><p class="vacio">Entrenamiento y validación, época por época.</p>`;
+    gm.innerHTML = `<figcaption>${nombreMetrica(E.tarea) || "Métrica"}</figcaption><p class="vacio">Entrenamiento y validación, época por época.</p>`;
     return;
   }
-  const h = datos.historia, m = datos.config ? datos.config.mision : E.mision;
+  const h = datos.historia, m = datos.config ? datos.config.tarea : E.tarea;
   const finitos = [...h.perdida, ...h.perdidaVal].filter((v) => Number.isFinite(v) && v > 0);
   const log = finitos.length > 1 && Math.max(...finitos) / Math.min(...finitos) > 30;
   const xMax = (datos.config || E).epocas;
@@ -1711,7 +2056,7 @@ function actualizarEstimacion() {
   if (!el || E.entrenando) return;
   if (pasosConErrores(diagnosticar()).length) { el.textContent = ""; return; }
   const s = estimarSegundos();
-  el.textContent = `Tiempo estimado: ${E.early.activo ? "como máximo " : ""}${segundosATexto(s)} en esta computadora${E.factorTiempo === 1 ? " (se ajusta después de la primera corrida)" : ""}.`;
+  el.textContent = `Tiempo estimado: ${E.early.activo ? "como máximo " : ""}${segundosATexto(s)} en esta computadora${E.factorTiempo === 1 ? " (se ajusta después del primer entrenamiento)" : ""}.`;
 }
 
 function renderResultado() {
@@ -1720,9 +2065,9 @@ function renderResultado() {
   const c = E.corrida;
   if (!c || E.entrenando) { cont.innerHTML = ""; return; }
   if (c.error) { cont.innerHTML = `<div class="mensaje error"><strong>El entrenamiento falló</strong><p>${esc(c.error)}</p></div>`; return; }
-  const cfg = c.config, m = cfg.mision, h = c.historia, k = cfg.salida.neuronas;
+  const cfg = c.config, m = cfg.tarea, h = c.historia, k = cfg.salida.neuronas;
   const partes = [];
-  if (firma(cfg) !== firma(configActual())) partes.push(`<div class="mensaje info"><strong>La configuración cambió</strong><p>Estas curvas y resultados son de la corrida anterior (red ${arquitectura(cfg)}). Volvé a entrenar para ver el efecto de los cambios.</p></div>`);
+  if (firma(cfg) !== firma(configActual())) partes.push(`<div class="mensaje info"><strong>La configuración cambió</strong><p>Estas curvas y resultados son del entrenamiento anterior (red ${arquitectura(cfg)}). Volvé a entrenar para ver el efecto de los cambios.</p></div>`);
 
   // Qué pasó durante el entrenamiento
   const mejorVal = h.perdidaVal[c.mejorEpoca - 1];
@@ -1814,15 +2159,15 @@ function renderResultado() {
 
 function renderGarage() {
   const cont = $("#garage");
-  if (!cont || !E.mision) return;
-  const lista = E.garage[E.mision];
+  if (!cont || !E.tarea) return;
+  const lista = E.garage[E.tarea];
   const c = E.corrida;
   const guardable = c && c.resultado && !E.entrenando && !lista.some((g) => g.corrida === c);
   const lleno = lista.length >= 4;
   let graficos = null;
-  let html = `<div class="garage-encabezado"><h3>Garage</h3>
-    <button type="button" class="boton" data-accion="guardar-corrida" ${guardable && !lleno ? "" : "disabled"}>Guardar esta corrida</button></div>
-    <p>Guardá hasta 4 corridas de esta misión para comparar sus curvas de validación y sus resultados. Probá, por ejemplo, la misma red con y sin dropout, o con y sin early stopping.${lleno ? " El garage está lleno: quitá una corrida para guardar otra." : ""}</p>`;
+  let html = `<div class="garage-encabezado"><h3>Comparar entrenamientos</h3>
+    <button type="button" class="boton" data-accion="guardar-corrida" ${guardable && !lleno ? "" : "disabled"}>Guardar para comparar</button></div>
+    <p class="bajada">Hasta 4 entrenamientos de esta tarea, con sus curvas de validación y sus resultados. Por ejemplo, la misma red con y sin dropout, o con y sin early stopping.${lleno ? " Ya hay 4: quitá uno para guardar otro." : ""}</p>`;
   if (lista.length) {
     const xMax = Math.max(...lista.map((g) => g.corrida.config.epocas));
     const finitos = lista.flatMap((g) => g.corrida.historia.perdidaVal).filter((v) => Number.isFinite(v) && v > 0);
@@ -1833,7 +2178,7 @@ function renderGarage() {
     graficos = () => {
       const fp = $("#garage-perdida"), fm = $("#garage-metrica"), { ancho, alto } = medidas(fp);
       fp.innerHTML = `<figcaption>Pérdida de validación${log ? " (escala logarítmica)" : ""}</figcaption>${graficoLineas({ series, log, xMax, ancho, alto, etiqueta: "Pérdida de validación de las corridas guardadas" })}${leyenda}`;
-      fm.innerHTML = `<figcaption>${nombreMetrica(E.mision)} en validación</figcaption>${graficoLineas({ series: seriesMetrica, xMax, ancho, alto, formatoY: formatoMetrica(E.mision), etiqueta: "Métrica de validación de las corridas guardadas" })}${leyenda}`;
+      fm.innerHTML = `<figcaption>${nombreMetrica(E.tarea)} en validación</figcaption>${graficoLineas({ series: seriesMetrica, xMax, ancho, alto, formatoY: formatoMetrica(E.tarea), etiqueta: "Métrica de validación de las corridas guardadas" })}${leyenda}`;
     };
     html += `<div class="graficos"><figure class="grafico" id="garage-perdida"></figure><figure class="grafico" id="garage-metrica"></figure></div>`;
     const filas = lista.map((g, i) => {
@@ -1843,10 +2188,10 @@ function renderGarage() {
         <td>${cf.early.activo ? `paciencia ${cf.early.paciencia}${cf.early.restaurar ? ", restaura" : ""}` : "no"}</td>
         <td>${OPTIMIZADORES[cf.optimizador].nombre}, ${decimal(cf.lr)}</td>
         <td class="num">${g.corrida.epocasCorridas}</td><td class="num">${valorPerdida(h.perdidaVal[g.corrida.mejorEpoca - 1])} (${g.corrida.mejorEpoca})</td>
-        <td class="num">${textoMetricaCorta(cf.mision, g.corrida.resultado.prueba.metrica).replace(/^(exactitud|MAE|ARI) de /, "")}</td>
+        <td class="num">${textoMetricaCorta(cf.tarea, g.corrida.resultado.prueba.metrica).replace(/^(exactitud|MAE|ARI) de /, "")}</td>
         <td><button type="button" class="boton chico" data-accion="quitar-corrida" data-indice="${i}">Quitar</button></td></tr>`;
     }).join("");
-    html += `<div class="tabla-scroll"><table class="tabla"><thead><tr><th>Corrida</th><th>Red</th><th>Dropout</th><th>L2</th><th>Early stopping</th><th>Optimizador</th><th class="num">Épocas</th><th class="num">Mejor val. (época)</th><th class="num">Prueba</th><th></th></tr></thead><tbody>${filas}</tbody></table></div>`;
+    html += `<div class="tabla-scroll"><table class="tabla"><thead><tr><th>Entrenamiento</th><th>Red</th><th>Dropout</th><th>L2</th><th>Early stopping</th><th>Optimizador</th><th class="num">Épocas</th><th class="num">Mejor val. (época)</th><th class="num">Prueba</th><th></th></tr></thead><tbody>${filas}</tbody></table></div>`;
   }
   cont.innerHTML = html;
   if (graficos) graficos();
@@ -1866,7 +2211,7 @@ async function alternarEntrenamiento() {
   }
   if (pasosConErrores(diagnosticar()).length) return;
   const cfg = configActual();
-  const datos = prepararDatos(DATASET, cfg.mision, cfg.entradas, cfg.normalizar);
+  const datos = prepararDatos(DATASET, cfg.tarea, cfg.entradas, cfg.normalizar);
   const estimado = estimarSegundos() / E.factorTiempo;
   E.entrenando = true;
   E.detener = false;
@@ -1914,11 +2259,11 @@ async function alternarEntrenamiento() {
 // =====================================================================
 // Renderizado general y navegación
 // =====================================================================
-const RENDER_PASOS = [pasoMision, pasoEntradas, pasoCapas, pasoSalida, pasoPerdida, pasoRegularizacion, pasoEntrenamiento, pasoFicha];
+const RENDER_PASOS = [pasoDatos, pasoEntrada, pasoCapas, pasoSalida, pasoPerdida, pasoRegularizacion, pasoEntrenamiento, pasoResumen];
 
 function renderPaso() {
   $("#contenido-paso").innerHTML = RENDER_PASOS[E.paso]();
-  $("#aviso-mision").innerHTML = E.paso === 0 && E.avisoMision ? `<div class="mensaje aviso"><strong>Cambiaste la misión</strong><p>${E.avisoMision}</p></div>` : "";
+  $("#aviso-tarea").innerHTML = E.paso === 0 && E.avisoTarea ? `<div class="mensaje aviso"><strong>Cambiaste la tarea</strong><p>${E.avisoTarea}</p></div>` : "";
   if (E.paso === 6) { dibujarCurvas(); renderResultado(); renderGarage(); }
 }
 
@@ -1935,7 +2280,8 @@ function renderPasos(D) {
 }
 
 function bloqueMensaje(tipo, m) {
-  return `<div class="mensaje ${tipo}"><strong>${m.titulo}</strong><p>${m.texto}</p></div>`;
+  const directo = m.titulo.startsWith("Falta") || m.titulo.startsWith("No hay") || m.titulo.startsWith("Hay decisiones");
+  return `<div class="mensaje ${tipo}"><strong>${m.titulo}</strong>${directo ? `<p>${m.texto}</p>` : porque(`${tipo}:${m.titulo}`, `<p>${m.texto}</p>`)}</div>`;
 }
 
 function renderMensajes(D) {
@@ -1975,7 +2321,7 @@ function irA(paso) {
   if (paso > E.paso && diagnosticar()[E.paso].errores.length) return;
   E.paso = paso;
   E.maxPaso = Math.max(E.maxPaso, paso);
-  E.avisoMision = null;
+  E.avisoTarea = null;
   E.simulacion = null;
   renderPaso();
   refrescar();
@@ -1984,14 +2330,14 @@ function irA(paso) {
 }
 
 const ACCIONES = {
-  mision(b) {
+  tarea(b) {
     const nueva = b.dataset.valor;
-    if (nueva === E.mision) return;
+    if (nueva === E.tarea) return;
     const habiaDecisiones = E.salida.neuronas || E.salida.activacion || E.perdida;
-    if (E.mision && habiaDecisiones) {
-      E.avisoMision = "Se limpiaron la capa de salida y la pérdida, porque dependen de qué se predice. Volvé a elegirlas en los pasos 4 y 5.";
+    if (E.tarea && habiaDecisiones) {
+      E.avisoTarea = "Se limpiaron la capa de salida y la función de pérdida, porque dependen de qué se predice. Volvé a elegirlas en los pasos 4 y 5.";
     }
-    E.mision = nueva;
+    E.tarea = nueva;
     E.salida = { neuronas: null, activacion: null };
     E.perdida = null;
     E.corrida = null;
@@ -2027,16 +2373,16 @@ const ACCIONES = {
   },
   entrenar() { alternarEntrenamiento(); },
   "guardar-corrida"() {
-    const lista = E.garage[E.mision];
+    const lista = E.garage[E.tarea];
     if (!E.corrida || lista.length >= 4 || lista.some((g) => g.corrida === E.corrida)) return;
     const usados = new Set(lista.map((g) => g.color));
     const color = COLORES.find((c) => !usados.has(c));
-    E.cuentaGarage[E.mision] = (E.cuentaGarage[E.mision] || 0) + 1;
-    lista.push({ nombre: `Corrida ${E.cuentaGarage[E.mision]}`, color, corrida: E.corrida });
+    E.cuentaGarage[E.tarea] = (E.cuentaGarage[E.tarea] || 0) + 1;
+    lista.push({ nombre: `Entrenamiento ${E.cuentaGarage[E.tarea]}`, color, corrida: E.corrida });
     renderGarage();
   },
   "quitar-corrida"(b) {
-    E.garage[E.mision].splice(Number(b.dataset.indice), 1);
+    E.garage[E.tarea].splice(Number(b.dataset.indice), 1);
     renderGarage();
   },
   async copiar(b) {
@@ -2056,6 +2402,17 @@ const ACCIONES = {
   },
 };
 
+function actualizarEscalas() {
+  const cont = $("#escalas");
+  if (cont) cont.innerHTML = escalasEntradas(Math.max(300, Math.min(640, Math.round($("#contenido-paso").clientWidth) - 4)));
+}
+
+function aplicarModo() {
+  document.body.classList.toggle("modo-estudio", estudio());
+  $$('[name="modo"]').forEach((r) => { r.checked = r.value === E.modo; });
+  $("#modo-ayuda").textContent = estudio() ? "Explica cada concepto a medida que lo aplicás." : "Solo las decisiones y los avisos.";
+}
+
 function cambiarCampo(el) {
   const campo = el.dataset.campo, i = Number(el.dataset.indice);
   switch (campo) {
@@ -2063,11 +2420,15 @@ function cambiarCampo(el) {
       const marcadas = new Set($$('[data-campo="entrada"]').filter((x) => x.checked).map((x) => x.value));
       E.entradas = DATASET.variables.map((v) => v.columna).filter((c) => marcadas.has(c));
       $("#dimension-entrada").textContent = `d = ${E.entradas.length}`;
+      actualizarEscalas();
       break;
     }
-    case "normalizar": E.normalizar = el.checked; break;
+    case "normalizar": E.normalizar = el.checked; actualizarEscalas(); break;
     case "neuronas": E.ocultas[i].neuronas = Number(el.value); break;
-    case "activacion": E.ocultas[i].activacion = el.value; break;
+    case "activacion":
+      E.ocultas[i].activacion = el.value;
+      $(`#curva-oculta-${i}`).innerHTML = `${svgCurvaActivacion(el.value)}<span>${ACTIVACIONES[el.value].rango}</span>`;
+      break;
     case "salida-neuronas": E.salida.neuronas = el.value ? Number(el.value) : null; break;
     case "salida-activacion": E.salida.activacion = el.value; break;
     case "perdida": E.perdida = el.value; break;
@@ -2108,6 +2469,19 @@ function iniciar() {
   });
   $("#anterior").addEventListener("click", () => irA(E.paso - 1));
   $("#siguiente").addEventListener("click", () => irA(E.paso + 1));
+  // Las explicaciones que alguien abre quedan abiertas al volver a dibujar el paso.
+  panel.addEventListener("toggle", (ev) => {
+    const d = ev.target;
+    if (d.matches?.("details.porque") && !estudio()) d.open ? E.abiertos.add(d.dataset.clave) : E.abiertos.delete(d.dataset.clave);
+  }, true);
+  $(".modo").addEventListener("change", (ev) => {
+    E.modo = ev.target.value;
+    try { localStorage.setItem("configurador-modo", E.modo); } catch { /* sin almacenamiento: el modo vale solo para esta visita */ }
+    aplicarModo();
+    renderPaso();
+    refrescar();
+  });
+  aplicarModo();
   let ancho = 0;
   new ResizeObserver(([entrada]) => {
     const nuevo = Math.round(entrada.contentRect.width);
