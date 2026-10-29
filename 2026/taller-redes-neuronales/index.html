@@ -80,6 +80,8 @@ button, input, select { font: inherit; color: inherit; }
 /* Estructura en dos columnas */
 .marco { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 28px; align-items: start; margin-top: 18px; margin-bottom: 36px; }
 .panel { min-width: 0; border: 1px solid var(--borde); border-radius: 14px; padding: 22px 26px; }
+.marco.sin-vista { grid-template-columns: minmax(0, 1fr); }
+.marco.sin-vista .vista { display: none; }
 .vista { position: sticky; top: 14px; max-height: calc(100vh - 28px); overflow-y: auto; display: grid; gap: 14px; min-width: 0; }
 .tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: 14px; padding: 14px 18px; min-width: 0; }
 .titulo-chico { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--secundario); margin: 0 0 6px; font-weight: 700; }
@@ -251,6 +253,21 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 
 
 
+.peso-pos { color: #163e50; font-weight: 700; }
+.peso-neg { color: #b0781c; font-weight: 700; }
+
+.tablero { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; margin: 14px 0 4px; }
+.contador { display: flex; align-items: baseline; gap: 8px; color: var(--secundario); }
+.contador strong { font-size: 2.2rem; color: var(--titulo); font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1; }
+.tablero .acciones { margin: 0; }
+p.estado-entrenamiento { margin: 4px 0 8px; text-align: left; min-height: 1.4em; }
+
+.barra-parametros { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0 2px; background: #eef3f5; }
+.barra-parametros span { min-width: 3px; }
+.precio-lista i.punto { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; }
+.esquema-cont { margin: 10px 0 6px; max-width: 480px; }
+.esquema { width: 100%; height: auto; display: block; border: 1px solid var(--borde); border-radius: 10px; }
+
 /* Dataset y columnas */
 .dataset { border: 1px dashed #b9cfd7; border-radius: 12px; padding: 12px 16px; margin: 4px 0 14px; background: #fafcfd; transition: background .15s, border-color .15s; }
 .dataset.arrastrando { background: var(--suave); border-color: var(--titulo); }
@@ -270,9 +287,24 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .sensor.reservada { opacity: .6; cursor: not-allowed; }
 input[type=number] { padding: 6px 10px; border: 1px solid #b9cfd7; border-radius: 8px; min-height: 38px; max-width: 100%; background: #fff; }
 
+.encabezado-acciones { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; align-self: center; }
+.compartir { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.estado-enlace { font-size: .82rem; color: var(--secundario); text-align: right; }
+.compartir-resumen { margin-top: 12px; }
+.compartir-resumen .estado-enlace { text-align: left; }
+
+details.plegable { margin: 10px 0 12px; }
+details.plegable > summary { cursor: pointer; color: #2a6a85; font-weight: 600; font-size: .95rem; width: fit-content; list-style: none; padding: 2px 0; }
+details.plegable > summary::-webkit-details-marker { display: none; }
+details.plegable > summary::before { content: "▸ "; color: var(--secundario); }
+details.plegable[open] > summary::before { content: "▾ "; }
+details.plegable > summary:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+.plegable-cuerpo { margin-top: 8px; }
+label.tarjeta-tarea { cursor: pointer; }
+
 /* Modo configuración / estudio */
 .encabezado-fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px 28px; flex-wrap: wrap; }
-.modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--titulo); border-radius: 10px; overflow: hidden; align-self: center; max-width: 320px; }
+.modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--titulo); border-radius: 10px; overflow: hidden; max-width: 320px; }
 .modo-opcion { position: relative; cursor: pointer; flex: 1; }
 .modo-opcion input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .modo-opcion span { display: block; padding: 8px 18px; font-weight: 600; color: var(--titulo); text-align: center; background: #fff; }
@@ -361,6 +393,8 @@ svg .t-diagrama.grande { font-size: 22px; }
   .navegacion .estado { display: none; }
   .ciclo { grid-template-columns: minmax(0, 1fr); }
   .modo { max-width: none; width: 100%; }
+  .encabezado-acciones { align-items: stretch; width: 100%; }
+  .compartir { justify-content: space-between; }
   .objetivo-dist .barra { grid-template-columns: 96px minmax(0, 1fr) 40px; }
 }
 </style>
@@ -374,10 +408,13 @@ svg .t-diagrama.grande { font-size: 22px; }
         <h1>Configurador de redes neuronales</h1>
         <p class="subtitulo">Diseñá un perceptrón multicapa capa por capa, mirá cuántos parámetros entrenables tiene y entrenalo en el navegador.</p>
       </div>
-      <div class="modo" role="radiogroup" aria-label="Modo de uso">
-        <label class="modo-opcion"><input type="radio" name="modo" value="configuracion"><span>Configuración</span></label>
-        <label class="modo-opcion"><input type="radio" name="modo" value="estudio"><span>Estudio</span></label>
-        <p class="modo-ayuda" id="modo-ayuda"></p>
+      <div class="encabezado-acciones">
+        <div class="modo" role="radiogroup" aria-label="Modo de uso">
+          <label class="modo-opcion"><input type="radio" name="modo" value="configuracion"><span>Configuración</span></label>
+          <label class="modo-opcion"><input type="radio" name="modo" value="estudio"><span>Estudio</span></label>
+          <p class="modo-ayuda" id="modo-ayuda"></p>
+        </div>
+        <div class="compartir"><span class="estado-enlace" aria-live="polite"></span><button type="button" class="boton chico" data-accion="copiar-enlace">Copiar enlace a esta red</button></div>
       </div>
     </div>
   </div>
@@ -412,6 +449,7 @@ svg .t-diagrama.grande { font-size: 22px; }
     <section class="tarjeta" id="precio">
       <h2 class="titulo-chico">Parámetros entrenables</h2>
       <div><span class="precio-total" id="precio-total" data-total="0">0</span><span class="precio-parcial" id="precio-parcial"></span></div>
+      <div class="barra-parametros" id="barra-parametros" aria-hidden="true"></div>
       <ul class="precio-lista" id="precio-lista"></ul>
       <p class="precio-nota" id="precio-nota"></p>
     </section>
@@ -819,6 +857,7 @@ const COLOR_VAL = "#163e50";
 const E = {
   paso: 0,
   maxPaso: 0,
+  datosElegidos: false,
   tarea: null,
   objetivo: null,
   entradasElegidas: [...DATASET.entradasPorDefecto],
@@ -839,6 +878,11 @@ const E = {
   simulacion: null,
   entrenando: false,
   detener: false,
+  pausado: false,
+  unaEpoca: false,
+  configPendiente: null,
+  avisoEnlace: null,
+  avisoArchivoEnlace: null,
   vivo: null,
   corrida: null,
   garage: { binaria: [], multiclase: [], regresion: [], clustering: [] },
@@ -851,6 +895,8 @@ const E = {
 
 // Modo de uso: ?modo=estudio en la URL o la última elección de este navegador.
 function modoInicial() {
+  const enlace = /(?:^#|&)modo=(estudio|configuracion)(?:&|$)/.exec(location.hash);
+  if (enlace) return enlace[1];
   const pedido = new URLSearchParams(location.search).get("modo");
   if (pedido === "estudio" || pedido === "configuracion") return pedido;
   try { return localStorage.getItem("configurador-modo") === "estudio" ? "estudio" : "configuracion"; } catch { return "configuracion"; }
@@ -919,7 +965,8 @@ function diagnosticar() {
   const obj = def?.objetivo ? `<code>${esc(def.objetivo)}</code>` : "";
 
   // Datos y tarea
-  if (!m) error(0, "Falta elegir la tarea", "La tarea define qué variable aprende a predecir la red y, con eso, cuántas neuronas de salida necesita y qué función de pérdida corresponde.");
+  if (!E.datosElegidos) error(0, "Falta elegir los datos", "Usá el dataset del taller o subí un CSV propio.");
+  else if (!m) error(0, "Falta elegir la tarea", "La tarea define qué variable aprende a predecir la red y, con eso, cuántas neuronas de salida necesita y qué función de pérdida corresponde.");
   if (m && m !== "clustering" && !def.objetivo) {
     error(0, "Falta la variable objetivo", columnasCompatibles(m).length
       ? "Elegí qué columna tiene que predecir la red."
@@ -1100,14 +1147,24 @@ function dibujarRed() {
     c.apagadas = c.tipo === "oculta" && E.simulacion ? E.simulacion[c.indice] || new Set() : new Set();
   });
 
-  let aristas = "", sesgos = "", nodos = "", textos = "";
+  let aristas = "", pesadas = "", sesgos = "", nodos = "", textos = "";
+  const pesos = pesosVisibles();
+  const neurona = (c, s) => (c.n > 8 && s === 7 ? c.n - 1 : s);
   for (let i = 0; i < nc - 1; i++) {
     const a = columnas[i], b = columnas[i + 1];
+    const W = pesos?.[i];
+    let tope = 0;
+    if (W) for (const v of W.valores) tope = Math.max(tope, Math.abs(v));
     for (const sb of b.slots) {
       if (b.apagadas.has(sb)) continue;
       for (const sa of a.slots) {
         if (a.apagadas.has(sa)) continue;
-        aristas += `<line x1="${a.x}" y1="${a.y(sa)}" x2="${b.x}" y2="${b.y(sb)}"${b.desconocida ? ' stroke-dasharray="3 3"' : ""}/>`;
+        if (W && tope > 0) {
+          const w = W.valores[neurona(a, sa) * W.neuronas + neurona(b, sb)], f = Math.abs(w) / tope;
+          pesadas += `<line x1="${a.x}" y1="${a.y(sa)}" x2="${b.x}" y2="${b.y(sb)}" stroke="${w >= 0 ? "#163e50" : "#d08c2f"}" stroke-width="${(0.3 + 3.2 * f).toFixed(2)}" opacity="${(0.2 + 0.7 * f).toFixed(2)}"/>`;
+        } else {
+          aristas += `<line x1="${a.x}" y1="${a.y(sa)}" x2="${b.x}" y2="${b.y(sb)}"${b.desconocida ? ' stroke-dasharray="3 3"' : ""}/>`;
+        }
       }
       sesgos += `<line x1="${a.x}" y1="${yBias}" x2="${b.x}" y2="${b.y(sb)}"/>`;
     }
@@ -1163,12 +1220,17 @@ function dibujarRed() {
       .t-pregunta { font-size: 13px; font-weight: 700; fill: #8eb9c3; }
     </style>
     <g stroke="#b7cdd5" stroke-width=".8" opacity=".8">${aristas}</g>
+    <g stroke-linecap="round">${pesadas}</g>
     <g stroke="#5f5078" stroke-width=".8" stroke-dasharray="2 3" opacity=".45">${sesgos}</g>
     ${nodos}${textos}
   </svg>`;
 
   const leyenda = $("#leyenda-red");
-  if (E.simulacion) {
+  if (pesos) {
+    const fuente = E.entrenando ? E.vivo : E.corrida;
+    leyenda.classList.remove("simulacion");
+    leyenda.innerHTML = `Pesos ${E.entrenando ? `en la época ${fuente.epoca}` : "finales"}: <span class="peso-pos">azul</span>, positivos; <span class="peso-neg">ámbar</span>, negativos. El grosor indica la magnitud.${E.simulacion ? " El dropout que se ve es ilustrativo: no son las máscaras reales." : ""}`;
+  } else if (E.simulacion) {
     leyenda.classList.add("simulacion");
     leyenda.textContent = E.entrenando
       ? "Animación ilustrativa del dropout: en cada iteración se apagan neuronas distintas. No son las máscaras reales del entrenamiento."
@@ -1177,6 +1239,14 @@ function dibujarRed() {
     leyenda.classList.remove("simulacion");
     leyenda.textContent = "Los nodos +1 violetas son los sesgos: sus aristas punteadas explican el + 1 de cada término (entradas + 1) × neuronas.";
   }
+}
+
+// Pesos de la última época (durante el entrenamiento) o finales, si la configuración no cambió.
+function pesosVisibles() {
+  const fuente = E.entrenando ? E.vivo : E.corrida;
+  if (!fuente?.pesos || !fuente.config) return null;
+  if (!E.entrenando && firma(fuente.config) !== firma(configActual())) return null;
+  return fuente.pesos;
 }
 
 function simularDropout() {
@@ -1193,8 +1263,10 @@ function renderPrecio() {
   $("#precio-lista").innerHTML = filas.map((f) => {
     if (f.tipo === "pendiente") return `<li class="pendiente"><span>Salida: falta elegir las neuronas</span><strong>?</strong></li>`;
     const texto = f.formula ? `${f.nombre}: ${f.formula} =` : `${f.nombre}:`;
-    return `<li class="${f.tipo || ""}"><span>${texto}</span><strong>${num(f.valor)}</strong></li>`;
+    const punto = f.valor > 0 ? `<i class="punto" style="background:${colorSegmento(f)}"></i>` : "";
+    return `<li class="${f.tipo || ""}"><span>${punto}${texto}</span><strong>${num(f.valor)}</strong></li>`;
   }).join("");
+  $("#barra-parametros").innerHTML = filas.filter((f) => f.valor > 0).map((f) => `<span style="flex:${f.valor}; background:${colorSegmento(f)}" title="${f.nombre}: ${num(f.valor)}"></span>`).join("");
   $("#precio-parcial").textContent = completo ? "" : "parcial";
   const n = conteo().entrenamiento;
   $("#precio-nota").textContent = completo
@@ -1304,6 +1376,76 @@ function svgCurvaPerdida(clave, ancho = 150, alto = 84) {
 
 
 
+
+// Esquema de early stopping: mejor época, ventana de paciencia y corte.
+function svgPaciencia(paciencia, activo) {
+  const n = 70, ancho = 440, alto = 160, m = { izq: 10, der: 10, sup: 26, inf: 22 };
+  const val = Array.from({ length: n }, (_, i) => { const x = i + 1; return 0.32 + 0.26 * Math.exp(-x / 5) + 0.0035 * Math.max(0, x - 12) + 0.01 * Math.sin(x * 1.7); });
+  const mejor = val.indexOf(Math.min(...val)) + 1, corte = Math.min(n, mejor + paciencia);
+  const [lo, hi] = extremos(val);
+  const X = (e) => m.izq + ((e - 1) / (n - 1)) * (ancho - m.izq - m.der);
+  const Y = (v) => m.sup + (1 - (v - lo) / (hi - lo)) * (alto - m.sup - m.inf);
+  const tramo = (desde, hasta) => val.slice(desde - 1, hasta).map((v, i) => `${i ? "L" : "M"}${X(desde + i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
+  return `<svg class="esquema" viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Early stopping con paciencia ${paciencia}" style="opacity:${activo ? 1 : 0.45}">
+    <rect x="${X(mejor)}" y="${m.sup}" width="${X(corte) - X(mejor)}" height="${alto - m.sup - m.inf}" fill="#fdf1dc"/>
+    <text x="${(X(mejor) + X(corte)) / 2}" y="${m.sup + 14}" text-anchor="middle" class="t-curva" fill="#8a5a12">paciencia: ${paciencia} épocas</text>
+    <path d="${tramo(1, corte)}" fill="none" stroke="#163e50" stroke-width="2"/>
+    ${corte < n ? `<path d="${tramo(corte, n)}" fill="none" stroke="#9fb3bb" stroke-width="1.5" stroke-dasharray="4 4"/>` : ""}
+    <line x1="${X(mejor)}" x2="${X(mejor)}" y1="${m.sup - 6}" y2="${alto - m.inf}" stroke="#5f5078" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="${X(mejor) - 4}" y="${m.sup - 10}" text-anchor="end" class="marca-texto" fill="#5f5078">mejor época</text>
+    <line x1="${X(corte)}" x2="${X(corte)}" y1="${m.sup - 6}" y2="${alto - m.inf}" stroke="#b0781c" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="${X(corte) + 4}" y="${m.sup - 10}" class="marca-texto" fill="#b0781c">corte</text>
+    <line x1="${m.izq}" x2="${ancho - m.der}" y1="${alto - m.inf}" y2="${alto - m.inf}" stroke="#b9cfd7"/>
+    <text x="${ancho / 2}" y="${alto - 5}" text-anchor="middle" class="eje">época (pérdida de validación ilustrativa)</text>
+  </svg>`;
+}
+
+// Trayectoria de cada optimizador sobre un valle alargado: f(w) = (0,06 w₁² + w₂²) / 2.
+function svgOptimizador(opt, lr) {
+  const a = 0.06, b = 1, eta = lr * 18, pasos = 40;
+  let w = [-9, 2.4], v = [0, 0], m1 = [0, 0], m2 = [0, 0], diverge = false;
+  const puntos = [w.slice()];
+  for (let t = 1; t <= pasos; t++) {
+    const g = [a * w[0], b * w[1]];
+    if (opt === "sgd") w = w.map((x, i) => x - eta * g[i]);
+    else if (opt === "momentum") { v = v.map((x, i) => 0.9 * x + g[i]); w = w.map((x, i) => x - eta * v[i]); }
+    else {
+      m1 = m1.map((x, i) => 0.9 * x + 0.1 * g[i]);
+      m2 = m2.map((x, i) => 0.999 * x + 0.001 * g[i] * g[i]);
+      w = w.map((x, i) => x - (eta * (m1[i] / (1 - 0.9 ** t))) / (Math.sqrt(m2[i] / (1 - 0.999 ** t)) + 1e-7));
+    }
+    puntos.push(w.slice());
+    if (!w.every(Number.isFinite) || Math.hypot(...w) > 60) { diverge = true; break; }
+  }
+  const ancho = 440, alto = 170, x0 = -10.5, x1 = 2.5, y0 = -3.4, y1 = 3.4;
+  const X = (x) => ((x - x0) / (x1 - x0)) * ancho, Y = (y) => alto - ((y - y0) / (y1 - y0)) * alto;
+  const sx = ancho / (x1 - x0), sy = alto / (y1 - y0);
+  const curvas = [0.08, 0.35, 0.9, 1.8, 3, 4.6].map((c) => `<ellipse cx="${X(0)}" cy="${Y(0)}" rx="${(Math.sqrt((2 * c) / a) * sx).toFixed(1)}" ry="${(Math.sqrt((2 * c) / b) * sy).toFixed(1)}" fill="none" stroke="#d7e6eb"/>`).join("");
+  const trazo = puntos.map(([p, q], i) => `${i ? "L" : "M"}${X(p).toFixed(1)},${Y(q).toFixed(1)}`).join("");
+  const final = Math.hypot(...puntos.at(-1)), inicial = Math.hypot(...puntos[0]);
+  const lectura = diverge ? "Diverge: los pasos son tan grandes que se aleja del mínimo."
+    : final < 0.4 ? "Llega al mínimo."
+    : final > 0.7 * inicial ? "Avanza muy poco: el paso es chico para este valle."
+    : "Se acerca al mínimo, pero todavía está en camino.";
+  return `<svg class="esquema" viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Trayectoria del optimizador">
+    <defs><clipPath id="recorte-optimizador"><rect x="0" y="0" width="${ancho}" height="${alto}"/></clipPath></defs>
+    <rect x="0" y="0" width="${ancho}" height="${alto}" fill="#fbfdfd"/>
+    <g clip-path="url(#recorte-optimizador)">${curvas}
+      <path d="${trazo}" fill="none" stroke="#d08c2f" stroke-width="1.6"/>
+      ${puntos.map(([p, q]) => `<circle cx="${X(p).toFixed(1)}" cy="${Y(q).toFixed(1)}" r="2" fill="#d08c2f"/>`).join("")}
+    </g>
+    <circle cx="${X(puntos[0][0])}" cy="${Y(puntos[0][1])}" r="4.5" fill="#163e50"/><text x="${X(puntos[0][0]) + 8}" y="${Y(puntos[0][1]) + 4}" class="t-curva">inicio</text>
+    <text x="${X(0)}" y="${Y(0) + 5}" text-anchor="middle" class="t-diagrama violeta">★</text>
+  </svg><p class="leyenda">${OPTIMIZADORES[opt].nombre} con learning rate ${decimal(lr)}, ${pasos} pasos: ${lectura} Es una ilustración en una función de dos pesos con forma de valle alargado; no es la pérdida de esta red.</p>`;
+}
+
+const COLORES_CAPAS = ["#163e50", "#3d6e83", "#6fa6b4"];
+function colorSegmento(fila) {
+  if (fila.tipo === "centroides") return "#5f5078";
+  if (fila.nombre === "Salida") return "#d08c2f";
+  const i = Number(fila.nombre.replace("Oculta ", "")) - 1;
+  return COLORES_CAPAS[i] || "#163e50";
+}
 
 // =====================================================================
 // Modo estudio: conceptos y explicaciones plegables
@@ -1426,10 +1568,9 @@ function tarjetaDataset() {
   return `<div class="dataset" id="zona-archivo">
     <div class="dataset-info"><span class="etiqueta">Dataset</span><strong>${esc(DATASET.nombre)}</strong><span>${esc(DATASET.descripcion)}</span></div>
     <div class="acciones">
-      <label class="boton primario">Subir un CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>
-      ${DATASET.embebido ? "" : '<button type="button" class="boton" data-accion="dataset-taller">Usar el dataset del taller</button>'}
+      <label class="boton chico">Subir otro CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>
+      ${DATASET.embebido ? "" : '<button type="button" class="boton chico" data-accion="dataset-taller">Usar el dataset del taller</button>'}
     </div>
-    <p class="leyenda">También podés arrastrar el archivo acá. Se lee en tu navegador y no se sube a ningún servidor. Recomendado: hasta ${LIMITES.entradasRecomendadas} variables de entrada y ${num(LIMITES.filasRecomendadas)} filas.</p>
     <div id="error-archivo" aria-live="polite"></div>
   </div>`;
 }
@@ -1579,8 +1720,7 @@ function controlesParticion() {
       <div class="campo"><span>Prueba: <output id="salida-p-prueba">${100 - p.entrenamiento - p.validacion}%</output></span><span class="ayuda">lo que queda</span></div>
       <label class="campo">Semilla<input type="number" min="0" max="999999" step="1" value="${p.semilla}" data-campo="semilla"></label>
     </div>
-    ${DATASET.n > LIMITES.filasRecomendadas ? `<label class="casilla"><input type="checkbox" data-campo="muestra" ${E.muestra ? "checked" : ""}>Entrenar con una muestra al azar de ${num(LIMITES.filasRecomendadas)} filas</label>` : ""}
-    <div id="barra-particion">${barraParticion()}</div>`;
+    ${DATASET.n > LIMITES.filasRecomendadas ? `<label class="casilla"><input type="checkbox" data-campo="muestra" ${E.muestra ? "checked" : ""}>Entrenar con una muestra al azar de ${num(LIMITES.filasRecomendadas)} filas</label>` : ""}`;
 }
 
 // Asociación de cada entrada candidata con la variable objetivo, en entrenamiento.
@@ -1641,7 +1781,35 @@ function escalasEntradas(ancho) {
     <p class="leyenda">La barra va del mínimo al máximo y el punto marca la media. ${nota}${E.entradas.length > filas.length ? ` Se muestran ${filas.length} de ${E.entradas.length} entradas.` : ""}</p></figure>`;
 }
 
+function svgIconoDatos(tipo) {
+  if (tipo === "taller") {
+    const celdas = [];
+    for (let f = 0; f < 4; f++) for (let c = 0; c < 5; c++) {
+      const objetivo = c === 4 && f > 0;
+      celdas.push(`<rect x="${12 + c * 20}" y="${7 + f * 14}" width="18" height="12" rx="2" fill="${f === 0 ? "#163e50" : objetivo ? "#efebf4" : "#edf5f7"}" stroke="${objetivo ? "#5f5078" : "#b9cfd7"}" stroke-width=".8"/>`);
+    }
+    return `<svg class="icono-tarea" viewBox="0 0 120 70" aria-hidden="true">${celdas.join("")}</svg>`;
+  }
+  return `<svg class="icono-tarea" viewBox="0 0 120 70" aria-hidden="true"><path d="M40 6 h28 l14 14 v44 h-42 z" fill="#edf5f7" stroke="#163e50" stroke-width="1.6" stroke-linejoin="round"/><path d="M68 6 v14 h14" fill="none" stroke="#163e50" stroke-width="1.6" stroke-linejoin="round"/><path d="M61 54 V30 M51 40 l10 -10 l10 10" fill="none" stroke="#d08c2f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+// Bloque secundario: plegado en Configuración y abierto en Estudio.
+function plegable(clave, titulo, html) {
+  const abierto = estudio() || E.abiertos.has(clave);
+  return `<details class="plegable" data-clave="${esc(clave)}" ${abierto ? "open" : ""}><summary>${titulo}</summary><div class="plegable-cuerpo">${html}</div></details>`;
+}
+
 function pasoDatos() {
+  if (!E.datosElegidos) {
+    return `<h2>Datos y tarea</h2>
+      <p class="bajada">Elegí con qué datos va a trabajar la red.</p>
+      ${concepto(0)}
+      <div class="tarjetas">
+        <button type="button" class="tarjeta-tarea" data-accion="usar-taller">${svgIconoDatos("taller")}<strong>Dataset del taller</strong><span class="texto">Lecturas de sensores de racks de un centro de datos: 1500 filas, 8 variables numéricas y 3 columnas que pueden ser variable objetivo.</span></button>
+        <label class="tarjeta-tarea" id="zona-archivo">${svgIconoDatos("archivo")}<strong>Subir un CSV</strong><span class="texto">Con encabezado, separado por coma, punto y coma o tabulación. También podés arrastrarlo acá. Se lee en tu navegador y no se sube a ningún servidor.</span><span class="pie-tarjeta">Recomendado: hasta ${LIMITES.entradasRecomendadas} variables de entrada y ${num(LIMITES.filasRecomendadas)} filas.</span><input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>
+      </div>
+      <div id="error-archivo" aria-live="polite"></div>`;
+  }
   const tarjeta = (clave) => {
     const t = TAREAS[clave], elegida = E.tarea === clave;
     const sugerido = objetivoPorDefecto(clave);
@@ -1651,22 +1819,22 @@ function pasoDatos() {
       ${svgIconoTarea(clave)}<strong>${t.titulo}</strong><span class="texto">${t.texto}</span><span class="pie-tarjeta">${pie}</span></button>`;
   };
   return `<h2>Datos y tarea</h2>
-    <p class="bajada">Cargá un dataset o usá el del taller, y elegí qué querés que prediga la red.</p>
+    <p class="bajada">Elegí qué querés que prediga la red.</p>
     ${concepto(0)}
     ${tarjetaDataset()}
-    ${tablaMuestra()}
+    ${plegable("muestra", "Ver una muestra de los datos", tablaMuestra())}
     <h3>Tarea</h3>
     <p class="familia">Aprendizaje supervisado</p>
     <div class="tarjetas">${["binaria", "multiclase", "regresion"].map(tarjeta).join("")}</div>
     <p class="familia">Aprendizaje no supervisado</p>
     <div class="tarjetas">${tarjeta("clustering")}</div>
-    ${E.tarea ? selectorObjetivo() : ""}
-    <h3>Distribuciones</h3>
+    ${E.tarea ? `${selectorObjetivo()}
     ${distribucionObjetivo()}
-    ${histogramasVariables()}
+    ${plegable("distribuciones", "Ver las distribuciones de las variables", histogramasVariables())}
     <h3>Partición</h3>
-    ${controlesParticion()}
-    ${DATASET.nota ? `<p class="nota">${DATASET.nota}</p>` : ""}`;
+    <div id="barra-particion">${barraParticion()}</div>
+    ${plegable("particion", "Cambiar la partición", controlesParticion())}
+    ${DATASET.nota ? `<p class="nota">${DATASET.nota}</p>` : ""}` : '<p class="nota">Elegí una tarea para ver las distribuciones de los datos y la partición.</p>'}`;
 }
 
 function pasoEntrada() {
@@ -1688,11 +1856,10 @@ function pasoEntrada() {
     <div class="acciones"><button type="button" class="boton chico" data-accion="todas-entradas">Marcar todas</button>
       <button type="button" class="boton chico" data-accion="ninguna-entrada">Desmarcar todas</button>
       <span class="dimension">Dimensión de entrada: <strong id="dimension-entrada">d = ${E.entradas.length}</strong></span></div>
-    <h3>Asociación con la variable objetivo</h3>
-    <div id="asociacion">${asociacionEntradas(ancho)}</div>
+    ${plegable("asociacion", "Ver la asociación con la variable objetivo", `<div id="asociacion">${asociacionEntradas(ancho)}</div>`)}
     <h3>Normalización</h3>
     <label class="interruptor"><input type="checkbox" data-campo="normalizar" ${E.normalizar ? "checked" : ""}><span class="pista"></span>Normalizar con z-score</label>
-    <div id="escalas">${escalasEntradas(ancho)}</div>`;
+    ${plegable("escalas", "Ver las escalas de las entradas", `<div id="escalas">${escalasEntradas(ancho)}</div>`)}`;
 }
 
 function pasoCapas() {
@@ -1784,6 +1951,7 @@ function pasoRegularizacion() {
         <input type="range" min="5" max="50" step="1" value="${E.early.paciencia}" data-campo="paciencia" ${E.early.activo ? "" : "disabled"}></label>
       <label class="casilla"><input type="checkbox" data-campo="restaurar" ${E.early.restaurar ? "checked" : ""} ${E.early.activo ? "" : "disabled"}>Restaurar los mejores pesos</label>
     </div>
+    ${plegable("paciencia", "Ver cómo funciona la paciencia", `<figure class="esquema-cont" id="esquema-paciencia">${svgPaciencia(E.early.paciencia, E.early.activo)}</figure>`)}
     <div class="nota">Mira la <strong>pérdida de validación</strong> al final de cada época. ${porque("early", "<p>Si no mejora durante tantas épocas seguidas como indica la paciencia, corta el entrenamiento. Con “restaurar”, la red se queda con los pesos de la mejor época y no con los de la última.</p>")}</div>`;
 }
 
@@ -1803,12 +1971,14 @@ function pasoEntrenamiento() {
           <input type="range" min="10" max="500" step="10" value="${E.epocas}" data-campo="epocas"></label>
       </div>
     </fieldset>
+    ${plegable("optimizador", "Ver cómo se mueve el optimizador", `<figure class="esquema-cont" id="trayectoria">${svgOptimizador(E.optimizador, E.lr)}</figure>`)}
     <p class="estimacion" id="estimacion"></p>
     <div id="mensajes-paso" aria-live="polite"></div>
-    <div class="acciones">
-      <button type="button" id="boton-entrenar" class="boton ${E.entrenando ? "detener" : "primario"}" data-accion="entrenar">${E.entrenando ? "Detener" : "Entrenar"}</button>
-      <span class="estado-entrenamiento" id="estado-entrenamiento" aria-live="polite"></span>
+    <div class="tablero">
+      <div class="contador"><span>Época</span><strong id="contador-epoca">${String(E.vivo?.epoca || E.corrida?.epocasCorridas || 0).padStart(3, "0")}</strong><span>de ${E.epocas}</span></div>
+      <div class="acciones" id="controles-entrenamiento">${controlesEntrenamiento()}</div>
     </div>
+    <p class="estado-entrenamiento" id="estado-entrenamiento" aria-live="polite"></p>
     <div class="graficos">
       <figure class="grafico" id="grafico-perdida"></figure>
       <figure class="grafico" id="grafico-metrica"></figure>
@@ -1853,11 +2023,10 @@ function pasoResumen() {
     <p class="bajada">Todas las decisiones, el resumen de capas como lo muestra <code>model.summary()</code> y el código Keras para Colab.</p>
     ${concepto(7)}
     <dl class="hoja">${filas}<div class="hoja-fila total"><dt>Parámetros entrenables</dt><dd>${num(total)}</dd></div></dl>
-    <h3>model.summary()</h3>
-    <div class="tabla-scroll"><table class="tabla mono"><thead><tr><th>Layer (type)</th><th>Output Shape</th><th class="num">Param #</th></tr></thead><tbody>${tablaResumen}</tbody></table></div>
-    <p class="leyenda">Total params: ${num(total)} - Trainable params: ${num(total)} - Non-trainable params: 0${m === "clustering" ? ". Keras agrega la columna “Connected to”, porque el modelo de clustering usa la API funcional." : ""}</p>
-    <h3>Cálculo por capa</h3>
-    <div class="tabla-scroll"><table class="tabla"><thead><tr><th>Capa</th><th class="num">Entradas</th><th class="num">Neuronas</th><th>Cálculo</th><th class="num">Parámetros</th></tr></thead><tbody>${calculo}<tr><th colspan="4">Total</th><th class="num">${num(total)}</th></tr></tbody></table></div>
+    <div class="acciones compartir-resumen"><button type="button" class="boton" data-accion="copiar-enlace">Copiar enlace a esta red</button><span class="estado-enlace" aria-live="polite"></span></div>
+    ${plegable("summary", "Ver <code>model.summary()</code>", `<div class="tabla-scroll"><table class="tabla mono"><thead><tr><th>Layer (type)</th><th>Output Shape</th><th class="num">Param #</th></tr></thead><tbody>${tablaResumen}</tbody></table></div>
+    <p class="leyenda">Total params: ${num(total)} - Trainable params: ${num(total)} - Non-trainable params: 0${m === "clustering" ? ". Keras agrega la columna “Connected to”, porque el modelo de clustering usa la API funcional." : ""}</p>`)}
+    ${plegable("calculo", "Ver el cálculo por capa", `<div class="tabla-scroll"><table class="tabla"><thead><tr><th>Capa</th><th class="num">Entradas</th><th class="num">Neuronas</th><th>Cálculo</th><th class="num">Parámetros</th></tr></thead><tbody>${calculo}<tr><th colspan="4">Total</th><th class="num">${num(total)}</th></tr></tbody></table></div>`)}
     <h3>Código Keras para Colab</h3>
     <p class="bajada">Arma la partición, normaliza con la media y el desvío de entrenamiento y entrena la misma red, en el estilo de la notebook N02. Podés copiarlo o descargarlo como notebook: en Colab, se abre desde Archivo → Subir notebook${DATASET.fuente.tipo === "archivo" ? ", y después hay que subir el CSV al entorno" : ""}.</p>
     <div class="codigo"><div class="codigo-acciones"><button type="button" class="boton chico" data-accion="copiar">Copiar</button><button type="button" class="boton chico primario" data-accion="notebook">Descargar notebook (.ipynb)</button></div><pre><code id="codigo-keras">${esc(codigoKeras())}</code></pre></div>`;
@@ -2147,7 +2316,7 @@ function calcularMetrica(tipo, k, pred, datos, parte) {
   return promedio(clases.map((c, i) => (c === datos.y[parte][i] ? 1 : 0)));
 }
 
-async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () => false } = {}) {
+async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () => false, esperar = async () => {} } = {}) {
   await prepararBackend();
   const tipo = cfg.tarea, k = cfg.salida.neuronas, n = datos.X.entrenamiento.length;
   const T = {};
@@ -2183,6 +2352,12 @@ async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () =>
   const optimizador = cfg.optimizador === "adam" ? tf.train.adam(cfg.lr, 0.9, 0.999, 1e-7)
     : cfg.optimizador === "momentum" ? tf.train.momentum(cfg.lr, 0.9) : tf.train.sgd(cfg.lr);
 
+  // Copia de los pesos de cada capa densa (kernel de entradas × neuronas) para dibujarlos.
+  const densas = capas.filter((capa) => capa.getClassName() === "Dense");
+  const leerPesos = () => densas.map((capa) => {
+    const kernel = capa.trainableWeights[0].read();
+    return { entradas: kernel.shape[0], neuronas: kernel.shape[1], valores: kernel.dataSync().slice() };
+  });
   const adelante = (x, entrenando) => capas.reduce((h, capa) => capa.apply(h, { training: entrenando }), x);
   const perdidaTotal = (pred, y, x) => {
     let l = perdidaDatos(cfg.perdida, pred, y, x, centroides);
@@ -2255,8 +2430,9 @@ async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () =>
       corte = epoca;
       motivo = "early";
     }
-    alEpoca({ epoca, historia, mejorEpoca, corte, segundos: (performance.now() - inicio) / 1000 });
+    alEpoca({ epoca, historia, mejorEpoca, corte, segundos: (performance.now() - inicio) / 1000, pesos: leerPesos() });
     if (corte) break;
+    await esperar(epoca);
     if (debeDetener()) { motivo = "detenida"; break; }
     await tf.nextFrame();
     cesion = performance.now();
@@ -2277,12 +2453,13 @@ async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () =>
   }
   const segundos = (performance.now() - inicio) / 1000;
 
+  const pesosFinales = leerPesos();
   tf.dispose([...variables, ...(mejores || [])]);
   for (const p of PARTES) tf.dispose(T[p]);
   optimizador.dispose();
   return {
     config: cfg, historia, mejorEpoca, corte, motivo, restaurada, resultado, segundos, epocasCorridas, perdidaInicial,
-    epocaFinal: restaurada ? mejorEpoca : epocasCorridas,
+    epocaFinal: restaurada ? mejorEpoca : epocasCorridas, pesos: pesosFinales,
   };
 }
 
@@ -2620,8 +2797,39 @@ function renderGarage() {
 // Entrenamiento desde la interfaz
 // =====================================================================
 let animacionDropout = null, ultimoDibujo = 0;
-async function alternarEntrenamiento() {
-  if (E.entrenando) { E.detener = true; return; }
+
+function controlesEntrenamiento() {
+  if (!E.entrenando) return `<button type="button" class="boton primario" data-accion="entrenar">▶ Entrenar</button><button type="button" class="boton" data-accion="una-epoca">⏭ Una época</button>`;
+  if (E.pausado) return `<button type="button" class="boton primario" data-accion="seguir">▶ Seguir</button><button type="button" class="boton" data-accion="una-epoca">⏭ Una época</button><button type="button" class="boton detener" data-accion="detener">■ Detener</button>`;
+  return `<button type="button" class="boton" data-accion="pausar">⏸ Pausar</button><button type="button" class="boton detener" data-accion="detener">■ Detener</button>`;
+}
+
+function actualizarControles() {
+  const c = $("#controles-entrenamiento");
+  if (!c) return;
+  c.innerHTML = controlesEntrenamiento();
+  if (!E.entrenando) $$("button", c).forEach((b) => { b.disabled = pasosConErrores(diagnosticar()).length > 0; });
+}
+
+// Dibuja el estado de la época actual: curvas, contador, vista previa y texto.
+function mostrarEpoca(vivo, cfg) {
+  dibujarCurvas();
+  dibujarRed();
+  const contador = $("#contador-epoca");
+  if (contador) contador.textContent = String(vivo.epoca).padStart(3, "0");
+  const estado = $("#estado-entrenamiento");
+  if (!estado) return;
+  const val = vivo.historia.perdidaVal.at(-1);
+  if (E.pausado) {
+    estado.textContent = `En pausa en la época ${vivo.epoca}: mirá las curvas y los pesos en la vista previa, y seguí cuando quieras.`;
+  } else {
+    const restante = (vivo.segundos / vivo.epoca) * (cfg.epocas - vivo.epoca);
+    estado.textContent = `Pérdida de validación ${valorPerdida(val)}${vivo.mejorEpoca ? ` (mejor: época ${vivo.mejorEpoca})` : ""} - quedan ${cfg.early.activo ? "como máximo " : ""}${segundosATexto(restante)}`;
+  }
+}
+
+async function iniciarEntrenamiento({ unaEpoca = false } = {}) {
+  if (E.entrenando) return;
   if (typeof tf === "undefined") {
     $("#estado-entrenamiento").textContent = window.tfNoDisponible
       ? "No se pudo cargar TensorFlow.js desde jsdelivr. Revisá la conexión: el resto del configurador funciona sin ella."
@@ -2632,14 +2840,12 @@ async function alternarEntrenamiento() {
   const cfg = configActual();
   const datos = prepararDatos(cfg);
   const estimado = estimarSegundos() / E.factorTiempo;
-  E.entrenando = true;
-  E.detener = false;
-  E.corrida = null;
+  Object.assign(E, { entrenando: true, detener: false, pausado: false, unaEpoca, corrida: null });
   E.vivo = { config: cfg, historia: { perdida: [], perdidaVal: [], metrica: [], metricaVal: [] } };
   renderPaso();
   refrescar();
   if (cfg.ocultas.some((c) => c.dropout > 0)) {
-    animacionDropout = setInterval(() => { simularDropout(); dibujarRed(); }, 420);
+    animacionDropout = setInterval(() => { if (!E.pausado) { simularDropout(); dibujarRed(); } }, 420);
   }
   try {
     E.corrida = await entrenarRed(cfg, datos, {
@@ -2647,18 +2853,20 @@ async function alternarEntrenamiento() {
       alEpoca: (vivo) => {
         E.vivo = { ...vivo, config: cfg };
         const ahora = performance.now();
-        if (ahora - ultimoDibujo < 80 && vivo.epoca < cfg.epocas) return;
+        if (ahora - ultimoDibujo < 80 && vivo.epoca < cfg.epocas && !E.unaEpoca) return;
         ultimoDibujo = ahora;
-        dibujarCurvas();
-        const estado = $("#estado-entrenamiento");
-        if (estado) {
-          const restante = (vivo.segundos / vivo.epoca) * (cfg.epocas - vivo.epoca);
-          const val = vivo.historia.perdidaVal.at(-1);
-          estado.textContent = `Época ${vivo.epoca} de ${cfg.epocas} - pérdida de validación ${valorPerdida(val)}${vivo.mejorEpoca ? ` (mejor: época ${vivo.mejorEpoca})` : ""} - quedan ${cfg.early.activo ? "como máximo " : ""}${segundosATexto(restante)}`;
-        }
+        mostrarEpoca(E.vivo, cfg);
+      },
+      esperar: async () => {
+        if (E.unaEpoca) { E.unaEpoca = false; E.pausado = true; }
+        if (!E.pausado) return;
+        actualizarControles();
+        mostrarEpoca(E.vivo, cfg);
+        while (E.pausado && !E.detener) await new Promise((r) => setTimeout(r, 60));
+        actualizarControles();
       },
     });
-    if (E.corrida.epocasCorridas >= 5 && estimado > 0) {
+    if (E.corrida.epocasCorridas >= 5 && estimado > 0 && E.corrida.motivo !== "detenida") {
       const real = E.corrida.segundos / E.corrida.epocasCorridas, previsto = estimado / cfg.epocas;
       E.factorTiempo = Math.min(20, Math.max(0.2, real / previsto));
     }
@@ -2667,12 +2875,203 @@ async function alternarEntrenamiento() {
     E.corrida = { config: cfg, error: e.message };
   } finally {
     clearInterval(animacionDropout);
-    E.entrenando = false;
-    E.simulacion = null;
-    E.vivo = null;
+    Object.assign(E, { entrenando: false, pausado: false, unaEpoca: false, simulacion: null, vivo: null });
     renderPaso();
     refrescar();
   }
+}
+
+// =====================================================================
+// Configuración en el enlace
+// La configuración viaja en el fragmento de la URL, legible y editable
+// (#tarea=binaria&ocultas=16:relu:0.2&...), para compartir una red armada.
+// =====================================================================
+const URL_PUBLICA = "https://jumafernandez.github.io/machine-learning-unlu/2026/taller-redes-neuronales/";
+const cod = (v) => encodeURIComponent(v);
+const dec = (v) => { try { return decodeURIComponent(v); } catch { return v; } };
+let hashEscrito = null;
+
+function hashDeConfiguracion() {
+  const partes = [];
+  const poner = (clave, valor) => partes.push(`${clave}=${valor}`);
+  if (!DATASET.embebido) poner("archivo", cod(DATASET.nombre));
+  if (E.tarea) {
+    poner("tarea", E.tarea);
+    poner("objetivo", E.objetivo ? cod(E.objetivo) : "");
+  }
+  poner("entradas", E.entradasElegidas.map(cod).join(","));
+  poner("normalizar", E.normalizar ? "si" : "no");
+  poner("particion", E.particion.modo === "columna" && DATASET.columnaParticion ? "columna" : `${E.particion.entrenamiento}:${E.particion.validacion}:${E.particion.semilla}`);
+  if (DATASET.n > LIMITES.filasRecomendadas) poner("muestra", E.muestra ? "si" : "no");
+  poner("ocultas", E.ocultas.map((c) => `${c.neuronas}:${c.activacion}:${c.dropout}`).join(","));
+  if (E.salida.neuronas || E.salida.activacion) poner("salida", `${E.salida.neuronas ?? ""}:${E.salida.activacion ?? ""}`);
+  if (E.perdida) poner("perdida", E.perdida);
+  poner("l2", E.l2);
+  poner("early", E.early.activo ? `${E.early.paciencia}:${E.early.restaurar ? "restaura" : "sin-restaurar"}` : "no");
+  poner("optimizador", E.optimizador);
+  poner("lr", E.lr);
+  poner("epocas", E.epocas);
+  poner("batch", E.batch);
+  if (E.paso > 0) poner("paso", E.paso + 1);
+  if (estudio()) poner("modo", "estudio");
+  return partes.join("&");
+}
+
+function leerHash(hash) {
+  const c = Object.create(null);
+  for (const parte of hash.replace(/^#/, "").split("&")) {
+    if (!parte) continue;
+    const i = parte.indexOf("=");
+    c[i === -1 ? parte : parte.slice(0, i)] = i === -1 ? "" : parte.slice(i + 1);
+  }
+  return c;
+}
+
+// La configuración inicial, igual a la de una visita sin enlace.
+function restablecerConfiguracion() {
+  Object.assign(E, {
+    paso: 0, maxPaso: 0, tarea: null, objetivo: null, entradasElegidas: [...DATASET.entradasPorDefecto],
+    particion: { modo: DATASET.columnaParticion ? "columna" : "azar", entrenamiento: 60, validacion: 20, semilla: 2026 }, muestra: true,
+    normalizar: true, ocultas: [{ neuronas: 16, activacion: "relu", dropout: 0 }], salida: { neuronas: null, activacion: null }, perdida: null,
+    l2: 0, early: { activo: false, paciencia: 10, restaurar: true }, optimizador: "adam", lr: 0.01, epocas: 150, batch: 32,
+    corrida: null, simulacion: null, avisoTarea: null,
+  });
+  sincronizarEntradas();
+}
+
+// Aplica una configuración leída del enlace. Lo que no se reconoce se ignora
+// y se devuelve en una lista, para avisar.
+function aplicarConfiguracion(c) {
+  const ignorados = [];
+  const acepta = (clave, ok) => { if (!ok) ignorados.push(clave); return ok; };
+  const tiene = (clave) => clave in c;
+  if (tiene("tarea") && acepta("tarea", Object.hasOwn(TAREAS, c.tarea) && (c.tarea === "clustering" || columnasCompatibles(c.tarea).length > 0))) {
+    E.tarea = c.tarea;
+    E.objetivo = objetivoPorDefecto(c.tarea);
+    if (tiene("objetivo")) {
+      const objetivo = dec(c.objetivo);
+      if (objetivo === "" && c.tarea === "clustering") E.objetivo = null;
+      else if (acepta("objetivo", compatible(objetivo, c.tarea))) E.objetivo = objetivo;
+    }
+  }
+  if (tiene("entradas")) {
+    const nombres = c.entradas ? c.entradas.split(",").map(dec) : [];
+    const candidatas = new Set(DATASET.variables.map((v) => v.columna));
+    const desconocidas = nombres.filter((n) => !candidatas.has(n));
+    if (desconocidas.length) ignorados.push(`entradas (${desconocidas.join(", ")})`);
+    E.entradasElegidas = [...new Set(nombres.filter((n) => candidatas.has(n)))];
+  }
+  if (tiene("normalizar") && acepta("normalizar", ["si", "no"].includes(c.normalizar))) E.normalizar = c.normalizar === "si";
+  if (tiene("particion")) {
+    if (c.particion === "columna") {
+      if (acepta("particion", !!DATASET.columnaParticion)) E.particion.modo = "columna";
+    } else {
+      const [tr, va, se] = c.particion.split(":").map(Number);
+      const ok = [tr, va, se].every(Number.isInteger) && tr >= 40 && tr <= 80 && tr % 5 === 0 && va >= 5 && va <= 30 && va % 5 === 0 && tr + va <= 90 && se >= 0 && se <= 999999;
+      if (acepta("particion", ok)) Object.assign(E.particion, { modo: "azar", entrenamiento: tr, validacion: va, semilla: se });
+    }
+  }
+  if (tiene("muestra") && acepta("muestra", ["si", "no"].includes(c.muestra))) E.muestra = c.muestra === "si";
+  if (tiene("ocultas")) {
+    const capas = c.ocultas ? c.ocultas.split(",").map((t) => { const [n, a, d] = t.split(":"); return { neuronas: Number(n), activacion: a, dropout: Number(d ?? 0) }; }) : [];
+    const ok = capas.length <= 3 && capas.every((k) => NEURONAS_OCULTAS.includes(k.neuronas) && ACT_OCULTAS.includes(k.activacion) && k.dropout >= 0 && k.dropout <= 0.6);
+    if (acepta("ocultas", ok)) E.ocultas = capas.map((k) => ({ ...k, dropout: Math.round(k.dropout * 10) / 10 }));
+  }
+  if (tiene("salida")) {
+    const [n, a] = c.salida.split(":");
+    const k = n === "" || n === undefined ? null : Number(n);
+    if (acepta("salida", (k === null || (Number.isInteger(k) && k >= 1 && k <= 20)) && (!a || ACT_SALIDA.includes(a)))) E.salida = { neuronas: k, activacion: a || null };
+  }
+  if (tiene("perdida") && acepta("perdida", Object.hasOwn(PERDIDAS, c.perdida))) E.perdida = c.perdida;
+  if (tiene("l2") && acepta("l2", VALORES_L2.includes(Number(c.l2)) && c.l2 !== "")) E.l2 = Number(c.l2);
+  if (tiene("early")) {
+    if (c.early === "no") E.early.activo = false;
+    else {
+      const [pa, r] = c.early.split(":"), paciencia = Number(pa);
+      if (acepta("early", Number.isInteger(paciencia) && paciencia >= 5 && paciencia <= 50 && ["restaura", "sin-restaurar"].includes(r))) {
+        Object.assign(E.early, { activo: true, paciencia, restaurar: r === "restaura" });
+      }
+    }
+  }
+  if (tiene("optimizador") && acepta("optimizador", Object.hasOwn(OPTIMIZADORES, c.optimizador))) E.optimizador = c.optimizador;
+  if (tiene("lr") && acepta("lr", TASAS.includes(Number(c.lr)))) E.lr = Number(c.lr);
+  if (tiene("epocas")) { const v = Number(c.epocas); if (acepta("epocas", Number.isInteger(v) && v >= 10 && v <= 500 && v % 10 === 0)) E.epocas = v; }
+  if (tiene("batch") && acepta("batch", BATCHES.includes(Number(c.batch)))) E.batch = Number(c.batch);
+  if (tiene("modo") && acepta("modo", ["estudio", "configuracion"].includes(c.modo))) E.modo = c.modo;
+  sincronizarEntradas();
+  // Con la tarea definida, todos los pasos quedan disponibles; sin tarea, se empieza por los datos.
+  const paso = Number(c.paso);
+  if (tiene("paso") && !(Number.isInteger(paso) && paso >= 1 && paso <= PASOS.length)) ignorados.push("paso");
+  E.maxPaso = E.tarea ? PASOS.length - 1 : 0;
+  E.paso = E.tarea && Number.isInteger(paso) && paso >= 1 && paso <= PASOS.length ? paso - 1 : 0;
+  return ignorados;
+}
+
+function cargarDesdeEnlace(hash, dibujar = true) {
+  const c = leerHash(hash);
+  if (!Object.keys(c).length) return;
+  if ("archivo" in c) {
+    const nombre = dec(c.archivo);
+    if (DATASET.embebido || DATASET.nombre !== nombre) {
+      // El archivo no viaja en el enlace: la configuración espera a que lo suban.
+      E.configPendiente = { nombre, c };
+      E.avisoEnlace = null;
+      if (c.modo === "estudio" || c.modo === "configuracion") E.modo = c.modo;
+      E.paso = 0;
+      if (dibujar) { aplicarModo(); renderPaso(); refrescar(); }
+      return;
+    }
+  } else if (!DATASET.embebido) {
+    DATASET = cargarDatosEmbebidos();
+    cacheParticion.clear();
+    E.garage = { binaria: [], multiclase: [], regresion: [], clustering: [] };
+  }
+  E.configPendiente = null;
+  restablecerConfiguracion();
+  E.datosElegidos = true;
+  E.avisoEnlace = aplicarConfiguracion(c);
+  if (dibujar) { aplicarModo(); renderPaso(); refrescar(); }
+}
+
+// Mantiene el fragmento de la URL al día, sin sumar entradas al historial.
+function actualizarEnlace() {
+  if (E.configPendiente || !E.datosElegidos) return;
+  const hash = hashDeConfiguracion();
+  if (hash === hashEscrito) return;
+  hashEscrito = hash;
+  try { history.replaceState(null, "", `${location.pathname}${location.search}#${hash}`); } catch { /* sin historial: el enlace se arma igual al copiar */ }
+}
+
+// Desde la copia local, el enlace para compartir es el de GitHub Pages.
+function enlaceCompartible() {
+  const local = location.protocol === "file:" || ["", "localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
+  return `${local ? URL_PUBLICA : `${location.origin}${location.pathname}`}#${hashDeConfiguracion()}`;
+}
+
+async function copiarTexto(texto) {
+  try {
+    await navigator.clipboard.writeText(texto);
+  } catch {
+    const area = document.createElement("textarea");
+    area.value = texto;
+    document.body.append(area);
+    area.select();
+    document.execCommand("copy");
+    area.remove();
+  }
+}
+
+function avisosSuperiores() {
+  const html = [];
+  if (E.configPendiente) {
+    html.push(`<div class="mensaje aviso"><strong>Falta el archivo del enlace</strong><p>Este enlace trae una configuración para <code>${esc(E.configPendiente.nombre)}</code>. Subilo en esta pantalla y se aplica sola; mientras tanto, se muestra el dataset del taller.</p></div>`);
+  }
+  if (E.avisoEnlace) {
+    const archivo = E.avisoArchivoEnlace ? ` El enlace esperaba <code>${esc(E.avisoArchivoEnlace.esperado)}</code> y subiste <code>${esc(E.avisoArchivoEnlace.recibido)}</code>: se aplicó igual, con las columnas que coinciden.` : "";
+    html.push(`<div class="mensaje info"><strong>Configuración cargada desde el enlace</strong><p>${E.avisoEnlace.length ? `Se ignoraron valores que no se reconocieron: ${esc(E.avisoEnlace.join(", "))}.` : "Revisá los pasos o entrená directamente."}${archivo}</p></div>`);
+  }
+  if (E.paso === 0 && E.avisoTarea) html.push(`<div class="mensaje aviso"><strong>Cambiaste la tarea</strong><p>${E.avisoTarea}</p></div>`);
+  return html.join("");
 }
 
 // =====================================================================
@@ -2681,8 +3080,11 @@ async function alternarEntrenamiento() {
 const RENDER_PASOS = [pasoDatos, pasoEntrada, pasoCapas, pasoSalida, pasoPerdida, pasoRegularizacion, pasoEntrenamiento, pasoResumen];
 
 function renderPaso() {
+  // En "Datos y tarea" todavía no hay red: los datos ocupan todo el ancho.
+  $(".marco").classList.toggle("sin-vista", E.paso === 0);
+  $("#precio-movil").hidden = E.paso === 0;
   $("#contenido-paso").innerHTML = RENDER_PASOS[E.paso]();
-  $("#aviso-tarea").innerHTML = E.paso === 0 && E.avisoTarea ? `<div class="mensaje aviso"><strong>Cambiaste la tarea</strong><p>${E.avisoTarea}</p></div>` : "";
+  $("#aviso-tarea").innerHTML = avisosSuperiores();
   if (E.paso === 6) { dibujarCurvas(); renderResultado(); renderGarage(); }
 }
 
@@ -2728,10 +3130,10 @@ function refrescar() {
   renderNavegacion(D);
   dibujarRed();
   renderPrecio();
+  actualizarEnlace();
   if (E.paso === 6) {
     actualizarEstimacion();
-    const boton = $("#boton-entrenar");
-    if (boton) boton.disabled = !E.entrenando && pasosConErrores(D).length > 0;
+    if (!E.entrenando) $$("#controles-entrenamiento button").forEach((b) => { b.disabled = pasosConErrores(D).length > 0; });
   }
 }
 
@@ -2741,6 +3143,8 @@ function irA(paso) {
   E.paso = paso;
   E.maxPaso = Math.max(E.maxPaso, paso);
   E.avisoTarea = null;
+  E.avisoEnlace = null;
+  E.avisoArchivoEnlace = null;
   E.simulacion = null;
   renderPaso();
   refrescar();
@@ -2777,7 +3181,27 @@ const ACCIONES = {
     renderPaso();
     refrescar();
   },
-  "dataset-taller"() { cargarDataset(cargarDatosEmbebidos()); },
+  "usar-taller"() {
+    E.datosElegidos = true;
+    renderPaso();
+    refrescar();
+  },
+  "dataset-taller"() {
+    E.configPendiente = null;
+    cargarDataset(cargarDatosEmbebidos());
+  },
+  async "copiar-enlace"(b) {
+    const enlace = enlaceCompartible();
+    await copiarTexto(enlace);
+    const notas = [];
+    if (enlace.startsWith(URL_PUBLICA) && !location.href.startsWith(URL_PUBLICA)) notas.push("es el de GitHub Pages");
+    if (!DATASET.embebido) notas.push(`quien lo abra va a tener que subir ${DATASET.nombre}`);
+    const estado = b.parentElement.querySelector(".estado-enlace");
+    if (estado) {
+      estado.textContent = `Enlace copiado${notas.length ? `: ${notas.join("; ")}` : ""}.`;
+      setTimeout(() => { estado.textContent = ""; }, 6000);
+    }
+  },
   notebook() {
     const enlace = document.createElement("a");
     enlace.href = URL.createObjectURL(new Blob([JSON.stringify(notebookKeras(), null, 1)], { type: "application/x-ipynb+json" }));
@@ -2809,7 +3233,14 @@ const ACCIONES = {
     renderPaso();
     refrescar();
   },
-  entrenar() { alternarEntrenamiento(); },
+  entrenar() { iniciarEntrenamiento(); },
+  "una-epoca"() {
+    if (!E.entrenando) iniciarEntrenamiento({ unaEpoca: true });
+    else { E.unaEpoca = true; E.pausado = false; actualizarControles(); }
+  },
+  pausar() { E.pausado = true; actualizarControles(); },
+  seguir() { E.pausado = false; E.unaEpoca = false; actualizarControles(); },
+  detener() { E.detener = true; E.pausado = false; },
   "guardar-corrida"() {
     const lista = E.garage[E.tarea];
     if (!E.corrida || lista.length >= 4 || lista.some((g) => g.corrida === E.corrida)) return;
@@ -2824,17 +3255,7 @@ const ACCIONES = {
     renderGarage();
   },
   async copiar(b) {
-    const texto = $("#codigo-keras").textContent;
-    try {
-      await navigator.clipboard.writeText(texto);
-    } catch {
-      const area = document.createElement("textarea");
-      area.value = texto;
-      document.body.append(area);
-      area.select();
-      document.execCommand("copy");
-      area.remove();
-    }
+    await copiarTexto($("#codigo-keras").textContent);
     b.textContent = "Copiado";
     setTimeout(() => { b.textContent = "Copiar"; }, 1600);
   },
@@ -2852,6 +3273,8 @@ function cargarDataset(ds) {
   if (E.entrenando) return;
   DATASET = ds;
   cacheParticion.clear();
+  const pendiente = E.configPendiente;
+  Object.assign(E, { configPendiente: null, avisoEnlace: null, avisoArchivoEnlace: null, datosElegidos: true });
   Object.assign(E, {
     paso: 0, maxPaso: 0, tarea: null, objetivo: null, entradasElegidas: [...ds.entradasPorDefecto],
     particion: { ...E.particion, modo: ds.columnaParticion ? "columna" : "azar" }, muestra: true,
@@ -2859,6 +3282,13 @@ function cargarDataset(ds) {
     garage: { binaria: [], multiclase: [], regresion: [], clustering: [] }, cuentaGarage: {},
   });
   sincronizarEntradas();
+  // Si un enlace dejó una configuración esperando este archivo, se aplica ahora.
+  if (pendiente) {
+    restablecerConfiguracion();
+    E.avisoEnlace = aplicarConfiguracion(pendiente.c);
+    if (pendiente.nombre !== ds.nombre) E.avisoArchivoEnlace = { esperado: pendiente.nombre, recibido: ds.nombre };
+  }
+  aplicarModo();
   renderPaso();
   refrescar();
 }
@@ -2947,12 +3377,17 @@ function cambiarCampo(el) {
     case "l2": E.l2 = Number(el.value); break;
     case "early-activo":
       E.early.activo = el.checked;
+      $("#esquema-paciencia").innerHTML = svgPaciencia(E.early.paciencia, E.early.activo);
       $$('[data-campo="paciencia"], [data-campo="restaurar"]').forEach((x) => { x.disabled = !el.checked; });
       break;
-    case "paciencia": E.early.paciencia = Number(el.value); $("#salida-paciencia").textContent = `${el.value} épocas`; break;
+    case "paciencia":
+      E.early.paciencia = Number(el.value);
+      $("#salida-paciencia").textContent = `${el.value} épocas`;
+      $("#esquema-paciencia").innerHTML = svgPaciencia(E.early.paciencia, E.early.activo);
+      break;
     case "restaurar": E.early.restaurar = el.checked; break;
-    case "optimizador": E.optimizador = el.value; break;
-    case "lr": E.lr = Number(el.value); break;
+    case "optimizador": E.optimizador = el.value; $("#trayectoria").innerHTML = svgOptimizador(E.optimizador, E.lr); break;
+    case "lr": E.lr = Number(el.value); $("#trayectoria").innerHTML = svgOptimizador(E.optimizador, E.lr); break;
     case "epocas": E.epocas = Number(el.value); $("#salida-epocas").textContent = el.value; break;
     case "batch": E.batch = Number(el.value); break;
     case "colorear": E.colorearPor = el.value; renderResultado(); return;
@@ -2993,7 +3428,7 @@ function iniciar() {
   // Las explicaciones que alguien abre quedan abiertas al volver a dibujar el paso.
   panel.addEventListener("toggle", (ev) => {
     const d = ev.target;
-    if (d.matches?.("details.porque") && !estudio()) d.open ? E.abiertos.add(d.dataset.clave) : E.abiertos.delete(d.dataset.clave);
+    if (d.matches?.("details.porque, details.plegable") && !estudio()) d.open ? E.abiertos.add(d.dataset.clave) : E.abiertos.delete(d.dataset.clave);
   }, true);
   $(".modo").addEventListener("change", (ev) => {
     E.modo = ev.target.value;
@@ -3002,6 +3437,16 @@ function iniciar() {
     renderPaso();
     refrescar();
   });
+  $(".encabezado").addEventListener("click", (ev) => {
+    const b = ev.target.closest("[data-accion]");
+    if (b && !b.disabled && ACCIONES[b.dataset.accion]) ACCIONES[b.dataset.accion](b);
+  });
+  window.addEventListener("hashchange", () => {
+    const hash = location.hash.replace(/^#/, "");
+    if (hash === hashEscrito || E.entrenando) return;
+    cargarDesdeEnlace(hash);
+  });
+  if (location.hash.length > 1) cargarDesdeEnlace(location.hash.slice(1), false);
   aplicarModo();
   let ancho = 0;
   new ResizeObserver(([entrada]) => {

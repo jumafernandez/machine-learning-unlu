@@ -2,7 +2,7 @@
 
 Configurador interactivo para el taller de apoyo del 03/11 sobre redes feed-forward.
 
-- `index.html`: configurador de un perceptrón multicapa. Se avanza pantalla por pantalla y, en cada una, se toma una decisión de diseño: la vista previa de la red y la cantidad de parámetros entrenables se actualizan con cada elección.
+- `index.html`: configurador de un perceptrón multicapa. Se avanza pantalla por pantalla y, en cada una, se toma una decisión de diseño: la vista previa de la red y la cantidad de parámetros entrenables se actualizan con cada elección. Trabaja con el dataset del taller o con un CSV propio.
 - `generar_datos.py`: generador del dataset sintético de lecturas de sensores de un centro de datos.
 - `embeber_datos.py`: copia el CSV dentro de `index.html`, para que la página funcione sin servidor.
 - `datos/inspeccion_sensores.csv`: 1500 lecturas de sensores generadas con `generar_datos.py`.
@@ -19,14 +19,14 @@ También funciona al abrir el archivo local en el navegador. Es una página auto
 
 Las ocho pantallas siguen la red capa por capa:
 
-1. **Datos y tarea**: muestra del dataset, distribuciones por clase y partición; elección de la tarea (clasificación binaria, clasificación multiclase, regresión o clustering).
-2. **Capa de entrada**: variables de entrada y normalización z-score, con el rango de cada variable antes y después de normalizar.
+1. **Datos y tarea**: dataset del taller o un CSV propio, con el tipo y el rol de cada columna, las distribuciones por clase y la elección de la tarea (clasificación binaria, clasificación multiclase, regresión o clustering) y de la variable objetivo. La partición sale de una columna del archivo o de porcentajes y una semilla.
+2. **Capa de entrada**: variables de entrada, asociación de cada una con la variable objetivo y normalización z-score, con el rango de cada variable antes y después de normalizar.
 3. **Capas ocultas**: de 0 a 3 capas, con neuronas y función de activación.
 4. **Capa de salida**: neuronas y función de activación de salida (k en clustering).
 5. **Función de pérdida**: BCE, CCE, MSE, MAE o MSE contra centroides, cada una con su curva, y la métrica que se reporta.
-6. **Regularización**: dropout por capa, L2 y early stopping.
-7. **Entrenamiento**: optimizador, learning rate, épocas y batch; curvas en vivo, resultado en prueba y comparación de hasta 4 entrenamientos.
-8. **Resumen del modelo**: decisiones, `model.summary()`, cálculo por capa y código Keras listo para Colab.
+6. **Regularización**: dropout por capa, L2 y early stopping, con un esquema de la paciencia.
+7. **Entrenamiento**: optimizador (con su trayectoria sobre un valle de ejemplo), learning rate, épocas y batch. Se puede entrenar, pausar o avanzar de a una época; las curvas se actualizan en vivo y la vista previa muestra el peso de cada conexión. Al final, el resultado en prueba y la comparación de hasta 4 entrenamientos.
+8. **Resumen del modelo**: decisiones, `model.summary()`, cálculo por capa y código Keras para copiar o descargar como notebook (`.ipynb`) y abrir en Colab.
 
 "Siguiente" se bloquea ante un error y deja seguir ante un aviso. Cada error y cada aviso explica por qué, en diálogo con las clases C5 (*Perceptrón y MLP*) y C6 (*Entrenamiento de redes neuronales*) y con la notebook N02 (*FFNN: Guía paso a paso*).
 
@@ -39,7 +39,19 @@ El modo se cambia arriba a la derecha. Para compartir un enlace que abra directa
 
 - [`index.html?modo=estudio`](https://jumafernandez.github.io/machine-learning-unlu/2026/taller-redes-neuronales/?modo=estudio)
 
-## Datos
+## Datos propios
+
+En la primera pantalla se puede subir un CSV con encabezado, separado por coma, punto y coma o tabulación, y con decimales con punto o con coma. El archivo se procesa en el navegador y no se sube a ningún servidor.
+
+- Las columnas numéricas pueden ser entradas; las de texto solo pueden ser variable objetivo.
+- Cada tarea habilita las columnas compatibles como variable objetivo: dos valores para la clasificación binaria, de 3 a 20 para la multiclase y una numérica para la regresión. En clustering, una columna opcional sirve para interpretar los grupos.
+- Se recomiendan hasta 20 variables de entrada y 10.000 filas; con más filas, el configurador ofrece entrenar con una muestra al azar. Los máximos son 200 columnas, 200.000 filas y 25 MB.
+- Si el archivo trae una columna `particion` o `split` con los valores entrenamiento, validacion y prueba (o train, val y test), se puede usar tal cual. Si no, la partición se genera con porcentajes y una semilla, y el código Keras la reproduce con `train_test_split` con los mismos tamaños.
+- Las filas con valores vacíos en las columnas usadas se descartan.
+
+El código generado lee el archivo por su nombre: antes de ejecutarlo en Colab, hay que subirlo al entorno.
+
+## Datos del taller
 
 Cada fila es una lectura de un rack con 8 variables (`temperatura`, `humedad`, `carga_cpu`, `ventiladores_rpm`, `consumo_w`, `errores_disco`, `latencia_ms` y `vibracion`), el `estado` del equipo (normal, termico, electrico, almacenamiento o red), `alerta_real`, `tiempo_reparacion_min` (vacío si el estado es normal) y la `particion`: 900 lecturas de entrenamiento, 300 de validación y 300 de prueba. El 6% de las etiquetas se corrompe a propósito para que exista error irreducible y el sobreajuste se vea en las curvas.
 

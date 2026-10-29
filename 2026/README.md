@@ -21,7 +21,7 @@ El directorio [`primer-parcial/`](primer-parcial/) contiene la resolución del p
 
 El directorio [`taller-redes-neuronales/`](taller-redes-neuronales/) reúne los materiales del taller de apoyo del 3 de noviembre:
 
-- `index.html`: configurador interactivo de un perceptrón multicapa, con vista previa, conteo de parámetros entrenables, entrenamiento en el navegador, resumen del modelo con código Keras y un modo Estudio que explica cada concepto.
+- `index.html`: configurador interactivo de un perceptrón multicapa, con el dataset del taller o un CSV propio, vista previa, conteo de parámetros entrenables, entrenamiento en el navegador, resumen del modelo con código Keras o notebook y un modo Estudio que explica cada concepto.
 - `generar_datos.py`: generador del dataset sintético de lecturas de sensores.
 - `embeber_datos.py`: copia el dataset dentro de `index.html`.
 - `datos/`: lecturas de sensores en CSV.
