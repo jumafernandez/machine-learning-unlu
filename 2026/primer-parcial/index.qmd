@@ -1,6 +1,6 @@
 ---
-title: "De los agentes a las redes neuronales"
-subtitle: "Resolución paso a paso - Primer parcial 2/2026"
+title: "Primer parcial 2/2026"
+subtitle: "Resolución paso a paso"
 lang: es
 format:
   html:
