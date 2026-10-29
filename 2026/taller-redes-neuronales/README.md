@@ -19,7 +19,7 @@ También funciona al abrir el archivo local en el navegador. Es una página auto
 
 Las ocho pantallas siguen la red capa por capa:
 
-1. **Datos y tarea**: dataset del taller o un CSV propio, con el tipo y el rol de cada columna, las distribuciones por clase y la elección de la tarea (clasificación binaria, clasificación multiclase, regresión o clustering) y de la variable objetivo. La partición sale de una columna del archivo o de porcentajes y una semilla.
+1. **Datos y tarea**: se sube un CSV o se cargan los datos de ejemplo. Se ven las primeras filas, como en `df.head()`, se elige la tarea (clasificación binaria, clasificación multiclase, regresión o clustering) y, si es supervisada, la variable objetivo con un clic en su columna. Después aparecen la distribución de la variable objetivo y la partición, que sale de una columna del archivo o de porcentajes y una semilla.
 2. **Capa de entrada**: variables de entrada, asociación de cada una con la variable objetivo y normalización z-score, con el rango de cada variable antes y después de normalizar.
 3. **Capas ocultas**: de 0 a 3 capas, con neuronas y función de activación.
 4. **Capa de salida**: neuronas y función de activación de salida (k en clustering).
@@ -32,12 +32,20 @@ Las ocho pantallas siguen la red capa por capa:
 
 ## Modos
 
-- **Configuración**: solo las decisiones y los avisos; la explicación de cada aviso queda plegada en "¿Por qué?".
-- **Estudio**: cada pantalla abre un recuadro con el concepto que se aplica (neurona y sesgo, activación, función de pérdida, ciclo de entrenamiento, sobreajuste), con su referencia a C5, C6 o N02, y las explicaciones quedan abiertas.
+- **Configuración**: cada pantalla muestra las decisiones, la vista previa y los avisos. Los gráficos secundarios (distribuciones, asociación, escalas, trayectoria del optimizador, esquema de paciencia, `model.summary()`) quedan plegados en "Ver …" y la explicación de cada aviso, en "¿Por qué?".
+- **Estudio**: cada pantalla abre un recuadro con el concepto que se aplica (neurona y sesgo, activación, función de pérdida, ciclo de entrenamiento, sobreajuste), con su referencia a C5, C6 o N02, y todo lo plegado queda abierto.
 
 El modo se cambia arriba a la derecha. Para compartir un enlace que abra directamente en modo Estudio:
 
 - [`index.html?modo=estudio`](https://jumafernandez.github.io/machine-learning-unlu/2026/taller-redes-neuronales/?modo=estudio)
+
+## Compartir una red
+
+La configuración queda en el enlace, en un formato legible que se puede editar a mano. El botón "Copiar enlace a esta red" lo copia; desde la copia local, copia el de GitHub Pages. Al abrirlo, se aplica la red y se abre en el paso indicado. Por ejemplo, este enlace abre en el paso de entrenamiento una red binaria con una capa oculta de 16 neuronas, dropout y early stopping:
+
+- [`#tarea=binaria&objetivo=alerta_real&ocultas=16:relu:0.2&salida=1:sigmoide&perdida=bce&early=10:restaura&paso=7`](https://jumafernandez.github.io/machine-learning-unlu/2026/taller-redes-neuronales/#tarea=binaria&objetivo=alerta_real&ocultas=16:relu:0.2&salida=1:sigmoide&perdida=bce&early=10:restaura&paso=7)
+
+Lo que el enlace no indica toma el valor por defecto, y lo que no se reconoce se ignora con un aviso. Con un CSV propio, el enlace guarda el nombre del archivo: quien lo abra tiene que subir ese archivo, y entonces se aplica la configuración.
 
 ## Datos propios
 

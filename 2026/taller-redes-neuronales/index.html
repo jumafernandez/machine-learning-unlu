@@ -302,6 +302,55 @@ details.plegable > summary:focus-visible { outline: 2px solid var(--acento); out
 .plegable-cuerpo { margin-top: 8px; }
 label.tarjeta-tarea { cursor: pointer; }
 
+/* Primera pantalla: carga y head de los datos */
+.carga { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 28px 20px; margin: 10px 0 8px;
+  border: 2px dashed #b9cfd7; border-radius: 16px; background: #fafcfd; cursor: pointer; transition: background .15s, border-color .15s; }
+.carga:hover, .carga.arrastrando { background: var(--suave); border-color: var(--titulo); }
+.carga:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; }
+.carga strong { font-size: 1.2rem; color: var(--titulo); }
+.carga > span { max-width: 36em; color: var(--texto); }
+.carga .carga-nota { font-size: .86rem; color: var(--secundario); }
+.carga .icono-tarea { max-width: 120px; }
+.ejemplo { text-align: center; color: var(--secundario); font-size: .95rem; }
+button.enlace, label.enlace { background: none; border: 0; padding: 0; color: #2a6a85; font-weight: 600; text-decoration: underline; cursor: pointer; font: inherit; font-weight: 600; position: relative; }
+button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 3px; }
+.datos-encabezado { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 16px; margin: 4px 0 8px; padding: 4px 0; border-radius: 8px; }
+.datos-encabezado.arrastrando { background: var(--suave); outline: 2px dashed var(--titulo); }
+.datos-nombre { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.datos-nombre strong { color: var(--titulo); font-size: 1.05rem; overflow-wrap: anywhere; }
+.datos-nombre span { color: var(--secundario); font-size: .92rem; }
+.datos-acciones { display: flex; gap: 14px; font-size: .92rem; }
+.indicacion { text-align: left; margin: 6px 0 8px; color: var(--secundario); }
+.indicacion.pendiente { color: var(--violeta); font-weight: 600; background: var(--violeta-suave); border-radius: 8px; padding: 8px 12px; }
+.tabla.head { width: auto; min-width: 100%; }
+.tabla.head th { vertical-align: bottom; background: #fff; border-bottom: 2px solid var(--borde); padding: 6px 10px; }
+.tabla.head th button { all: unset; display: flex; flex-direction: column; gap: 2px; cursor: pointer; }
+.tabla.head th button:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }
+.tabla.head .col-nombre { font-weight: 700; color: var(--titulo); font-family: SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; }
+.tabla.head .col-detalle { display: block; font-weight: 400; font-size: .76rem; color: var(--secundario); }
+.tabla.head .chip { margin-top: 3px; }
+.tabla.head td { color: var(--texto); text-align: right; }
+.tabla.head td.indice, .tabla.head th.indice { color: #a2b2b8; font-size: .8rem; text-align: right; background: #fff; }
+.tabla.head tbody tr:nth-child(even) td { background: #fafcfd; }
+.tabla.head .elegible, .tabla.head .clickeable { cursor: pointer; }
+.tabla.head .clickeable:hover { background: var(--violeta-suave) !important; }
+.tabla.head th.entrada { box-shadow: inset 0 -3px 0 var(--titulo); }
+.leyenda-roles { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .82rem; color: var(--secundario); margin: 4px 0 0; text-align: left; }
+.leyenda-roles i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.leyenda-roles i.rol-objetivo { background: var(--violeta); }
+.leyenda-roles i.rol-entrada { background: var(--titulo); }
+.leyenda-roles i.rol-sin-uso { background: #d5dfe3; }
+.tabla.head th.elegible { box-shadow: inset 0 -3px 0 var(--acento); }
+.tabla.head .elegible:hover { background: var(--violeta-suave) !important; }
+.tabla.head .objetivo { background: var(--violeta-suave) !important; color: var(--violeta); font-weight: 600; }
+.tabla.head th.objetivo { box-shadow: inset 0 -3px 0 var(--violeta); }
+.tabla.head .apagada { color: #b5c3c8; }
+.tabla.head .apagada .col-nombre { color: #9fb0b7; }
+.tareas { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.tareas .tarjeta-tarea { padding: 10px 12px; }
+.tareas .icono-tarea { height: 52px; max-width: 110px; }
+.tareas .tarjeta-tarea .texto { font-size: .88rem; }
+
 /* Modo configuración / estudio */
 .encabezado-fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px 28px; flex-wrap: wrap; }
 .modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--titulo); border-radius: 10px; overflow: hidden; max-width: 320px; }
@@ -390,7 +439,8 @@ svg .t-diagrama.grande { font-size: 22px; }
   .hoja-fila { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .precio-total { font-size: 2.2rem; }
   .cifra { min-width: 0; flex: 1 1 120px; }
-  .navegacion .estado { display: none; }
+  .navegacion { flex-wrap: wrap; }
+  .navegacion .estado { order: -1; flex-basis: 100%; text-align: left; font-size: .85rem; }
   .ciclo { grid-template-columns: minmax(0, 1fr); }
   .modo { max-width: none; width: 100%; }
   .encabezado-acciones { align-items: stretch; width: 100%; }
@@ -969,7 +1019,7 @@ function diagnosticar() {
   else if (!m) error(0, "Falta elegir la tarea", "La tarea define qué variable aprende a predecir la red y, con eso, cuántas neuronas de salida necesita y qué función de pérdida corresponde.");
   if (m && m !== "clustering" && !def.objetivo) {
     error(0, "Falta la variable objetivo", columnasCompatibles(m).length
-      ? "Elegí qué columna tiene que predecir la red."
+      ? "Hacé clic en la columna de la tabla que querés predecir."
       : `Ninguna columna del archivo sirve para ${TAREAS[m].titulo.toLowerCase()}: ${{ binaria: "hace falta una con exactamente dos valores", multiclase: "hace falta una con entre 3 y 20 clases", regresion: "hace falta una numérica" }[m]}.`);
   }
   const partes = conteo();
@@ -1564,68 +1614,8 @@ function razonCorrelacion(x, clases, k) {
   return total ? Math.sqrt(entre / total) : 0;
 }
 
-function tarjetaDataset() {
-  return `<div class="dataset" id="zona-archivo">
-    <div class="dataset-info"><span class="etiqueta">Dataset</span><strong>${esc(DATASET.nombre)}</strong><span>${esc(DATASET.descripcion)}</span></div>
-    <div class="acciones">
-      <label class="boton chico">Subir otro CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>
-      ${DATASET.embebido ? "" : '<button type="button" class="boton chico" data-accion="dataset-taller">Usar el dataset del taller</button>'}
-    </div>
-    <div id="error-archivo" aria-live="polite"></div>
-  </div>`;
-}
 
-function tablaMuestra() {
-  const col = DATASET.columnas, def = definirTarea();
-  const deEntrenamiento = (i) => !DATASET.columnaParticion || col[DATASET.columnaParticion][i] === "entrenamiento";
-  const colMuestra = DATASET.sugeridos.multiclase || DATASET.sugeridos.binaria;
-  let filas = [];
-  if (colMuestra && DATASET.info[colMuestra].nDistintos <= 5) {
-    for (const v of DATASET.info[colMuestra].distintos) {
-      const i = col[colMuestra].findIndex((x, j) => x === v && deEntrenamiento(j));
-      if (i >= 0) filas.push(i);
-    }
-  }
-  for (let i = 0; filas.length < 5 && i < DATASET.n; i++) if (!filas.includes(i)) filas.push(i);
-  filas = filas.slice(0, 5);
-  const rol = (c) => {
-    if (c === def?.objetivo) return ["objetivo", "objetivo"];
-    if (c === def?.referencia) return ["referencia", "objetivo"];
-    if (c === DATASET.columnaParticion) return ["partición", "particion"];
-    if (E.entradas.includes(c)) return ["entrada", "entrada"];
-    return [DATASET.info[c].tipo === "texto" ? "texto: no entra" : "no se usa", "sin-uso"];
-  };
-  const visibles = DATASET.orden.slice(0, 16);
-  const cuerpo = visibles.map((c) => {
-    const [texto, clase] = rol(c), info = DATASET.info[c];
-    const unidad = DATASET.variables.find((v) => v.columna === c)?.unidad;
-    const valores = filas.map((i) => {
-      const v = col[c][i];
-      return `<td class="num">${v == null ? '<span class="vacio">vacío</span>' : esc(typeof v === "number" ? num(v, info.decimales ?? 0) : v)}</td>`;
-    }).join("");
-    return `<tr class="${clase === "objetivo" ? "objetivo" : ""}"><th><code>${esc(c)}</code>${unidad ? ` <span class="unidad">${unidad}</span>` : ""}</th>
-      <td><span class="chip tipo-${info.tipo}">${info.tipo === "numero" ? "número" : "texto"}</span></td><td><span class="chip rol-${clase}">${texto}</span></td>${valores}</tr>`;
-  }).join("");
-  const pie = !def ? "Cinco ejemplos del archivo, uno por columna en cada fila. El rol de cada columna cambia según la tarea y las entradas que elijas."
-    : def.objetivo ? `La fila resaltada, <code>${esc(def.objetivo)}</code>, es la variable objetivo.`
-    : def.referencia ? `En clustering no hay variable objetivo: <code>${esc(def.referencia)}</code> solo se usa al final para interpretar los grupos.`
-    : "En clustering no hay variable objetivo.";
-  return `<div class="tabla-scroll"><table class="tabla muestra"><thead><tr><th>Columna</th><th>Tipo</th><th>Rol</th>${filas.map((_, j) => `<th class="num">Ejemplo ${j + 1}</th>`).join("")}</tr></thead>
-    <tbody>${cuerpo}</tbody></table></div>
-    ${DATASET.orden.length > visibles.length ? `<p class="leyenda">Y ${DATASET.orden.length - visibles.length} columnas más.</p>` : ""}<p class="leyenda">${pie}</p>`;
-}
 
-function selectorObjetivo() {
-  const opciones = columnasCompatibles(E.tarea);
-  const resumen = (c) => {
-    const i = DATASET.info[c];
-    if (i.tipo === "numero" && i.nDistintos > 20) return `numérica, de ${valorColumna(c, i.min)} a ${valorColumna(c, i.max)}`;
-    return `${i.nDistintos} valores: ${lista(i.distintos.map((v) => nombreValor(c, v)), 4)}`;
-  };
-  const rotulo = E.tarea === "clustering" ? "Columna para interpretar los grupos (opcional)" : "Variable objetivo";
-  const ninguna = E.tarea === "clustering" ? `<option value="" ${E.objetivo ? "" : "selected"}>Ninguna</option>` : "";
-  return `<div class="grilla-campos"><label class="campo ancho">${rotulo}<select data-campo="objetivo">${ninguna}${opciones.map((c) => `<option value="${esc(c)}" ${c === E.objetivo ? "selected" : ""}>${esc(c)} (${esc(resumen(c))})</option>`).join("")}</select></label></div>`;
-}
 
 // Histogramas por clase en clasificación; en regresión, cada variable contra el objetivo.
 function histogramasVariables() {
@@ -1799,42 +1789,78 @@ function plegable(clave, titulo, html) {
   return `<details class="plegable" data-clave="${esc(clave)}" ${abierto ? "open" : ""}><summary>${titulo}</summary><div class="plegable-cuerpo">${html}</div></details>`;
 }
 
+// Las primeras filas, como df.head(). Con una tarea supervisada, las columnas
+// que sirven como variable objetivo se eligen con un clic.
+function cabezaDatos() {
+  const def = definirTarea(), col = DATASET.columnas;
+  const elegible = (c) => !!E.tarea && compatible(c, E.tarea);
+  const filas = [...Array(Math.min(6, DATASET.n)).keys()];
+  const marcada = (c) => c === def?.objetivo || c === def?.referencia;
+  // Mientras falta el objetivo, se resaltan las candidatas; después, se ve qué es entrada y qué no se usa.
+  const eligiendo = E.tarea && E.tarea !== "clustering" && !def.objetivo;
+  const clase = (c) => {
+    if (!E.tarea) return "";
+    if (marcada(c)) return "objetivo";
+    if (eligiendo) return elegible(c) ? "elegible" : "apagada";
+    return [E.entradas.includes(c) ? "entrada" : "apagada", elegible(c) ? "clickeable" : ""].join(" ").trim();
+  };
+  const encabezados = DATASET.orden.map((c) => {
+    const info = DATASET.info[c];
+    const unidad = DATASET.variables.find((v) => v.columna === c)?.unidad;
+    const rol = c === DATASET.columnaParticion ? "partición" : marcada(c) ? (def.objetivo ? "objetivo" : "referencia") : "";
+    const contenido = `<span class="col-nombre">${esc(c)}</span><span class="col-detalle">${info.tipo === "numero" ? "número" : "texto"}${unidad ? `, ${esc(unidad)}` : ""}</span>${rol ? `<span class="chip ${rol === "partición" ? "rol-particion" : "rol-objetivo"}">${rol}</span>` : ""}`;
+    return `<th class="${clase(c)}">${elegible(c) ? `<button type="button" data-accion="columna" data-columna="${esc(c)}" aria-pressed="${marcada(c)}" title="Usar ${esc(c)} como ${E.tarea === "clustering" ? "referencia" : "variable objetivo"}">${contenido}</button>` : contenido}</th>`;
+  }).join("");
+  const cuerpo = filas.map((i) => `<tr><td class="indice">${i}</td>${DATASET.orden.map((c) => {
+    const v = col[c][i], info = DATASET.info[c];
+    const texto = v == null ? '<span class="vacio">vacío</span>' : esc(typeof v === "number" ? num(v, info.decimales ?? 0) : v);
+    return elegible(c) ? `<td class="${clase(c)}" data-accion="columna" data-columna="${esc(c)}">${texto}</td>` : `<td class="${clase(c)}">${texto}</td>`;
+  }).join("")}</tr>`).join("");
+  const leyenda = E.tarea && !eligiendo ? `<p class="leyenda-roles">${def.objetivo ? '<span><i class="rol-objetivo"></i>objetivo</span>' : def.referencia ? '<span><i class="rol-objetivo"></i>referencia</span>' : ""}<span><i class="rol-entrada"></i>entrada</span><span><i class="rol-sin-uso"></i>no se usa</span></p>` : "";
+  return `<div class="tabla-scroll cabeza"><table class="tabla head"><thead><tr><th class="indice"></th>${encabezados}</tr></thead><tbody>${cuerpo}</tbody></table></div>${leyenda}`;
+}
+
 function pasoDatos() {
   if (!E.datosElegidos) {
     return `<h2>Datos y tarea</h2>
-      <p class="bajada">Elegí con qué datos va a trabajar la red.</p>
+      <p class="bajada">Subí los datos con los que va a trabajar la red.</p>
       ${concepto(0)}
-      <div class="tarjetas">
-        <button type="button" class="tarjeta-tarea" data-accion="usar-taller">${svgIconoDatos("taller")}<strong>Dataset del taller</strong><span class="texto">Lecturas de sensores de racks de un centro de datos: 1500 filas, 8 variables numéricas y 3 columnas que pueden ser variable objetivo.</span></button>
-        <label class="tarjeta-tarea" id="zona-archivo">${svgIconoDatos("archivo")}<strong>Subir un CSV</strong><span class="texto">Con encabezado, separado por coma, punto y coma o tabulación. También podés arrastrarlo acá. Se lee en tu navegador y no se sube a ningún servidor.</span><span class="pie-tarjeta">Recomendado: hasta ${LIMITES.entradasRecomendadas} variables de entrada y ${num(LIMITES.filasRecomendadas)} filas.</span><input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>
-      </div>
-      <div id="error-archivo" aria-live="polite"></div>`;
+      <label class="carga" id="zona-archivo">${svgIconoDatos("archivo")}<strong>Subir un CSV</strong>
+        <span>Arrastralo acá o hacé clic para elegirlo. Con encabezado, separado por coma, punto y coma o tabulación.</span>
+        <span class="carga-nota">Se lee en tu navegador y no se sube a ningún servidor. Recomendado: hasta ${LIMITES.entradasRecomendadas} variables de entrada y ${num(LIMITES.filasRecomendadas)} filas.</span>
+        <input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>
+      <div id="error-archivo" aria-live="polite"></div>
+      <p class="ejemplo">o <button type="button" class="enlace" data-accion="usar-taller">cargá los datos de ejemplo</button>: lecturas de sensores de racks de un centro de datos.</p>`;
   }
+  const def = definirTarea();
+  const supervisada = E.tarea && E.tarea !== "clustering";
   const tarjeta = (clave) => {
     const t = TAREAS[clave], elegida = E.tarea === clave;
-    const sugerido = objetivoPorDefecto(clave);
     const posible = clave === "clustering" || columnasCompatibles(clave).length > 0;
-    const pie = clave === "clustering" ? "Sin variable objetivo" : posible ? `Objetivo sugerido: <code>${esc(sugerido)}</code>` : "Ninguna columna sirve como objetivo";
     return `<button type="button" class="tarjeta-tarea${elegida ? " elegida" : ""}" data-accion="tarea" data-valor="${clave}" aria-pressed="${elegida}" ${posible ? "" : "disabled"}>
-      ${svgIconoTarea(clave)}<strong>${t.titulo}</strong><span class="texto">${t.texto}</span><span class="pie-tarjeta">${pie}</span></button>`;
+      ${svgIconoTarea(clave)}<span class="etiqueta">${clave === "clustering" ? "no supervisado" : "supervisado"}</span><strong>${t.titulo}</strong><span class="texto">${posible ? t.texto : "Ninguna columna de estos datos sirve como variable objetivo."}</span></button>`;
   };
+  let indicacion = "";
+  if (supervisada) indicacion = def.objetivo ? `Variable objetivo: <code>${esc(def.objetivo)}</code>. Hacé clic en otra columna resaltada para cambiarla.` : "Hacé clic en la columna que querés predecir: se resaltan las que sirven para esta tarea.";
+  if (E.tarea === "clustering") indicacion = def.referencia ? `<code>${esc(def.referencia)}</code> se usa solo para interpretar los grupos al final. Hacé clic en ella para quitarla.` : "Sin variable objetivo. Si querés, hacé clic en una columna para usarla al final como referencia de los grupos.";
+  const listo = E.tarea && (def.objetivo || E.tarea === "clustering");
   return `<h2>Datos y tarea</h2>
-    <p class="bajada">Elegí qué querés que prediga la red.</p>
     ${concepto(0)}
-    ${tarjetaDataset()}
-    ${plegable("muestra", "Ver una muestra de los datos", tablaMuestra())}
+    <div class="datos-encabezado" id="zona-archivo">
+      <div class="datos-nombre"><strong>${esc(DATASET.nombre)}</strong><span>${num(DATASET.n)} filas y ${DATASET.orden.length} columnas</span></div>
+      <div class="datos-acciones"><label class="enlace">Subir otro CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>${DATASET.embebido ? "" : '<button type="button" class="enlace" data-accion="dataset-taller">Usar los datos de ejemplo</button>'}</div>
+    </div>
+    <div id="error-archivo" aria-live="polite"></div>
+    ${indicacion ? `<p class="indicacion${supervisada && !def.objetivo ? " pendiente" : ""}">${indicacion}</p>` : ""}
+    ${cabezaDatos()}
     <h3>Tarea</h3>
-    <p class="familia">Aprendizaje supervisado</p>
-    <div class="tarjetas">${["binaria", "multiclase", "regresion"].map(tarjeta).join("")}</div>
-    <p class="familia">Aprendizaje no supervisado</p>
-    <div class="tarjetas">${tarjeta("clustering")}</div>
-    ${E.tarea ? `${selectorObjetivo()}
-    ${distribucionObjetivo()}
+    <div class="tarjetas tareas">${["binaria", "multiclase", "regresion", "clustering"].map(tarjeta).join("")}</div>
+    ${listo ? `${distribucionObjetivo()}
     ${plegable("distribuciones", "Ver las distribuciones de las variables", histogramasVariables())}
     <h3>Partición</h3>
     <div id="barra-particion">${barraParticion()}</div>
     ${plegable("particion", "Cambiar la partición", controlesParticion())}
-    ${DATASET.nota ? `<p class="nota">${DATASET.nota}</p>` : ""}` : '<p class="nota">Elegí una tarea para ver las distribuciones de los datos y la partición.</p>'}`;
+    ${DATASET.nota ? `<p class="nota">${DATASET.nota}</p>` : ""}` : ""}`;
 }
 
 function pasoEntrada() {
@@ -3093,8 +3119,8 @@ function renderPasos(D) {
     const visitado = i <= E.maxPaso;
     const clases = ["paso-boton", i === E.paso ? "actual" : "", visitado ? "visitado" : ""].join(" ");
     let marca = "";
-    if (visitado && D[i].errores.length) marca = '<span class="marca error"></span><span class="sr"> (con errores)</span>';
-    else if (visitado && D[i].avisos.length) marca = '<span class="marca aviso"></span><span class="sr"> (con avisos)</span>';
+    if (visitado && i !== E.paso && D[i].errores.length) marca = '<span class="marca error"></span><span class="sr"> (con errores)</span>';
+    else if (visitado && i !== E.paso && D[i].avisos.length) marca = '<span class="marca aviso"></span><span class="sr"> (con avisos)</span>';
     return `<li><button type="button" class="${clases}" data-paso="${i}" ${!visitado || E.entrenando ? "disabled" : ""} ${i === E.paso ? 'aria-current="step"' : ""}>
       <span class="numero">${i + 1}${marca}</span><span class="nombre">${nombre}</span></button></li>`;
   }).join("");
@@ -3105,9 +3131,13 @@ function bloqueMensaje(tipo, m) {
   return `<div class="mensaje ${tipo}"><strong>${m.titulo}</strong>${directo ? `<p>${m.texto}</p>` : porque(`${tipo}:${m.titulo}`, `<p>${m.texto}</p>`)}</div>`;
 }
 
+// Una decisión que falta tomar no es un error a corregir: se indica en la
+// barra de navegación, sin recuadro.
+const pendiente = (m) => /^Falta/.test(m.titulo);
+
 function renderMensajes(D) {
   const d = D[E.paso];
-  const html = [...d.errores.map((m) => bloqueMensaje("error", m)), ...d.avisos.map((m) => bloqueMensaje("aviso", m))].join("");
+  const html = [...d.errores.filter((m) => !pendiente(m)).map((m) => bloqueMensaje("error", m)), ...d.avisos.map((m) => bloqueMensaje("aviso", m))].join("");
   const propio = $("#mensajes-paso");
   if (propio) { propio.innerHTML = html; $("#mensajes").innerHTML = ""; } else $("#mensajes").innerHTML = html;
 }
@@ -3118,9 +3148,13 @@ function renderNavegacion(D) {
   const siguiente = $("#siguiente");
   siguiente.hidden = E.paso === PASOS.length - 1;
   siguiente.disabled = errores || E.entrenando;
+  const reales = D[E.paso].errores.filter((m) => !pendiente(m));
+  const falta = D[E.paso].errores.find(pendiente);
   $("#estado-nav").textContent = E.entrenando ? "Detené el entrenamiento para cambiar de paso."
-    : errores ? "Resolvé los errores marcados para seguir."
+    : reales.length ? "Resolvé los errores marcados para seguir."
+    : falta ? `${falta.titulo}.`
     : D[E.paso].avisos.length ? "Hay avisos: podés seguir igual." : "";
+  $(".encabezado .compartir").hidden = !E.datosElegidos || !!E.configPendiente;
 }
 
 function refrescar() {
@@ -3161,7 +3195,8 @@ const ACCIONES = {
       E.avisoTarea = "Se limpiaron la capa de salida y la función de pérdida, porque dependen de qué se predice. Volvé a elegirlas en los pasos 4 y 5.";
     }
     E.tarea = nueva;
-    E.objetivo = objetivoPorDefecto(nueva);
+    // La variable objetivo se elige con un clic en la tabla; si la anterior sirve, se conserva.
+    E.objetivo = nueva !== "clustering" && E.objetivo && compatible(E.objetivo, nueva) ? E.objetivo : null;
     sincronizarEntradas();
     E.salida = { neuronas: null, activacion: null };
     E.perdida = null;
@@ -3178,6 +3213,17 @@ const ACCIONES = {
   "ninguna-entrada"() {
     E.entradasElegidas = [];
     sincronizarEntradas();
+    renderPaso();
+    refrescar();
+  },
+  columna(b) {
+    const c = b.dataset.columna;
+    if (!E.tarea || !compatible(c, E.tarea)) return;
+    if (E.tarea === "clustering") E.objetivo = E.objetivo === c ? null : c;
+    else if (E.objetivo === c) return;
+    else E.objetivo = c;
+    sincronizarEntradas();
+    E.corrida = null;
     renderPaso();
     refrescar();
   },
