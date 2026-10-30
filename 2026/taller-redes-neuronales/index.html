@@ -362,10 +362,18 @@ button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2p
 .particion-control .rotulo { height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 0 10px; white-space: nowrap; font-size: .84rem; line-height: 1.25; font-variant-numeric: tabular-nums; }
 .particion-control .rotulo strong { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
 .particion-control .corto { display: none; }
-@container (max-width: 84px) {
-  .particion-control .rotulo { padding: 0; align-items: center; }
-  .particion-control .rotulo strong, .particion-control .largo { display: none; }
+/* En los conjuntos angostos, el rótulo se abrevia y, si no entra, desaparece. */
+@container (max-width: 110px) {
+  .particion-control .rotulo { padding: 0 6px; }
+  .particion-control .largo { display: none; }
   .particion-control .corto { display: inline; }
+}
+@container (max-width: 48px) {
+  .particion-control .rotulo { padding: 0; align-items: center; }
+  .particion-control .rotulo strong { display: none; }
+}
+@container (max-width: 26px) {
+  .particion-control .rotulo { display: none; }
 }
 .tirador { position: absolute; top: -6px; bottom: -6px; width: 26px; transform: translateX(-50%); cursor: ew-resize; display: flex; justify-content: center; z-index: 2; outline: none; }
 .tirador::before { content: ""; width: 7px; border-radius: 4px; background: #fff; box-shadow: 0 0 0 1px rgba(22, 62, 80, .55), 0 1px 4px rgba(0, 0, 0, .25); transition: transform .12s; }
@@ -1685,10 +1693,11 @@ function distribucionObjetivo() {
 // conjunto lo pierde su vecino, en pasos de 5% y con al menos 5% cada uno.
 const COLORES_PARTES = { entrenamiento: "#163e50", validacion: "#6fa6b4", prueba: "#5f5078" };
 const NOMBRES_PARTES = { entrenamiento: "Entrenamiento", validacion: "Validación", prueba: "Prueba" };
+const NOMBRES_CORTOS = { entrenamiento: "Entren.", validacion: "Valid.", prueba: "Prueba" };
 
 function controlesParticion() {
   const p = E.particion;
-  const segmentos = PARTES.map((k) => `<div class="segmento" data-parte="${k}" style="background:${COLORES_PARTES[k]}"><div class="rotulo"><strong>${NOMBRES_PARTES[k]}</strong><span class="largo"></span><span class="corto"></span></div></div>`).join("");
+  const segmentos = PARTES.map((k) => `<div class="segmento" data-parte="${k}" style="background:${COLORES_PARTES[k]}"><div class="rotulo"><strong><span class="largo">${NOMBRES_PARTES[k]}</span><span class="corto">${NOMBRES_CORTOS[k]}</span></strong><span class="largo cantidad"></span><span class="corto cantidad"></span></div></div>`).join("");
   const tirador = (i, etiqueta) => `<div class="tirador" role="slider" tabindex="0" data-limite="${i}" aria-label="${etiqueta}" aria-valuemin="5" aria-valuemax="95"></div>`;
   return `<div class="particion-control" id="control-particion">${segmentos}${tirador(0, "Límite entre entrenamiento y validación")}${tirador(1, "Límite entre validación y prueba")}</div>
     <div class="particion-pie">
@@ -1722,8 +1731,8 @@ function pintarParticion() {
     const k = segmento.dataset.parte;
     segmento.style.flexBasis = `${p[k]}%`;
     segmento.title = `${NOMBRES_PARTES[k]}: ${num(c[k])} filas (${p[k]}%)`;
-    $(".largo", segmento).textContent = `${num(c[k])} (${p[k]}%)`;
-    $(".corto", segmento).textContent = `${p[k]}%`;
+    $(".largo.cantidad", segmento).textContent = `${num(c[k])} (${p[k]}%)`;
+    $(".corto.cantidad", segmento).textContent = `${p[k]}%`;
   }
   $$(".tirador", control).forEach((t, i) => {
     const valor = i === 0 ? p.entrenamiento : p.entrenamiento + p.validacion;
