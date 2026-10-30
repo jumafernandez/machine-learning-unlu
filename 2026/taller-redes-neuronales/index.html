@@ -171,6 +171,43 @@
   --parte-validacion: #3a8ea3;
   --parte-prueba: #6c60c4;
 }
+/* Cabecera: clara, con la grilla y los brillos de dev-ia, en el tema claro; azul noche en el oscuro. */
+:root {
+  --cab-fondo: radial-gradient(900px 420px at 28% -30%, rgba(77, 226, 255, .18), transparent 65%), radial-gradient(700px 380px at 96% 130%, rgba(138, 125, 255, .16), transparent 60%),
+    linear-gradient(180deg, #eef4fb, #ffffff);
+  --cab-borde: #d7e6eb;
+  --cab-grilla: rgba(22, 62, 80, .07);
+  --cab-texto: #22333a;
+  --cab-volanta: #4b46e0;
+  --cab-titulo: linear-gradient(90deg, #0d1530, #163e50 40%, #1b8fae 72%, #5b4fd6);
+  --cab-subtitulo: #59717c;
+  --cab-control-borde: rgba(22, 62, 80, .3);
+  --cab-control-fondo: rgba(255, 255, 255, .75);
+  --cab-control-texto: #163e50;
+  --cab-control-hover: #edf5f7;
+  --cab-separador: #d7e6eb;
+  --cab-ayuda: #59717c;
+  --cab-acento: #1b8fae;
+  --cab-foco: #163e50;
+}
+:root[data-tema="oscuro"] {
+  --cab-fondo: radial-gradient(900px 420px at 28% -20%, rgba(30, 60, 140, .6), transparent 65%), radial-gradient(700px 380px at 96% 120%, rgba(138, 125, 255, .24), transparent 60%),
+    radial-gradient(600px 340px at 0% 120%, rgba(77, 226, 255, .12), transparent 60%), #050b1f;
+  --cab-borde: rgba(120, 160, 255, .22);
+  --cab-grilla: rgba(120, 160, 255, .07);
+  --cab-texto: #e8f1ff;
+  --cab-volanta: rgba(160, 225, 255, .85);
+  --cab-titulo: linear-gradient(90deg, #fff, #d6e9ff 45%, #4de2ff 78%, #8a7dff);
+  --cab-subtitulo: rgba(214, 228, 248, .82);
+  --cab-control-borde: rgba(160, 200, 255, .42);
+  --cab-control-fondo: rgba(10, 18, 40, .5);
+  --cab-control-texto: #e8f1ff;
+  --cab-control-hover: rgba(77, 226, 255, .1);
+  --cab-separador: rgba(160, 200, 255, .22);
+  --cab-ayuda: rgba(200, 220, 245, .75);
+  --cab-acento: #4de2ff;
+  --cab-foco: #ffffff;
+}
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
@@ -199,22 +236,18 @@ button, input, select { font: inherit; color: inherit; }
 .contenedor { max-width: 1260px; margin: 0 auto; padding: 0 24px; }
 
 /* Encabezado y barra de pasos */
-/* La cabecera es la banda azul noche de dev-ia en los dos temas: grilla tenue, brillos y el título en degradé. */
-.encabezado {
-  position: relative; overflow: hidden; padding: 20px 0 18px; border-bottom: 1px solid rgba(120, 160, 255, .22); color: #e8f1ff;
-  background: radial-gradient(900px 420px at 28% -20%, rgba(30, 60, 140, .6), transparent 65%), radial-gradient(700px 380px at 96% 120%, rgba(138, 125, 255, .24), transparent 60%),
-    radial-gradient(600px 340px at 0% 120%, rgba(77, 226, 255, .12), transparent 60%), #050b1f;
-}
+/* La cabecera de dev-ia: grilla tenue, brillos y el título en degradé, con los colores de cada tema. */
+.encabezado { position: relative; overflow: hidden; padding: 20px 0 18px; border-bottom: 1px solid var(--cab-borde); color: var(--cab-texto); background: var(--cab-fondo); }
 .encabezado::before {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background-image: linear-gradient(rgba(120, 160, 255, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 160, 255, .07) 1px, transparent 1px);
+  background-image: linear-gradient(var(--cab-grilla) 1px, transparent 1px), linear-gradient(90deg, var(--cab-grilla) 1px, transparent 1px);
   background-size: 44px 44px;
   -webkit-mask-image: radial-gradient(ellipse at 30% 40%, #000 15%, transparent 75%); mask-image: radial-gradient(ellipse at 30% 40%, #000 15%, transparent 75%);
 }
 .encabezado > .contenedor { position: relative; }
-.volanta { margin: 0 0 .5em; font-family: var(--mono); font-size: .74rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: rgba(160, 225, 255, .85); text-align: left; }
-.encabezado h1 { width: fit-content; margin-bottom: .3em; font-weight: 600; background: linear-gradient(90deg, #fff, #d6e9ff 45%, #4de2ff 78%, #8a7dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.subtitulo { color: rgba(214, 228, 248, .82); text-align: left; max-width: 44em; margin: 0; font-size: .98rem; }
+.volanta { margin: 0 0 .5em; font-family: var(--mono); font-size: .74rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--cab-volanta); text-align: left; }
+.encabezado h1 { width: fit-content; margin-bottom: .3em; font-weight: 600; background: var(--cab-titulo); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.subtitulo { color: var(--cab-subtitulo); text-align: left; max-width: 44em; margin: 0; font-size: .98rem; }
 /* Logo del LICDIA, como en dev-ia: gira el anillo de dígitos y el cerebro queda fijo. Lleva al inicio. */
 .encabezado-titulo { display: flex; align-items: center; gap: 18px; }
 .logo { position: relative; display: block; flex: none; width: 72px; height: 72px; border-radius: 50%; box-shadow: 0 0 14px rgba(77, 226, 255, .5); animation: logo-brillo 3.2s ease-in-out infinite; transition: transform .2s ease; }
@@ -222,7 +255,7 @@ button, input, select { font: inherit; color: inherit; }
 .logo-anillo { -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 78%, #000 80%); mask-image: radial-gradient(circle closest-side, transparent 0 78%, #000 80%); animation: logo-rotar 22s linear infinite; }
 .logo-centro { -webkit-mask-image: radial-gradient(circle closest-side, #000 0 79%, transparent 80%); mask-image: radial-gradient(circle closest-side, #000 0 79%, transparent 80%); }
 .logo:hover { transform: scale(1.08); }
-.logo:focus-visible { outline: 2px solid #4de2ff; outline-offset: 4px; }
+.logo:focus-visible { outline: 2px solid var(--cab-acento); outline-offset: 4px; }
 @keyframes logo-rotar { to { transform: rotate(360deg); } }
 @keyframes logo-brillo { 0%, 100% { box-shadow: 0 0 12px rgba(77, 226, 255, .45); } 50% { box-shadow: 0 0 24px rgba(138, 125, 255, .75), 0 0 6px rgba(77, 226, 255, .8); } }
 @media (prefers-reduced-motion: reduce) { .logo, .logo-anillo { animation: none; } }
@@ -656,29 +689,29 @@ button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2p
 
 /* Modo configuración / estudio */
 .encabezado-fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px 28px; flex-wrap: wrap; }
-/* Controles de la cabecera, sobre la banda azul noche */
+/* Controles de la cabecera */
 .encabezado-controles { display: flex; align-items: flex-start; gap: 10px; }
-.modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid rgba(160, 200, 255, .4); border-radius: 14px; overflow: hidden; max-width: 320px; background: rgba(10, 18, 40, .5); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--cab-control-borde); border-radius: 14px; overflow: hidden; max-width: 320px; background: var(--cab-control-fondo); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .modo-opcion { position: relative; cursor: pointer; flex: 1; }
 .modo-opcion input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.modo-opcion span { display: block; padding: 8px 18px; font-weight: 600; color: #e8f1ff; text-align: center; transition: background .15s; }
-.modo-opcion:hover span { background: rgba(77, 226, 255, .1); }
+.modo-opcion span { display: block; padding: 8px 18px; font-weight: 600; color: var(--cab-control-texto); text-align: center; transition: background .15s; }
+.modo-opcion:hover span { background: var(--cab-control-hover); }
 .modo-opcion:has(input:checked) span { background: linear-gradient(135deg, #4de2ff, #8a7dff); color: #04101f; }
-.modo-opcion:has(input:focus-visible) span { outline: 2px solid #fff; outline-offset: -4px; }
-.modo-ayuda { flex-basis: 100%; margin: 0; padding: 4px 10px; font-size: .82rem; color: rgba(200, 220, 245, .75); text-align: center; border-top: 1px solid rgba(160, 200, 255, .22); hyphens: manual; }
+.modo-opcion:has(input:focus-visible) span { outline: 2px solid var(--cab-foco); outline-offset: -4px; }
+.modo-ayuda { flex-basis: 100%; margin: 0; padding: 4px 10px; font-size: .82rem; color: var(--cab-ayuda); text-align: center; border-top: 1px solid var(--cab-separador); hyphens: manual; }
 .tema {
-  flex: none; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid rgba(160, 200, 255, .45); border-radius: 50%;
-  background: rgba(10, 18, 40, .5); color: #e8f1ff; cursor: pointer; transition: border-color .2s, box-shadow .2s;
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid var(--cab-control-borde); border-radius: 50%;
+  background: var(--cab-control-fondo); color: var(--cab-control-texto); cursor: pointer; transition: border-color .2s, box-shadow .2s;
 }
-.tema:hover { border-color: #4de2ff; box-shadow: 0 0 18px rgba(77, 226, 255, .35); }
-.tema:focus-visible { outline: 2px solid #4de2ff; outline-offset: 3px; }
+.tema:hover { border-color: var(--cab-acento); box-shadow: 0 0 18px rgba(77, 226, 255, .35); }
+.tema:focus-visible { outline: 2px solid var(--cab-acento); outline-offset: 3px; }
 .tema svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tema .icono-luna path { fill: currentColor; stroke: none; }
 :root[data-tema="oscuro"] .tema .icono-luna, :root:not([data-tema="oscuro"]) .tema .icono-sol { display: none; }
-.encabezado .boton { border-color: rgba(160, 200, 255, .45); background: rgba(10, 18, 40, .45); color: #e8f1ff; }
-.encabezado .boton:hover:not(:disabled) { border-color: #4de2ff; background: rgba(77, 226, 255, .1); }
-.encabezado .boton:focus-visible { outline-color: #4de2ff; }
-.encabezado .estado-enlace { color: rgba(200, 220, 245, .75); }
+.encabezado .boton { border-color: var(--cab-control-borde); background: var(--cab-control-fondo); color: var(--cab-control-texto); }
+.encabezado .boton:hover:not(:disabled) { border-color: var(--cab-acento); background: var(--cab-control-hover); }
+.encabezado .boton:focus-visible { outline-color: var(--cab-acento); }
+.encabezado .estado-enlace { color: var(--cab-ayuda); }
 body:not(.modo-estudio) .solo-estudio { display: none !important; }
 .bajada { color: var(--secundario); text-align: left; hyphens: manual; }
 .concepto { background: var(--concepto-fondo); border: 1px solid var(--concepto-borde); border-left: 4px solid var(--violeta); border-radius: 10px; padding: 12px 16px 4px; margin: 6px 0 16px; }
