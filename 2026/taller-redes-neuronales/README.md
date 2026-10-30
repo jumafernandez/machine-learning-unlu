@@ -45,7 +45,7 @@ La configuración queda en el enlace, en un formato legible que se puede editar 
 
 - [`#tarea=binaria&objetivo=alerta_real&ocultas=16:relu:0.2&salida=1:sigmoide&perdida=bce&early=10:restaura&paso=7`](https://jumafernandez.github.io/machine-learning-unlu/2026/taller-redes-neuronales/#tarea=binaria&objetivo=alerta_real&ocultas=16:relu:0.2&salida=1:sigmoide&perdida=bce&early=10:restaura&paso=7)
 
-Lo que el enlace no indica toma el valor por defecto, y lo que no se reconoce se ignora con un aviso. Con un CSV propio, el enlace guarda el nombre del archivo: quien lo abra tiene que subir ese archivo, y entonces se aplica la configuración.
+Lo que el enlace no indica toma el valor por defecto, y lo que no se reconoce se ignora con un aviso. Con un CSV propio, el enlace guarda el nombre del archivo: quien lo abra tiene que subir ese archivo, y entonces se aplica la configuración. Para empezar de cero, el logo del LICDIA, arriba a la izquierda, vuelve al inicio sin la configuración del enlace.
 
 ## Datos propios
 
