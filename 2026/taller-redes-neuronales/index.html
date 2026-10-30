@@ -184,9 +184,6 @@ input[type=checkbox] { accent-color: var(--titulo); width: 17px; height: 17px; }
 .sensor .unidad { color: var(--violeta); font-size: .88rem; }
 .sensor .rango { display: block; color: var(--secundario); font-size: .85rem; }
 .dimension { font-size: 1.05rem; text-align: left; }
-.capas { display: grid; gap: 10px; margin: 10px 0; }
-.capa { border: 1px solid var(--borde); border-radius: 12px; padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 14px; }
-.capa-encabezado { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; color: var(--titulo); }
 .grilla-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; margin: 10px 0; }
 .grilla-campos .ancho { grid-column: 1 / -1; }
 
@@ -273,9 +270,11 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .grilla-entrenamiento .campo-epocas { grid-column: 1 / -1; }
 .tablero-vivo { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; margin-top: 10px; }
 .tablero-vivo > * { grid-column: span 4; }
-.tablero-vivo > .panel-red, .tablero-vivo > .panel-registro { grid-column: span 7; }
-.tablero-vivo > .panel-aprende, .tablero-vivo > .panel-diagnostico { grid-column: span 5; }
-.tablero-vivo > .grafico { margin: 0; }
+.tablero-vivo > .panel-red { grid-column: 1 / -1; }
+.tablero-vivo > .panel-registro { grid-column: span 7; }
+.tablero-vivo > .panel-diagnostico { grid-column: span 5; }
+.panel-curvas { display: grid; gap: 14px; align-content: start; }
+.panel-curvas .grafico { margin: 0; }
 .panel-vivo { min-width: 0; border: 1px solid var(--borde); border-radius: 10px; padding: 10px 12px 8px; }
 .panel-vivo .cabecera { display: flex; justify-content: space-between; align-items: baseline; gap: 2px 10px; flex-wrap: wrap; margin-bottom: 6px; }
 .panel-vivo h3 { margin: 0; font-size: .95rem; }
@@ -301,6 +300,60 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .grafico-chico { margin: 0; }
 .grafico-chico figcaption { font-weight: 600; color: var(--titulo); font-size: .86rem; margin-bottom: 2px; }
 .grafico-chico svg { width: 100%; height: auto; display: block; }
+.panel-red .red-herramientas { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 2px 0 8px; }
+.red-contador { display: inline-flex; align-items: center; gap: 6px; color: var(--secundario); font-size: .92rem; }
+.red-contador strong { min-width: 1.3em; text-align: center; color: var(--titulo); font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.boton.activo { background: var(--titulo); border-color: var(--titulo); color: #fff; }
+.boton.activo:hover:not(:disabled) { background: #0e2c39; }
+.red-navegar { display: inline-flex; gap: 4px; }
+.red-ejemplo { color: var(--secundario); font-size: .9rem; }
+.red-desplazable { overflow-x: auto; }
+.red-desliza { margin: 4px 0 0; }
+.red-escena { position: relative; margin: 0 auto; }
+.red-escena canvas { display: block; }
+.red-nodo { position: absolute; padding: 0; border: 0; border-radius: 3px; background: transparent; cursor: pointer; }
+.red-nodo:hover { box-shadow: 0 0 0 2px var(--acento); }
+.red-nodo:focus-visible { outline: 2px solid var(--violeta); outline-offset: 2px; }
+.red-neuronas { position: absolute; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px; border: 1px solid var(--borde); border-radius: 9px; background: #fff; font-size: .85rem; font-variant-numeric: tabular-nums; }
+.red-neuronas button { width: 24px; height: 22px; border: 0; border-radius: 7px; background: var(--suave); color: var(--titulo); font-weight: 700; cursor: pointer; }
+.red-neuronas button:disabled { opacity: .35; cursor: not-allowed; }
+.red-neuronas button:focus-visible { outline: 2px solid var(--acento); }
+.red-neuronas span { min-width: 2.2em; text-align: center; color: var(--titulo); font-weight: 600; }
+.red-titulo-capa { position: absolute; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; padding: 3px 9px; border: 1px solid var(--borde); border-radius: 9px; background: #fff; color: var(--titulo); font-size: .82rem; line-height: 1.25; white-space: nowrap; cursor: pointer; }
+.red-titulo-capa span { color: var(--secundario); font-size: .76rem; }
+.red-titulo-capa:hover, .red-titulo-capa.abierta { border-color: var(--titulo); background: var(--suave); }
+.red-titulo-capa:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.red-menu { position: absolute; z-index: 5; width: 272px; display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--titulo); border-radius: 12px; background: #fff; box-shadow: 0 8px 24px rgba(22, 62, 80, .18); }
+.red-menu-titulo { display: flex; justify-content: space-between; align-items: center; color: var(--titulo); }
+.red-menu-activaciones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+.opcion-act { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; border: 1px solid var(--borde); border-radius: 8px; color: var(--titulo); font-size: .78rem; cursor: pointer; }
+.opcion-act input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.opcion-act:has(input:checked) { border-color: var(--titulo); background: var(--suave); box-shadow: inset 0 0 0 1px var(--titulo); }
+.opcion-act:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; }
+.opcion-act svg { width: 54px; height: 34px; }
+.red-globo { position: absolute; z-index: 6; transform: translate(-50%, calc(-100% - 12px)); padding: 4px 8px; border-radius: 6px; background: var(--titulo); color: #fff; font-size: .8rem; white-space: nowrap; pointer-events: none; }
+.inspector { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--borde); }
+.inspector p { margin: 0 0 .5em; text-align: left; }
+.inspector .pista { color: var(--secundario); font-size: .88rem; }
+.inspector-cabecera { display: flex; align-items: baseline; gap: 6px 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.inspector-cabecera strong { color: var(--titulo); }
+.inspector-cabecera .boton { margin-left: auto; }
+.formula { padding: 6px 10px; border-radius: 8px; background: var(--violeta-suave); color: var(--violeta); font-family: SFMono-Regular, Menlo, Consolas, monospace; font-size: .84rem; overflow-wrap: anywhere; }
+.inspector .calculo { color: var(--titulo); font-variant-numeric: tabular-nums; }
+.inspector-graficos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 340px)); gap: 12px 24px; margin-top: 6px; }
+.inspector-graficos figure { margin: 0; min-width: 0; }
+.inspector-graficos figcaption { margin-bottom: 4px; color: var(--titulo); font-size: .84rem; font-weight: 600; }
+.inspector-graficos svg { width: 100%; height: auto; display: block; }
+.mapa-neurona { display: block; width: 100%; max-width: 280px; height: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.parametros-editor { display: grid; gap: 4px; margin-top: 14px; }
+.parametros-total { display: flex; align-items: baseline; gap: 10px; color: var(--secundario); }
+.parametros-total strong { color: var(--titulo); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.parametros-total em { color: var(--secundario); font-size: .85rem; }
+.parametros-editor .barra-parametros { margin: 2px 0; }
+.parametros-lista { display: flex; flex-wrap: wrap; gap: 2px 18px; margin: 0; padding: 0; list-style: none; color: var(--secundario); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.parametros-lista strong { color: var(--titulo); }
+.parametros-lista i.punto { display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 2px; }
+.parametros-lista .centroides { color: var(--violeta); }
 p.estado-entrenamiento { margin: 4px 0 8px; text-align: left; min-height: 1.4em; }
 
 .barra-parametros { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0 2px; background: #eef3f5; }
@@ -465,7 +518,6 @@ svg .t-diagrama.grande { font-size: 22px; }
 .objetivo-dist .barra { grid-template-columns: 120px minmax(0, 1fr) 44px; }
 .histograma-objetivo { width: 100%; max-width: 420px; height: auto; display: block; }
 .escalas { margin-top: 10px; }
-.capa-curva { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; color: var(--secundario); font-size: .88rem; }
 .curva { flex: none; display: block; }
 .opcion.con-curva { display: flex; gap: 12px; align-items: center; }
 .opciones-perdida { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
@@ -499,8 +551,9 @@ svg .t-diagrama.grande { font-size: 22px; }
   .precio-movil strong { color: var(--titulo); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
   .graficos { grid-template-columns: minmax(0, 1fr); }
   .tablero-vivo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tablero-vivo > *, .tablero-vivo > .panel-red, .tablero-vivo > .panel-registro, .tablero-vivo > .panel-aprende, .tablero-vivo > .panel-diagnostico { grid-column: 1 / -1; }
-  .tablero-vivo > .grafico { grid-column: span 1; }
+  .tablero-vivo > *, .tablero-vivo > .panel-red, .tablero-vivo > .panel-registro, .tablero-vivo > .panel-diagnostico { grid-column: 1 / -1; }
+  .tablero-vivo > .panel-aprende, .tablero-vivo > .panel-optimizador { grid-column: span 1; }
+  .panel-curvas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grilla-entrenamiento { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .grilla-entrenamiento .campo-optimizador { grid-column: 1 / -1; }
 }
@@ -514,7 +567,7 @@ svg .t-diagrama.grande { font-size: 22px; }
   .paso-boton.actual { font-weight: 600; }
   .panel { padding: 16px 14px; }
   .tarjeta { padding: 12px 14px; }
-  .sensores, .grilla-campos, .capa { grid-template-columns: minmax(0, 1fr); }
+  .sensores, .grilla-campos { grid-template-columns: minmax(0, 1fr); }
   .hoja-fila { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .precio-total { font-size: 2.2rem; }
   .cifra { min-width: 0; flex: 1 1 120px; }
@@ -526,7 +579,8 @@ svg .t-diagrama.grande { font-size: 22px; }
   .compartir { justify-content: space-between; }
   .objetivo-dist .barra { grid-template-columns: 96px minmax(0, 1fr) 40px; }
   .tablero-vivo { grid-template-columns: minmax(0, 1fr); }
-  .tablero-vivo > .grafico { grid-column: 1 / -1; }
+  .tablero-vivo > .panel-aprende, .tablero-vivo > .panel-optimizador { grid-column: 1 / -1; }
+  .panel-curvas { grid-template-columns: minmax(0, 1fr); }
   .grilla-entrenamiento { grid-template-columns: minmax(0, 1fr); }
   .consola { padding: 10px 12px; gap: 10px 16px; }
   .velocidad { margin-left: 0; }
@@ -993,6 +1047,9 @@ const E = {
   historial: { binaria: [], multiclase: [], regresion: [], clustering: [] },
   cuentaHistorial: {},
   colorearPor: "grupo",
+  redSeleccion: null,
+  redEjemplo: null,
+  capaAbierta: null,
   modo: modoInicial(),
   abiertos: new Set(),
   factorTiempo: 1,
@@ -1233,8 +1290,9 @@ function dibujarRed() {
   const contenedor = $("#red");
   const W = Math.max(300, Math.round(contenedor.clientWidth || 420)), H = 386;
   const compacto = W < 420;
-  const mIzq = compacto ? 58 : 106, mDer = compacto ? 70 : 84;
   const R = compacto ? 9 : 10, separacion = 28, yBias = 46, yCentro = 198, yTitulo = 326;
+  const largoSalida = Math.max(0, ...etiquetasSalida(compacto).map((t) => (t.includes(" ") ? Math.ceil(t.length / 2) : t.length)));
+  const mIzq = compacto ? 58 : 106, mDer = Math.min(130, Math.max(compacto ? 70 : 84, R + 10 + 6.2 * largoSalida));
   const variables = E.entradas.map((c) => DATASET.variables.find((v) => v.columna === c));
   const nc = E.ocultas.length + 2;
   const espacio = (W - mIzq - mDer) / (nc - 1);
@@ -1302,12 +1360,15 @@ function dibujarRed() {
       });
     }
     // Rótulos: dropout arriba; nombre, neuronas y activación abajo.
-    if (c.tipo === "oculta" && c.dropout > 0) textos += `<text x="${c.x}" y="18" text-anchor="middle" class="t-dropout">dropout ${decimal(c.dropout)}</text>`;
+    if (c.tipo === "oculta" && c.dropout > 0) textos += `<text x="${c.x}" y="18" text-anchor="middle" class="t-dropout">${espacio < 70 ? "" : "dropout "}${decimal(c.dropout)}</text>`;
     const neuronas = c.tipo === "entrada" ? `${c.n} ${c.n === 1 ? "variable" : "variables"}` : !c.n ? "¿neuronas?" : espacio < 62 ? num(c.n) : `${num(c.n)} ${c.n === 1 ? "neurona" : "neuronas"}`;
-    const activacion = c.tipo === "entrada" ? (E.normalizar ? "z-score" : "sin normalizar") : c.act ? ACTIVACIONES[c.act].nombre : "¿activación?";
-    textos += `<text x="${c.x}" y="${yTitulo}" text-anchor="middle" class="t-titulo">${c.titulo}</text>`;
-    textos += `<text x="${c.x}" y="${yTitulo + 17}" text-anchor="middle" class="t-sub">${neuronas}</text>`;
-    textos += `<text x="${c.x}" y="${yTitulo + 33}" text-anchor="middle" class="t-act">${activacion}</text>`;
+    const corta = { sigmoide: "sigm.", lineal: "lin.", softmax: "softm." }[c.act];
+    const activacion = c.tipo === "entrada" ? (E.normalizar ? "z-score" : "sin normalizar") : c.act ? (espacio < 48 && corta) || ACTIVACIONES[c.act].nombre : "¿activación?";
+    // Con columnas angostas, los rótulos de la entrada y de la salida se corren hacia afuera.
+    const [xr, ancla] = espacio >= 60 || c.tipo === "oculta" ? [c.x, "middle"] : c.tipo === "entrada" ? [c.x + R + 2, "end"] : [c.x - R - 2, "start"];
+    textos += `<text x="${xr}" y="${yTitulo}" text-anchor="${ancla}" class="t-titulo">${c.titulo}</text>`;
+    textos += `<text x="${xr}" y="${yTitulo + 17}" text-anchor="${ancla}" class="t-sub">${neuronas}</text>`;
+    textos += `<text x="${xr}" y="${yTitulo + 33}" text-anchor="${ancla}" class="t-act">${activacion}</text>`;
     if (c.tipo === "salida" && E.tarea === "clustering" && c.n) {
       textos += `<text x="${c.x}" y="${yTitulo + 50}" text-anchor="middle" class="t-dropout">+ centroides ${c.n} × ${E.entradas.length}</text>`;
     }
@@ -1545,7 +1606,7 @@ function svgOptimizador(opt, lr) {
   </svg><p class="leyenda">${OPTIMIZADORES[opt].nombre} con learning rate ${decimal(lr)}, ${pasos} pasos: ${lectura} Es una ilustración en una función de dos pesos con forma de valle alargado; no es la pérdida de esta red.</p>`;
 }
 
-const COLORES_CAPAS = ["#163e50", "#3d6e83", "#6fa6b4"];
+const COLORES_CAPAS = ["#163e50", "#2b5569", "#3d6e83", "#56899c", "#6fa6b4", "#8eb9c3"];
 function colorSegmento(fila) {
   if (fila.tipo === "centroides") return "#5f5078";
   if (fila.nombre === "Salida") return "#d08c2f";
@@ -1994,7 +2055,7 @@ function svgCapaEntrada(ancho) {
       const ys = Array.from({ length: m }, (_, j) => yMedio + (j - (m - 1) / 2) * 24);
       for (const ya of previas) for (const yb of ys) aristas += `<line x1="${xPrevio}" y1="${ya}" x2="${x.toFixed(1)}" y2="${yb}"/>`;
       for (const yb of ys) nodos += `<circle cx="${x.toFixed(1)}" cy="${yb}" r="7" class="nodo-atenuado"/>`;
-      textos += `<text x="${x.toFixed(1)}" y="${d.alto - 6}" text-anchor="middle" class="t-capa">${capa.titulo}</text>`;
+      textos += `<text x="${x.toFixed(1)}" y="${d.alto - 6}" text-anchor="middle" class="t-capa">${paso < 64 ? capa.titulo.replace("Oculta ", "Oc. ") : capa.titulo}</text>`;
       previas = ys;
       xPrevio = x.toFixed(1);
     });
@@ -2073,17 +2134,11 @@ function pasoEntrada() {
 }
 
 function pasoCapas() {
-  const capas = E.ocultas.map((c, i) => `<div class="capa">
-      <div class="capa-encabezado"><strong>Oculta ${i + 1}</strong><button type="button" class="boton chico" data-accion="quitar-capa" data-indice="${i}">Quitar</button></div>
-      <label class="campo">Neuronas<select data-campo="neuronas" data-indice="${i}">${NEURONAS_OCULTAS.map((n) => `<option value="${n}" ${n === c.neuronas ? "selected" : ""}>${n}</option>`).join("")}</select></label>
-      <label class="campo">Función de activación<select data-campo="activacion" data-indice="${i}">${ACT_OCULTAS.map((a) => `<option value="${a}" ${a === c.activacion ? "selected" : ""}>${ACTIVACIONES[a].nombre}</option>`).join("")}</select></label>
-      <div class="capa-curva" id="curva-oculta-${i}">${svgCurvaActivacion(c.activacion)}<span>${ACTIVACIONES[c.activacion].rango}</span></div>
-    </div>`).join("");
   return `<h2>Capas ocultas</h2>
-    <p class="bajada">De 0 a 3 capas: para cada una, la cantidad de neuronas y la función de activación.</p>
+    <p class="bajada">De 0 a ${MAXIMO_OCULTAS} capas. Sumá o quitá capas y neuronas sobre la red; con un clic en el nombre de una capa elegís su función de activación y su dropout, y con un clic en una neurona ves qué calcula.</p>
     ${concepto(2)}
-    <div class="capas">${capas || '<p class="nota">Sin capas ocultas: las entradas van directo a la salida, como en el perceptrón.</p>'}</div>
-    <div class="acciones"><button type="button" class="boton" data-accion="agregar-capa" ${E.ocultas.length >= 3 ? "disabled" : ""}>+ Agregar capa oculta</button></div>`;
+    <section class="panel-vivo panel-red editor-red"><div class="cabecera"><h3>Red</h3><span class="dato" id="dato-red"></span></div>${panelRed(true)}</section>
+    <div class="parametros-editor" id="parametros-editor"></div>`;
 }
 
 function pasoSalida() {
@@ -2195,11 +2250,10 @@ function pasoEntrenamiento() {
     </div>
     <p class="estado-entrenamiento" id="estado-entrenamiento" aria-live="polite"></p>
     <div class="tablero-vivo">
-      ${panel("panel-red", "Red", "red", '<div class="lienzo-vivo" id="red-viva" role="img" aria-label="Red con sus pesos y la salida de cada neurona"></div><p class="leyenda" id="leyenda-red-viva"></p>')}
+      ${panel("panel-red", "Red", "red", panelRed(false))}
       ${panel("panel-aprende", TITULOS_APRENDE[E.tarea] || "Lo que aprende la red", "aprende", '<div class="lienzo-vivo" id="vista-aprende" role="img" aria-label="Lo que aprende la red sobre los datos de validación"></div><div class="leyenda-grafico" id="claves-aprende"></div><p class="leyenda solo-estudio" id="leyenda-aprende"></p>')}
-      <figure class="grafico" id="grafico-perdida"></figure>
-      <figure class="grafico" id="grafico-metrica"></figure>
       ${panel("panel-optimizador", "Recorrido del optimizador", "optimizador", '<div class="lienzo-vivo" id="vista-optimizador" role="img" aria-label="Recorrido de los pesos sobre la superficie de pérdida"></div><div class="leyenda-grafico" id="claves-optimizador"></div><p class="leyenda solo-estudio" id="leyenda-optimizador"></p>')}
+      <div class="panel-curvas"><figure class="grafico" id="grafico-perdida"></figure><figure class="grafico" id="grafico-metrica"></figure></div>
       ${panel("panel-registro", "Registro", "registro", '<pre class="registro" id="registro" tabindex="0" aria-label="Registro del entrenamiento, como el de Keras"></pre>', "como <code>model.fit(..., verbose=2)</code>")}
       ${panel("panel-diagnostico", "Pesos y gradientes", "diagnostico", '<div id="diagnostico"></div>')}
     </div>
@@ -2532,36 +2586,26 @@ function calcularMetrica(tipo, k, pred, datos, parte) {
   return promedio(clases.map((c, i) => (c === datos.y[parte][i] ? 1 : 0)));
 }
 
-async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () => false, esperar = async () => {}, ritmo = () => 0, telemetria = {} } = {}) {
-  await prepararBackend();
-  const tipo = cfg.tarea, k = cfg.salida.neuronas, n = datos.X.entrenamiento.length;
-  // Una sola semilla fija los pesos iniciales, el orden de los lotes y las máscaras de dropout.
-  const semilla = cfg.semillaPesos ?? cfg.semilla ?? 42;
-  const azarLotes = mulberry32(semilla + 1), azarDropout = mulberry32(semilla + 2);
-  const T = {};
-  for (const p of PARTES) {
-    T[p] = tf.tidy(() => {
-      const X = tf.tensor2d(datos.X[p], [datos.X[p].length, datos.d]);
-      if (tipo === "clustering") return { X };
-      if (tipo === "regresion" || k === 1) return { X, Y: tf.tensor2d(datos.y[p], [datos.y[p].length, 1]) };
-      return { X, Y: tf.oneHot(tf.tensor1d(datos.y[p], "int32"), k).toFloat() };
-    });
-  }
-
-  // Capas densas aplicadas a mano. El dropout usa máscaras propias para que la semilla las fije.
-  const capas = [], ocultas = [];
+// Capas, variables y estructura de la red, con la inicialización que fija la semilla.
+// Las capas densas se aplican a mano y el dropout usa máscaras propias, para que la
+// semilla también las fije. Sin capa de salida (en el editor, antes de elegirla), arma
+// solo las ocultas.
+function construirRed(cfg, datos) {
+  const semilla = cfg.semillaPesos ?? cfg.semilla ?? 42, k = cfg.salida.neuronas;
+  const conSalida = Boolean(k && cfg.salida.activacion);
   const densa = (unidades, activacion, i) => tf.layers.dense({ units: unidades, activation: ACTIVACIONES[activacion].tf, kernelInitializer: tf.initializers.glorotUniform({ seed: semilla + 101 * (i + 1) }) });
+  const capas = [], ocultas = [];
   cfg.ocultas.forEach((c, i) => {
     const capa = densa(c.neuronas, c.activacion, i);
     capas.push({ densa: capa });
     ocultas.push(capa);
     if (c.dropout > 0) capas.push({ tasa: c.dropout, oculta: i });
   });
-  capas.push({ densa: densa(k, cfg.salida.activacion, cfg.ocultas.length) });
+  if (conSalida) capas.push({ densa: densa(k, cfg.salida.activacion, cfg.ocultas.length) });
   const densas = capas.filter((c) => c.densa).map((c) => c.densa);
-  tf.tidy(() => { densas.reduce((h, d) => d.apply(h), tf.zeros([1, datos.d])); });
+  if (densas.length) tf.tidy(() => { densas.reduce((h, d) => d.apply(h), tf.zeros([1, datos.d])); });
   let centroides = null;
-  if (tipo === "clustering") {
+  if (cfg.tarea === "clustering" && conSalida) {
     const iniciales = tf.tensor2d(kmeansMasMas(datos.X.entrenamiento, k, mulberry32(semilla)));
     centroides = tf.variable(iniciales);
     iniciales.dispose();
@@ -2569,10 +2613,6 @@ async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () =>
   // varList explícita: los pesos de esta red y sus centroides, nada de corridas anteriores.
   const variables = densas.flatMap((d) => d.trainableWeights.map((w) => w.read()));
   if (centroides) variables.push(centroides);
-  const kernels = densas.map((d) => d.trainableWeights[0].read());
-  const optimizador = cfg.optimizador === "adam" ? tf.train.adam(cfg.lr, 0.9, 0.999, 1e-7)
-    : cfg.optimizador === "momentum" ? tf.train.momentum(cfg.lr, 0.9) : tf.train.sgd(cfg.lr);
-
   // Todos los parámetros en un vector (theta), en el orden de las variables, para el tablero.
   const estructura = {
     capas: densas.map((d, i) => ({ entradas: d.trainableWeights[0].shape[0], salidas: d.units, act: i < cfg.ocultas.length ? cfg.ocultas[i].activacion : cfg.salida.activacion })),
@@ -2585,6 +2625,29 @@ async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () =>
     for (const v of variables) { theta.set(v.dataSync(), o); o += v.size; }
     return theta;
   };
+  return { capas, ocultas, densas, centroides, variables, estructura, leerTheta, semilla };
+}
+
+async function entrenarRed(cfg, datos, { alEpoca = () => {}, debeDetener = () => false, esperar = async () => {}, ritmo = () => 0, telemetria = {} } = {}) {
+  await prepararBackend();
+  const tipo = cfg.tarea, k = cfg.salida.neuronas, n = datos.X.entrenamiento.length;
+  const T = {};
+  for (const p of PARTES) {
+    T[p] = tf.tidy(() => {
+      const X = tf.tensor2d(datos.X[p], [datos.X[p].length, datos.d]);
+      if (tipo === "clustering") return { X };
+      if (tipo === "regresion" || k === 1) return { X, Y: tf.tensor2d(datos.y[p], [datos.y[p].length, 1]) };
+      return { X, Y: tf.oneHot(tf.tensor1d(datos.y[p], "int32"), k).toFloat() };
+    });
+  }
+
+  // La semilla fija los pesos iniciales, el orden de los lotes y las máscaras de dropout.
+  const { capas, ocultas, densas, centroides, variables, estructura, leerTheta, semilla } = construirRed(cfg, datos);
+  const azarLotes = mulberry32(semilla + 1), azarDropout = mulberry32(semilla + 2);
+  const kernels = densas.map((d) => d.trainableWeights[0].read());
+  const optimizador = cfg.optimizador === "adam" ? tf.train.adam(cfg.lr, 0.9, 0.999, 1e-7)
+    : cfg.optimizador === "momentum" ? tf.train.momentum(cfg.lr, 0.9) : tf.train.sgd(cfg.lr);
+
   // Pesos de cada capa densa (kernel de entradas × neuronas) para la vista previa.
   const pesosDe = (theta) => redPlana(estructura, theta).capas.map((c) => ({ entradas: c.entradas, neuronas: c.salidas, valores: c.W.slice() }));
 
@@ -3269,16 +3332,18 @@ function crearTelemetria(cfg, datos) {
   const puntos = {
     n: iv.length, X: plana(datos.X.validacion, iv), pos: iv.map((i) => plano.proyectar(datos.X.validacion[i])),
     y: def?.objetivo ? iv.map((i) => datos.y.validacion[i]) : null,
+    referencia: def?.referencia ? iv.map((i) => datos.referencia.validacion[i]) : null,
+    filas: iv.map((i) => datos.filas.validacion[i]),
   };
   const ie = elegir(datos.X.entrenamiento.length, 256);
   let Y = null;
-  if (def?.objetivo) {
+  if (def?.objetivo && k) {
     const unaColumna = cfg.tarea === "regresion" || k === 1;
     Y = new Float32Array(ie.length * (unaColumna ? 1 : k));
     ie.forEach((i, r) => { const v = datos.y.entrenamiento[i]; if (unaColumna) Y[r] = v; else Y[r * k + v] = 1; });
   }
   return {
-    id: ++contadorCorridas, config: cfg, d, k, def, plano, GX, GY, ca, cb, grilla, puntos,
+    id: ++contadorCorridas, config: cfg, d, k, def, plano, GX, GY, ca, cb, grilla, puntos, media: datos.media, desvio: datos.desvio,
     muestra: { n: ie.length, X: plana(datos.X.entrenamiento, ie), Y }, estructura: null, recorrido: null, mascaras: {}, theta: null,
   };
 }
@@ -3369,7 +3434,7 @@ function telemetriaPrevia() {
   if (tablero.previa?.clave === clave) return tablero.previa.tel;
   let tel = null;
   try {
-    if (!pasosConErrores(diagnosticar()).length) tel = crearTelemetria(cfg, prepararDatos(cfg));
+    if (cfg.tarea && cfg.entradas.length) tel = crearTelemetria(cfg, prepararDatos(cfg));
   } catch {
     tel = null;
   }
@@ -3380,14 +3445,13 @@ function telemetriaPrevia() {
 // Color de una neurona en cada celda del plano: entradas y ocultas en azul
 // (positivo) o ámbar (negativo); la salida, con los colores de cada clase.
 function colorNeurona(tel, vista, columna, u) {
-  const nc = tel.estructura.capas.length + 1;
   if (columna === 0) {
     const v1 = tel.plano.v1[u], v2 = tel.plano.v2[u];
     const tope = Math.max(...[0, tel.GX - 1].flatMap((fx) => [0, tel.GY - 1].map((fy) => Math.abs(tel.ca[fx] * v1 + tel.cb[fy] * v2)))) || 1;
     return (g) => divergente((tel.ca[g % tel.GX] * v1 + tel.cb[Math.floor(g / tel.GX)] * v2) / tope);
   }
   const salidas = vista.grilla[columna - 1], ancho = tel.estructura.capas[columna - 1].salidas;
-  if (columna === nc - 1) {
+  if (columna === tel.config.ocultas.length + 1) {
     if (tel.config.tarea === "regresion" || ancho === 1) return (g) => colorSalida(tel, salidas, g);
     const color = rgb(colorDe(tel, u));
     return (g) => tinte(color, salidas[g * ancho + u]);
@@ -3404,91 +3468,566 @@ function textoAjustado(ctx, texto, x, y, maximo) {
   ctx.fillText(texto.slice(corte + 1), x, y + 7);
 }
 
-// La red en vivo: el grosor y el color de cada conexión siguen al peso, y
-// cada neurona muestra su salida sobre el plano de las componentes principales.
-function pintarRedViva(cont, f) {
-  const cfg = f?.config || configActual();
-  const compacto = (cont.clientWidth || 300) < 460;
-  const { ctx, ancho, alto } = lienzo(cont, compacto ? 290 : 350);
-  const tel = f?.telemetria, theta = thetaActual(f), vista = tel && theta ? evaluarVista(tel, theta) : null;
+// =====================================================================
+// Red interactiva
+// La red grande del editor (Capas ocultas) y del tablero (Entrenamiento).
+// Se dibuja en un lienzo y lleva encima un botón transparente por cada
+// neurona visible, los controles de edición y un globo con la conexión que
+// está bajo el puntero. Con un clic se inspecciona una neurona o una conexión.
+// =====================================================================
+const MAXIMO_OCULTAS = 6;
+const interaccion = { geometria: null, hover: null, cuadro: null, iniciales: null, inspector: 0, claveBotones: "" };
+const subindice = (n) => String(n).replace(/\d/g, (d) => "₀₁₂₃₄₅₆₇₈₉"[d]);
+
+// Pesos iniciales con la misma construcción y la misma semilla que entrenarRed:
+// son exactamente los del comienzo del entrenamiento.
+async function calcularPesosIniciales(cfg, datos) {
+  await prepararBackend();
+  const r = construirRed(cfg, datos);
+  const theta = r.leerTheta();
+  tf.dispose(r.variables);
+  return { estructura: r.estructura, theta };
+}
+
+// Qué muestra la red grande: la corrida en curso; en Entrenamiento, la última
+// corrida; en el editor, la última si la configuración no cambió y, si no, los
+// pesos iniciales que fija la semilla.
+function fuenteRed() {
+  if (E.entrenando) return { cfg: E.vivo.config, tel: E.vivo.telemetria, theta: thetaActual(E.vivo), estado: "entrenando" };
+  const c = E.corrida;
+  if (c && !c.error && c.telemetria?.theta && (E.paso === 6 || firma(c.config) === firma(configActual()))) {
+    return { cfg: c.config, tel: c.telemetria, theta: c.telemetria.theta, estado: "entrenada", corrida: c };
+  }
+  const tel = telemetriaPrevia(), cfg = configActual();
+  if (!tel) return { cfg, tel: null, theta: null, estado: "sin-pesos" };
+  const clave = firma(tel.config), ini = interaccion.iniciales;
+  if (ini?.clave === clave && ini.theta) {
+    tel.estructura = ini.estructura;
+    return { cfg: tel.config, tel, theta: ini.theta, estado: "inicial" };
+  }
+  if (ini?.clave !== clave && typeof tf !== "undefined") {
+    interaccion.iniciales = { clave, theta: null };
+    calcularPesosIniciales(tel.config, prepararDatos(tel.config)).then(({ estructura, theta }) => {
+      if (interaccion.iniciales?.clave !== clave) return;
+      Object.assign(interaccion.iniciales, { estructura, theta });
+      dibujarRedGrande();
+    }).catch((e) => console.error(e));
+  }
+  return { cfg: tel.config, tel, theta: null, estado: "sin-pesos" };
+}
+
+// Columnas y neuronas visibles de la red grande, con márgenes según los rótulos.
+// Si no entra en el ancho disponible, la escena se desplaza de costado.
+function geometriaRed(ctx, cfg, disponible, editable) {
+  const compacto = disponible < 560;
   const variables = cfg.entradas.map((c) => DATASET.variables.find((v) => v.columna === c));
-  const nombresEntrada = variables.map((v) => (compacto ? v.corto : v.columna)), nombresSalida = etiquetasSalida(compacto, cfg);
-  // Márgenes según el rótulo más largo de cada lado; los de salida con espacios van en 2 líneas.
+  const nombresEntrada = variables.map((v) => (compacto ? v.corto : v.columna));
+  const nombresSalida = cfg.salida.neuronas ? etiquetasSalida(compacto, cfg) : [];
   ctx.font = letra(compacto ? 10.5 : 11.5);
-  const ancho1 = (t) => ctx.measureText(t).width;
-  const S = compacto ? 20 : 26, sup = 14, inf = 54;
-  const mIzq = Math.min(compacto ? 90 : 170, Math.max(compacto ? 70 : 116, S / 2 + 10 + Math.max(0, ...nombresEntrada.map(ancho1))));
-  const mDer = Math.min(compacto ? 96 : 160, Math.max(compacto ? 64 : 104, S / 2 + 12 + Math.max(0, ...nombresSalida.map((t) => (t.includes(" ") ? ancho1(t) / 2 + 14 : ancho1(t))))));
+  const medir = (t) => ctx.measureText(t).width;
+  const S = compacto ? 22 : 30, sep = S + (compacto ? 10 : 14);
+  const mIzq = Math.min(compacto ? 96 : 180, Math.max(compacto ? 60 : 100, S / 2 + 10 + Math.max(0, ...nombresEntrada.map(medir))));
+  const mDer = Math.min(compacto ? 100 : 170, Math.max(compacto ? 60 : 100, S / 2 + 12 + Math.max(0, ...nombresSalida.map((t) => (t.includes(" ") ? medir(t) / 2 + 14 : medir(t))))));
+  const nc = cfg.ocultas.length + 2, minimo = editable ? (compacto ? 90 : 112) : compacto ? 72 : 100;
+  const ancho = Math.max(disponible, Math.round(mIzq + mDer + (nc - 1) * minimo));
+  const sup = editable ? 44 : 16, inf = editable ? 66 : 50, alto = sup + 8 * sep + inf;
   const columnas = [
-    { titulo: "Entrada", n: cfg.entradas.length, sub: compacto ? `${cfg.entradas.length} var.` : `${cfg.entradas.length} ${cfg.entradas.length === 1 ? "variable" : "variables"}`, nombres: nombresEntrada },
-    ...cfg.ocultas.map((c, i) => ({ titulo: compacto ? `Oc. ${i + 1}` : `Oculta ${i + 1}`, n: c.neuronas, sub: `${num(c.neuronas)}, ${ACTIVACIONES[c.activacion].nombre}`, oculta: i })),
-    { titulo: "Salida", n: cfg.salida.neuronas || 1, sub: ACTIVACIONES[cfg.salida.activacion]?.nombre || "", nombres: nombresSalida },
+    { tipo: "entrada", titulo: "Entrada", n: cfg.entradas.length, nombres: nombresEntrada, sub: `${cfg.entradas.length} ${cfg.entradas.length === 1 ? "variable" : "variables"}${compacto ? "" : `, ${cfg.normalizar ? "z-score" : "sin normalizar"}`}` },
+    ...cfg.ocultas.map((c, i) => ({ tipo: "oculta", titulo: `Oculta ${i + 1}`, n: c.neuronas, oculta: i, sub: `${num(c.neuronas)}, ${ACTIVACIONES[c.activacion].nombre}` })),
+    { tipo: "salida", titulo: "Salida", n: cfg.salida.neuronas || 1, desconocida: !cfg.salida.neuronas, nombres: nombresSalida, sub: cfg.salida.activacion ? ACTIVACIONES[cfg.salida.activacion].nombre : "¿activación?" },
   ];
-  const nc = columnas.length, util = alto - sup - inf;
   columnas.forEach((c, i) => {
     c.x = Math.round(mIzq + (i * (ancho - mIzq - mDer)) / (nc - 1));
-    c.slots = slotsVisibles(c.n);
-    const m = Math.min(c.n, 8), sep = Math.min(S + 12, util / m);
-    c.y = (s) => Math.round(sup + util / 2 + (s - (m - 1) / 2) * sep);
+    c.slots = c.desconocida ? [0] : slotsVisibles(c.n);
+    const m = c.desconocida ? 1 : Math.min(c.n, 8);
+    c.y = (s) => Math.round(sup + 4 * sep + (s - (m - 1) / 2) * sep);
     c.neurona = (s) => (c.n > 8 && s === 7 ? c.n - 1 : s);
   });
+  return { ancho, alto, S, sup, inf, compacto, columnas, mDer };
+}
+
+function nombreUnidad(cfg, columna, u) {
+  if (columna === 0) return cfg.entradas[u];
+  if (columna <= cfg.ocultas.length) return `neurona ${u + 1} de Oculta ${columna}`;
+  const nombres = cfg.salida.neuronas ? etiquetasSalida(false, cfg) : [];
+  return `salida${nombres[u] ? `: ${nombres[u]}` : ` ${u + 1}`}`;
+}
+
+// Nombre corto de una entrada de la capa de la columna dada, para las fórmulas.
+const terminoEntrada = (cfg, columna, e) => (columna === 1 ? cfg.entradas[e] : `h${subindice(e + 1)}`);
+
+function validarSeleccion(cfg) {
+  const s = E.redSeleccion;
+  if (!s) return;
+  const tamano = (c) => (c === 0 ? cfg.entradas.length : c <= cfg.ocultas.length ? cfg.ocultas[c - 1].neuronas : cfg.salida.neuronas || 0);
+  const nc = cfg.ocultas.length + 2;
+  const ok = s.tipo === "neurona" ? s.columna < nc && s.unidad < tamano(s.columna) : s.columna >= 1 && s.columna < nc && s.desde < tamano(s.columna - 1) && s.hasta < tamano(s.columna);
+  if (!ok) E.redSeleccion = null;
+}
+
+// Valores de cada capa para el ejemplo que se sigue (entradas ya escaladas como las ve la red).
+function valoresEjemplo(fuente, vista) {
+  if (E.redEjemplo === null || !fuente.tel || !vista) return null;
+  const tel = fuente.tel, n = tel.puntos.n, i = ((E.redEjemplo % n) + n) % n;
+  const x = tel.puntos.X.subarray(i * tel.d, i * tel.d + tel.d);
+  if (tel.ejemplo?.theta === vista.theta && tel.ejemplo.indice === i) return tel.ejemplo;
+  tel.ejemplo = { theta: vista.theta, indice: i, capas: [x, ...propagarPlano(vista.red, x, 1)] };
+  return tel.ejemplo;
+}
+
+function distanciaSegmento(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1, t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy || 1)));
+  return Math.hypot(px - x1 - t * dx, py - y1 - t * dy);
+}
+
+function conexionEn(g, x, y, tolerancia) {
+  let mejor = null, distancia = tolerancia;
+  for (let i = 0; i < g.columnas.length - 1; i++) {
+    const a = g.columnas[i], b = g.columnas[i + 1], x1 = a.x + g.S / 2, x2 = b.x - g.S / 2;
+    if (b.desconocida || x < x1 - 2 || x > x2 + 2) continue;
+    for (const sa of a.slots) for (const sb of b.slots) {
+      const d = distanciaSegmento(x, y, x1, a.y(sa), x2, b.y(sb));
+      if (d < distancia) { distancia = d; mejor = { tipo: "conexion", columna: i + 1, desde: a.neurona(sa), hasta: b.neurona(sb) }; }
+    }
+  }
+  return mejor;
+}
+
+const mismaConexion = (a, b) => a && b && a.tipo === "conexion" && b.tipo === "conexion" && a.columna === b.columna && a.desde === b.desde && a.hasta === b.hasta;
+
+function pesoDe(vista, con) {
+  const capa = vista?.red.capas[con.columna - 1];
+  return capa ? capa.W[con.desde * capa.salidas + con.hasta] : null;
+}
+
+function textoConexion(fuente, vista, con, ejemplo) {
+  const { cfg } = fuente, w = pesoDe(vista, con);
+  let texto = `${nombreUnidad(cfg, con.columna - 1, con.desde)} → ${nombreUnidad(cfg, con.columna, con.hasta)}`;
+  if (w !== null) texto += `: peso ${num(w, 3)}`;
+  const x = ejemplo?.capas[con.columna - 1]?.[con.desde];
+  if (w !== null && x !== undefined) texto += `, aporte ${num(w, 2)} × ${num(x, 2)} = ${num(w * x, 2)}`;
+  return texto;
+}
+
+function pintarRedGrande(cont, { editable = false } = {}) {
+  const fuente = fuenteRed(), { cfg, tel, theta } = fuente;
+  const vista = tel && theta ? evaluarVista(tel, theta) : null;
+  validarSeleccion(cfg);
+  let escena = cont.querySelector(".red-escena");
+  if (!escena) {
+    cont.innerHTML = '<div class="red-desplazable"><div class="red-escena"><canvas></canvas><div class="red-botones"></div><div class="red-globo" hidden></div></div></div>';
+    escena = cont.querySelector(".red-escena");
+    prepararEscena(escena, cont, editable);
+  }
+  const canvas = escena.querySelector("canvas"), ctx = canvas.getContext("2d");
+  const g = geometriaRed(ctx, cfg, Math.max(280, Math.round(cont.clientWidth || 600)), editable);
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (canvas.width !== Math.round(g.ancho * dpr) || canvas.height !== Math.round(g.alto * dpr)) {
+    canvas.width = Math.round(g.ancho * dpr);
+    canvas.height = Math.round(g.alto * dpr);
+  }
+  Object.assign(canvas.style, { width: `${g.ancho}px`, height: `${g.alto}px` });
+  Object.assign(escena.style, { width: `${g.ancho}px`, height: `${g.alto}px` });
+  const desliza = $("#red-desliza");
+  if (desliza) desliza.hidden = g.ancho <= Math.round(cont.clientWidth || 0) + 1;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, g.ancho, g.alto);
+  interaccion.geometria = { ...g, cfg, editable, escena };
+  const ejemplo = valoresEjemplo(fuente, vista), sel = E.redSeleccion, marcada = interaccion.hover || (sel?.tipo === "conexion" ? sel : null);
+  const relacionada = (i, ua, ub) => !sel || (sel.tipo === "neurona" ? (i + 1 === sel.columna && ub === sel.unidad) || (i === sel.columna && ua === sel.unidad) : true);
+  const { S } = g, nc = g.columnas.length;
+
+  // Conexiones: color y grosor según el peso o, si se sigue un ejemplo, según su aporte (peso × valor de entrada).
   ctx.lineCap = "round";
   for (let i = 0; i < nc - 1; i++) {
-    const a = columnas[i], b = columnas[i + 1], capa = vista?.red.capas[i];
+    const a = g.columnas[i], b = g.columnas[i + 1], capa = vista?.red.capas[i], valores = ejemplo?.capas[i];
+    const fuerza = (ua, ub) => {
+      const w = capa.W[ua * capa.salidas + ub];
+      return valores ? w * valores[ua] : w;
+    };
     let tope = 0;
-    if (capa) for (const w of capa.W) tope = Math.max(tope, Math.abs(w));
+    if (capa) for (const sa of a.slots) for (const sb of b.slots) tope = Math.max(tope, Math.abs(fuerza(a.neurona(sa), b.neurona(sb))));
     for (const sb of b.slots) for (const sa of a.slots) {
+      const ua = a.neurona(sa), ub = b.neurona(sb), atenuar = relacionada(i, ua, ub) ? 1 : 0.15;
       if (capa && tope > 0) {
-        const w = capa.W[a.neurona(sa) * capa.salidas + b.neurona(sb)], t = Math.abs(w) / tope;
-        ctx.strokeStyle = w >= 0 ? COLOR_POSITIVO : COLOR_NEGATIVO;
-        ctx.globalAlpha = 0.12 + 0.75 * t;
-        ctx.lineWidth = 0.3 + 3.4 * t;
+        const v = fuerza(ua, ub), t = Math.abs(v) / tope;
+        ctx.strokeStyle = v >= 0 ? COLOR_POSITIVO : COLOR_NEGATIVO;
+        ctx.globalAlpha = (0.12 + 0.75 * t) * atenuar;
+        ctx.lineWidth = 0.3 + 3.6 * t;
       } else {
         ctx.strokeStyle = "#b7cdd5";
-        ctx.globalAlpha = 0.8;
+        ctx.globalAlpha = 0.8 * atenuar;
         ctx.lineWidth = 0.8;
       }
+      ctx.setLineDash(b.desconocida ? [3, 3] : []);
       ctx.beginPath();
       ctx.moveTo(a.x + S / 2, a.y(sa));
       ctx.lineTo(b.x - S / 2, b.y(sb));
       ctx.stroke();
     }
   }
+  ctx.setLineDash([]);
   ctx.globalAlpha = 1;
-  columnas.forEach((c, i) => {
+  if (marcada) {
+    const a = g.columnas[marcada.columna - 1], b = g.columnas[marcada.columna];
+    const sa = a?.slots.find((s) => a.neurona(s) === marcada.desde), sb = b?.slots.find((s) => b.neurona(s) === marcada.hasta);
+    if (sa !== undefined && sb !== undefined) {
+      ctx.strokeStyle = COLOR_RECORRIDO;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(a.x + S / 2, a.y(sa));
+      ctx.lineTo(b.x - S / 2, b.y(sb));
+      ctx.stroke();
+    }
+  }
+
+  // Neuronas: cada una con su salida sobre el plano de las componentes principales.
+  g.columnas.forEach((c, i) => {
     for (const s of c.slots) {
       const x0 = c.x - S / 2, y0 = c.y(s) - S / 2, u = c.neurona(s);
-      if (vista) pintarGrilla(ctx, tel.GX, tel.GY, colorNeurona(tel, vista, i, u), x0, y0, S, S);
+      if (c.desconocida) {
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(x0, y0, S, S);
+        ctx.setLineDash([3, 2]);
+        ctx.strokeStyle = "#8eb9c3";
+        ctx.lineWidth = 1.4;
+        ctx.strokeRect(x0 + 0.5, y0 + 0.5, S - 1, S - 1);
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#8eb9c3";
+        ctx.font = letra(14, 700);
+        ctx.textAlign = "center";
+        ctx.fillText("?", c.x, c.y(s) + 5);
+        continue;
+      }
+      if (vista && (i === 0 || vista.grilla[i - 1])) pintarGrilla(ctx, tel.GX, tel.GY, colorNeurona(tel, vista, i, u), x0, y0, S, S);
       else { ctx.fillStyle = i === 0 ? "#edf5f7" : "#fff"; ctx.fillRect(x0, y0, S, S); }
       const apagada = E.entrenando && c.oculta !== undefined && tel?.mascaras?.[c.oculta]?.[u] === 0;
       if (apagada) { ctx.fillStyle = "rgba(255, 255, 255, .8)"; ctx.fillRect(x0, y0, S, S); ctx.setLineDash([3, 2]); }
-      ctx.strokeStyle = i === 0 ? "#59717c" : COLOR_POSITIVO;
-      ctx.lineWidth = 1.2;
+      const elegida = sel?.tipo === "neurona" && sel.columna === i && sel.unidad === u;
+      ctx.strokeStyle = elegida ? COLOR_RECORRIDO : i === 0 ? "#59717c" : COLOR_POSITIVO;
+      ctx.lineWidth = elegida ? 3 : 1.2;
       ctx.strokeRect(x0 + 0.5, y0 + 0.5, S - 1, S - 1);
       ctx.setLineDash([]);
+      const valor = ejemplo?.capas[i]?.[u];
+      if (valor !== undefined) {
+        const texto = num(valor, 2);
+        ctx.font = letra(g.compacto ? 9.5 : 10.5, 600);
+        const w = ctx.measureText(texto).width + 6;
+        ctx.fillStyle = "rgba(255, 255, 255, .92)";
+        ctx.fillRect(c.x - w / 2, y0 + S + 1, w, 13);
+        ctx.fillStyle = "#22333a";
+        ctx.textAlign = "center";
+        ctx.fillText(texto, c.x, y0 + S + 11);
+      }
     }
     ctx.fillStyle = COLOR_POSITIVO;
-    if (c.n > 8) { ctx.font = letra(17, 700); ctx.textAlign = "center"; ctx.fillText("⋮", c.x, c.y(6) + 6); }
-    ctx.font = letra(compacto ? 10.5 : 11.5);
+    ctx.textAlign = "center";
+    if (c.n > 8) { ctx.font = letra(17, 700); ctx.fillText("⋮", c.x, c.y(6) + 6); }
+    ctx.font = letra(g.compacto ? 10.5 : 11.5);
     ctx.fillStyle = "#22333a";
     if (c.nombres) c.slots.forEach((s) => {
       const nombre = c.nombres[c.neurona(s)];
       if (!nombre) return;
       ctx.textAlign = i === 0 ? "end" : "start";
       if (i === 0) ctx.fillText(nombre, c.x - S / 2 - 6, c.y(s) + 4);
-      else textoAjustado(ctx, nombre, c.x + S / 2 + 6, c.y(s) + 4, mDer - S / 2 - 8);
+      else textoAjustado(ctx, nombre, c.x + S / 2 + 6, c.y(s) + 4, g.mDer - S / 2 - 8);
     });
+    // En el editor, los títulos de las ocultas son botones; los demás van en el lienzo.
+    if (editable && c.tipo === "oculta") return;
     ctx.textAlign = "center";
-    ctx.font = letra(compacto ? 11.5 : 12.5, 700);
+    ctx.font = letra(g.compacto ? 11.5 : 12.5, 700);
     ctx.fillStyle = COLOR_POSITIVO;
-    ctx.fillText(c.titulo, c.x, alto - inf + 24);
-    ctx.font = letra(compacto ? 10.5 : 11.5);
+    ctx.fillText(c.titulo, c.x, g.alto - g.inf + 22);
+    ctx.font = letra(g.compacto ? 10.5 : 11.5);
     ctx.fillStyle = "#59717c";
-    ctx.fillText(i === 0 && !compacto ? `${c.sub}, ${cfg.normalizar ? "z-score" : "sin normalizar"}` : c.sub, c.x, alto - inf + 40);
+    ctx.fillText(c.sub, c.x, g.alto - g.inf + 38);
   });
   ctx.textAlign = "start";
+  renderBotonesRed(escena, g, cfg, editable);
+  if (editable) renderMenuCapa(escena, g, cfg);
+  const globo = escena.querySelector(".red-globo");
+  if (interaccion.hover) globo.textContent = textoConexion(fuente, vista, interaccion.hover, ejemplo);
+  const textoEj = $("#red-ejemplo");
+  if (textoEj) textoEj.textContent = ejemplo ? textoDelEjemplo(fuente, ejemplo) : E.redEjemplo !== null ? "Los valores aparecen cuando la red tiene pesos." : "";
   const dato = $("#dato-red");
   if (dato) dato.textContent = E.entrenando && tel?.lotes ? `época ${tel.epoca}, lote ${tel.lote} de ${tel.lotes}` : `${num(desglose(cfg).total)} parámetros`;
+  const leyenda = $("#leyenda-red");
+  if (leyenda) leyenda.textContent = textoLeyendaRed(fuente, Boolean(ejemplo));
+}
+
+function textoLeyendaRed(fuente, conEjemplo) {
+  const { cfg, estado } = fuente, m = cfg.tarea;
+  const pesos = {
+    entrenando: `Pesos de la época ${fuente.tel?.epoca || 0}.`,
+    entrenada: "Pesos del último entrenamiento.",
+    inicial: `Pesos iniciales al azar, con la semilla ${cfg.semillaPesos}: así arranca el entrenamiento.`,
+    "sin-pesos": "",
+  }[estado];
+  const conexiones = conEjemplo
+    ? "Conexiones: el aporte de cada una para este ejemplo, peso por valor de entrada; azul, positivo; ámbar, negativo."
+    : "Conexiones: azul, pesos positivos; ámbar, negativos; el grosor indica la magnitud.";
+  const salida = { regresion: "En la salida, más oscuro es un valor predicho mayor.", clustering: "En la salida, cada neurona usa el color de su grupo." }[m] || "En la salida, el color es el de cada clase.";
+  const neuronas = estado === "sin-pesos" ? "" : ` Cada neurona muestra su salida en el plano de las componentes principales: azul, positiva; ámbar, negativa; blanco, cero. ${salida}`;
+  const dropout = E.entrenando && cfg.ocultas.some((c) => c.dropout > 0) ? " Las neuronas tenues están apagadas por dropout para el primer ejemplo del lote." : "";
+  return `${pesos ? `${pesos} ` : ""}${conexiones}${neuronas}${dropout} Con un clic en una neurona o en una conexión se ve qué calcula.`;
+}
+
+function textoDelEjemplo(fuente, ejemplo) {
+  const { cfg, tel } = fuente, m = cfg.tarea, i = ejemplo.indice, def = tel.def;
+  const salida = ejemplo.capas[cfg.ocultas.length + 1];
+  let real = "", red = "?";
+  if (m === "regresion") {
+    real = `${num(tel.puntos.y[i], 0)}${def.unidad ? ` ${def.unidad}` : ""}`;
+    if (salida) red = `${num(salida[0], 0)}${def.unidad ? ` ${def.unidad}` : ""}`;
+  } else if (m === "clustering") {
+    if (salida) { const j = argmax(Array.from(salida)); red = `grupo ${j + 1} (pertenencia ${num(salida[j], 2)})`; }
+    const r = tel.puntos.referencia?.[i];
+    real = r >= 0 && def.nombresClases ? `${def.referencia} ${def.nombresClases[r]}` : "";
+  } else {
+    real = def.nombresClases[tel.puntos.y[i]];
+    if (salida) {
+      const k = salida.length, clase = k === 1 ? (salida[0] >= 0.5 ? 1 : 0) : argmax(Array.from(salida));
+      red = `${def.nombresClases[clase]} (${num(k === 1 ? salida[0] : salida[clase], 2)})`;
+    }
+  }
+  return `Ejemplo ${i + 1} de ${tel.puntos.n} de validación.${real ? ` Real: ${real}.` : ""} La red: ${red}.`;
+}
+
+// Botones transparentes sobre las neuronas y, en el editor, los controles de cada capa.
+// Se regeneran solo si cambió algo que los afecte, para no perder el foco ni el hover.
+function renderBotonesRed(escena, g, cfg, editable) {
+  const caja = escena.querySelector(".red-botones");
+  const clave = JSON.stringify([g.ancho, firma(cfg), E.redSeleccion, E.capaAbierta, editable]);
+  if (clave === interaccion.claveBotones && caja.childElementCount) return;
+  interaccion.claveBotones = clave;
+  const activo = document.activeElement, recordar = activo && caja.contains(activo) ? { ...activo.dataset } : null;
+  const sel = E.redSeleccion;
+  let html = "";
+  g.columnas.forEach((c, i) => {
+    if (!c.desconocida) for (const s of c.slots) {
+      const u = c.neurona(s), elegida = sel?.tipo === "neurona" && sel.columna === i && sel.unidad === u;
+      html += `<button type="button" class="red-nodo" style="left:${c.x - g.S / 2}px; top:${c.y(s) - g.S / 2}px; width:${g.S}px; height:${g.S}px" data-accion="red-neurona" data-columna="${i}" data-unidad="${u}" aria-pressed="${elegida}" aria-label="${esc(nombreUnidad(cfg, i, u))}"></button>`;
+    }
+    if (!editable || c.tipo !== "oculta") return;
+    const capa = cfg.ocultas[c.oculta], k = NEURONAS_OCULTAS.indexOf(capa.neuronas), abierta = E.capaAbierta === c.oculta;
+    html += `<div class="red-neuronas" style="left:${c.x}px; top:10px"><button type="button" data-accion="red-menos" data-indice="${c.oculta}" ${k <= 0 ? "disabled" : ""} aria-label="Menos neuronas en Oculta ${c.oculta + 1}">−</button><span>${capa.neuronas}</span><button type="button" data-accion="red-mas" data-indice="${c.oculta}" ${k >= NEURONAS_OCULTAS.length - 1 ? "disabled" : ""} aria-label="Más neuronas en Oculta ${c.oculta + 1}">+</button></div>`;
+    html += `<button type="button" class="red-titulo-capa${abierta ? " abierta" : ""}" style="left:${c.x}px; top:${g.alto - g.inf + 8}px" data-accion="red-capa" data-indice="${c.oculta}" aria-expanded="${abierta}"><strong>Oculta ${c.oculta + 1}</strong><span>${ACTIVACIONES[capa.activacion].nombre}${capa.dropout > 0 ? `, dropout ${decimal(capa.dropout)}` : ""}</span></button>`;
+  });
+  caja.innerHTML = html;
+  if (recordar?.accion) {
+    const selector = Object.entries(recordar).map(([k, v]) => `[data-${k}="${CSS.escape(v)}"]`).join("");
+    const nuevo = caja.querySelector(selector);
+    if (nuevo && !nuevo.disabled) nuevo.focus({ preventScroll: true });
+  }
+}
+
+// Menú de una capa oculta del editor: activación, dropout y quitar la capa.
+// Se arma una sola vez por capa abierta, para no cortar el arrastre del dropout.
+function renderMenuCapa(escena, g, cfg) {
+  let menu = escena.querySelector(".red-menu");
+  const i = E.capaAbierta;
+  if (i === null || i >= cfg.ocultas.length) {
+    menu?.remove();
+    return;
+  }
+  const c = g.columnas[i + 1], capa = cfg.ocultas[i];
+  if (!menu || Number(menu.dataset.indice) !== i) {
+    menu?.remove();
+    menu = document.createElement("div");
+    menu.className = "red-menu";
+    menu.dataset.indice = i;
+    menu.setAttribute("role", "dialog");
+    menu.setAttribute("aria-label", `Opciones de la capa Oculta ${i + 1}`);
+    menu.innerHTML = `<div class="red-menu-titulo"><strong>Oculta ${i + 1}</strong><button type="button" class="boton chico" data-accion="red-cerrar-capa" aria-label="Cerrar el menú de la capa">Cerrar</button></div>
+      <div class="red-menu-activaciones" role="radiogroup" aria-label="Función de activación">${ACT_OCULTAS.map((a) => `<label class="opcion-act" title="${ACTIVACIONES[a].rango}"><input type="radio" name="act-capa-${i}" value="${a}" data-campo="activacion" data-indice="${i}" ${capa.activacion === a ? "checked" : ""}>${svgCurvaActivacion(a, 54, 34)}<span>${ACTIVACIONES[a].nombre}</span></label>`).join("")}</div>
+      <label class="campo"><span>Dropout: <output id="salida-dropout-${i}">${decimal(capa.dropout)}</output></span><input type="range" min="0" max="0.6" step="0.1" value="${capa.dropout}" data-campo="dropout" data-indice="${i}"></label>
+      <button type="button" class="boton chico" data-accion="quitar-capa" data-indice="${i}">Quitar esta capa</button>`;
+    escena.appendChild(menu);
+  }
+  menu.style.left = `${Math.max(4, Math.min(g.ancho - 276, c.x - 136))}px`;
+  menu.style.bottom = `${g.inf - 4}px`;
+}
+
+// Puntero sobre la escena: globo con la conexión más cercana y clic para elegirla.
+function prepararEscena(escena, cont, editable) {
+  const punto = (ev) => { const r = escena.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
+  const redibujar = () => {
+    cancelAnimationFrame(interaccion.cuadro);
+    interaccion.cuadro = requestAnimationFrame(() => pintarRedGrande(cont, { editable }));
+  };
+  escena.addEventListener("pointermove", (ev) => {
+    const g = interaccion.geometria;
+    if (!g || ev.target.closest("button, .red-menu")) { if (interaccion.hover) { interaccion.hover = null; escena.querySelector(".red-globo").hidden = true; redibujar(); } return; }
+    const [x, y] = punto(ev), con = conexionEn(g, x, y, ev.pointerType === "touch" ? 12 : 6), globo = escena.querySelector(".red-globo");
+    if (!mismaConexion(con, interaccion.hover)) { interaccion.hover = con; redibujar(); }
+    globo.hidden = !con;
+    if (con) Object.assign(globo.style, { left: `${x}px`, top: `${y}px` });
+  });
+  escena.addEventListener("pointerleave", () => {
+    if (!interaccion.hover) return;
+    interaccion.hover = null;
+    escena.querySelector(".red-globo").hidden = true;
+    redibujar();
+  });
+  escena.addEventListener("click", (ev) => {
+    if (ev.target.closest("button, .red-menu, input, label")) return;
+    const g = interaccion.geometria, [x, y] = punto(ev);
+    const con = g && conexionEn(g, x, y, ev.pointerType === "touch" ? 12 : 6);
+    if (con) E.redSeleccion = mismaConexion(con, E.redSeleccion) ? null : con;
+    if (E.capaAbierta !== null) E.capaAbierta = null;
+    dibujarRedGrande();
+  });
+}
+
+function dibujarRedGrande() {
+  const editor = $("#red-editor"), viva = $("#red-viva");
+  if (editor) pintarRedGrande(editor, { editable: true });
+  else if (viva) pintarRedGrande(viva);
+  else return;
+  const ahora = performance.now();
+  if (!E.entrenando || ahora - interaccion.inspector > 300) {
+    interaccion.inspector = ahora;
+    renderInspectorRed();
+  }
+  if (editor) $("#parametros-editor").innerHTML = resumenParametros();
+}
+
+// Desplazamiento de los pesos y del sesgo de cada capa dentro de theta.
+function desplazamientos(estructura) {
+  let o = 0;
+  return estructura.capas.map((c) => { const W = o; o += c.entradas * c.salidas; const b = o; o += c.salidas; return { W, b }; });
+}
+
+// Parámetros al final de cada época (1, 2, …), tomados del recorrido.
+function thetaPorEpoca(tel) {
+  const rec = tel?.recorrido;
+  if (!rec) return [];
+  return rec.puntos.filter((_, i) => rec.epocas[i] > 0 && rec.epocas[i] !== rec.epocas[i + 1]);
+}
+
+function barrasPesos(items) {
+  const filas = items.slice(0, 12), tope = Math.max(...filas.map((f) => Math.abs(f.valor)), 1e-9);
+  const ancho = 330, fila = 18, izq = 120, medio = izq + (ancho - izq) / 2, mitad = (ancho - izq) / 2 - 4;
+  const barras = filas.map((f, j) => {
+    const y = j * fila + 3, largo = (Math.abs(f.valor) / tope) * mitad;
+    return `<text x="${izq - 6}" y="${y + 10}" text-anchor="end" class="t-peso">${esc(f.nombre)}</text>
+      <rect x="${(f.valor >= 0 ? medio : medio - largo).toFixed(1)}" y="${y}" width="${Math.max(1, largo).toFixed(1)}" height="${fila - 6}" rx="2" fill="${f.valor >= 0 ? COLOR_POSITIVO : COLOR_NEGATIVO}" opacity=".8"/>`;
+  }).join("");
+  return `<svg viewBox="0 0 ${ancho} ${filas.length * fila + 4}" role="img" aria-label="Pesos de entrada, de mayor a menor magnitud"><style>.t-peso { font-size: 10.5px; fill: #22333a; }</style><line x1="${medio}" x2="${medio}" y1="0" y2="${filas.length * fila + 4}" stroke="#b9cfd7"/>${barras}</svg>`;
+}
+
+function formulaNeurona(cfg, columna, u, capa, act) {
+  const entradas = columna === 1 ? cfg.entradas.length : cfg.ocultas[columna - 2].neuronas;
+  const f = act ? (act === "softmax" ? "softmax" : ACTIVACIONES[act].nombre) : "f";
+  const visibles = Math.min(entradas, 8);
+  const terminos = [];
+  for (let e = 0; e < visibles; e++) {
+    const nombre = terminoEntrada(cfg, columna, e);
+    if (!capa) { terminos.push(`${e ? " + " : ""}w${subindice(e + 1)} × ${nombre}`); continue; }
+    const w = capa.W[e * capa.salidas + u];
+    terminos.push(`${e ? (w < 0 ? " − " : " + ") : w < 0 ? "−" : ""}${num(Math.abs(w), 2)} × ${nombre}`);
+  }
+  const resto = entradas > visibles ? ` + … (${entradas - visibles} términos más)` : "";
+  const b = capa ? capa.b[u] : null;
+  const sesgo = capa ? `${b < 0 ? " − " : " + "}${num(Math.abs(b), 2)}` : " + b";
+  return `a = ${f}(${terminos.join("")}${resto}${sesgo})`;
+}
+
+// Panel bajo la red: qué calcula la neurona o la conexión elegida.
+function renderInspectorRed() {
+  const cont = $("#inspector-red");
+  if (!cont) return;
+  const sel = E.redSeleccion;
+  if (!sel) {
+    cont.innerHTML = '<p class="pista">Hacé clic en una neurona para ver su fórmula y sus pesos, o en una conexión para ver cómo cambió su peso. Pasá el mouse por una conexión para ver su valor.</p>';
+    return;
+  }
+  const fuente = fuenteRed(), { cfg, tel, theta } = fuente, vista = tel && theta ? evaluarVista(tel, theta) : null;
+  const ejemplo = valoresEjemplo(fuente, vista);
+  const cerrar = '<button type="button" class="boton chico" data-accion="red-cerrar-inspector">Cerrar</button>';
+  const estadoPesos = { entrenando: `pesos de la época ${tel?.epoca || 0}`, entrenada: "pesos del último entrenamiento", inicial: `pesos iniciales con la semilla ${cfg.semillaPesos}`, "sin-pesos": "sin pesos todavía" }[fuente.estado];
+  const porEpoca = thetaPorEpoca(tel), grafico = [];
+  const evolucion = (series, etiqueta) => {
+    if (porEpoca.length < 2) return "";
+    const ancho = 330;
+    return `<figure><figcaption>${etiqueta}</figcaption>${graficoLineas({ series, xMax: cfg.epocas, ancho, alto: 170, formatoY: (v) => num(v, 2), etiqueta })}${series.length > 1 ? leyendaGrafico(series.filter((s) => s.nombre).map((s) => ({ nombre: s.nombre, color: s.color, punteada: s.punteada }))) : ""}</figure>`;
+  };
+  let html = "";
+  if (sel.tipo === "conexion") {
+    const w = pesoDe(vista, sel), d = vista ? desplazamientos(tel.estructura)[sel.columna - 1] : null;
+    const capa = vista?.red.capas[sel.columna - 1];
+    const indice = d ? d.W + sel.desde * capa.salidas + sel.hasta : null;
+    const inicial = indice !== null && tel.recorrido ? tel.recorrido.puntos[0][indice] : null;
+    const x = ejemplo?.capas[sel.columna - 1]?.[sel.desde];
+    html = `<div class="inspector-cabecera"><strong>${esc(nombreUnidad(cfg, sel.columna - 1, sel.desde))} → ${esc(nombreUnidad(cfg, sel.columna, sel.hasta))}</strong>${cerrar}</div>
+      <p>${w === null ? "Esta conexión todavía no tiene peso: aparece cuando la red está completa." : `Peso ${num(w, 3)} (${estadoPesos})${inicial !== null && fuente.estado !== "inicial" ? `; al empezar valía ${num(inicial, 3)}` : ""}.`}${w !== null && x !== undefined ? ` Con el ejemplo que seguís, aporta ${num(w, 3)} × ${num(x, 3)} = ${num(w * x, 3)} a la suma de la neurona.` : ""}</p>`;
+    if (indice !== null) grafico.push(evolucion([{ valores: porEpoca.map((t) => t[indice]), color: COLOR_RECORRIDO }], "Su peso al final de cada época"));
+  } else if (sel.columna === 0) {
+    const col = cfg.entradas[sel.unidad], unidad = DATASET.unidades[col], j = sel.unidad;
+    const fila = ejemplo && tel.puntos.filas ? tel.puntos.filas[ejemplo.indice] : null;
+    const salientes = vista?.red.capas[0] ? Array.from({ length: vista.red.capas[0].salidas }, (_, u) => vista.red.capas[0].W[j * vista.red.capas[0].salidas + u]) : [];
+    const destino = cfg.ocultas.length ? `las ${num(cfg.ocultas[0].neuronas)} neuronas de Oculta 1` : "la salida";
+    html = `<div class="inspector-cabecera"><strong>Entrada: <code>${esc(col)}</code>${unidad ? ` (${esc(unidad)})` : ""}</strong>${cerrar}</div>
+      <p>${cfg.normalizar && tel ? `Entra a la red estandarizada: z = (x − ${num(tel.media[j], 2)}) / ${num(tel.desvio[j], 2)}, con la media y el desvío de entrenamiento.` : "Entra a la red sin normalizar, en su escala original."}
+      ${fila !== null ? ` En el ejemplo que seguís vale ${valorColumna(col, DATASET.columnas[col][fila])}${cfg.normalizar ? `, que estandarizado da ${num(ejemplo.capas[0][j], 2)}` : ""}.` : ""}
+      Se conecta con ${destino}${salientes.length ? `, con pesos entre ${num(Math.min(...salientes), 2)} y ${num(Math.max(...salientes), 2)}` : ""}.</p>`;
+  } else {
+    const c = sel.columna, u = sel.unidad, esSalida = c === cfg.ocultas.length + 1;
+    const act = esSalida ? cfg.salida.activacion : cfg.ocultas[c - 1].activacion;
+    const capa = vista?.red.capas[c - 1], entradas = c === 1 ? cfg.entradas.length : cfg.ocultas[c - 2].neuronas;
+    let calculo = "";
+    const valores = ejemplo?.capas[c - 1], salida = ejemplo?.capas[c];
+    if (capa && valores && salida) {
+      let z = capa.b[u];
+      for (let e = 0; e < entradas; e++) z += capa.W[e * capa.salidas + u] * valores[e];
+      calculo = `<p class="calculo">Con el ejemplo que seguís: z = Σ wᵢxᵢ + b = ${num(z, 3)}; ${act === "softmax" ? `después de softmax, a = ${num(salida[u], 3)}` : `a = ${ACTIVACIONES[act].nombre}(${num(z, 3)}) = ${num(salida[u], 3)}`}.</p>`;
+    }
+    const titulo = esSalida ? `Salida: ${esc(nombreUnidad(cfg, c, u).replace(/^salida:? ?/, ""))}` : `Oculta ${c}, neurona ${u + 1}`;
+    html = `<div class="inspector-cabecera"><strong>${titulo}</strong><span class="dato">${act ? ACTIVACIONES[act].nombre : ""}</span>${cerrar}</div>
+      <p class="formula">${esc(formulaNeurona(cfg, c, u, capa, act))}</p>
+      ${c > 1 ? `<p class="leyenda">h${subindice(1)}, h${subindice(2)}, …: las salidas de las neuronas de Oculta ${c - 1}.</p>` : ""}
+      <p class="leyenda">${num(entradas + 1)} parámetros: ${num(entradas)} ${entradas === 1 ? "peso" : "pesos"} y 1 sesgo${capa ? `, ${estadoPesos}` : ""}. Por eso cada capa densa tiene (entradas + 1) × neuronas parámetros.</p>${calculo}`;
+    if (capa) {
+      const items = Array.from({ length: entradas }, (_, e) => ({ e, nombre: terminoEntrada(cfg, c, e), valor: capa.W[e * capa.salidas + u] })).sort((a, b) => Math.abs(b.valor) - Math.abs(a.valor));
+      grafico.push(`<figure class="barras-pesos"><figcaption>Pesos de entrada, de mayor a menor magnitud${entradas > 12 ? " (los 12 mayores)" : ""}</figcaption>${barrasPesos(items)}</figure>`);
+      const d = desplazamientos(tel.estructura)[c - 1];
+      const series = items.slice(0, 6).map((it, k) => ({ nombre: it.nombre, color: COLORES[k % COLORES.length], valores: porEpoca.map((t) => t[d.W + it.e * capa.salidas + u]) }));
+      series.push({ nombre: "sesgo", color: "#9fb3bb", punteada: true, valores: porEpoca.map((t) => t[d.b + u]) });
+      grafico.push(evolucion(series, "Sus pesos al final de cada época"));
+    }
+  }
+  const conMapa = sel.tipo === "neurona" && vista && (sel.columna === 0 || vista.grilla[sel.columna - 1]);
+  if (conMapa) grafico.unshift('<figure><figcaption>Su salida en el plano de las componentes principales</figcaption><canvas class="mapa-neurona" width="280" height="210"></canvas></figure>');
+  cont.innerHTML = `${html}${grafico.filter(Boolean).length ? `<div class="inspector-graficos">${grafico.join("")}</div>` : ""}`;
+  if (conMapa) {
+    const lienzoMapa = $(".mapa-neurona", cont), ctx = lienzoMapa.getContext("2d");
+    pintarGrilla(ctx, tel.GX, tel.GY, colorNeurona(tel, vista, sel.columna, sel.unidad), 0, 0, 280, 210);
+  }
+}
+
+// Total y desglose de parámetros, bajo la red del editor.
+function resumenParametros() {
+  const { filas, total, completo } = desglose();
+  const items = filas.map((f) => (f.tipo === "pendiente"
+    ? '<li class="pendiente">Salida: falta elegirla en el paso siguiente</li>'
+    : `<li class="${f.tipo || ""}">${f.valor > 0 ? `<i class="punto" style="background:${colorSegmento(f)}"></i>` : ""}${f.formula ? `${f.nombre}: ${f.formula} = ` : `${f.nombre}: `}<strong>${num(f.valor)}</strong></li>`)).join("");
+  const barra = filas.filter((f) => f.valor > 0).map((f) => `<span style="flex:${f.valor}; background:${colorSegmento(f)}" title="${f.nombre}: ${num(f.valor)}"></span>`).join("");
+  return `<div class="parametros-total"><span>Parámetros entrenables</span><strong>${num(total)}</strong>${completo ? "" : "<em>parcial</em>"}</div>
+    <div class="barra-parametros" aria-hidden="true">${barra}</div><ul class="parametros-lista">${items}</ul>`;
+}
+
+function panelRed(editable) {
+  const siguiendo = E.redEjemplo !== null;
+  const contador = editable ? `<div class="red-contador"><span>Capas ocultas</span><button type="button" class="boton chico" data-accion="quitar-ultima-capa" ${E.ocultas.length ? "" : "disabled"} aria-label="Quitar la última capa oculta">−</button><strong>${E.ocultas.length}</strong><button type="button" class="boton chico" data-accion="agregar-capa" ${E.ocultas.length >= MAXIMO_OCULTAS ? "disabled" : ""} aria-label="Agregar una capa oculta">+</button></div>` : "";
+  return `<div class="red-herramientas">${contador}
+      <button type="button" class="boton chico${siguiendo ? " activo" : ""}" data-accion="seguir-ejemplo" aria-pressed="${siguiendo}">Seguir un ejemplo</button>
+      ${siguiendo ? '<span class="red-navegar"><button type="button" class="boton chico" data-accion="ejemplo-anterior" aria-label="Ejemplo anterior">◀</button><button type="button" class="boton chico" data-accion="ejemplo-siguiente" aria-label="Ejemplo siguiente">▶</button><button type="button" class="boton chico" data-accion="ejemplo-azar">Al azar</button></span>' : ""}
+      <span class="red-ejemplo" id="red-ejemplo" aria-live="polite"></span>
+    </div>
+    <div class="red-grande" id="${editable ? "red-editor" : "red-viva"}" role="group" aria-label="Red neuronal: cada neurona es un botón que muestra qué calcula"></div>
+    <p class="leyenda red-desliza" id="red-desliza" hidden>Deslizá de costado para ver toda la red.</p>
+    <div class="inspector" id="inspector-red" aria-live="polite"></div>
+    <p class="leyenda" id="leyenda-red"></p>`;
 }
 
 // Puntos de validación sobre el plano y, de fondo, lo que predice la red en cada lugar.
@@ -3911,9 +4450,7 @@ function renderDiagnostico(f) {
 // Textos fijos del tablero, que dependen de la tarea y de la red.
 function renderLeyendasTablero() {
   const def = definirTarea(), m = E.tarea;
-  if (!$("#leyenda-red-viva") || !m) return;
-  const salida = { regresion: "En la salida, más oscuro es un valor predicho mayor.", clustering: "En la salida, cada neurona usa el color de su grupo." }[m] || "En la salida, el color es el de cada clase.";
-  $("#leyenda-red-viva").textContent = `Conexiones: azul, pesos positivos; ámbar, negativos; el grosor indica la magnitud. Cada neurona muestra su salida en el plano de las componentes principales: azul, positiva; ámbar, negativa; blanco, cero. ${salida}${E.ocultas.some((c) => c.dropout > 0) ? " Mientras entrena, las neuronas tenues están apagadas por dropout para el primer ejemplo del lote." : ""}`;
+  if (!$("#claves-aprende") || !m) return;
   const clave = (color, texto, forma = "") => `<span><i class="${forma}" style="${forma ? `border-color:${color}; color:${color}` : `background:${color}`}"></i>${esc(texto)}</span>`;
   let claves = "";
   if (m === "binaria" || m === "multiclase") claves = def.nombresClases.slice(0, 12).map((nombre, j) => clave(colorClase(j, def.clases.length), nombre)).join("") + clave("#22333a", "mal clasificado", "anillo");
@@ -3933,7 +4470,7 @@ function renderLeyendasTablero() {
 function dibujarTablero({ completo = false } = {}) {
   if (E.paso !== 6 || !$("#red-viva")) return;
   const f = fuenteTablero();
-  pintarRedViva($("#red-viva"), f);
+  dibujarRedGrande();
   pintarAprende($("#vista-aprende"), f);
   pintarOptimizador($("#vista-optimizador"), f);
   if (completo) { renderRegistro(f); renderDiagnostico(f); }
@@ -4146,7 +4683,7 @@ function aplicarConfiguracion(c) {
   if (tiene("muestra") && acepta("muestra", ["si", "no"].includes(c.muestra))) E.muestra = c.muestra === "si";
   if (tiene("ocultas")) {
     const capas = c.ocultas ? c.ocultas.split(",").map((t) => { const [n, a, d] = t.split(":"); return { neuronas: Number(n), activacion: a, dropout: Number(d ?? 0) }; }) : [];
-    const ok = capas.length <= 3 && capas.every((k) => NEURONAS_OCULTAS.includes(k.neuronas) && ACT_OCULTAS.includes(k.activacion) && k.dropout >= 0 && k.dropout <= 0.6);
+    const ok = capas.length <= MAXIMO_OCULTAS && capas.every((k) => NEURONAS_OCULTAS.includes(k.neuronas) && ACT_OCULTAS.includes(k.activacion) && k.dropout >= 0 && k.dropout <= 0.6);
     if (acepta("ocultas", ok)) E.ocultas = capas.map((k) => ({ ...k, dropout: Math.round(k.dropout * 10) / 10 }));
   }
   if (tiene("salida")) {
@@ -4257,8 +4794,9 @@ const RENDER_PASOS = [pasoDatos, pasoEntrada, pasoCapas, pasoSalida, pasoPerdida
 function renderPaso() {
   const desplazamiento = $(".cabeza")?.scrollLeft || 0;
   const foco = document.activeElement?.closest?.("#contenido-paso") ? document.activeElement.dataset?.columna : null;
-  // En "Datos y tarea" todavía no hay red y en "Entrenamiento" la red está en el tablero: ocupan todo el ancho.
-  $(".marco").classList.toggle("sin-vista", E.paso === 0 || E.paso === 6);
+  // En "Datos y tarea" todavía no hay red; en "Capas ocultas" y en "Entrenamiento", la red
+  // grande está en el panel. Esos pasos ocupan todo el ancho.
+  $(".marco").classList.toggle("sin-vista", E.paso === 0 || E.paso === 2 || E.paso === 6);
   $(".marco").classList.toggle("red-en-panel", E.paso === 1);
   $("#precio-movil").hidden = E.paso === 0 || E.paso === 6;
   $("#contenido-paso").innerHTML = RENDER_PASOS[E.paso]();
@@ -4274,6 +4812,7 @@ function renderPaso() {
     dibujarTablero({ completo: true });
     animarTablero();
   }
+  if (E.paso === 2) dibujarRedGrande();
 }
 
 function renderPasos(D) {
@@ -4327,6 +4866,7 @@ function refrescar() {
   dibujarRed();
   renderPrecio();
   actualizarEnlace();
+  if (E.paso === 2 || (E.paso === 6 && !E.entrenando)) dibujarRedGrande();
   if (E.paso === 6) {
     actualizarEstimacion();
     if (!E.entrenando) $$("#controles-entrenamiento button").forEach((b) => { b.disabled = pasosConErrores(D).length > 0; });
@@ -4342,6 +4882,7 @@ function irA(paso) {
   E.avisoEnlace = null;
   E.avisoArchivoEnlace = null;
   E.simulacion = null;
+  E.capaAbierta = null;
   renderPaso();
   refrescar();
   const panel = $("#panel");
@@ -4435,17 +4976,54 @@ const ACCIONES = {
     setTimeout(() => URL.revokeObjectURL(enlace.href), 2000);
   },
   "agregar-capa"() {
-    if (E.ocultas.length >= 3) return;
+    if (E.ocultas.length >= MAXIMO_OCULTAS) return;
     const ultima = E.ocultas.at(-1);
-    E.ocultas.push({ neuronas: ultima ? Math.max(2, ultima.neuronas / 2) : 16, activacion: "relu", dropout: 0 });
+    E.ocultas.push({ neuronas: ultima ? ultima.neuronas : 16, activacion: ultima ? ultima.activacion : "relu", dropout: 0 });
     renderPaso();
     refrescar();
   },
   "quitar-capa"(b) {
     E.ocultas.splice(Number(b.dataset.indice), 1);
+    E.capaAbierta = null;
     renderPaso();
     refrescar();
   },
+  "quitar-ultima-capa"() {
+    E.ocultas.pop();
+    E.capaAbierta = null;
+    renderPaso();
+    refrescar();
+  },
+  "red-mas"(b) { cambiarNeuronas(Number(b.dataset.indice), 1); },
+  "red-menos"(b) { cambiarNeuronas(Number(b.dataset.indice), -1); },
+  "red-capa"(b) {
+    const i = Number(b.dataset.indice);
+    E.capaAbierta = E.capaAbierta === i ? null : i;
+    dibujarRedGrande();
+    if (E.capaAbierta !== null) $(".red-menu input:checked")?.focus({ preventScroll: true });
+  },
+  "red-cerrar-capa"() {
+    const i = E.capaAbierta;
+    E.capaAbierta = null;
+    dibujarRedGrande();
+    $(`[data-accion="red-capa"][data-indice="${i}"]`)?.focus({ preventScroll: true });
+  },
+  "red-neurona"(b) {
+    const columna = Number(b.dataset.columna), unidad = Number(b.dataset.unidad), s = E.redSeleccion;
+    E.redSeleccion = s?.tipo === "neurona" && s.columna === columna && s.unidad === unidad ? null : { tipo: "neurona", columna, unidad };
+    dibujarRedGrande();
+  },
+  "red-cerrar-inspector"() {
+    E.redSeleccion = null;
+    dibujarRedGrande();
+  },
+  "seguir-ejemplo"() {
+    E.redEjemplo = E.redEjemplo === null ? 0 : null;
+    renderHerramientasRed();
+  },
+  "ejemplo-anterior"() { E.redEjemplo -= 1; dibujarRedGrande(); },
+  "ejemplo-siguiente"() { E.redEjemplo += 1; dibujarRedGrande(); },
+  "ejemplo-azar"() { E.redEjemplo = Math.floor(Math.random() * 400); dibujarRedGrande(); },
   simular() {
     simularDropout();
     renderPaso();
@@ -4475,6 +5053,25 @@ const ACCIONES = {
     setTimeout(() => { b.textContent = "Copiar"; }, 1600);
   },
 };
+
+// Neuronas de una capa oculta con − y + en el editor, por los valores del selector.
+function cambiarNeuronas(i, paso) {
+  const k = NEURONAS_OCULTAS.indexOf(E.ocultas[i].neuronas) + paso;
+  if (k < 0 || k >= NEURONAS_OCULTAS.length) return;
+  E.ocultas[i].neuronas = NEURONAS_OCULTAS[k];
+  refrescar();
+}
+
+// La barra de herramientas cambia al seguir un ejemplo: se vuelve a armar sin tocar la red.
+function renderHerramientasRed() {
+  const barra = $(".red-herramientas"), editable = Boolean($("#red-editor"));
+  if (!barra) return;
+  const molde = document.createElement("div");
+  molde.innerHTML = panelRed(editable);
+  barra.replaceWith(molde.querySelector(".red-herramientas"));
+  $('[data-accion="seguir-ejemplo"]')?.focus({ preventScroll: true });
+  dibujarRedGrande();
+}
 
 function actualizarParticion() {
   pintarParticion();
@@ -4542,17 +5139,14 @@ function cambiarCampo(el) {
     case "archivo": leerArchivo(el.files[0]); el.value = ""; return;
     case "normalizar": E.normalizar = el.checked; animarEscalas(); break;
     case "neuronas": E.ocultas[i].neuronas = Number(el.value); break;
-    case "activacion":
-      E.ocultas[i].activacion = el.value;
-      $(`#curva-oculta-${i}`).innerHTML = `${svgCurvaActivacion(el.value)}<span>${ACTIVACIONES[el.value].rango}</span>`;
-      break;
+    case "activacion": E.ocultas[i].activacion = el.value; break;
     case "salida-neuronas": E.salida.neuronas = el.value ? Number(el.value) : null; break;
     case "salida-activacion": E.salida.activacion = el.value; break;
     case "perdida": E.perdida = el.value; break;
     case "dropout":
       E.ocultas[i].dropout = Number(el.value);
       $(`#salida-dropout-${i}`).textContent = decimal(el.value);
-      $('[data-accion="simular"]').disabled = !E.ocultas.some((c) => c.dropout > 0);
+      if ($('[data-accion="simular"]')) $('[data-accion="simular"]').disabled = !E.ocultas.some((c) => c.dropout > 0);
       if (E.simulacion) simularDropout();
       break;
     case "l2": E.l2 = Number(el.value); break;
@@ -4592,6 +5186,12 @@ function iniciar() {
     if (b && !b.disabled && ACCIONES[b.dataset.accion]) ACCIONES[b.dataset.accion](b);
   });
   panel.addEventListener("input", (ev) => { if ((ev.target.type === "range" || ev.target.type === "number") && ev.target.dataset.campo) cambiarCampo(ev.target); });
+  // Escape cierra el menú de una capa o deja de inspeccionar.
+  panel.addEventListener("keydown", (ev) => {
+    if (ev.key !== "Escape" || (E.capaAbierta === null && !E.redSeleccion)) return;
+    if (E.capaAbierta !== null) ACCIONES["red-cerrar-capa"]();
+    else ACCIONES["red-cerrar-inspector"]();
+  });
   panel.addEventListener("change", (ev) => { if (ev.target.dataset.campo && ev.target.type !== "range" && ev.target.type !== "number") cambiarCampo(ev.target); });
   $("#pasos").addEventListener("click", (ev) => {
     const b = ev.target.closest("[data-paso]");
@@ -4680,6 +5280,8 @@ function iniciar() {
     cargarDesdeEnlace(hash);
   });
   if (location.hash.length > 1) cargarDesdeEnlace(location.hash.slice(1), false);
+  // TensorFlow.js se carga diferido, después de este script: con él llegan los pesos iniciales.
+  document.addEventListener("DOMContentLoaded", () => { if (typeof tf !== "undefined") dibujarRedGrande(); });
   aplicarModo();
   let ancho = 0;
   new ResizeObserver(([entrada]) => {
@@ -4693,6 +5295,7 @@ function iniciar() {
     anchoPanel = nuevo;
     if (E.paso === 1 && $("#capa-entrada")) $("#capa-entrada").innerHTML = svgCapaEntrada(Math.max(300, nuevo - 4));
     if (E.paso === 6 && !E.entrenando) { dibujarCurvas(); dibujarTablero({ completo: true }); renderHistorial(); }
+    if (E.paso === 2) dibujarRedGrande();
   }).observe($("#contenido-paso"));
   renderPaso();
   refrescar();
