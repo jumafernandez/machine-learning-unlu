@@ -25,14 +25,14 @@ Las ocho pantallas siguen la red capa por capa:
 4. **Capa de salida**: neuronas y función de activación de salida (k en clustering).
 5. **Función de pérdida**: BCE, CCE, MSE, MAE o MSE contra centroides, cada una con su curva, y la métrica que se reporta.
 6. **Regularización**: dropout por capa, L2 y early stopping, con un esquema de la paciencia.
-7. **Entrenamiento**: optimizador (con su trayectoria sobre un valle de ejemplo), learning rate, épocas y batch. Se puede entrenar, pausar o avanzar de a una época; las curvas se actualizan en vivo y la vista previa muestra el peso de cada conexión. Al final, el resultado en prueba y la comparación de hasta 4 entrenamientos.
+7. **Entrenamiento**: optimizador (con su trayectoria sobre un valle de ejemplo), learning rate, batch, épocas y semilla de los pesos iniciales. Un tablero a todo el ancho muestra en vivo la red, con el peso de cada conexión y la salida de cada neurona; lo que aprende la red sobre las 2 primeras componentes principales de las entradas (regiones de decisión, valores reales contra predichos o grupos con sus centroides); el recorrido del optimizador, lote a lote, sobre un corte de la superficie de pérdida; las curvas; un registro como el de `model.fit(..., verbose=2)`, y la distribución de los pesos y la norma del gradiente de cada capa. Se entrena a velocidad lenta, normal o máxima, y se puede pausar o avanzar de a una época. Al final, el resultado en prueba y un historial con los entrenamientos de la tarea, que muestra solo las opciones que cambian entre ellos y marca el mejor en validación.
 8. **Resumen del modelo**: decisiones, `model.summary()`, cálculo por capa y código Keras para copiar o descargar como notebook (`.ipynb`) y abrir en Colab.
 
 "Siguiente" se bloquea ante un error y deja seguir ante un aviso. Cada error y cada aviso explica por qué, en diálogo con las clases C5 (*Perceptrón y MLP*) y C6 (*Entrenamiento de redes neuronales*) y con la notebook N02 (*FFNN: Guía paso a paso*).
 
 ## Modos
 
-- **Configuración**: cada pantalla muestra las decisiones, la red y los avisos. Los gráficos secundarios (distribuciones, asociación, trayectoria del optimizador, esquema de paciencia, `model.summary()`) quedan plegados en "Ver …" y la explicación de cada aviso, en "¿Por qué?".
+- **Configuración**: cada pantalla muestra las decisiones, la red y los avisos. Los gráficos secundarios (distribuciones, asociación, valle de ejemplo del optimizador, esquema de paciencia, `model.summary()`) quedan plegados en "Ver …" y la explicación de cada aviso, en "¿Por qué?".
 - **Estudio**: cada pantalla abre un recuadro con el concepto que se aplica (neurona y sesgo, activación, función de pérdida, ciclo de entrenamiento, sobreajuste), con su referencia a C5, C6 o N02, y todo lo plegado queda abierto.
 
 El modo se cambia arriba a la derecha. Para compartir un enlace que abra directamente en modo Estudio:
