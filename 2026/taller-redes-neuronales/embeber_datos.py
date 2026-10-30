@@ -1,9 +1,9 @@
 """Copia el dataset del agente de inspección dentro de index.html.
 
 El configurador es una página autocontenida: lleva los datos embebidos como
-JSON compacto en el bloque <script id="datos-inspeccion">. Las columnas de
-texto (estado y particion) se guardan como índices de su lista de categorías
-y los valores vacíos como null.
+JSON compacto en el bloque <script id="datos-inspeccion">. La columna de
+texto estado se guarda como índices de su lista de categorías y los valores
+vacíos como null.
 
 Uso: python embeber_datos.py   (lee datos/inspeccion_sensores.csv y actualiza index.html)
 """
@@ -15,7 +15,7 @@ import pandas as pd
 
 from generar_datos import ESTADOS
 
-CATEGORIAS = {"estado": ESTADOS, "particion": ["entrenamiento", "validacion", "prueba"]}
+CATEGORIAS = {"estado": ESTADOS}
 INICIO = '<script type="application/json" id="datos-inspeccion">'
 FIN = "</script>"
 

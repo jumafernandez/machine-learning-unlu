@@ -19,7 +19,7 @@ También funciona al abrir el archivo local en el navegador. Es una página auto
 
 Las ocho pantallas siguen la red capa por capa:
 
-1. **Datos y tarea**: se sube un CSV o se cargan los datos de ejemplo. Se ven las primeras filas, como en `df.head()`, se elige la tarea (clasificación binaria, clasificación multiclase, regresión o clustering) y, si es supervisada, la variable objetivo con un clic en su columna. Con otro clic en cada columna se suman o se quitan las entradas. La partición se define con los porcentajes de entrenamiento, validación y prueba y una semilla, 42 por defecto.
+1. **Datos y tarea**: se sube un CSV o se cargan los datos de ejemplo. Se ven las primeras filas, como en `df.head()`, se elige la tarea (clasificación binaria, clasificación multiclase, regresión o clustering) y, si es supervisada, la variable objetivo con un clic en su columna. Con otro clic en cada columna se suman o se quitan las entradas. La partición se elige sobre una barra con los tres conjuntos: al arrastrar el límite entre dos de ellos, lo que gana uno lo pierde el otro, en pasos de 5%. La semilla, 42 por defecto, define qué filas van a cada conjunto.
 2. **Capa de entrada**: la red en grande, con el rango de cada variable entrando a su neurona. Al activar la normalización z-score, las barras se acomodan a la misma escala.
 3. **Capas ocultas**: de 0 a 3 capas, con neuronas y función de activación.
 4. **Capa de salida**: neuronas y función de activación de salida (k en clustering).
@@ -61,7 +61,7 @@ El código generado lee el archivo por su nombre: antes de ejecutarlo en Colab, 
 
 ## Datos del taller
 
-Cada fila es una lectura de un rack con 8 variables (`temperatura`, `humedad`, `carga_cpu`, `ventiladores_rpm`, `consumo_w`, `errores_disco`, `latencia_ms` y `vibracion`), el `estado` del equipo (normal, termico, electrico, almacenamiento o red), `alerta_real` y `tiempo_reparacion_min` (vacío si el estado es normal). El archivo trae además una columna `particion` que el configurador no usa: la partición se genera con una semilla.
+Cada fila es una lectura de un rack con 8 variables (`temperatura`, `humedad`, `carga_cpu`, `ventiladores_rpm`, `consumo_w`, `errores_disco`, `latencia_ms` y `vibracion`), el `estado` del equipo (normal, termico, electrico, almacenamiento o red), `alerta_real` y `tiempo_reparacion_min` (vacío si el estado es normal).
 
 ## Preparación para edición
 

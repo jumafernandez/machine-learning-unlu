@@ -84,8 +84,6 @@ def generar(semilla=SEMILLA, n=N):
 
     orden = rng.permutation(n)
     df = df.iloc[orden].reset_index(drop=True)
-    particion = np.array(["entrenamiento"] * int(0.6 * n) + ["validacion"] * int(0.2 * n) + ["prueba"] * (n - int(0.6 * n) - int(0.2 * n)))
-    df["particion"] = particion
 
     redondeo = {"temperatura": 1, "humedad": 1, "carga_cpu": 1, "ventiladores_rpm": 0, "consumo_w": 0,
                 "errores_disco": 0, "latencia_ms": 1, "vibracion": 2, "tiempo_reparacion_min": 0}
