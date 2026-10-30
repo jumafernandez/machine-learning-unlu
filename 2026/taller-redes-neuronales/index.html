@@ -32,15 +32,15 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   font-family: "Source Sans Pro", "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 16.5px;
+  font-size: 16px;
   line-height: 1.5;
   color: var(--texto);
   background: #fff;
 }
 h1, h2, h3 { color: var(--titulo); line-height: 1.2; margin: 0 0 .5em; }
-h1 { font-size: 2.15rem; font-weight: 700; }
-h2 { font-size: 1.55rem; font-weight: 600; }
-h3 { font-size: 1.15rem; font-weight: 600; margin-top: 1.5em; }
+h1 { font-size: 1.8rem; font-weight: 700; }
+h2 { font-size: 1.32rem; font-weight: 600; }
+h3 { font-size: 1.02rem; font-weight: 600; margin-top: 1.25em; }
 h4 { color: var(--titulo); font-size: 1rem; font-weight: 600; margin: 1.2em 0 .4em; }
 p { margin: 0 0 .85em; text-align: justify; hyphens: auto; line-height: 1.5; }
 .subtitulo, .leyenda, .precio-nota, .estimacion, .pie p { hyphens: manual; }
@@ -52,18 +52,18 @@ button, input, select { font: inherit; color: inherit; }
 .contenedor { max-width: 1260px; margin: 0 auto; padding: 0 24px; }
 
 /* Encabezado y barra de pasos */
-.encabezado { background: linear-gradient(180deg, var(--suave), #fff); border-bottom: 1px solid var(--borde); padding: 26px 0 18px; }
+.encabezado { background: linear-gradient(180deg, var(--suave), #fff); border-bottom: 1px solid var(--borde); padding: 18px 0 12px; }
 .volanta { margin: 0 0 .3em; color: var(--violeta); font-weight: 600; text-align: left; }
-.subtitulo { color: var(--secundario); text-align: left; max-width: 60em; margin: 0; font-size: 1.08rem; }
-.pasos-nav { margin-top: 18px; }
+.subtitulo { color: var(--secundario); text-align: left; max-width: 60em; margin: 0; font-size: .98rem; }
+.pasos-nav { margin-top: 12px; }
 .pasos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
 .paso-boton {
   width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 2px;
   background: none; border: 0; border-radius: 8px; cursor: pointer; color: var(--secundario);
-  font-size: .88rem; line-height: 1.15; text-align: center;
+  font-size: .84rem; line-height: 1.15; text-align: center;
 }
 .paso-boton .numero {
-  width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; position: relative;
+  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; position: relative; font-size: .9rem;
   border: 2px solid var(--borde); background: #fff; font-weight: 700; color: var(--secundario);
 }
 .paso-boton:disabled { cursor: default; opacity: .5; }
@@ -78,12 +78,13 @@ button, input, select { font: inherit; color: inherit; }
 .marca.aviso { background: #d9a227; }
 
 /* Estructura en dos columnas */
-.marco { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 28px; align-items: start; margin-top: 18px; margin-bottom: 36px; }
-.panel { min-width: 0; border: 1px solid var(--borde); border-radius: 14px; padding: 22px 26px; }
+.marco { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 22px; align-items: start; margin-top: 14px; margin-bottom: 32px; }
+.panel { min-width: 0; border: 1px solid var(--borde); border-radius: 14px; padding: 18px 22px; }
 .marco.sin-vista { grid-template-columns: minmax(0, 1fr); }
 .marco.sin-vista .vista { display: none; }
+.marco.red-en-panel .tarjeta-red { display: none; }
 .vista { position: sticky; top: 14px; max-height: calc(100vh - 28px); overflow-y: auto; display: grid; gap: 14px; min-width: 0; }
-.tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: 14px; padding: 14px 18px; min-width: 0; }
+.tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: 14px; padding: 12px 16px; min-width: 0; }
 .titulo-chico { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--secundario); margin: 0 0 6px; font-weight: 700; }
 .precio-movil { display: none; }
 
@@ -93,7 +94,7 @@ button, input, select { font: inherit; color: inherit; }
 .leyenda.simulacion { color: var(--violeta); }
 
 /* Precio */
-.precio-total { font-size: 2.7rem; font-weight: 700; color: var(--titulo); line-height: 1; font-variant-numeric: tabular-nums; }
+.precio-total { font-size: 2.3rem; font-weight: 700; color: var(--titulo); line-height: 1; font-variant-numeric: tabular-nums; }
 .precio-parcial { font-size: .85rem; color: var(--aviso-texto); margin-left: 6px; font-weight: 600; }
 .precio-lista { list-style: none; padding: 0; margin: 10px 0 0; font-size: .92rem; font-variant-numeric: tabular-nums; }
 .precio-lista li { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px dashed var(--borde); }
@@ -103,13 +104,13 @@ button, input, select { font: inherit; color: inherit; }
 .precio-nota { font-size: .85rem; color: var(--secundario); text-align: left; margin: 8px 0 0; }
 
 /* Mensajes */
-.mensaje { border: 1px solid; border-left-width: 4px; border-radius: 8px; padding: 10px 14px; margin: 12px 0; }
+.mensaje { border: 1px solid; border-left-width: 3px; border-radius: 8px; padding: 7px 12px; margin: 8px 0; font-size: .95rem; }
 .mensaje > strong { display: block; margin-bottom: 2px; }
 .mensaje p { margin: 0; }
 .mensaje.error { background: var(--error-fondo); border-color: var(--error-borde); color: var(--error-texto); }
 .mensaje.aviso { background: var(--aviso-fondo); border-color: var(--aviso-borde); color: var(--aviso-texto); }
 .mensaje.info { background: var(--suave); border-color: var(--borde); border-left-color: var(--acento); color: var(--texto); }
-.nota { background: var(--suave); border-radius: 8px; padding: 10px 14px; color: #3b525c; }
+.nota { border-left: 3px solid var(--borde); padding: 2px 0 2px 12px; color: var(--secundario); font-size: .93rem; text-align: left; }
 
 /* Navegación */
 .navegacion { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--borde); }
@@ -221,7 +222,7 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .resultado { margin-top: 18px; }
 .cifras { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 14px; }
 .cifra { border: 1px solid var(--borde); border-radius: 10px; padding: 8px 14px; min-width: 130px; }
-.cifra .valor { display: block; font-size: 1.9rem; font-weight: 700; color: var(--titulo); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.cifra .valor { display: block; font-size: 1.6rem; font-weight: 700; color: var(--titulo); line-height: 1.1; font-variant-numeric: tabular-nums; }
 .cifra.secundaria .valor { font-size: 1.3rem; color: var(--secundario); }
 .cifra .rotulo { font-size: .85rem; color: var(--secundario); }
 .barras { display: grid; gap: 4px; margin: 6px 0 12px; }
@@ -351,6 +352,18 @@ button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2p
 .tareas .icono-tarea { height: 52px; max-width: 110px; }
 .tareas .tarjeta-tarea .texto { font-size: .88rem; }
 
+.metrica-texto { text-align: left; font-size: .93rem; color: var(--secundario); margin-top: 10px; }
+.metrica-texto strong { color: var(--titulo); }
+
+/* Partición y capa de entrada */
+.particion-controles { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; margin: 4px 0 10px; }
+.campo-chico { display: flex; flex-direction: column; gap: 3px; font-size: .88rem; color: var(--secundario); font-weight: 600; }
+.campo-chico input[type=number] { width: 5.2em; min-height: 34px; padding: 4px 8px; font-variant-numeric: tabular-nums; }
+.campo-chico input[data-campo="semilla"] { width: 7em; }
+.con-unidad { display: inline-flex; align-items: center; gap: 4px; color: var(--secundario); }
+.lienzo { margin: 8px 0 6px; padding: 10px 12px 4px; border: 1px solid var(--borde); border-radius: 14px; background: linear-gradient(180deg, #fbfdfe, #f4f9fa); }
+.lienzo svg { width: 100%; height: auto; display: block; }
+
 /* Modo configuración / estudio */
 .encabezado-fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px 28px; flex-wrap: wrap; }
 .modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--titulo); border-radius: 10px; overflow: hidden; max-width: 320px; }
@@ -387,9 +400,9 @@ svg .t-diagrama.grande { font-size: 22px; }
 .objetivo-dist figcaption { font-weight: 600; color: var(--titulo); font-size: .95rem; margin-bottom: 6px; }
 .objetivo-dist .barra { grid-template-columns: 120px minmax(0, 1fr) 44px; }
 .histograma-objetivo { width: 100%; max-width: 420px; height: auto; display: block; }
-.particion { display: flex; border-radius: 10px; overflow: hidden; margin: 8px 0 12px; color: #fff; font-size: .88rem; line-height: 1.25; }
-.particion div { padding: 8px 10px; min-width: 0; }
-.particion strong { display: block; }
+.particion { display: flex; border-radius: 8px; overflow: hidden; margin: 6px 0 8px; color: #fff; font-size: .84rem; line-height: 1.2; }
+.particion div { padding: 6px 10px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.particion strong { font-weight: 600; }
 .escalas { margin-top: 10px; }
 .capa-curva { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; color: var(--secundario); font-size: .88rem; }
 .curva { flex: none; display: block; }
@@ -442,6 +455,7 @@ svg .t-diagrama.grande { font-size: 22px; }
   .navegacion { flex-wrap: wrap; }
   .navegacion .estado { order: -1; flex-basis: 100%; text-align: left; font-size: .85rem; }
   .ciclo { grid-template-columns: minmax(0, 1fr); }
+  .particion strong { display: none; }
   .modo { max-width: none; width: 100%; }
   .encabezado-acciones { align-items: stretch; width: 100%; }
   .compartir { justify-content: space-between; }
@@ -491,7 +505,7 @@ svg .t-diagrama.grande { font-size: 22px; }
   </main>
 
   <aside class="vista" aria-label="Vista previa y parámetros de la red">
-    <section class="tarjeta">
+    <section class="tarjeta tarjeta-red">
       <h2 class="titulo-chico">Vista previa</h2>
       <div id="red"></div>
       <p class="leyenda" id="leyenda-red"></p>
@@ -501,7 +515,7 @@ svg .t-diagrama.grande { font-size: 22px; }
       <div><span class="precio-total" id="precio-total" data-total="0">0</span><span class="precio-parcial" id="precio-parcial"></span></div>
       <div class="barra-parametros" id="barra-parametros" aria-hidden="true"></div>
       <ul class="precio-lista" id="precio-lista"></ul>
-      <p class="precio-nota" id="precio-nota"></p>
+      <p class="precio-nota solo-estudio" id="precio-nota"></p>
     </section>
   </aside>
 </div>
@@ -571,11 +585,6 @@ function barajar(v, rng = Math.random) {
 const PARTES = ["entrenamiento", "validacion", "prueba"];
 const URL_CSV = "https://raw.githubusercontent.com/jumafernandez/machine-learning-unlu/main/2026/taller-redes-neuronales/datos/inspeccion_sensores.csv";
 const LIMITES = { entradasRecomendadas: 20, filasRecomendadas: 10000, filasMaximas: 200000, columnasMaximas: 200, megasMaximos: 25 };
-const ALIAS_PARTES = {
-  entrenamiento: ["entrenamiento", "train", "training", "entrenar"],
-  validacion: ["validacion", "validación", "val", "valid", "validation"],
-  prueba: ["prueba", "test", "testing"],
-};
 const NULOS = new Set(["", "na", "nan", "null", "none", "?", "-"]);
 const esValido = (v) => v != null && (typeof v !== "number" || Number.isFinite(v));
 
@@ -593,13 +602,13 @@ function describirColumna(valores) {
   return info;
 }
 
-function crearDataset({ nombre, descripcion, columnas, orden, variables, entradasPorDefecto, sugeridos = {}, etiquetas = {}, ordenClases = {}, unidades = {}, columnaParticion = null, valoresParticion = null, fuente, nota = null }) {
+function crearDataset({ nombre, descripcion, columnas, orden, variables, entradasPorDefecto, sugeridos = {}, etiquetas = {}, ordenClases = {}, unidades = {}, fuente }) {
   const info = Object.fromEntries(orden.map((c) => [c, describirColumna(columnas[c])]));
   for (const [c, valores] of Object.entries(ordenClases)) info[c].distintos = valores.filter((v) => info[c].distintos.includes(v));
   return {
     id: Math.random().toString(36).slice(2), nombre, descripcion, n: columnas[orden[0]].length, columnas, orden, info, variables,
     entradasPorDefecto: entradasPorDefecto || variables.map((v) => v.columna), sugeridos, etiquetas, unidades,
-    columnaParticion, valoresParticion, fuente, nota, embebido: fuente.tipo === "url",
+    fuente, embebido: fuente.tipo === "url",
   };
 }
 
@@ -609,11 +618,13 @@ function cargarDatosEmbebidos() {
   for (const [columna, categorias] of Object.entries(crudo.categorias)) {
     columnas[columna] = columnas[columna].map((i) => categorias[i]);
   }
+  // La columna particion del CSV no se usa: la partición se genera con una semilla.
+  delete columnas.particion;
   return crearDataset({
     nombre: "inspeccion_sensores.csv",
     descripcion: "Lecturas de sensores de racks de un centro de datos: 1500 filas, 8 variables numéricas y 3 columnas que pueden ser variable objetivo",
     columnas,
-    orden: Object.keys(crudo.columnas),
+    orden: Object.keys(crudo.columnas).filter((c) => c !== "particion"),
     variables: [
       { columna: "temperatura", unidad: "°C", corto: "temp.", decimales: 1 },
       { columna: "humedad", unidad: "%", corto: "hum.", decimales: 1 },
@@ -628,10 +639,7 @@ function cargarDatosEmbebidos() {
     etiquetas: { alerta_real: { 0: "sin alerta", 1: "alerta" }, estado: { termico: "térmico", electrico: "eléctrico" } },
     ordenClases: { estado: ["normal", "termico", "electrico", "almacenamiento", "red"] },
     unidades: { tiempo_reparacion_min: "minutos" },
-    columnaParticion: "particion",
-    valoresParticion: { entrenamiento: "entrenamiento", validacion: "validacion", prueba: "prueba" },
     fuente: { tipo: "url", url: URL_CSV },
-    nota: "El 6% de las etiquetas se registró mal a propósito: es error irreducible. Ningún modelo puede acertar el 100% en prueba, y si una red llega al 100% en entrenamiento, está memorizando esos errores.",
   });
 }
 
@@ -685,43 +693,25 @@ function datasetDesdeCSV(nombre, texto) {
     const numerica = numeros.some((v) => v !== null) && numeros.every((v) => v === null || Number.isFinite(v));
     columnas[c] = numerica ? numeros : crudas[j].map((t, i) => (vacio[i] ? null : t));
   });
-  // Columna de partición: un nombre conocido y valores como train / val / test.
-  let columnaParticion = null, valoresParticion = null;
-  for (const c of orden) {
-    if (!/^(particion|partición|split|partition|conjunto|subset)$/i.test(c)) continue;
-    const valores = [...new Set(columnas[c].filter(esValido).map(String))];
-    const mapa = {};
-    for (const v of valores) {
-      const parte = PARTES.find((p) => ALIAS_PARTES[p].includes(v.toLowerCase()));
-      if (parte) mapa[parte] = v;
-    }
-    if (Object.keys(mapa).length === 3 && valores.length === 3) {
-      columnaParticion = c;
-      valoresParticion = mapa;
-      columnas[c] = columnas[c].map((v) => (v == null ? null : PARTES.find((p) => mapa[p] === String(v))));
-    }
-  }
   const info = Object.fromEntries(orden.map((c) => [c, describirColumna(columnas[c])]));
-  const numericas = orden.filter((c) => c !== columnaParticion && info[c].tipo === "numero");
+  const numericas = orden.filter((c) => info[c].tipo === "numero");
   const pareceId = (c) => /^(id|index|indice|índice|unnamed: ?0|row|fila)$/i.test(c) || (info[c].enteros && info[c].nDistintos === datos.length && info[c].nulos === 0);
-  const ultima = (filtro) => [...orden].reverse().find((c) => c !== columnaParticion && filtro(info[c], c)) || null;
+  const ultima = (filtro) => [...orden].reverse().find((c) => filtro(info[c], c)) || null;
   const sugeridos = {
     binaria: ultima((i) => i.nDistintos === 2),
     multiclase: ultima((i) => i.tipo === "texto" && i.nDistintos >= 3 && i.nDistintos <= 20) || ultima((i) => i.enteros && i.nDistintos >= 3 && i.nDistintos <= 10),
     regresion: ultima((i, c) => i.tipo === "numero" && i.nDistintos > 20 && !pareceId(c)),
   };
   sugeridos.clustering = sugeridos.multiclase || sugeridos.binaria;
-  const textos = orden.length - numericas.length - (columnaParticion ? 1 : 0);
+  const textos = orden.length - numericas.length;
   return crearDataset({
     nombre,
-    descripcion: `${num(datos.length)} filas y ${orden.length} columnas: ${numericas.length} numéricas${textos ? ` y ${textos} de texto` : ""}${columnaParticion ? `, más la columna de partición ${columnaParticion}` : ""}`,
+    descripcion: `${num(datos.length)} filas y ${orden.length} columnas: ${numericas.length} numéricas${textos ? ` y ${textos} de texto` : ""}`,
     columnas,
     orden,
     variables: numericas.map((c) => ({ columna: c, unidad: "", corto: c.length > 7 ? `${c.slice(0, 6)}.` : c, decimales: info[c].decimales })),
     entradasPorDefecto: numericas.filter((c) => !pareceId(c)).slice(0, LIMITES.entradasRecomendadas),
     sugeridos,
-    columnaParticion,
-    valoresParticion,
     fuente: { tipo: "archivo", nombre, separador, decimal },
   });
 }
@@ -733,7 +723,7 @@ const nombreValor = (col, v) => DATASET.etiquetas[col]?.[v] ?? String(v);
 
 function compatible(col, tarea) {
   const i = DATASET.info[col];
-  if (!i || col === DATASET.columnaParticion) return false;
+  if (!i) return false;
   if (tarea === "binaria") return i.nDistintos === 2;
   if (tarea === "multiclase") return i.nDistintos >= 3 && i.nDistintos <= 20 && (i.tipo === "texto" || i.enteros);
   if (tarea === "regresion") return i.tipo === "numero" && i.nDistintos > 2;
@@ -771,7 +761,8 @@ const colorClase = (k, total) => (total === 2 ? ["#8eb9c3", "#d08c2f"][k] : COLO
 // Tamaños como train_test_split de sklearn: primero entrenamiento y después
 // el resto se divide entre validación y prueba.
 function fraccionesParticion(p) {
-  return { entrenamiento: p.entrenamiento / 100, validacion: Number((p.validacion / (100 - p.entrenamiento)).toFixed(4)) };
+  const suma = p.entrenamiento + p.validacion + p.prueba || 1;
+  return { entrenamiento: p.entrenamiento / suma, validacion: Number((p.validacion / (p.validacion + p.prueba || 1)).toFixed(4)) };
 }
 
 const cacheParticion = new Map();
@@ -786,18 +777,11 @@ function particionar(cfg = E) {
   if (cfg.muestra && validas.length > LIMITES.filasRecomendadas) {
     validas = barajar([...validas], mulberry32(cfg.particion.semilla + 1)).slice(0, LIMITES.filasRecomendadas).sort((a, b) => a - b);
   }
-  const filas = { entrenamiento: [], validacion: [], prueba: [] };
-  if (cfg.particion.modo === "columna" && DATASET.columnaParticion) {
-    for (const i of validas) { const p = col[DATASET.columnaParticion][i]; if (filas[p]) filas[p].push(i); }
-  } else {
-    const orden = barajar([...validas], mulberry32(cfg.particion.semilla));
-    const f = fraccionesParticion(cfg.particion);
-    const nTr = Math.floor(orden.length * f.entrenamiento);
-    const nVa = Math.floor((orden.length - nTr) * f.validacion);
-    filas.entrenamiento = orden.slice(0, nTr);
-    filas.validacion = orden.slice(nTr, nTr + nVa);
-    filas.prueba = orden.slice(nTr + nVa);
-  }
+  const orden = barajar([...validas], mulberry32(cfg.particion.semilla));
+  const f = fraccionesParticion(cfg.particion);
+  const nTr = Math.floor(orden.length * f.entrenamiento);
+  const nVa = Math.floor((orden.length - nTr) * f.validacion);
+  const filas = { entrenamiento: orden.slice(0, nTr), validacion: orden.slice(nTr, nTr + nVa), prueba: orden.slice(nTr + nVa) };
   cacheParticion.set(clave, filas);
   return filas;
 }
@@ -908,11 +892,12 @@ const E = {
   paso: 0,
   maxPaso: 0,
   datosElegidos: false,
+  modoHead: "objetivo",
   tarea: null,
   objetivo: null,
   entradasElegidas: [...DATASET.entradasPorDefecto],
   entradas: [...DATASET.entradasPorDefecto],
-  particion: { modo: "columna", entrenamiento: 60, validacion: 20, semilla: 2026 },
+  particion: { entrenamiento: 60, validacion: 20, prueba: 20, semilla: 42 },
   muestra: true,
   normalizar: true,
   ocultas: [{ neuronas: 16, activacion: "relu", dropout: 0 }],
@@ -1022,6 +1007,9 @@ function diagnosticar() {
       ? "Hacé clic en la columna de la tabla que querés predecir."
       : `Ninguna columna del archivo sirve para ${TAREAS[m].titulo.toLowerCase()}: ${{ binaria: "hace falta una con exactamente dos valores", multiclase: "hace falta una con entre 3 y 20 clases", regresion: "hace falta una numérica" }[m]}.`);
   }
+  const { entrenamiento: pTr, validacion: pVa, prueba: pTe } = E.particion;
+  if (m && pTr + pVa + pTe !== 100) error(0, "La partición no suma 100%", `Entrenamiento, validación y prueba suman ${pTr + pVa + pTe}%: tienen que sumar 100%.`);
+  else if (m && Math.min(pTr, pVa, pTe) < 5) error(0, "Un conjunto quedó vacío", "Entrenamiento, validación y prueba necesitan al menos el 5% de los ejemplos cada uno.");
   const partes = conteo();
   if (m && E.entradas.length && Math.min(partes.entrenamiento, partes.validacion, partes.prueba) < 10) {
     error(0, "Muy pocos ejemplos", `Con esta partición quedan ${num(partes.entrenamiento)} ejemplos de entrenamiento, ${num(partes.validacion)} de validación y ${num(partes.prueba)} de prueba. Cada conjunto necesita al menos 10 para que las curvas y el resultado signifiquen algo.`);
@@ -1031,9 +1019,9 @@ function diagnosticar() {
   }
 
   // Capa de entrada
-  if (!E.entradas.length) error(1, "No hay entradas", "Marcá al menos una variable. Sin variables de entrada, la red no tiene información con la cual decidir.");
-  if (E.entradas.length > LIMITES.entradasRecomendadas) {
-    aviso(1, "Muchas variables de entrada", `Elegiste ${E.entradas.length} variables y se recomiendan hasta ${LIMITES.entradasRecomendadas}. Cada una suma una neurona de entrada y un peso por neurona de la primera capa oculta: con muchas variables y pocos ejemplos crece el riesgo de sobreajuste.`);
+  if (m && !E.entradas.length) error(0, "No hay entradas", "Hacé clic en al menos una columna para sumarla a las entradas. Sin variables de entrada, la red no tiene información con la cual decidir.");
+  if (m && E.entradas.length > LIMITES.entradasRecomendadas) {
+    aviso(0, "Muchas variables de entrada", `Elegiste ${E.entradas.length} variables y se recomiendan hasta ${LIMITES.entradasRecomendadas}. Cada una suma una neurona de entrada y un peso por neurona de la primera capa oculta: con muchas variables y pocos ejemplos crece el riesgo de sobreajuste.`);
   }
   if (!E.normalizar && E.entradas.length > 1) {
     const rangos = E.entradas.map((c) => ({ c, min: DATASET.info[c].min, max: DATASET.info[c].max, r: DATASET.info[c].max - DATASET.info[c].min }));
@@ -1289,6 +1277,7 @@ function dibujarRed() {
     leyenda.classList.remove("simulacion");
     leyenda.textContent = "Los nodos +1 violetas son los sesgos: sus aristas punteadas explican el + 1 de cada término (entradas + 1) × neuronas.";
   }
+  leyenda.classList.toggle("solo-estudio", !pesos && !E.simulacion);
 }
 
 // Pesos de la última época (durante el entrenamiento) o finales, si la configuración no cambió.
@@ -1690,25 +1679,18 @@ function barraParticion() {
   const c = conteo(), total = c.entrenamiento + c.validacion + c.prueba;
   if (!total) return '<p class="nota">No quedan filas para entrenar: revisá las columnas elegidas.</p>';
   const partes = [["entrenamiento", "Entrenamiento", "#163e50"], ["validacion", "Validación", "#6fa6b4"], ["prueba", "Prueba", "#5f5078"]];
-  const descartadas = DATASET.n - total;
-  const detalle = [];
-  if (E.muestra && DATASET.n > LIMITES.filasRecomendadas) detalle.push(`una muestra al azar de ${num(LIMITES.filasRecomendadas)} filas`);
-  if (descartadas > 0 && !(E.muestra && DATASET.n > LIMITES.filasRecomendadas)) detalle.push(`se descartan ${num(descartadas)} filas con valores vacíos en las columnas usadas`);
-  return `<div class="particion" role="img" aria-label="Partición: ${partes.map(([p, n]) => `${n} ${c[p]}`).join(", ")}">${partes.map(([p, nombre, color]) => `<div style="flex:${Math.max(c[p], 1)}; background:${color}"><strong>${nombre}</strong><span>${num(c[p])} (${Math.round((100 * c[p]) / total)}%)</span></div>`).join("")}</div>
-    <p class="leyenda">Se usan ${num(total)} ejemplos${detalle.length ? `: ${detalle.join("; ")}` : ""}.</p>`;
+  const descartadas = DATASET.n - total, muestra = E.muestra && DATASET.n > LIMITES.filasRecomendadas;
+  const detalle = muestra ? `Una muestra al azar de ${num(LIMITES.filasRecomendadas)} filas.` : descartadas > 0 ? `Se descartan ${num(descartadas)} filas con valores vacíos en las columnas usadas.` : "";
+  return `<div class="particion" role="img" aria-label="Partición: ${partes.map(([p, n]) => `${n} ${c[p]}`).join(", ")}">${partes.map(([p, nombre, color]) => `<div style="flex:${Math.max(c[p], 1)}; background:${color}" title="${nombre}: ${num(c[p])} ejemplos"><strong>${nombre}</strong> ${num(c[p])}</div>`).join("")}</div>
+    ${detalle ? `<p class="leyenda">${detalle}</p>` : ""}`;
 }
 
 function controlesParticion() {
-  const p = E.particion, conColumna = !!DATASET.columnaParticion, modo = conColumna ? p.modo : "azar";
-  const selectorModo = conColumna ? `<div class="segmentado" role="radiogroup" aria-label="Origen de la partición">
-      <label class="opcion"><input type="radio" name="particion-modo" value="columna" data-campo="particion-modo" ${modo === "columna" ? "checked" : ""}>Usar la columna <code>${esc(DATASET.columnaParticion)}</code></label>
-      <label class="opcion"><input type="radio" name="particion-modo" value="azar" data-campo="particion-modo" ${modo === "azar" ? "checked" : ""}>Generar al azar</label></div>` : "";
-  return `${selectorModo}
-    <div class="grilla-campos particion-azar" ${modo === "columna" ? "hidden" : ""}>
-      <label class="campo"><span>Entrenamiento: <output id="salida-p-entrenamiento">${p.entrenamiento}%</output></span><input type="range" min="40" max="80" step="5" value="${p.entrenamiento}" data-campo="p-entrenamiento"></label>
-      <label class="campo"><span>Validación: <output id="salida-p-validacion">${p.validacion}%</output></span><input type="range" min="5" max="30" step="5" value="${p.validacion}" data-campo="p-validacion"></label>
-      <div class="campo"><span>Prueba: <output id="salida-p-prueba">${100 - p.entrenamiento - p.validacion}%</output></span><span class="ayuda">lo que queda</span></div>
-      <label class="campo">Semilla<input type="number" min="0" max="999999" step="1" value="${p.semilla}" data-campo="semilla"></label>
+  const p = E.particion;
+  const campo = (clave, rotulo) => `<label class="campo-chico"><span>${rotulo}</span><span class="con-unidad"><input type="number" min="5" max="90" step="5" value="${p[clave]}" data-campo="p-${clave}" aria-label="${rotulo} (%)">%</span></label>`;
+  return `<div class="particion-controles">
+      ${campo("entrenamiento", "Entrenamiento")}${campo("validacion", "Validación")}${campo("prueba", "Prueba")}
+      <label class="campo-chico"><span>Semilla</span><input type="number" min="0" max="999999" step="1" value="${p.semilla}" data-campo="semilla"></label>
     </div>
     ${DATASET.n > LIMITES.filasRecomendadas ? `<label class="casilla"><input type="checkbox" data-campo="muestra" ${E.muestra ? "checked" : ""}>Entrenar con una muestra al azar de ${num(LIMITES.filasRecomendadas)} filas</label>` : ""}`;
 }
@@ -1744,32 +1726,6 @@ function asociacionEntradas(ancho) {
     <p class="leyenda">${explicacion} En gris, las variables que no elegiste. Una asociación baja no descarta una variable: la red puede combinarla con otras de forma no lineal.</p></figure>`;
 }
 
-// Rango de cada variable de entrada en entrenamiento, con o sin z-score.
-function escalasEntradas(ancho) {
-  if (!E.entradas.length) return "";
-  const datos = prepararDatos(E);
-  const filas = E.entradas.slice(0, 15).map((c, j) => {
-    const v = datos.X.entrenamiento.map((f) => f[j]);
-    const [minimo, maximo] = extremos(v);
-    return { c, min: minimo, max: maximo, media: promedio(v) };
-  });
-  const lo = Math.min(0, ...filas.map((f) => f.min)), hi = Math.max(...filas.map((f) => f.max));
-  const mIzq = ancho < 420 ? 104 : 130, alto = 26 + filas.length * 22;
-  const X = (v) => mIzq + ((v - lo) / (hi - lo || 1)) * (ancho - mIzq - 14);
-  let svg = "";
-  for (const t of ticksLindos(lo, hi, 4)) svg += `<line x1="${X(t).toFixed(1)}" x2="${X(t).toFixed(1)}" y1="4" y2="${alto - 18}" class="grilla"/><text class="eje" x="${X(t).toFixed(1)}" y="${alto - 4}" text-anchor="middle">${numEje(t)}</text>`;
-  filas.forEach((f, i) => {
-    const y = 14 + i * 22;
-    svg += `<text class="eje" x="${mIzq - 8}" y="${y + 4}" text-anchor="end">${esc(f.c.length > 18 ? `${f.c.slice(0, 17)}.` : f.c)}</text>
-      <line x1="${X(f.min).toFixed(1)}" x2="${Math.max(X(f.max), X(f.min) + 2).toFixed(1)}" y1="${y}" y2="${y}" stroke="#8eb9c3" stroke-width="8" stroke-linecap="round"/>
-      <circle cx="${X(f.media).toFixed(1)}" cy="${y}" r="3.5" fill="#163e50"/>`;
-  });
-  const grande = filas.reduce((a, b) => (b.max - b.min > a.max - a.min ? b : a));
-  const nota = E.normalizar ? "Con z-score, todas quedan en la misma escala." : `Sin normalizar, las variables de valores grandes, como <code>${esc(grande.c)}</code>, aplastan al resto.`;
-  return `<figure class="grafico escalas"><figcaption>Rango de cada entrada en entrenamiento, ${E.normalizar ? "con z-score" : "sin normalizar"}</figcaption>
-    <svg viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Rango de cada variable de entrada">${svg}</svg>
-    <p class="leyenda">La barra va del mínimo al máximo y el punto marca la media. ${nota}${E.entradas.length > filas.length ? ` Se muestran ${filas.length} de ${E.entradas.length} entradas.` : ""}</p></figure>`;
-}
 
 function svgIconoDatos(tipo) {
   if (tipo === "taller") {
@@ -1791,33 +1747,64 @@ function plegable(clave, titulo, html) {
 
 // Las primeras filas, como df.head(). Con una tarea supervisada, las columnas
 // que sirven como variable objetivo se eligen con un clic.
+// Fase del head: elegir el objetivo, elegir las entradas o elegir la referencia (clustering).
+function faseHead() {
+  if (!E.tarea) return null;
+  if (E.tarea !== "clustering" && (!E.objetivo || E.modoHead === "objetivo")) return "objetivo";
+  if (E.tarea === "clustering" && E.modoHead === "referencia") return "referencia";
+  return "entradas";
+}
+
+const esCandidata = (c) => DATASET.variables.some((v) => v.columna === c);
+
 function cabezaDatos() {
-  const def = definirTarea(), col = DATASET.columnas;
-  const elegible = (c) => !!E.tarea && compatible(c, E.tarea);
+  const def = definirTarea(), col = DATASET.columnas, fase = faseHead();
   const filas = [...Array(Math.min(6, DATASET.n)).keys()];
   const marcada = (c) => c === def?.objetivo || c === def?.referencia;
-  // Mientras falta el objetivo, se resaltan las candidatas; después, se ve qué es entrada y qué no se usa.
-  const eligiendo = E.tarea && E.tarea !== "clustering" && !def.objetivo;
+  const clickeable = (c) => fase === "objetivo" ? compatible(c, E.tarea)
+    : fase === "referencia" ? compatible(c, "clustering")
+    : fase === "entradas" ? esCandidata(c) && !marcada(c) : false;
   const clase = (c) => {
-    if (!E.tarea) return "";
+    if (!fase) return "";
     if (marcada(c)) return "objetivo";
-    if (eligiendo) return elegible(c) ? "elegible" : "apagada";
-    return [E.entradas.includes(c) ? "entrada" : "apagada", elegible(c) ? "clickeable" : ""].join(" ").trim();
+    if (fase !== "entradas") return clickeable(c) ? "elegible" : "apagada";
+    return [E.entradas.includes(c) ? "entrada" : "apagada", clickeable(c) ? "clickeable" : ""].join(" ").trim();
   };
+  const titulo = (c) => fase === "objetivo" ? `Usar ${c} como variable objetivo`
+    : fase === "referencia" ? (marcada(c) ? `Quitar ${c} como referencia` : `Usar ${c} como referencia de los grupos`)
+    : E.entradas.includes(c) ? `Quitar ${c} de las entradas` : `Sumar ${c} a las entradas`;
+  const activa = (c) => clickeable(c) || (fase === "referencia" && marcada(c));
   const encabezados = DATASET.orden.map((c) => {
     const info = DATASET.info[c];
     const unidad = DATASET.variables.find((v) => v.columna === c)?.unidad;
-    const rol = c === DATASET.columnaParticion ? "partición" : marcada(c) ? (def.objetivo ? "objetivo" : "referencia") : "";
-    const contenido = `<span class="col-nombre">${esc(c)}</span><span class="col-detalle">${info.tipo === "numero" ? "número" : "texto"}${unidad ? `, ${esc(unidad)}` : ""}</span>${rol ? `<span class="chip ${rol === "partición" ? "rol-particion" : "rol-objetivo"}">${rol}</span>` : ""}`;
-    return `<th class="${clase(c)}">${elegible(c) ? `<button type="button" data-accion="columna" data-columna="${esc(c)}" aria-pressed="${marcada(c)}" title="Usar ${esc(c)} como ${E.tarea === "clustering" ? "referencia" : "variable objetivo"}">${contenido}</button>` : contenido}</th>`;
+    const rol = marcada(c) ? (def.objetivo ? "objetivo" : "referencia") : "";
+    const contenido = `<span class="col-nombre">${esc(c)}</span><span class="col-detalle">${info.tipo === "numero" ? "número" : "texto"}${unidad ? `, ${esc(unidad)}` : ""}</span>${rol ? `<span class="chip rol-objetivo">${rol}</span>` : ""}`;
+    return `<th class="${clase(c)}">${activa(c) ? `<button type="button" data-accion="columna" data-columna="${esc(c)}" aria-pressed="${marcada(c) || (fase === "entradas" && E.entradas.includes(c))}" title="${esc(titulo(c))}">${contenido}</button>` : contenido}</th>`;
   }).join("");
   const cuerpo = filas.map((i) => `<tr><td class="indice">${i}</td>${DATASET.orden.map((c) => {
     const v = col[c][i], info = DATASET.info[c];
     const texto = v == null ? '<span class="vacio">vacío</span>' : esc(typeof v === "number" ? num(v, info.decimales ?? 0) : v);
-    return elegible(c) ? `<td class="${clase(c)}" data-accion="columna" data-columna="${esc(c)}">${texto}</td>` : `<td class="${clase(c)}">${texto}</td>`;
+    return activa(c) ? `<td class="${clase(c)}" data-accion="columna" data-columna="${esc(c)}">${texto}</td>` : `<td class="${clase(c)}">${texto}</td>`;
   }).join("")}</tr>`).join("");
-  const leyenda = E.tarea && !eligiendo ? `<p class="leyenda-roles">${def.objetivo ? '<span><i class="rol-objetivo"></i>objetivo</span>' : def.referencia ? '<span><i class="rol-objetivo"></i>referencia</span>' : ""}<span><i class="rol-entrada"></i>entrada</span><span><i class="rol-sin-uso"></i>no se usa</span></p>` : "";
+  const leyenda = fase === "entradas" ? `<p class="leyenda-roles">${def.objetivo ? '<span><i class="rol-objetivo"></i>objetivo</span>' : def.referencia ? '<span><i class="rol-objetivo"></i>referencia</span>' : ""}<span><i class="rol-entrada"></i>entrada</span><span><i class="rol-sin-uso"></i>no se usa</span></p>` : "";
   return `<div class="tabla-scroll cabeza"><table class="tabla head"><thead><tr><th class="indice"></th>${encabezados}</tr></thead><tbody>${cuerpo}</tbody></table></div>${leyenda}`;
+}
+
+function indicacionHead() {
+  const def = definirTarea(), fase = faseHead();
+  if (!fase) return "";
+  const d = E.entradas.length;
+  const entradas = `<strong>${d} ${d === 1 ? "entrada" : "entradas"}</strong>: hacé clic en una columna para sumarla o quitarla. <button type="button" class="enlace" data-accion="todas-entradas">Todas</button> <button type="button" class="enlace" data-accion="ninguna-entrada">Ninguna</button>`;
+  if (fase === "objetivo") {
+    return `<p class="indicacion pendiente">Hacé clic en la columna que querés predecir: se resaltan las que sirven para esta tarea.${def.objetivo ? ` <button type="button" class="enlace" data-accion="modo-entradas">Dejar <code>${esc(def.objetivo)}</code></button>` : ""}</p>`;
+  }
+  if (fase === "referencia") {
+    return `<p class="indicacion pendiente">Hacé clic en la columna que vas a usar para interpretar los grupos${def.referencia ? ", o en la marcada para quitarla" : ""}. <button type="button" class="enlace" data-accion="modo-entradas">Listo</button></p>`;
+  }
+  if (E.tarea === "clustering") {
+    return `<p class="indicacion">${entradas}<br>Referencia para interpretar los grupos: ${def.referencia ? `<code>${esc(def.referencia)}</code>` : "ninguna"} (<button type="button" class="enlace" data-accion="modo-referencia">${def.referencia ? "cambiar" : "elegir"}</button>).</p>`;
+  }
+  return `<p class="indicacion">Variable objetivo: <code>${esc(def.objetivo)}</code> (<button type="button" class="enlace" data-accion="modo-objetivo">cambiar</button>). ${entradas}</p>`;
 }
 
 function pasoDatos() {
@@ -1833,16 +1820,12 @@ function pasoDatos() {
       <p class="ejemplo">o <button type="button" class="enlace" data-accion="usar-taller">cargá los datos de ejemplo</button>: lecturas de sensores de racks de un centro de datos.</p>`;
   }
   const def = definirTarea();
-  const supervisada = E.tarea && E.tarea !== "clustering";
   const tarjeta = (clave) => {
     const t = TAREAS[clave], elegida = E.tarea === clave;
     const posible = clave === "clustering" || columnasCompatibles(clave).length > 0;
     return `<button type="button" class="tarjeta-tarea${elegida ? " elegida" : ""}" data-accion="tarea" data-valor="${clave}" aria-pressed="${elegida}" ${posible ? "" : "disabled"}>
       ${svgIconoTarea(clave)}<span class="etiqueta">${clave === "clustering" ? "no supervisado" : "supervisado"}</span><strong>${t.titulo}</strong><span class="texto">${posible ? t.texto : "Ninguna columna de estos datos sirve como variable objetivo."}</span></button>`;
   };
-  let indicacion = "";
-  if (supervisada) indicacion = def.objetivo ? `Variable objetivo: <code>${esc(def.objetivo)}</code>. Hacé clic en otra columna resaltada para cambiarla.` : "Hacé clic en la columna que querés predecir: se resaltan las que sirven para esta tarea.";
-  if (E.tarea === "clustering") indicacion = def.referencia ? `<code>${esc(def.referencia)}</code> se usa solo para interpretar los grupos al final. Hacé clic en ella para quitarla.` : "Sin variable objetivo. Si querés, hacé clic en una columna para usarla al final como referencia de los grupos.";
   const listo = E.tarea && (def.objetivo || E.tarea === "clustering");
   return `<h2>Datos y tarea</h2>
     ${concepto(0)}
@@ -1851,41 +1834,139 @@ function pasoDatos() {
       <div class="datos-acciones"><label class="enlace">Subir otro CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>${DATASET.embebido ? "" : '<button type="button" class="enlace" data-accion="dataset-taller">Usar los datos de ejemplo</button>'}</div>
     </div>
     <div id="error-archivo" aria-live="polite"></div>
-    ${indicacion ? `<p class="indicacion${supervisada && !def.objetivo ? " pendiente" : ""}">${indicacion}</p>` : ""}
+    ${indicacionHead()}
     ${cabezaDatos()}
     <h3>Tarea</h3>
     <div class="tarjetas tareas">${["binaria", "multiclase", "regresion", "clustering"].map(tarjeta).join("")}</div>
     ${listo ? `${distribucionObjetivo()}
     ${plegable("distribuciones", "Ver las distribuciones de las variables", histogramasVariables())}
     <h3>Partición</h3>
-    <div id="barra-particion">${barraParticion()}</div>
-    ${plegable("particion", "Cambiar la partición", controlesParticion())}
-    ${DATASET.nota ? `<p class="nota">${DATASET.nota}</p>` : ""}` : ""}`;
+    ${controlesParticion()}
+    <div id="barra-particion">${barraParticion()}</div>` : ""}`;
+}
+
+
+// Capa de entrada en grande: cada variable, con su rango en entrenamiento (con o
+// sin z-score), entra a su neurona; el resto de la red aparece atenuado.
+function estadisticasEntrada(normalizar) {
+  const datos = prepararDatos({ ...configActual(), normalizar });
+  return E.entradas.map((c, j) => {
+    const v = datos.X.entrenamiento.map((f) => f[j]);
+    const [minimo, maximo] = extremos(v);
+    return { c, min: minimo, max: maximo, media: promedio(v) };
+  });
+}
+
+function disenoEntrada(ancho) {
+  const n = E.entradas.length, angosto = ancho < 560;
+  const slots = n <= 12 ? [...Array(n).keys()] : [...Array(10).keys(), "⋮", n - 1];
+  const fila = 30, sup = 38;
+  const xb0 = angosto ? 96 : 148, xb1 = xb0 + (angosto ? 100 : 180), xEntrada = xb1 + 34;
+  return { ancho, angosto, slots, fila, sup, xb0, xb1, xEntrada, alto: sup + slots.length * fila + 44, y: (k) => sup + k * fila + fila / 2 };
+}
+
+function ejeEntrada(stats, d) {
+  const visibles = d.slots.filter((s) => s !== "⋮").map((s) => stats[s]);
+  const lo = Math.min(0, ...visibles.map((s) => s.min)), hi = Math.max(1e-9, ...visibles.map((s) => s.max));
+  return { lo, hi, X: (v) => d.xb0 + ((v - lo) / (hi - lo || 1)) * (d.xb1 - d.xb0) };
+}
+
+function ticksEntrada(d, eje) {
+  const base = d.sup + d.slots.length * d.fila + 4;
+  return ticksLindos(eje.lo, eje.hi, d.angosto ? 2 : 3).map((t) => `<line x1="${eje.X(t).toFixed(1)}" x2="${eje.X(t).toFixed(1)}" y1="${d.sup - 4}" y2="${base}" class="guia"/><text x="${eje.X(t).toFixed(1)}" y="${base + 13}" text-anchor="middle" class="t-eje">${numEje(t)}</text>`).join("");
+}
+
+function svgCapaEntrada(ancho) {
+  if (!E.entradas.length) return '<p class="nota">No hay entradas: elegilas con un clic en las columnas, en Datos y tarea.</p>';
+  const d = disenoEntrada(ancho), stats = estadisticasEntrada(E.normalizar), eje = ejeEntrada(stats, d);
+  const R = 12;
+  let aristas = "", barras = "", nodos = "", textos = "";
+  // El resto de la red, atenuado, para ver adónde va cada entrada.
+  if (!d.angosto) {
+    const resto = [...E.ocultas.map((c, i) => ({ titulo: `Oculta ${i + 1}`, n: c.neuronas })), { titulo: "Salida", n: E.salida.neuronas || 1 }];
+    const paso = (ancho - 36 - d.xEntrada) / resto.length, yMedio = d.sup + (d.slots.length * d.fila) / 2;
+    let previas = d.slots.map((s, k) => (s === "⋮" ? null : d.y(k))).filter((v) => v !== null), xPrevio = d.xEntrada;
+    resto.forEach((capa, i) => {
+      const x = d.xEntrada + paso * (i + 1), m = Math.min(capa.n, 7);
+      const ys = Array.from({ length: m }, (_, j) => yMedio + (j - (m - 1) / 2) * 24);
+      for (const ya of previas) for (const yb of ys) aristas += `<line x1="${xPrevio}" y1="${ya}" x2="${x.toFixed(1)}" y2="${yb}"/>`;
+      for (const yb of ys) nodos += `<circle cx="${x.toFixed(1)}" cy="${yb}" r="7" class="nodo-atenuado"/>`;
+      textos += `<text x="${x.toFixed(1)}" y="${d.alto - 6}" text-anchor="middle" class="t-capa">${capa.titulo}</text>`;
+      previas = ys;
+      xPrevio = x.toFixed(1);
+    });
+  }
+  d.slots.forEach((s, k) => {
+    const y = d.y(k);
+    if (s === "⋮") { textos += `<text x="${d.xEntrada}" y="${y + 6}" text-anchor="middle" class="t-puntos">⋮</text>`; return; }
+    const st = stats[s], variable = DATASET.variables.find((v) => v.columna === st.c);
+    textos += `<text x="${d.xb0 - 10}" y="${y + 4}" text-anchor="end" class="t-variable">${esc(d.angosto ? variable.corto : st.c)}</text>`;
+    barras += `<line class="escala" data-j="${s}" x1="${eje.X(st.min).toFixed(1)}" x2="${Math.max(eje.X(st.max), eje.X(st.min) + 2).toFixed(1)}" y1="${y}" y2="${y}"/>`;
+    barras += `<circle class="escala-media" data-j="${s}" cx="${eje.X(st.media).toFixed(1)}" cy="${y}" r="3.6"/>`;
+    aristas += `<line x1="${d.xb1 + 8}" y1="${y}" x2="${d.xEntrada - R}" y2="${y}" class="hacia-neurona"/>`;
+    nodos += `<circle cx="${d.xEntrada}" cy="${y}" r="${R}" class="nodo-entrada"/>`;
+  });
+  textos += `<text x="${(d.xb0 + d.xb1) / 2}" y="16" text-anchor="middle" class="t-encabezado" id="titulo-escalas">${E.normalizar ? "rango con z-score" : "rango sin normalizar"}</text>`;
+  textos += `<text x="${d.xEntrada}" y="16" text-anchor="middle" class="t-encabezado">entrada</text>`;
+  return `<svg viewBox="0 0 ${ancho} ${d.alto}" data-ancho="${ancho}" role="img" aria-label="Capa de entrada con ${E.entradas.length} variables">
+    <style>
+      .escala { stroke: #8eb9c3; stroke-width: 9; stroke-linecap: round; }
+      .escala-media { fill: #163e50; }
+      .nodo-entrada { fill: #edf5f7; stroke: #163e50; stroke-width: 1.8; }
+      .nodo-atenuado { fill: #fff; stroke: #c8d6db; stroke-width: 1.2; }
+      .guia { stroke: #e3ecef; }
+      .hacia-neurona { stroke: #b9cfd7; stroke-width: 1.2; stroke-dasharray: 2 3; }
+      .aristas line { stroke: #dfe8eb; stroke-width: .8; }
+      .t-variable { font-size: 12.5px; fill: #22333a; font-family: SFMono-Regular, Menlo, Consolas, monospace; }
+      .t-eje { font-size: 11px; fill: #59717c; }
+      .t-encabezado { font-size: 11.5px; fill: #59717c; font-weight: 600; }
+      .t-capa { font-size: 11.5px; fill: #9fb0b7; font-weight: 600; }
+      .t-puntos { font-size: 18px; font-weight: 700; fill: #163e50; }
+    </style>
+    <g class="ticks">${ticksEntrada(d, eje)}</g>
+    <g class="aristas">${aristas}</g>
+    ${barras}${nodos}${textos}
+  </svg>`;
+}
+
+// Al activar o desactivar la normalización, las barras se desplazan a su nueva escala.
+function animarEscalas() {
+  const svg = $("#capa-entrada svg");
+  if (!svg) return;
+  const d = disenoEntrada(Number(svg.dataset.ancho)), stats = estadisticasEntrada(E.normalizar), eje = ejeEntrada(stats, d);
+  const destino = (el) => {
+    const st = stats[Number(el.dataset.j)];
+    return el.tagName === "line" ? { x1: eje.X(st.min), x2: Math.max(eje.X(st.max), eje.X(st.min) + 2) } : { cx: eje.X(st.media) };
+  };
+  const piezas = $$(".escala, .escala-media", svg).map((el) => {
+    const b = destino(el), a = {};
+    for (const k in b) a[k] = Number(el.getAttribute(k));
+    return { el, a, b };
+  });
+  const ticks = $(".ticks", svg);
+  ticks.style.transition = "opacity .2s";
+  ticks.style.opacity = 0;
+  $("#titulo-escalas", svg).textContent = E.normalizar ? "rango con z-score" : "rango sin normalizar";
+  const inicio = performance.now(), duracion = 700;
+  const cuadro = (t) => {
+    const u = Math.min(1, (t - inicio) / duracion), f = u < 0.5 ? 2 * u * u : 1 - (-2 * u + 2) ** 2 / 2;
+    for (const { el, a, b } of piezas) for (const k in b) el.setAttribute(k, (a[k] + (b[k] - a[k]) * f).toFixed(1));
+    if (u < 1) requestAnimationFrame(cuadro);
+    else { ticks.innerHTML = ticksEntrada(d, eje); ticks.style.opacity = 1; }
+  };
+  requestAnimationFrame(cuadro);
 }
 
 function pasoEntrada() {
-  const def = definirTarea();
-  const sensores = DATASET.variables.map((v) => {
-    const reservada = v.columna === def?.objetivo || v.columna === def?.referencia;
-    const i = DATASET.info[v.columna];
-    const detalle = reservada ? (v.columna === def.objetivo ? "es la variable objetivo" : "es la columna para interpretar los grupos") : `de ${valorColumna(v.columna, i.min)} a ${valorColumna(v.columna, i.max)}${i.nulos ? `, ${num(i.nulos)} vacíos` : ""}`;
-    return `<label class="sensor${reservada ? " reservada" : ""}"><input type="checkbox" data-campo="entrada" value="${esc(v.columna)}" ${E.entradas.includes(v.columna) ? "checked" : ""} ${reservada ? "disabled" : ""}>
-      <span><strong>${esc(v.columna)}</strong>${v.unidad ? ` <span class="unidad">(${v.unidad})</span>` : ""}<span class="rango">${detalle}</span></span></label>`;
-  }).join("");
-  const textos = DATASET.orden.filter((c) => DATASET.info[c].tipo === "texto" && c !== DATASET.columnaParticion && c !== def?.objetivo && c !== def?.referencia);
-  const ancho = Math.max(300, Math.min(640, Math.round($("#contenido-paso").clientWidth || 600) - 4));
+  const ancho = Math.max(300, Math.round($("#contenido-paso").clientWidth || 600) - 4);
+  const d = E.entradas.length;
   return `<h2>Capa de entrada</h2>
-    <p class="bajada">Elegí las variables de entrada y si se normalizan.</p>
+    <p class="bajada">Una neurona por variable: ${d} ${d === 1 ? "entrada" : "entradas"}, elegidas en <button type="button" class="enlace" data-accion="volver-datos">Datos y tarea</button>.</p>
     ${concepto(1)}
-    <div class="sensores">${sensores}</div>
-    ${textos.length ? `<p class="leyenda">Las columnas de texto (${textos.map((c) => `<code>${esc(c)}</code>`).join(", ")}) no pueden ser entradas: la red solo opera con números.</p>` : ""}
-    <div class="acciones"><button type="button" class="boton chico" data-accion="todas-entradas">Marcar todas</button>
-      <button type="button" class="boton chico" data-accion="ninguna-entrada">Desmarcar todas</button>
-      <span class="dimension">Dimensión de entrada: <strong id="dimension-entrada">d = ${E.entradas.length}</strong></span></div>
-    ${plegable("asociacion", "Ver la asociación con la variable objetivo", `<div id="asociacion">${asociacionEntradas(ancho)}</div>`)}
-    <h3>Normalización</h3>
     <label class="interruptor"><input type="checkbox" data-campo="normalizar" ${E.normalizar ? "checked" : ""}><span class="pista"></span>Normalizar con z-score</label>
-    ${plegable("escalas", "Ver las escalas de las entradas", `<div id="escalas">${escalasEntradas(ancho)}</div>`)}`;
+    <figure class="lienzo" id="capa-entrada">${svgCapaEntrada(ancho)}</figure>
+    <p class="leyenda solo-estudio">Cada barra va del mínimo al máximo de la variable en entrenamiento y el punto marca la media. Sin normalizar, las variables de valores grandes aplastan al resto; con z-score, todas quedan centradas en 0.</p>
+    ${plegable("asociacion", "Ver la asociación con la variable objetivo", `<div id="asociacion">${asociacionEntradas(Math.min(640, ancho))}</div>`)}`;
 }
 
 function pasoCapas() {
@@ -1947,7 +2028,7 @@ function pasoPerdida() {
     ${concepto(4)}
     <fieldset class="opciones opciones-perdida"><legend>Función de pérdida</legend>${opciones}</fieldset>
     ${centroides}
-    <div class="mensaje info"><strong>Métrica que se va a reportar</strong><p>${textoMetrica(E.tarea)}</p></div>`;
+    <p class="metrica-texto"><span class="etiqueta">Métrica</span> ${textoMetrica(E.tarea)}</p>`;
 }
 
 function pasoRegularizacion() {
@@ -2024,7 +2105,7 @@ function filasResumen() {
     : "Todavía no entrenaste esta configuración.";
   return [
     ["Tarea", `${TAREAS[m].titulo}${def.objetivo ? ` de <code>${esc(def.objetivo)}</code>` : def.referencia ? `, interpretada con <code>${esc(def.referencia)}</code>` : ""}`],
-    ["Datos", `${esc(DATASET.nombre)}: ${num(c.entrenamiento)} de entrenamiento, ${num(c.validacion)} de validación y ${num(c.prueba)} de prueba (${E.particion.modo === "columna" && DATASET.columnaParticion ? `columna <code>${esc(DATASET.columnaParticion)}</code>` : `al azar, semilla ${E.particion.semilla}`})`],
+    ["Datos", `${esc(DATASET.nombre)}: ${num(c.entrenamiento)} de entrenamiento, ${num(c.validacion)} de validación y ${num(c.prueba)} de prueba (${E.particion.entrenamiento}/${E.particion.validacion}/${E.particion.prueba}, semilla ${E.particion.semilla})`],
     ["Capa de entrada", `${E.entradas.length} variables (${esc(lista(E.entradas, 12))}), ${E.normalizar ? "normalizadas con z-score" : "sin normalizar"}`],
     ["Capas ocultas", ocultas],
     ["Capa de salida", `${E.salida.neuronas} ${E.salida.neuronas === 1 ? "neurona" : "neuronas"} ${ACTIVACIONES[E.salida.activacion].nombre}${m === "clustering" ? `, más ${E.salida.neuronas} centroides de dimensión ${E.entradas.length}` : ""}`],
@@ -2106,7 +2187,6 @@ function seccionesCodigo() {
   const categorica = m === "multiclase" || (m === "binaria" && k === 2);
   const opt = OPTIMIZADORES[E.optimizador];
   const regularizador = hayL2 ? `, kernel_regularizer=l2(${E.l2})` : "";
-  const azar = !(E.particion.modo === "columna" && DATASET.columnaParticion);
   const muestra = E.muestra && DATASET.n > LIMITES.filasRecomendadas;
   const usadas = [...E.entradas, ...(def.objetivo ? [def.objetivo] : [])];
   const hayVacios = usadas.some((c) => DATASET.info[c].nulos > 0);
@@ -2115,7 +2195,7 @@ function seccionesCodigo() {
   const librerias = ["import numpy as np", "import pandas as pd", "import matplotlib.pyplot as plt"];
   if (m === "clustering") librerias.push("import tensorflow as tf", "from sklearn.cluster import kmeans_plusplus");
   if (m === "clustering" && def.referencia) librerias.push("from sklearn.metrics import adjusted_rand_score");
-  if (azar) librerias.push("from sklearn.model_selection import train_test_split");
+  librerias.push("from sklearn.model_selection import train_test_split");
   librerias.push(m === "clustering" ? "from tensorflow.keras import Input, Model, layers" : "from tensorflow.keras import Sequential, Input");
   librerias.push(`from tensorflow.keras.layers import Dense${hayDropout ? ", Dropout" : ""}`, `from tensorflow.keras.optimizers import ${opt.clase}`);
   if (hayL2) librerias.push("from tensorflow.keras.regularizers import l2");
@@ -2132,7 +2212,7 @@ function seccionesCodigo() {
     datos.push("# Subí el archivo al entorno antes de ejecutar (en Colab, desde el panel Archivos)", `ARCHIVO = ${py(f.nombre)}`, `df = pd.read_csv(ARCHIVO${opciones.length ? `, ${opciones.join(", ")}` : ""})`);
   }
   datos.push("");
-  if (azar || muestra) datos.push(`SEMILLA = ${E.particion.semilla}`);
+  datos.push(`SEMILLA = ${E.particion.semilla}`);
   datos.push(`ENTRADAS = ${listaPython(E.entradas, 12)}`);
   if (def.objetivo) datos.push(`OBJETIVO = ${py(def.objetivo)}`);
   if (def.referencia) datos.push(`REFERENCIA = ${py(def.referencia)}  # solo para interpretar los grupos`);
@@ -2142,16 +2222,11 @@ function seccionesCodigo() {
   S.push({ titulo: "Datos", lineas: datos, nota: DATASET.fuente.tipo === "archivo" ? "Antes de ejecutar, subí el CSV al entorno: en Colab, desde el panel Archivos." : null });
 
   const particion = [];
-  if (azar) {
-    const f = fraccionesParticion(E.particion);
-    particion.push(`entrenamiento, resto = train_test_split(df, train_size=${f.entrenamiento}, random_state=SEMILLA)`,
-      `validacion, prueba = train_test_split(resto, train_size=${f.validacion}, random_state=SEMILLA)`);
-  } else {
-    const c = py(DATASET.columnaParticion), v = DATASET.valoresParticion;
-    particion.push(`entrenamiento = df[df[${c}] == ${py(v.entrenamiento)}]`, `validacion = df[df[${c}] == ${py(v.validacion)}]`, `prueba = df[df[${c}] == ${py(v.prueba)}]`);
-  }
+  const f = fraccionesParticion(E.particion);
+  particion.push(`entrenamiento, resto = train_test_split(df, train_size=${f.entrenamiento}, random_state=SEMILLA)`,
+    `validacion, prueba = train_test_split(resto, train_size=${f.validacion}, random_state=SEMILLA)`);
   particion.push('print(len(entrenamiento), "de entrenamiento,", len(validacion), "de validación y", len(prueba), "de prueba")');
-  S.push({ titulo: "Partición", lineas: particion, nota: azar ? "Con los mismos porcentajes y la misma semilla que en el configurador: los tamaños coinciden, aunque las filas elegidas pueden no ser las mismas." : null });
+  S.push({ titulo: "Partición", lineas: particion, nota: "Con los mismos porcentajes y la misma semilla que en el configurador: los tamaños coinciden, aunque las filas elegidas pueden no ser las mismas." });
 
   const prep = [];
   if (E.normalizar) {
@@ -2743,8 +2818,8 @@ function renderResultado() {
       <div class="cifra"><span class="valor">${porcentaje(r.prueba.metrica)}</span><span class="rotulo">exactitud en prueba</span></div>
       <div class="cifra secundaria"><span class="valor">${porcentaje(r.entrenamiento.metrica)}</span><span class="rotulo">en entrenamiento</span></div>
       <div class="cifra secundaria"><span class="valor">${porcentaje(r.validacion.metrica)}</span><span class="rotulo">en validación</span></div></div>`;
-    cuerpo += `<h4>Matriz de confusión en prueba (${num(pred.length)} ejemplos)</h4>${matrizConfusion(datos.y.prueba, predichos, nombres)}<p class="leyenda">Filas: valor real. Columnas: predicción de la red. La diagonal son los aciertos.</p>`;
-    if (r.entrenamiento.metrica >= 0.99) cuerpo += `<p class="nota">En entrenamiento acertó el ${porcentaje(r.entrenamiento.metrica)}. Con un 6% de etiquetas mal registradas, eso indica que la red memorizó también esos errores.</p>`;
+    cuerpo += `<h4>Matriz de confusión en prueba (${num(pred.length)} ejemplos)</h4>${matrizConfusion(datos.y.prueba, predichos, nombres)}<p class="leyenda solo-estudio">Filas: valor real. Columnas: predicción de la red. La diagonal son los aciertos.</p>`;
+    if (r.entrenamiento.metrica >= 0.99 && r.prueba.metrica < r.entrenamiento.metrica) cuerpo += `<p class="nota">En entrenamiento acertó el ${porcentaje(r.entrenamiento.metrica)} y en prueba, menos: la red memorizó el conjunto de entrenamiento.</p>`;
   } else if (m === "regresion") {
     cuerpo += `<div class="cifras">
       <div class="cifra"><span class="valor">${num(r.prueba.metrica, 1)}${unidad}</span><span class="rotulo">MAE en prueba</span></div>
@@ -2752,7 +2827,7 @@ function renderResultado() {
       <div class="cifra secundaria"><span class="valor">${num(r.validacion.metrica, 1)}${unidad}</span><span class="rotulo">en validación</span></div></div>`;
     const puntos = pred.map((f, i) => ({ x: datos.y.prueba[i], y: f[0], color: COLOR_VAL }));
     cuerpo += `<h4>Valor real contra predicho en prueba</h4><div class="dispersion-cont">${graficoDispersion({ puntos, ancho: anchoDispersion, alto: Math.round(anchoDispersion * 0.75), etiquetaX: `${def.objetivo} real`, etiquetaY: `${def.objetivo} predicho`, diagonal: true })}</div>
-      <p class="leyenda">Cada punto es un ejemplo de prueba. Sobre la diagonal punteada, la predicción coincide con el valor real.</p>`;
+      <p class="leyenda solo-estudio">Cada punto es un ejemplo de prueba. Sobre la diagonal punteada, la predicción coincide con el valor real.</p>`;
   } else {
     const grupos = pred.map(argmax);
     const tamanos = Array.from({ length: k }, (_, g) => grupos.filter((x) => x === g).length);
@@ -2764,7 +2839,7 @@ function renderResultado() {
       <div class="cifra secundaria"><span class="valor">${valorPerdida(r.prueba.perdida)}</span><span class="rotulo">pérdida en prueba</span></div></div>`;
     cuerpo += `<h4>Tamaño de cada grupo en prueba</h4><div class="barras">${tamanos.map((t, g) => `<div class="barra"><span>grupo ${g + 1}</span><span class="relleno" style="width:${(100 * t) / maximo}%; background:${COLORES[g]}"></span><span class="num">${t}</span></div>`).join("")}</div>`;
     if (vacios.length) cuerpo += `<p class="nota">${vacios.length === 1 ? `El grupo ${vacios[0]} quedó vacío` : `Los grupos ${vacios.join(", ")} quedaron vacíos`} en prueba: ningún ejemplo tiene allí su mayor pertenencia. Es una debilidad conocida de esta formulación: si al principio un centroide pierde todos los ejemplos, deja de recibir gradiente y no se recupera. El resultado depende de la inicialización, así que conviene entrenar de nuevo o probar otro k.</p>`;
-    if (def.referencia) cuerpo += `<h4>Grupos contra <code>${esc(def.referencia)}</code></h4>${matrizConfusion(grupos, datos.referencia.prueba, tamanos.map((_, g) => `grupo ${g + 1}`), def.nombresClases, "Grupo / clase")}<p class="leyenda">La red no vio esa columna: la tabla muestra a posteriori qué valores cayeron en cada grupo.</p>`;
+    if (def.referencia) cuerpo += `<h4>Grupos contra <code>${esc(def.referencia)}</code></h4>${matrizConfusion(grupos, datos.referencia.prueba, tamanos.map((_, g) => `grupo ${g + 1}`), def.nombresClases, "Grupo / clase")}<p class="leyenda solo-estudio">La red no vio esa columna: la tabla muestra a posteriori qué valores cayeron en cada grupo.</p>`;
     const estandar = cfg.normalizar ? datos : prepararDatos({ ...cfg, normalizar: true });
     const proyectar = componentesPrincipales(estandar.X.entrenamiento);
     const porEstado = def.referencia && E.colorearPor === "estado";
@@ -2781,7 +2856,7 @@ function renderResultado() {
       </div>` : ""}
       <div class="dispersion-cont">${graficoDispersion({ puntos, ancho: anchoDispersion, alto: Math.round(anchoDispersion * 0.75), etiquetaX: "Componente principal 1", etiquetaY: "Componente principal 2" })}</div>
       ${leyendaGrafico(leyendaColores)}
-      <p class="leyenda">Las componentes principales resumen las entradas estandarizadas en 2 ejes para poder dibujarlas; la red trabaja con las ${cfg.entradas.length} entradas.</p>`;
+      <p class="leyenda solo-estudio">Las componentes principales resumen las entradas estandarizadas en 2 ejes para poder dibujarlas; la red trabaja con las ${cfg.entradas.length} entradas.</p>`;
   }
   cont.innerHTML = partes.join("") + `<section class="resultado"><h3>Resultado en el conjunto de prueba</h3>${cuerpo}
     <p class="leyenda">Pesos de la época ${c.epocaFinal}. Entrenamiento de ${segundosATexto(c.segundos)} para ${c.epocasCorridas} épocas.</p></section>`;
@@ -2797,7 +2872,7 @@ function renderGarage() {
   let graficos = null;
   let html = `<div class="garage-encabezado"><h3>Comparar entrenamientos</h3>
     <button type="button" class="boton" data-accion="guardar-corrida" ${guardable && !lleno ? "" : "disabled"}>Guardar para comparar</button></div>
-    <p class="bajada">Hasta 4 entrenamientos de esta tarea, con sus curvas de validación y sus resultados. Por ejemplo, la misma red con y sin dropout, o con y sin early stopping.${lleno ? " Ya hay 4: quitá uno para guardar otro." : ""}</p>`;
+    <p class="bajada solo-estudio">Hasta 4 entrenamientos de esta tarea, con sus curvas de validación y sus resultados. Por ejemplo, la misma red con y sin dropout, o con y sin early stopping.</p>${lleno ? '<p class="leyenda">Ya hay 4: quitá uno para guardar otro.</p>' : ""}`;
   if (lista.length) {
     const xMax = Math.max(...lista.map((g) => g.corrida.config.epocas));
     const finitos = lista.flatMap((g) => g.corrida.historia.perdidaVal).filter((v) => Number.isFinite(v) && v > 0);
@@ -2935,7 +3010,7 @@ function hashDeConfiguracion() {
   }
   poner("entradas", E.entradasElegidas.map(cod).join(","));
   poner("normalizar", E.normalizar ? "si" : "no");
-  poner("particion", E.particion.modo === "columna" && DATASET.columnaParticion ? "columna" : `${E.particion.entrenamiento}:${E.particion.validacion}:${E.particion.semilla}`);
+  poner("particion", `${E.particion.entrenamiento}:${E.particion.validacion}:${E.particion.prueba}:${E.particion.semilla}`);
   if (DATASET.n > LIMITES.filasRecomendadas) poner("muestra", E.muestra ? "si" : "no");
   poner("ocultas", E.ocultas.map((c) => `${c.neuronas}:${c.activacion}:${c.dropout}`).join(","));
   if (E.salida.neuronas || E.salida.activacion) poner("salida", `${E.salida.neuronas ?? ""}:${E.salida.activacion ?? ""}`);
@@ -2965,10 +3040,10 @@ function leerHash(hash) {
 function restablecerConfiguracion() {
   Object.assign(E, {
     paso: 0, maxPaso: 0, tarea: null, objetivo: null, entradasElegidas: [...DATASET.entradasPorDefecto],
-    particion: { modo: DATASET.columnaParticion ? "columna" : "azar", entrenamiento: 60, validacion: 20, semilla: 2026 }, muestra: true,
+    particion: { entrenamiento: 60, validacion: 20, prueba: 20, semilla: 42 }, muestra: true,
     normalizar: true, ocultas: [{ neuronas: 16, activacion: "relu", dropout: 0 }], salida: { neuronas: null, activacion: null }, perdida: null,
     l2: 0, early: { activo: false, paciencia: 10, restaurar: true }, optimizador: "adam", lr: 0.01, epocas: 150, batch: 32,
-    corrida: null, simulacion: null, avisoTarea: null,
+    corrida: null, simulacion: null, avisoTarea: null, modoHead: "objetivo",
   });
   sincronizarEntradas();
 }
@@ -2997,13 +3072,10 @@ function aplicarConfiguracion(c) {
   }
   if (tiene("normalizar") && acepta("normalizar", ["si", "no"].includes(c.normalizar))) E.normalizar = c.normalizar === "si";
   if (tiene("particion")) {
-    if (c.particion === "columna") {
-      if (acepta("particion", !!DATASET.columnaParticion)) E.particion.modo = "columna";
-    } else {
-      const [tr, va, se] = c.particion.split(":").map(Number);
-      const ok = [tr, va, se].every(Number.isInteger) && tr >= 40 && tr <= 80 && tr % 5 === 0 && va >= 5 && va <= 30 && va % 5 === 0 && tr + va <= 90 && se >= 0 && se <= 999999;
-      if (acepta("particion", ok)) Object.assign(E.particion, { modo: "azar", entrenamiento: tr, validacion: va, semilla: se });
-    }
+    const v = c.particion.split(":").map(Number);
+    const [tr, va, te, se] = v.length === 3 ? [v[0], v[1], 100 - v[0] - v[1], v[2]] : v;
+    const ok = (v.length === 3 || v.length === 4) && [tr, va, te, se].every(Number.isInteger) && Math.min(tr, va, te) >= 5 && tr + va + te === 100 && se >= 0 && se <= 999999;
+    if (acepta("particion", ok)) Object.assign(E.particion, { entrenamiento: tr, validacion: va, prueba: te, semilla: se });
   }
   if (tiene("muestra") && acepta("muestra", ["si", "no"].includes(c.muestra))) E.muestra = c.muestra === "si";
   if (tiene("ocultas")) {
@@ -3032,6 +3104,7 @@ function aplicarConfiguracion(c) {
   if (tiene("epocas")) { const v = Number(c.epocas); if (acepta("epocas", Number.isInteger(v) && v >= 10 && v <= 500 && v % 10 === 0)) E.epocas = v; }
   if (tiene("batch") && acepta("batch", BATCHES.includes(Number(c.batch)))) E.batch = Number(c.batch);
   if (tiene("modo") && acepta("modo", ["estudio", "configuracion"].includes(c.modo))) E.modo = c.modo;
+  E.modoHead = E.tarea === "clustering" || E.objetivo ? "entradas" : "objetivo";
   sincronizarEntradas();
   // Con la tarea definida, todos los pasos quedan disponibles; sin tarea, se empieza por los datos.
   const paso = Number(c.paso);
@@ -3114,10 +3187,15 @@ function avisosSuperiores() {
 const RENDER_PASOS = [pasoDatos, pasoEntrada, pasoCapas, pasoSalida, pasoPerdida, pasoRegularizacion, pasoEntrenamiento, pasoResumen];
 
 function renderPaso() {
+  const desplazamiento = $(".cabeza")?.scrollLeft || 0;
+  const foco = document.activeElement?.closest?.("#contenido-paso") ? document.activeElement.dataset?.columna : null;
   // En "Datos y tarea" todavía no hay red: los datos ocupan todo el ancho.
   $(".marco").classList.toggle("sin-vista", E.paso === 0);
+  $(".marco").classList.toggle("red-en-panel", E.paso === 1);
   $("#precio-movil").hidden = E.paso === 0;
   $("#contenido-paso").innerHTML = RENDER_PASOS[E.paso]();
+  if ($(".cabeza")) $(".cabeza").scrollLeft = desplazamiento;
+  if (foco) $(`th button[data-columna="${CSS.escape(foco)}"]`)?.focus({ preventScroll: true });
   $("#aviso-tarea").innerHTML = avisosSuperiores();
   if (E.paso === 6) { dibujarCurvas(); renderResultado(); renderGarage(); }
 }
@@ -3205,6 +3283,7 @@ const ACCIONES = {
     E.tarea = nueva;
     // La variable objetivo se elige con un clic en la tabla; si la anterior sirve, se conserva.
     E.objetivo = nueva !== "clustering" && E.objetivo && compatible(E.objetivo, nueva) ? E.objetivo : null;
+    E.modoHead = E.objetivo || nueva === "clustering" ? "entradas" : "objetivo";
     sincronizarEntradas();
     E.salida = { neuronas: null, activacion: null };
     E.perdida = null;
@@ -3225,16 +3304,30 @@ const ACCIONES = {
     refrescar();
   },
   columna(b) {
-    const c = b.dataset.columna;
-    if (!E.tarea || !compatible(c, E.tarea)) return;
-    if (E.tarea === "clustering") E.objetivo = E.objetivo === c ? null : c;
-    else if (E.objetivo === c) return;
-    else E.objetivo = c;
+    const c = b.dataset.columna, fase = faseHead();
+    if (fase === "objetivo") {
+      if (!compatible(c, E.tarea)) return;
+      E.objetivo = c;
+      E.modoHead = "entradas";
+    } else if (fase === "referencia") {
+      if (!compatible(c, "clustering")) return;
+      E.objetivo = E.objetivo === c ? null : c;
+      E.modoHead = "entradas";
+    } else if (fase === "entradas") {
+      if (!esCandidata(c) || c === E.objetivo) return;
+      const elegidas = new Set(E.entradasElegidas);
+      if (E.entradas.includes(c)) elegidas.delete(c); else elegidas.add(c);
+      E.entradasElegidas = DATASET.variables.map((v) => v.columna).filter((x) => elegidas.has(x));
+    } else return;
     sincronizarEntradas();
     E.corrida = null;
     renderPaso();
     refrescar();
   },
+  "modo-objetivo"() { E.modoHead = "objetivo"; renderPaso(); refrescar(); },
+  "modo-referencia"() { E.modoHead = "referencia"; renderPaso(); refrescar(); },
+  "modo-entradas"() { E.modoHead = "entradas"; renderPaso(); refrescar(); },
+  "volver-datos"() { irA(0); },
   "usar-taller"() {
     E.datosElegidos = true;
     renderPaso();
@@ -3316,8 +3409,6 @@ const ACCIONES = {
 };
 
 function actualizarParticion() {
-  for (const p of ["entrenamiento", "validacion"]) $(`#salida-p-${p}`).textContent = `${E.particion[p]}%`;
-  $("#salida-p-prueba").textContent = `${100 - E.particion.entrenamiento - E.particion.validacion}%`;
   $("#barra-particion").innerHTML = barraParticion();
   E.corrida = null;
 }
@@ -3331,8 +3422,8 @@ function cargarDataset(ds) {
   Object.assign(E, { configPendiente: null, avisoEnlace: null, avisoArchivoEnlace: null, datosElegidos: true });
   Object.assign(E, {
     paso: 0, maxPaso: 0, tarea: null, objetivo: null, entradasElegidas: [...ds.entradasPorDefecto],
-    particion: { ...E.particion, modo: ds.columnaParticion ? "columna" : "azar" }, muestra: true,
-    salida: { neuronas: null, activacion: null }, perdida: null, corrida: null, vivo: null, simulacion: null, avisoTarea: null,
+    muestra: true,
+    salida: { neuronas: null, activacion: null }, perdida: null, corrida: null, vivo: null, simulacion: null, avisoTarea: null, modoHead: "objetivo",
     garage: { binaria: [], multiclase: [], regresion: [], clustering: [] }, cuentaGarage: {},
   });
   sincronizarEntradas();
@@ -3359,11 +3450,6 @@ async function leerArchivo(archivo) {
   }
 }
 
-function actualizarEscalas() {
-  const cont = $("#escalas"), ancho = Math.max(300, Math.min(640, Math.round($("#contenido-paso").clientWidth) - 4));
-  if (cont) cont.innerHTML = escalasEntradas(ancho);
-  if ($("#asociacion")) $("#asociacion").innerHTML = asociacionEntradas(ancho);
-}
 
 function aplicarModo() {
   document.body.classList.toggle("modo-estudio", estudio());
@@ -3374,46 +3460,25 @@ function aplicarModo() {
 function cambiarCampo(el) {
   const campo = el.dataset.campo, i = Number(el.dataset.indice);
   switch (campo) {
-    case "entrada": {
-      const marcadas = new Set($$('[data-campo="entrada"]').filter((x) => x.checked).map((x) => x.value));
-      E.entradasElegidas = DATASET.variables.map((v) => v.columna).filter((c) => marcadas.has(c) || (c === E.objetivo && E.entradasElegidas.includes(c)));
-      sincronizarEntradas();
-      $("#dimension-entrada").textContent = `d = ${E.entradas.length}`;
-      actualizarEscalas();
-      break;
-    }
     case "objetivo":
       E.objetivo = el.value || null;
       sincronizarEntradas();
       E.corrida = null;
       renderPaso();
       break;
-    case "particion-modo":
-      E.particion.modo = el.value;
-      $(".particion-azar").hidden = el.value === "columna";
-      actualizarParticion();
-      break;
     case "p-entrenamiento":
-    case "p-validacion": {
-      const clave = campo === "p-entrenamiento" ? "entrenamiento" : "validacion";
-      E.particion[clave] = Number(el.value);
-      // La prueba conserva al menos el 10%.
-      const otra = clave === "entrenamiento" ? "validacion" : "entrenamiento";
-      if (E.particion.entrenamiento + E.particion.validacion > 90) {
-        E.particion[otra] = 90 - E.particion[clave];
-        $(`[data-campo="p-${otra}"]`).value = E.particion[otra];
-      }
+    case "p-validacion":
+    case "p-prueba":
+      E.particion[campo.slice(2)] = Math.max(0, Math.min(100, Math.round(Number(el.value) || 0)));
       actualizarParticion();
       break;
-    }
     case "semilla":
       E.particion.semilla = Math.max(0, Math.min(999999, Math.round(Number(el.value) || 0)));
-      el.value = E.particion.semilla;
       actualizarParticion();
       break;
     case "muestra": E.muestra = el.checked; actualizarParticion(); break;
     case "archivo": leerArchivo(el.files[0]); el.value = ""; return;
-    case "normalizar": E.normalizar = el.checked; actualizarEscalas(); break;
+    case "normalizar": E.normalizar = el.checked; animarEscalas(); break;
     case "neuronas": E.ocultas[i].neuronas = Number(el.value); break;
     case "activacion":
       E.ocultas[i].activacion = el.value;
@@ -3456,8 +3521,8 @@ function iniciar() {
     const b = ev.target.closest("[data-accion]");
     if (b && !b.disabled && ACCIONES[b.dataset.accion]) ACCIONES[b.dataset.accion](b);
   });
-  panel.addEventListener("input", (ev) => { if (ev.target.type === "range" && ev.target.dataset.campo) cambiarCampo(ev.target); });
-  panel.addEventListener("change", (ev) => { if (ev.target.dataset.campo && ev.target.type !== "range") cambiarCampo(ev.target); });
+  panel.addEventListener("input", (ev) => { if ((ev.target.type === "range" || ev.target.type === "number") && ev.target.dataset.campo) cambiarCampo(ev.target); });
+  panel.addEventListener("change", (ev) => { if (ev.target.dataset.campo && ev.target.type !== "range" && ev.target.type !== "number") cambiarCampo(ev.target); });
   $("#pasos").addEventListener("click", (ev) => {
     const b = ev.target.closest("[data-paso]");
     if (b && !b.disabled) irA(Number(b.dataset.paso));
@@ -3507,6 +3572,13 @@ function iniciar() {
     const nuevo = Math.round(entrada.contentRect.width);
     if (nuevo !== ancho) { ancho = nuevo; dibujarRed(); }
   }).observe($("#red"));
+  let anchoPanel = 0;
+  new ResizeObserver(([entrada]) => {
+    const nuevo = Math.round(entrada.contentRect.width);
+    if (nuevo === anchoPanel) return;
+    anchoPanel = nuevo;
+    if (E.paso === 1 && $("#capa-entrada")) $("#capa-entrada").innerHTML = svgCapaEntrada(Math.max(300, nuevo - 4));
+  }).observe($("#contenido-paso"));
   renderPaso();
   refrescar();
 }

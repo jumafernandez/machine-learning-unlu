@@ -19,8 +19,8 @@ También funciona al abrir el archivo local en el navegador. Es una página auto
 
 Las ocho pantallas siguen la red capa por capa:
 
-1. **Datos y tarea**: se sube un CSV o se cargan los datos de ejemplo. Se ven las primeras filas, como en `df.head()`, se elige la tarea (clasificación binaria, clasificación multiclase, regresión o clustering) y, si es supervisada, la variable objetivo con un clic en su columna. Después aparecen la distribución de la variable objetivo y la partición, que sale de una columna del archivo o de porcentajes y una semilla.
-2. **Capa de entrada**: variables de entrada, asociación de cada una con la variable objetivo y normalización z-score, con el rango de cada variable antes y después de normalizar.
+1. **Datos y tarea**: se sube un CSV o se cargan los datos de ejemplo. Se ven las primeras filas, como en `df.head()`, se elige la tarea (clasificación binaria, clasificación multiclase, regresión o clustering) y, si es supervisada, la variable objetivo con un clic en su columna. Con otro clic en cada columna se suman o se quitan las entradas. La partición se define con los porcentajes de entrenamiento, validación y prueba y una semilla, 42 por defecto.
+2. **Capa de entrada**: la red en grande, con el rango de cada variable entrando a su neurona. Al activar la normalización z-score, las barras se acomodan a la misma escala.
 3. **Capas ocultas**: de 0 a 3 capas, con neuronas y función de activación.
 4. **Capa de salida**: neuronas y función de activación de salida (k en clustering).
 5. **Función de pérdida**: BCE, CCE, MSE, MAE o MSE contra centroides, cada una con su curva, y la métrica que se reporta.
@@ -32,7 +32,7 @@ Las ocho pantallas siguen la red capa por capa:
 
 ## Modos
 
-- **Configuración**: cada pantalla muestra las decisiones, la vista previa y los avisos. Los gráficos secundarios (distribuciones, asociación, escalas, trayectoria del optimizador, esquema de paciencia, `model.summary()`) quedan plegados en "Ver …" y la explicación de cada aviso, en "¿Por qué?".
+- **Configuración**: cada pantalla muestra las decisiones, la red y los avisos. Los gráficos secundarios (distribuciones, asociación, trayectoria del optimizador, esquema de paciencia, `model.summary()`) quedan plegados en "Ver …" y la explicación de cada aviso, en "¿Por qué?".
 - **Estudio**: cada pantalla abre un recuadro con el concepto que se aplica (neurona y sesgo, activación, función de pérdida, ciclo de entrenamiento, sobreajuste), con su referencia a C5, C6 o N02, y todo lo plegado queda abierto.
 
 El modo se cambia arriba a la derecha. Para compartir un enlace que abra directamente en modo Estudio:
@@ -54,14 +54,14 @@ En la primera pantalla se puede subir un CSV con encabezado, separado por coma, 
 - Las columnas numéricas pueden ser entradas; las de texto solo pueden ser variable objetivo.
 - Cada tarea habilita las columnas compatibles como variable objetivo: dos valores para la clasificación binaria, de 3 a 20 para la multiclase y una numérica para la regresión. En clustering, una columna opcional sirve para interpretar los grupos.
 - Se recomiendan hasta 20 variables de entrada y 10.000 filas; con más filas, el configurador ofrece entrenar con una muestra al azar. Los máximos son 200 columnas, 200.000 filas y 25 MB.
-- Si el archivo trae una columna `particion` o `split` con los valores entrenamiento, validacion y prueba (o train, val y test), se puede usar tal cual. Si no, la partición se genera con porcentajes y una semilla, y el código Keras la reproduce con `train_test_split` con los mismos tamaños.
+- La partición se genera al azar con los porcentajes y la semilla elegidos, y el código Keras la reproduce con `train_test_split` con los mismos tamaños.
 - Las filas con valores vacíos en las columnas usadas se descartan.
 
 El código generado lee el archivo por su nombre: antes de ejecutarlo en Colab, hay que subirlo al entorno.
 
 ## Datos del taller
 
-Cada fila es una lectura de un rack con 8 variables (`temperatura`, `humedad`, `carga_cpu`, `ventiladores_rpm`, `consumo_w`, `errores_disco`, `latencia_ms` y `vibracion`), el `estado` del equipo (normal, termico, electrico, almacenamiento o red), `alerta_real`, `tiempo_reparacion_min` (vacío si el estado es normal) y la `particion`: 900 lecturas de entrenamiento, 300 de validación y 300 de prueba. El 6% de las etiquetas se corrompe a propósito para que exista error irreducible y el sobreajuste se vea en las curvas.
+Cada fila es una lectura de un rack con 8 variables (`temperatura`, `humedad`, `carga_cpu`, `ventiladores_rpm`, `consumo_w`, `errores_disco`, `latencia_ms` y `vibracion`), el `estado` del equipo (normal, termico, electrico, almacenamiento o red), `alerta_real` y `tiempo_reparacion_min` (vacío si el estado es normal). El archivo trae además una columna `particion` que el configurador no usa: la partición se genera con una semilla.
 
 ## Preparación para edición
 
