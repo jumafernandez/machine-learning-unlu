@@ -35,7 +35,7 @@ Las ocho pantallas siguen la red capa por capa:
 - **Configuración**: cada pantalla muestra las decisiones, la red y los avisos. Los gráficos secundarios (distribuciones, asociación, valle de ejemplo del optimizador, esquema de paciencia, `model.summary()`) quedan plegados en "Ver …" y la explicación de cada aviso, en "¿Por qué?".
 - **Estudio**: cada pantalla abre un recuadro con el concepto que se aplica (neurona y sesgo, activación, función de pérdida, ciclo de entrenamiento, sobreajuste), con su referencia a C5, C6 o N02, y todo lo plegado queda abierto.
 
-El modo se cambia arriba a la derecha. Para compartir un enlace que abra directamente en modo Estudio:
+El modo se cambia arriba a la derecha. Al lado, un botón alterna entre el tema claro y el oscuro; sin una elección guardada en el navegador, la página sigue al tema del sistema. Para compartir un enlace que abra directamente en modo Estudio:
 
 - [`index.html?modo=estudio`](https://jumafernandez.github.io/machine-learning-unlu/2026/taller-redes-neuronales/?modo=estudio)
 

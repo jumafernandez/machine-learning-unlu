@@ -7,24 +7,169 @@
 <meta name="description" content="Configurador interactivo de redes neuronales feed-forward para el taller de Aprendizaje Automático (UNLu, LICDIA).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap">
+<script>
+// Tema claro u oscuro: el elegido en este navegador o, si no hay, el del sistema.
+(() => {
+  let tema = null;
+  try { tema = localStorage.getItem("configurador-tema"); } catch { /* sin almacenamiento */ }
+  if (tema !== "claro" && tema !== "oscuro") tema = matchMedia("(prefers-color-scheme: dark)").matches ? "oscuro" : "claro";
+  document.documentElement.dataset.tema = tema;
+})();
+</script>
 <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js" onerror="window.tfNoDisponible = true"></script>
 <style>
+/* Colores por tema. El claro es la paleta del curso; el oscuro, el azul noche de dev-ia.
+   Los gráficos leen estas mismas variables (leerPaleta), así que van en hexadecimal de seis dígitos. */
 :root {
-  --titulo: #163e50;
-  --acento: #8eb9c3;
+  color-scheme: light;
+  --fondo: #ffffff;
+  --superficie: #ffffff;
+  --superficie-alterna: #f8fbfc;
   --suave: #edf5f7;
+  --titulo: #163e50;
+  --texto: #22333a;
   --secundario: #59717c;
+  --tenue: #9fb3bb;
+  --muy-tenue: #b5c3c8;
   --borde: #d7e6eb;
+  --linea: #b9cfd7;
+  --guia: #e6eff2;
+  --apagado: #c8d6db;
+  --acento: #8eb9c3;
+  --primario: #163e50;
+  --primario-hover: #0e2c39;
+  --sobre-primario: #ffffff;
+  --boton-borde: #163e50;
+  --brillo: none;
+  --enlace: #2a6a85;
   --violeta: #5f5078;
   --violeta-suave: #efebf4;
-  --texto: #22333a;
+  --sobre-violeta: #ffffff;
+  --dato: #163e50;
+  --dato-suave: #8eb9c3;
+  --naranja: #d08c2f;
+  --corte: #b0781c;
+  --ambar-texto: #8a5a12;
+  --ambar-fondo: #fdf3e2;
+  --banda-paciencia: #fdf1dc;
   --aviso-fondo: #fdf6e4;
   --aviso-borde: #ead08e;
   --aviso-texto: #6b5114;
   --error-fondo: #fcedeb;
   --error-borde: #e8b1ab;
   --error-texto: #8a3028;
+  --peligro: #8a3028;
+  --marca-error: #c4453b;
+  --marca-aviso: #d9a227;
+  --concepto-fondo: #f8f6fb;
+  --concepto-borde: #e3dcec;
+  --sin-uso-fondo: #f1f4f5;
+  --sin-uso-texto: #8a9ca3;
+  --registro-fondo: #12313f;
+  --registro-texto: #e3eef2;
+  --registro-tenue: #a9c9d3;
+  --lienzo-arriba: #fbfdfe;
+  --lienzo-abajo: #f4f9fa;
+  --velo: rgba(255, 255, 255, .96);
+  --sombra: rgba(22, 62, 80, .18);
+  --tirador: #ffffff;
+  --tirador-borde: rgba(22, 62, 80, .55);
+  --clase-0: #8eb9c3;
+  --clase-1: #d08c2f;
+  --grupo-1: #163e50;
+  --grupo-2: #d08c2f;
+  --grupo-3: #5f5078;
+  --grupo-4: #3d8f7c;
+  --grupo-5: #b9524a;
+  --grupo-6: #6fa6b4;
+  --grupo-7: #8a6d3b;
+  --grupo-8: #b07aa1;
+  --capa-1: #163e50;
+  --capa-2: #2b5569;
+  --capa-3: #3d6e83;
+  --capa-4: #56899c;
+  --capa-5: #6fa6b4;
+  --capa-6: #8eb9c3;
+  --parte-entrenamiento: #163e50;
+  --parte-validacion: #6fa6b4;
+  --parte-prueba: #5f5078;
+  --fuente-titulos: "Space Grotesk", "Source Sans Pro", system-ui, sans-serif;
+  --mono: "DM Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+  --fondo: #050b1f;
+  --superficie: #0a1631;
+  --superficie-alterna: #0d1b3b;
+  --suave: #11244b;
+  --titulo: #eef5ff;
+  --texto: #d3dff0;
+  --secundario: #9db0cb;
+  --tenue: #6c7fa4;
+  --muy-tenue: #4d6088;
+  --borde: #1f3262;
+  --linea: #2d4476;
+  --guia: #16284f;
+  --apagado: #2f4470;
+  --acento: #4de2ff;
+  --primario: #4de2ff;
+  --primario-hover: #8cefff;
+  --sobre-primario: #04101f;
+  --boton-borde: rgba(160, 200, 255, .4);
+  --brillo: 0 0 14px rgba(77, 226, 255, .45);
+  --enlace: #7fd6ff;
+  --violeta: #b0a6ff;
+  --violeta-suave: #1d1c4b;
+  --sobre-violeta: #0b1030;
+  --dato: #5ed6ee;
+  --dato-suave: #3f8fa8;
+  --naranja: #f2a54a;
+  --corte: #f5b85a;
+  --ambar-texto: #f3c870;
+  --ambar-fondo: #2b220f;
+  --banda-paciencia: #2a210f;
+  --aviso-fondo: #2b2210;
+  --aviso-borde: #6e5622;
+  --aviso-texto: #f3c870;
+  --error-fondo: #2d1219;
+  --error-borde: #7d2f3a;
+  --error-texto: #ff9d93;
+  --peligro: #c8423a;
+  --marca-error: #ff6b5e;
+  --marca-aviso: #f3c048;
+  --concepto-fondo: #121640;
+  --concepto-borde: #2d2b66;
+  --sin-uso-fondo: #142347;
+  --sin-uso-texto: #7f92b5;
+  --registro-fondo: #020714;
+  --registro-texto: #cfe3ff;
+  --registro-tenue: #7d98bd;
+  --lienzo-arriba: #0c1937;
+  --lienzo-abajo: #0a1530;
+  --velo: rgba(5, 11, 31, .94);
+  --sombra: rgba(0, 0, 0, .55);
+  --tirador: #e6f0ff;
+  --tirador-borde: rgba(0, 0, 0, .6);
+  --clase-0: #63c6dc;
+  --clase-1: #f2a54a;
+  --grupo-1: #5ed6ee;
+  --grupo-2: #f2a54a;
+  --grupo-3: #b0a6ff;
+  --grupo-4: #5fd1a8;
+  --grupo-5: #ff8277;
+  --grupo-6: #9ad7e6;
+  --grupo-7: #d9b47c;
+  --grupo-8: #eb9fd6;
+  --capa-1: #7be7f7;
+  --capa-2: #5fd1e6;
+  --capa-3: #4bb8d0;
+  --capa-4: #3f9db7;
+  --capa-5: #38829c;
+  --capa-6: #326a82;
+  --parte-entrenamiento: #1f6b85;
+  --parte-validacion: #3a8ea3;
+  --parte-prueba: #6c60c4;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -35,8 +180,10 @@ body {
   font-size: 16px;
   line-height: 1.5;
   color: var(--texto);
-  background: #fff;
+  background: var(--fondo);
 }
+:root[data-tema="oscuro"] body { background: radial-gradient(1200px 520px at 50% -160px, rgba(30, 60, 140, .32), transparent 70%) no-repeat, var(--fondo); }
+h1, h2, h3, h4 { font-family: var(--fuente-titulos); letter-spacing: -.01em; }
 h1, h2, h3 { color: var(--titulo); line-height: 1.2; margin: 0 0 .5em; }
 h1 { font-size: 1.8rem; font-weight: 700; }
 h2 { font-size: 1.32rem; font-weight: 600; }
@@ -44,17 +191,30 @@ h3 { font-size: 1.02rem; font-weight: 600; margin-top: 1.25em; }
 h4 { color: var(--titulo); font-size: 1rem; font-weight: 600; margin: 1.2em 0 .4em; }
 p { margin: 0 0 .85em; text-align: justify; hyphens: auto; line-height: 1.5; }
 .subtitulo, .leyenda, .precio-nota, .estimacion, .pie p { hyphens: manual; }
-a { color: #2a6a85; }
-code, pre { font-family: SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: .86em; }
+a { color: var(--enlace); }
+code, pre { font-family: var(--mono); font-size: .86em; }
 :not(pre) > code { background: var(--suave); color: var(--violeta); padding: .05em .3em; border-radius: 4px; overflow-wrap: anywhere; }
 button, input, select { font: inherit; color: inherit; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .contenedor { max-width: 1260px; margin: 0 auto; padding: 0 24px; }
 
 /* Encabezado y barra de pasos */
-.encabezado { background: linear-gradient(180deg, var(--suave), #fff); border-bottom: 1px solid var(--borde); padding: 18px 0 12px; }
-.volanta { margin: 0 0 .3em; color: var(--violeta); font-weight: 600; text-align: left; }
-.subtitulo { color: var(--secundario); text-align: left; max-width: 60em; margin: 0; font-size: .98rem; }
+/* La cabecera es la banda azul noche de dev-ia en los dos temas: grilla tenue, brillos y el título en degradé. */
+.encabezado {
+  position: relative; overflow: hidden; padding: 20px 0 18px; border-bottom: 1px solid rgba(120, 160, 255, .22); color: #e8f1ff;
+  background: radial-gradient(900px 420px at 28% -20%, rgba(30, 60, 140, .6), transparent 65%), radial-gradient(700px 380px at 96% 120%, rgba(138, 125, 255, .24), transparent 60%),
+    radial-gradient(600px 340px at 0% 120%, rgba(77, 226, 255, .12), transparent 60%), #050b1f;
+}
+.encabezado::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(rgba(120, 160, 255, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 160, 255, .07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at 30% 40%, #000 15%, transparent 75%); mask-image: radial-gradient(ellipse at 30% 40%, #000 15%, transparent 75%);
+}
+.encabezado > .contenedor { position: relative; }
+.volanta { margin: 0 0 .5em; font-family: var(--mono); font-size: .74rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: rgba(160, 225, 255, .85); text-align: left; }
+.encabezado h1 { width: fit-content; margin-bottom: .3em; font-weight: 600; background: linear-gradient(90deg, #fff, #d6e9ff 45%, #4de2ff 78%, #8a7dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.subtitulo { color: rgba(214, 228, 248, .82); text-align: left; max-width: 44em; margin: 0; font-size: .98rem; }
 /* Logo del LICDIA, como en dev-ia: gira el anillo de dígitos y el cerebro queda fijo. Lleva al inicio. */
 .encabezado-titulo { display: flex; align-items: center; gap: 18px; }
 .logo { position: relative; display: block; flex: none; width: 72px; height: 72px; border-radius: 50%; box-shadow: 0 0 14px rgba(77, 226, 255, .5); animation: logo-brillo 3.2s ease-in-out infinite; transition: transform .2s ease; }
@@ -62,7 +222,7 @@ button, input, select { font: inherit; color: inherit; }
 .logo-anillo { -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 78%, #000 80%); mask-image: radial-gradient(circle closest-side, transparent 0 78%, #000 80%); animation: logo-rotar 22s linear infinite; }
 .logo-centro { -webkit-mask-image: radial-gradient(circle closest-side, #000 0 79%, transparent 80%); mask-image: radial-gradient(circle closest-side, #000 0 79%, transparent 80%); }
 .logo:hover { transform: scale(1.08); }
-.logo:focus-visible { outline: 3px solid var(--violeta); outline-offset: 4px; }
+.logo:focus-visible { outline: 2px solid #4de2ff; outline-offset: 4px; }
 @keyframes logo-rotar { to { transform: rotate(360deg); } }
 @keyframes logo-brillo { 0%, 100% { box-shadow: 0 0 12px rgba(77, 226, 255, .45); } 50% { box-shadow: 0 0 24px rgba(138, 125, 255, .75), 0 0 6px rgba(77, 226, 255, .8); } }
 @media (prefers-reduced-motion: reduce) { .logo, .logo-anillo { animation: none; } }
@@ -75,28 +235,28 @@ button, input, select { font: inherit; color: inherit; }
 }
 .paso-boton .numero {
   width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; position: relative; font-size: .9rem;
-  border: 2px solid var(--borde); background: #fff; font-weight: 700; color: var(--secundario);
+  border: 2px solid var(--borde); background: var(--superficie); font-weight: 700; color: var(--secundario); font-family: var(--fuente-titulos);
 }
 .paso-boton:disabled { cursor: default; opacity: .5; }
 .paso-boton.visitado { color: var(--titulo); }
 .paso-boton.visitado .numero { border-color: var(--acento); color: var(--titulo); }
 .paso-boton.actual { font-weight: 700; }
-.paso-boton.actual .numero { background: var(--titulo); border-color: var(--titulo); color: #fff; }
-.paso-boton:not(:disabled):hover .numero { border-color: var(--titulo); }
+.paso-boton.actual .numero { background: var(--primario); border-color: var(--primario); color: var(--sobre-primario); box-shadow: var(--brillo); }
+.paso-boton:not(:disabled):hover .numero { border-color: var(--primario); }
 .paso-boton:focus-visible { outline: 2px solid var(--acento); }
-.marca { position: absolute; top: -4px; right: -4px; width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; }
-.marca.error { background: #c4453b; }
-.marca.aviso { background: #d9a227; }
+.marca { position: absolute; top: -4px; right: -4px; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--fondo); }
+.marca.error { background: var(--marca-error); }
+.marca.aviso { background: var(--marca-aviso); }
 
 /* Estructura en dos columnas */
 .marco { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 22px; align-items: start; margin-top: 14px; margin-bottom: 32px; }
-.panel { min-width: 0; border: 1px solid var(--borde); border-radius: 14px; padding: 18px 22px; }
+.panel { min-width: 0; border: 1px solid var(--borde); border-radius: 14px; padding: 18px 22px; background: var(--superficie); }
 .marco.sin-vista { grid-template-columns: minmax(0, 1fr); }
 .marco.sin-vista .vista { display: none; }
 .marco.red-en-panel .tarjeta-red { display: none; }
 .vista { position: sticky; top: 14px; max-height: calc(100vh - 28px); overflow-y: auto; display: grid; gap: 14px; min-width: 0; }
-.tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: 14px; padding: 12px 16px; min-width: 0; }
-.titulo-chico { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--secundario); margin: 0 0 6px; font-weight: 700; }
+.tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: 14px; padding: 12px 16px; min-width: 0; }
+.titulo-chico { font-family: var(--mono); font-size: .74rem; text-transform: uppercase; letter-spacing: .12em; color: var(--secundario); margin: 0 0 6px; font-weight: 500; }
 .precio-movil { display: none; }
 
 /* Vista previa */
@@ -105,7 +265,7 @@ button, input, select { font: inherit; color: inherit; }
 .leyenda.simulacion { color: var(--violeta); }
 
 /* Precio */
-.precio-total { font-size: 2.3rem; font-weight: 700; color: var(--titulo); line-height: 1; font-variant-numeric: tabular-nums; }
+.precio-total { font-family: var(--fuente-titulos); font-size: 2.3rem; font-weight: 700; color: var(--titulo); line-height: 1; font-variant-numeric: tabular-nums; }
 .precio-parcial { font-size: .85rem; color: var(--aviso-texto); margin-left: 6px; font-weight: 600; }
 .precio-lista { list-style: none; padding: 0; margin: 10px 0 0; font-size: .92rem; font-variant-numeric: tabular-nums; }
 .precio-lista li { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px dashed var(--borde); }
@@ -129,45 +289,47 @@ button, input, select { font: inherit; color: inherit; }
 
 /* Botones y controles */
 .boton {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 8px;
-  border: 1px solid var(--titulo); background: #fff; color: var(--titulo); font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 18px; border-radius: 999px;
+  border: 1px solid var(--boton-borde); background: var(--superficie); color: var(--titulo); font-weight: 600; cursor: pointer;
+  transition: background .15s, border-color .15s, box-shadow .2s, transform .2s;
 }
-.boton:hover:not(:disabled) { background: var(--suave); }
-.boton.primario { background: var(--titulo); color: #fff; }
-.boton.primario:hover:not(:disabled) { background: #0e2c39; }
-.boton.detener { background: var(--error-texto); border-color: var(--error-texto); color: #fff; }
+.boton:hover:not(:disabled) { background: var(--suave); border-color: var(--primario); }
+/* El botón principal, como los de dev-ia: degradé de cian a violeta con brillo */
+.boton.primario { border-color: transparent; background: linear-gradient(135deg, #4de2ff, #8a7dff); color: #04101f; box-shadow: 0 0 16px rgba(77, 226, 255, .3); }
+.boton.primario:hover:not(:disabled) { border-color: transparent; background: linear-gradient(135deg, #4de2ff, #8a7dff); box-shadow: 0 0 26px rgba(77, 226, 255, .55); transform: translateY(-1px); }
+.boton.detener, .boton.detener:hover:not(:disabled) { background: var(--peligro); border-color: var(--peligro); color: #fff; }
 .boton.chico { padding: 4px 10px; font-size: .9rem; }
 .boton:disabled { opacity: .45; cursor: not-allowed; }
 .boton:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
 .acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 12px 0; }
-select { padding: 6px 10px; border: 1px solid #b9cfd7; border-radius: 8px; background: #fff; min-height: 38px; max-width: 100%; }
-input[type=range] { width: 100%; accent-color: var(--titulo); }
-input[type=checkbox] { accent-color: var(--titulo); width: 17px; height: 17px; }
+select { padding: 6px 10px; border: 1px solid var(--linea); border-radius: 8px; background: var(--superficie); min-height: 38px; max-width: 100%; }
+input[type=range] { width: 100%; accent-color: var(--primario); }
+input[type=checkbox] { accent-color: var(--primario); width: 17px; height: 17px; }
 .campo { display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: var(--titulo); font-size: .95rem; min-width: 0; }
 .campo output { font-weight: 700; }
 .ayuda { font-weight: 400; color: var(--secundario); font-size: .88rem; }
 .interruptor { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; color: var(--titulo); margin: 4px 0 10px; }
 .interruptor input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.interruptor .pista { width: 42px; height: 24px; border-radius: 999px; background: #c8d6db; position: relative; transition: background .15s; flex: none; }
+.interruptor .pista { width: 42px; height: 24px; border-radius: 999px; background: var(--apagado); position: relative; transition: background .15s; flex: none; }
 .interruptor .pista::after {
   content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
   background: #fff; transition: transform .15s; box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
 }
-.interruptor input:checked + .pista { background: var(--titulo); }
+.interruptor input:checked + .pista { background: var(--primario); }
 .interruptor input:checked + .pista::after { transform: translateX(18px); }
 .interruptor input:focus-visible + .pista { outline: 2px solid var(--acento); outline-offset: 2px; }
 .casilla { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
 
 /* Tarjetas de tarea */
-.familia { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--violeta); margin: 1.1em 0 .5em; text-align: left; }
+.familia { font-family: var(--mono); font-size: .76rem; font-weight: 500; text-transform: uppercase; letter-spacing: .12em; color: var(--violeta); margin: 1.1em 0 .5em; text-align: left; }
 .tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
 .tarjeta-tarea {
   text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border: 1px solid var(--borde);
-  border-radius: 12px; background: #fff; cursor: pointer; transition: border-color .15s, box-shadow .15s;
+  border-radius: 12px; background: var(--superficie); cursor: pointer; transition: border-color .15s, box-shadow .15s;
 }
 .tarjeta-tarea:hover { border-color: var(--acento); }
-.tarjeta-tarea.elegida { border-color: var(--titulo); box-shadow: inset 0 0 0 1px var(--titulo); background: var(--suave); }
-.tarjeta-tarea strong { color: var(--titulo); font-size: 1.08rem; }
+.tarjeta-tarea.elegida { border-color: var(--primario); box-shadow: inset 0 0 0 1px var(--primario); background: var(--suave); }
+.tarjeta-tarea strong { color: var(--titulo); font-size: 1.08rem; font-family: var(--fuente-titulos); font-weight: 600; }
 .tarjeta-tarea .texto { font-size: .95rem; }
 .tarjeta-tarea .pie-tarjeta { color: var(--secundario); font-size: .85rem; margin-top: auto; }
 .etiqueta { display: inline-block; align-self: flex-start; font-size: .78rem; font-weight: 600; color: var(--violeta); background: var(--violeta-suave); border-radius: 999px; padding: 1px 9px; }
@@ -180,9 +342,9 @@ input[type=checkbox] { accent-color: var(--titulo); width: 17px; height: 17px; }
 .tabla .num { text-align: right; }
 .tabla tr:last-child td, .tabla tr:last-child th { border-bottom: 0; }
 .tabla .objetivo { background: var(--violeta-suave); color: var(--violeta); font-weight: 600; }
-.tabla .sin-uso { color: #a2b2b8; }
+.tabla .sin-uso { color: var(--tenue); }
 .tabla td.texto-largo { white-space: normal; min-width: 220px; }
-.tabla.mono { font-family: SFMono-Regular, Menlo, Consolas, monospace; font-size: .84rem; }
+.tabla.mono { font-family: var(--mono); font-size: .84rem; }
 .tabla-scroll.ajustada { display: inline-block; vertical-align: top; }
 .matriz { width: auto; }
 .matriz td.num, .matriz th.num { text-align: center; min-width: 64px; }
@@ -204,10 +366,10 @@ input[type=checkbox] { accent-color: var(--titulo); width: 17px; height: 17px; }
 .opcion { position: relative; display: block; border: 1px solid var(--borde); border-radius: 12px; padding: 10px 14px; cursor: pointer; }
 .opcion input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .opcion:hover { border-color: var(--acento); }
-.opcion:has(input:checked) { border-color: var(--titulo); box-shadow: inset 0 0 0 1px var(--titulo); background: var(--suave); }
+.opcion:has(input:checked) { border-color: var(--primario); box-shadow: inset 0 0 0 1px var(--primario); background: var(--suave); }
 .opcion:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; }
 .opcion strong { display: block; color: var(--titulo); }
-.opcion .formula { display: block; font-family: SFMono-Regular, Menlo, Consolas, monospace; font-size: .84rem; color: var(--violeta); margin: 2px 0; overflow-wrap: anywhere; }
+.opcion .formula { display: block; font-family: var(--mono); font-size: .84rem; color: var(--violeta); margin: 2px 0; overflow-wrap: anywhere; }
 .opcion .texto { display: block; font-size: .9rem; color: var(--texto); }
 .segmentado { display: flex; flex-wrap: wrap; gap: 6px; }
 .segmentado .opcion { padding: 6px 12px; font-weight: 600; color: var(--titulo); }
@@ -224,13 +386,13 @@ fieldset.opciones-entrenamiento { border: 0; padding: 0; margin: 0; min-width: 0
 .leyenda-grafico { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .82rem; color: var(--secundario); margin-top: 4px; }
 .leyenda-grafico i { display: inline-block; width: 16px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
 .leyenda-grafico i.punteada { height: 0; border-top: 2px dashed; border-radius: 0; background: none; }
-svg .grilla { stroke: #e6eff2; }
-svg .eje { font-size: 11px; fill: #59717c; }
+svg .grilla { stroke: var(--guia); }
+svg .eje { font-size: 11px; fill: var(--secundario); }
 svg .marca-texto { font-size: 11px; font-weight: 600; }
 .resultado { margin-top: 18px; }
 .cifras { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 14px; }
 .cifra { border: 1px solid var(--borde); border-radius: 10px; padding: 8px 14px; min-width: 130px; }
-.cifra .valor { display: block; font-size: 1.6rem; font-weight: 700; color: var(--titulo); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.cifra .valor { display: block; font-family: var(--fuente-titulos); font-size: 1.6rem; font-weight: 700; color: var(--titulo); line-height: 1.1; font-variant-numeric: tabular-nums; }
 .cifra.secundaria .valor { font-size: 1.3rem; color: var(--secundario); }
 .cifra .rotulo { font-size: .85rem; color: var(--secundario); }
 .barras { display: grid; gap: 4px; margin: 6px 0 12px; }
@@ -241,7 +403,7 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .historial-encabezado { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; }
 .historial-encabezado h3 { margin-bottom: .4em; }
 .historial tr.mejor td { background: var(--violeta-suave); }
-.etiqueta-mejor { margin-left: 8px; padding: 1px 7px; border-radius: 8px; background: var(--violeta); color: #fff; font-size: .74rem; font-weight: 600; }
+.etiqueta-mejor { margin-left: 8px; padding: 1px 7px; border-radius: 8px; background: var(--violeta); color: var(--sobre-violeta); font-size: .74rem; font-weight: 600; }
 .ver-corrida { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-variant-numeric: tabular-nums; }
 .ver-corrida .punto-color { margin-right: 0; }
 .punto-color { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
@@ -250,15 +412,15 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .hoja { border: 1px solid var(--borde); border-radius: 12px; overflow: hidden; margin: 10px 0 0; }
 .hoja-fila { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 12px; padding: 9px 16px; border-bottom: 1px solid var(--borde); }
 .hoja-fila:last-child { border-bottom: 0; }
-.hoja-fila:nth-child(even) { background: #f8fbfc; }
+.hoja-fila:nth-child(even) { background: var(--superficie-alterna); }
 .hoja-fila dt { font-weight: 600; color: var(--titulo); }
 .hoja-fila dd { margin: 0; min-width: 0; }
-.hoja-fila.total { background: var(--titulo) !important; color: #fff; }
-.hoja-fila.total dt { color: #fff; }
+.hoja-fila.total { background: var(--primario) !important; color: var(--sobre-primario); }
+.hoja-fila.total dt { color: var(--sobre-primario); }
 .hoja-fila.total dd { font-size: 1.3rem; font-weight: 700; }
 .codigo { position: relative; margin-top: 8px; }
 .codigo pre {
-  background: #f6f9fa; border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; padding-top: 40px;
+  background: var(--superficie-alterna); border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; padding-top: 40px;
   overflow-x: auto; font-size: .82rem; line-height: 1.45; margin: 0; max-height: 620px; padding-top: 50px;
 }
 .codigo-acciones { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
@@ -267,16 +429,16 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 
 
 
-.peso-pos { color: #163e50; font-weight: 700; }
-.peso-neg { color: #b0781c; font-weight: 700; }
+.peso-pos { color: var(--dato); font-weight: 700; }
+.peso-neg { color: var(--corte); font-weight: 700; }
 
 .contador { display: flex; align-items: baseline; gap: 8px; color: var(--secundario); }
-.contador strong { font-size: 2.2rem; color: var(--titulo); font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1; }
+.contador strong { font-family: var(--fuente-titulos); font-size: 2.2rem; color: var(--titulo); font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1; }
 .consola { display: flex; align-items: center; gap: 10px 22px; flex-wrap: wrap; margin: 16px 0 6px; padding: 10px 16px; border: 1px solid var(--borde); border-radius: 12px; background: var(--suave); }
 .consola .acciones { margin: 0; }
 .velocidad { display: flex; align-items: center; gap: 8px; margin-left: auto; color: var(--secundario); font-size: .92rem; }
 .segmentado.compacto { gap: 4px; }
-.segmentado.compacto .opcion { padding: 3px 10px; font-size: .88rem; background: #fff; border-radius: 9px; }
+.segmentado.compacto .opcion { padding: 3px 10px; font-size: .88rem; background: var(--superficie); border-radius: 9px; }
 .grilla-entrenamiento { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 12px 16px; margin: 10px 0; align-items: end; }
 .grilla-entrenamiento .campo-epocas { grid-column: 1 / -1; }
 .tablero-vivo { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; margin-top: 10px; }
@@ -298,9 +460,9 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .leyenda-grafico i.punto { width: 10px; height: 10px; border: 5px solid; border-radius: 50%; }
 .leyenda-grafico i.cruz { width: auto; height: auto; border: 0; background: none; font-style: normal; font-weight: 700; vertical-align: baseline; }
 .leyenda-grafico i.cruz::before { content: "✕"; }
-.registro { margin: 0; height: 300px; overflow: auto; background: #12313f; color: #e3eef2; border-radius: 8px; padding: 10px 12px; font-size: .74rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
-.registro.vacio { height: auto; white-space: normal; color: #a9c9d3; font-family: inherit; font-size: .9rem; }
-.registro .nota-registro { color: #a9c9d3; }
+.registro { margin: 0; height: 300px; overflow: auto; background: var(--registro-fondo); color: var(--registro-texto); border: 1px solid var(--borde); border-radius: 8px; padding: 10px 12px; font-size: .74rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.registro.vacio { height: auto; white-space: normal; color: var(--registro-tenue); font-family: inherit; font-size: .9rem; }
+.registro .nota-registro { color: var(--registro-tenue); }
 .registro:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
 .capas-diagnostico { display: grid; gap: 8px; margin: 2px 0 10px; }
 .capa-diagnostico { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; font-size: .84rem; }
@@ -314,8 +476,8 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .panel-red .red-herramientas { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 2px 0 8px; }
 .red-contador { display: inline-flex; align-items: center; gap: 6px; color: var(--secundario); font-size: .92rem; }
 .red-contador strong { min-width: 1.3em; text-align: center; color: var(--titulo); font-size: 1.05rem; font-variant-numeric: tabular-nums; }
-.boton.activo { background: var(--titulo); border-color: var(--titulo); color: #fff; }
-.boton.activo:hover:not(:disabled) { background: #0e2c39; }
+.boton.activo { background: var(--primario); border-color: var(--primario); color: var(--sobre-primario); }
+.boton.activo:hover:not(:disabled) { background: var(--primario-hover); }
 .red-navegar { display: inline-flex; gap: 4px; }
 .red-ejemplo { color: var(--secundario); font-size: .9rem; }
 .red-desplazable { overflow-x: auto; }
@@ -325,31 +487,31 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .red-nodo { position: absolute; padding: 0; border: 0; border-radius: 3px; background: transparent; cursor: pointer; }
 .red-nodo:hover { box-shadow: 0 0 0 2px var(--acento); }
 .red-nodo:focus-visible { outline: 2px solid var(--violeta); outline-offset: 2px; }
-.red-neuronas { position: absolute; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px; border: 1px solid var(--borde); border-radius: 9px; background: #fff; font-size: .85rem; font-variant-numeric: tabular-nums; }
+.red-neuronas { position: absolute; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px; border: 1px solid var(--borde); border-radius: 9px; background: var(--superficie); font-size: .85rem; font-variant-numeric: tabular-nums; }
 .red-neuronas button { width: 24px; height: 22px; border: 0; border-radius: 7px; background: var(--suave); color: var(--titulo); font-weight: 700; cursor: pointer; }
 .red-neuronas button:disabled { opacity: .35; cursor: not-allowed; }
 .red-neuronas button:focus-visible { outline: 2px solid var(--acento); }
 .red-neuronas span { min-width: 2.2em; text-align: center; color: var(--titulo); font-weight: 600; }
-.red-titulo-capa { position: absolute; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; padding: 3px 9px; border: 1px solid var(--borde); border-radius: 9px; background: #fff; color: var(--titulo); font-size: .82rem; line-height: 1.25; white-space: nowrap; cursor: pointer; }
+.red-titulo-capa { position: absolute; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; padding: 3px 9px; border: 1px solid var(--borde); border-radius: 9px; background: var(--superficie); color: var(--titulo); font-size: .82rem; line-height: 1.25; white-space: nowrap; cursor: pointer; }
 .red-titulo-capa span { color: var(--secundario); font-size: .76rem; }
-.red-titulo-capa:hover, .red-titulo-capa.abierta { border-color: var(--titulo); background: var(--suave); }
+.red-titulo-capa:hover, .red-titulo-capa.abierta { border-color: var(--primario); background: var(--suave); }
 .red-titulo-capa:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
-.red-menu { position: absolute; z-index: 5; width: 272px; display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--titulo); border-radius: 12px; background: #fff; box-shadow: 0 8px 24px rgba(22, 62, 80, .18); }
+.red-menu { position: absolute; z-index: 5; width: 272px; display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--primario); border-radius: 12px; background: var(--superficie); box-shadow: 0 8px 24px var(--sombra); }
 .red-menu-titulo { display: flex; justify-content: space-between; align-items: center; color: var(--titulo); }
 .red-menu-activaciones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
 .opcion-act { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; border: 1px solid var(--borde); border-radius: 8px; color: var(--titulo); font-size: .78rem; cursor: pointer; }
 .opcion-act input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.opcion-act:has(input:checked) { border-color: var(--titulo); background: var(--suave); box-shadow: inset 0 0 0 1px var(--titulo); }
+.opcion-act:has(input:checked) { border-color: var(--primario); background: var(--suave); box-shadow: inset 0 0 0 1px var(--primario); }
 .opcion-act:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; }
 .opcion-act svg { width: 54px; height: 34px; }
-.red-globo { position: absolute; z-index: 6; transform: translate(-50%, calc(-100% - 12px)); padding: 4px 8px; border-radius: 6px; background: var(--titulo); color: #fff; font-size: .8rem; white-space: nowrap; pointer-events: none; }
+.red-globo { position: absolute; z-index: 6; transform: translate(-50%, calc(-100% - 12px)); padding: 4px 8px; border-radius: 6px; background: var(--titulo); color: var(--superficie); font-size: .8rem; white-space: nowrap; pointer-events: none; }
 .inspector { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--borde); }
 .inspector p { margin: 0 0 .5em; text-align: left; }
 .inspector .pista { color: var(--secundario); font-size: .88rem; }
 .inspector-cabecera { display: flex; align-items: baseline; gap: 6px 12px; flex-wrap: wrap; margin-bottom: 6px; }
 .inspector-cabecera strong { color: var(--titulo); }
 .inspector-cabecera .boton { margin-left: auto; }
-.formula { padding: 6px 10px; border-radius: 8px; background: var(--violeta-suave); color: var(--violeta); font-family: SFMono-Regular, Menlo, Consolas, monospace; font-size: .84rem; overflow-wrap: anywhere; }
+.formula { padding: 6px 10px; border-radius: 8px; background: var(--violeta-suave); color: var(--violeta); font-family: var(--mono); font-size: .84rem; overflow-wrap: anywhere; }
 .inspector .calculo { color: var(--titulo); font-variant-numeric: tabular-nums; }
 .inspector-graficos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 340px)); gap: 12px 24px; margin-top: 6px; }
 .inspector-graficos figure { margin: 0; min-width: 0; }
@@ -358,7 +520,7 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .mapa-neurona { display: block; width: 100%; max-width: 280px; height: auto; border: 1px solid var(--borde); border-radius: 6px; }
 .parametros-editor { display: grid; gap: 4px; margin-top: 14px; }
 .parametros-total { display: flex; align-items: baseline; gap: 10px; color: var(--secundario); }
-.parametros-total strong { color: var(--titulo); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.parametros-total strong { color: var(--titulo); font-family: var(--fuente-titulos); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
 .parametros-total em { color: var(--secundario); font-size: .85rem; }
 .parametros-editor .barra-parametros { margin: 2px 0; }
 .parametros-lista { display: flex; flex-wrap: wrap; gap: 2px 18px; margin: 0; padding: 0; list-style: none; color: var(--secundario); font-size: .9rem; font-variant-numeric: tabular-nums; }
@@ -367,15 +529,15 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .parametros-lista .centroides { color: var(--violeta); }
 p.estado-entrenamiento { margin: 4px 0 8px; text-align: left; min-height: 1.4em; }
 
-.barra-parametros { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0 2px; background: #eef3f5; }
+.barra-parametros { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0 2px; background: var(--guia); }
 .barra-parametros span { min-width: 3px; }
 .precio-lista i.punto { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; }
 .esquema-cont { margin: 10px 0 6px; max-width: 480px; }
 .esquema { width: 100%; height: auto; display: block; border: 1px solid var(--borde); border-radius: 10px; }
 
 /* Dataset y columnas */
-.dataset { border: 1px dashed #b9cfd7; border-radius: 12px; padding: 12px 16px; margin: 4px 0 14px; background: #fafcfd; transition: background .15s, border-color .15s; }
-.dataset.arrastrando { background: var(--suave); border-color: var(--titulo); }
+.dataset { border: 1px dashed var(--linea); border-radius: 12px; padding: 12px 16px; margin: 4px 0 14px; background: var(--superficie-alterna); transition: background .15s, border-color .15s; }
+.dataset.arrastrando { background: var(--suave); border-color: var(--primario); }
 .dataset-info { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
 .dataset-info strong { color: var(--titulo); font-size: 1.05rem; overflow-wrap: anywhere; }
 .dataset-info > span:last-child { color: var(--secundario); font-size: .92rem; flex-basis: 100%; }
@@ -383,13 +545,13 @@ p.estado-entrenamiento { margin: 4px 0 8px; text-align: left; min-height: 1.4em;
 .dataset label.boton { cursor: pointer; position: relative; }
 .chip { display: inline-block; font-size: .76rem; font-weight: 600; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
 .tipo-numero { background: var(--suave); color: var(--titulo); }
-.tipo-texto { background: #fdf3e2; color: #8a5a12; }
-.rol-entrada { background: var(--titulo); color: #fff; }
-.rol-objetivo { background: var(--violeta); color: #fff; }
-.rol-sin-uso { background: #f1f4f5; color: #8a9ca3; }
-.vacio { color: #a2b2b8; font-style: italic; }
+.tipo-texto { background: var(--ambar-fondo); color: var(--ambar-texto); }
+.rol-entrada { background: var(--primario); color: var(--sobre-primario); }
+.rol-objetivo { background: var(--violeta); color: var(--sobre-violeta); }
+.rol-sin-uso { background: var(--sin-uso-fondo); color: var(--sin-uso-texto); }
+.vacio { color: var(--tenue); font-style: italic; }
 .sensor.reservada { opacity: .6; cursor: not-allowed; }
-input[type=number] { padding: 6px 10px; border: 1px solid #b9cfd7; border-radius: 8px; min-height: 38px; max-width: 100%; background: #fff; }
+input[type=number] { padding: 6px 10px; border: 1px solid var(--linea); border-radius: 8px; min-height: 38px; max-width: 100%; background: var(--superficie); }
 
 .encabezado-acciones { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; align-self: center; }
 .compartir { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
@@ -398,7 +560,7 @@ input[type=number] { padding: 6px 10px; border: 1px solid #b9cfd7; border-radius
 .compartir-resumen .estado-enlace { text-align: left; }
 
 details.plegable { margin: 10px 0 12px; }
-details.plegable > summary { cursor: pointer; color: #2a6a85; font-weight: 600; font-size: .95rem; width: fit-content; list-style: none; padding: 2px 0; }
+details.plegable > summary { cursor: pointer; color: var(--enlace); font-weight: 600; font-size: .95rem; width: fit-content; list-style: none; padding: 2px 0; }
 details.plegable > summary::-webkit-details-marker { display: none; }
 details.plegable > summary::before { content: "▸ "; color: var(--secundario); }
 details.plegable[open] > summary::before { content: "▾ "; }
@@ -408,18 +570,18 @@ label.tarjeta-tarea { cursor: pointer; }
 
 /* Primera pantalla: carga y head de los datos */
 .carga { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 28px 20px; margin: 10px 0 8px;
-  border: 2px dashed #b9cfd7; border-radius: 16px; background: #fafcfd; cursor: pointer; transition: background .15s, border-color .15s; }
-.carga:hover, .carga.arrastrando { background: var(--suave); border-color: var(--titulo); }
+  border: 2px dashed var(--linea); border-radius: 16px; background: var(--superficie-alterna); cursor: pointer; transition: background .15s, border-color .15s; }
+.carga:hover, .carga.arrastrando { background: var(--suave); border-color: var(--primario); }
 .carga:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; }
-.carga strong { font-size: 1.2rem; color: var(--titulo); }
+.carga strong { font-family: var(--fuente-titulos); font-size: 1.2rem; font-weight: 600; color: var(--titulo); }
 .carga > span { max-width: 36em; color: var(--texto); }
 .carga .carga-nota { font-size: .86rem; color: var(--secundario); }
 .carga .icono-tarea { max-width: 120px; }
 .ejemplo { text-align: center; color: var(--secundario); font-size: .95rem; }
-button.enlace, label.enlace { background: none; border: 0; padding: 0; color: #2a6a85; font-weight: 600; text-decoration: underline; cursor: pointer; font: inherit; font-weight: 600; position: relative; }
+button.enlace, label.enlace { background: none; border: 0; padding: 0; color: var(--enlace); font-weight: 600; text-decoration: underline; cursor: pointer; font: inherit; font-weight: 600; position: relative; }
 button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 3px; }
 .datos-encabezado { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 16px; margin: 4px 0 8px; padding: 4px 0; border-radius: 8px; }
-.datos-encabezado.arrastrando { background: var(--suave); outline: 2px dashed var(--titulo); }
+.datos-encabezado.arrastrando { background: var(--suave); outline: 2px dashed var(--primario); }
 .datos-nombre { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
 .datos-nombre strong { color: var(--titulo); font-size: 1.05rem; overflow-wrap: anywhere; }
 .datos-nombre span { color: var(--secundario); font-size: .92rem; }
@@ -427,29 +589,29 @@ button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2p
 .indicacion { text-align: left; margin: 6px 0 8px; color: var(--secundario); }
 .indicacion.pendiente { color: var(--violeta); font-weight: 600; background: var(--violeta-suave); border-radius: 8px; padding: 8px 12px; }
 .tabla.head { width: auto; min-width: 100%; }
-.tabla.head th { vertical-align: bottom; background: #fff; border-bottom: 2px solid var(--borde); padding: 6px 10px; }
+.tabla.head th { vertical-align: bottom; background: var(--superficie); border-bottom: 2px solid var(--borde); padding: 6px 10px; }
 .tabla.head th button { all: unset; display: flex; flex-direction: column; gap: 2px; cursor: pointer; }
 .tabla.head th button:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }
-.tabla.head .col-nombre { font-weight: 700; color: var(--titulo); font-family: SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; }
+.tabla.head .col-nombre { font-weight: 700; color: var(--titulo); font-family: var(--mono); font-size: .86rem; }
 .tabla.head .col-detalle { display: block; font-weight: 400; font-size: .76rem; color: var(--secundario); }
 .tabla.head .chip { margin-top: 3px; }
 .tabla.head td { color: var(--texto); text-align: right; }
-.tabla.head td.indice, .tabla.head th.indice { color: #a2b2b8; font-size: .8rem; text-align: right; background: #fff; }
-.tabla.head tbody tr:nth-child(even) td { background: #fafcfd; }
+.tabla.head td.indice, .tabla.head th.indice { color: var(--tenue); font-size: .8rem; text-align: right; background: var(--superficie); }
+.tabla.head tbody tr:nth-child(even) td { background: var(--superficie-alterna); }
 .tabla.head .elegible, .tabla.head .clickeable, .tabla.head [data-accion] { cursor: pointer; }
 .tabla.head .clickeable:hover { background: var(--violeta-suave) !important; }
-.tabla.head th.entrada { box-shadow: inset 0 -3px 0 var(--titulo); }
+.tabla.head th.entrada { box-shadow: inset 0 -3px 0 var(--primario); }
 .leyenda-roles { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .82rem; color: var(--secundario); margin: 4px 0 0; text-align: left; }
 .leyenda-roles i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .leyenda-roles i.rol-objetivo { background: var(--violeta); }
-.leyenda-roles i.rol-entrada { background: var(--titulo); }
-.leyenda-roles i.rol-sin-uso { background: #d5dfe3; }
+.leyenda-roles i.rol-entrada { background: var(--primario); }
+.leyenda-roles i.rol-sin-uso { background: var(--apagado); }
 .tabla.head th.elegible { box-shadow: inset 0 -3px 0 var(--acento); }
 .tabla.head .elegible:hover { background: var(--violeta-suave) !important; }
 .tabla.head .objetivo { background: var(--violeta-suave) !important; color: var(--violeta); font-weight: 600; }
 .tabla.head th.objetivo { box-shadow: inset 0 -3px 0 var(--violeta); }
-.tabla.head .apagada { color: #b5c3c8; }
-.tabla.head .apagada .col-nombre { color: #9fb0b7; }
+.tabla.head .apagada { color: var(--muy-tenue); }
+.tabla.head .apagada .col-nombre { color: var(--tenue); }
 .tareas { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
 .tareas .tarjeta-tarea { padding: 10px 12px; }
 .tareas .icono-tarea { height: 52px; max-width: 110px; }
@@ -480,7 +642,7 @@ button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2p
   .particion-control .rotulo { display: none; }
 }
 .tirador { position: absolute; top: -6px; bottom: -6px; width: 26px; transform: translateX(-50%); cursor: ew-resize; display: flex; justify-content: center; z-index: 2; outline: none; }
-.tirador::before { content: ""; width: 7px; border-radius: 4px; background: #fff; box-shadow: 0 0 0 1px rgba(22, 62, 80, .55), 0 1px 4px rgba(0, 0, 0, .25); transition: transform .12s; }
+.tirador::before { content: ""; width: 7px; border-radius: 4px; background: var(--tirador); box-shadow: 0 0 0 1px var(--tirador-borde), 0 1px 4px rgba(0, 0, 0, .25); transition: transform .12s; }
 .tirador:hover::before, .tirador:active::before { transform: scaleX(1.3); }
 .tirador:focus-visible::before { box-shadow: 0 0 0 3px var(--acento); }
 .campo-chico { display: flex; flex-direction: column; gap: 3px; font-size: .88rem; color: var(--secundario); font-weight: 600; }
@@ -489,21 +651,37 @@ button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2p
 .campo-chico input[data-campo="semilla"] { width: 7em; }
 .particion-pie { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; }
 .particion-pie .leyenda { margin: 0; }
-.lienzo { margin: 8px 0 6px; padding: 10px 12px 4px; border: 1px solid var(--borde); border-radius: 14px; background: linear-gradient(180deg, #fbfdfe, #f4f9fa); }
+.lienzo { margin: 8px 0 6px; padding: 10px 12px 4px; border: 1px solid var(--borde); border-radius: 14px; background: linear-gradient(180deg, var(--lienzo-arriba), var(--lienzo-abajo)); }
 .lienzo svg { width: 100%; height: auto; display: block; }
 
 /* Modo configuración / estudio */
 .encabezado-fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px 28px; flex-wrap: wrap; }
-.modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--titulo); border-radius: 10px; overflow: hidden; max-width: 320px; }
+/* Controles de la cabecera, sobre la banda azul noche */
+.encabezado-controles { display: flex; align-items: flex-start; gap: 10px; }
+.modo { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid rgba(160, 200, 255, .4); border-radius: 14px; overflow: hidden; max-width: 320px; background: rgba(10, 18, 40, .5); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .modo-opcion { position: relative; cursor: pointer; flex: 1; }
 .modo-opcion input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.modo-opcion span { display: block; padding: 8px 18px; font-weight: 600; color: var(--titulo); text-align: center; background: #fff; }
-.modo-opcion:has(input:checked) span { background: var(--titulo); color: #fff; }
-.modo-opcion:has(input:focus-visible) span { outline: 2px solid var(--acento); outline-offset: -4px; }
-.modo-ayuda { flex-basis: 100%; margin: 0; padding: 4px 10px; font-size: .82rem; color: var(--secundario); text-align: center; background: #fff; border-top: 1px solid var(--borde); hyphens: manual; }
+.modo-opcion span { display: block; padding: 8px 18px; font-weight: 600; color: #e8f1ff; text-align: center; transition: background .15s; }
+.modo-opcion:hover span { background: rgba(77, 226, 255, .1); }
+.modo-opcion:has(input:checked) span { background: linear-gradient(135deg, #4de2ff, #8a7dff); color: #04101f; }
+.modo-opcion:has(input:focus-visible) span { outline: 2px solid #fff; outline-offset: -4px; }
+.modo-ayuda { flex-basis: 100%; margin: 0; padding: 4px 10px; font-size: .82rem; color: rgba(200, 220, 245, .75); text-align: center; border-top: 1px solid rgba(160, 200, 255, .22); hyphens: manual; }
+.tema {
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid rgba(160, 200, 255, .45); border-radius: 50%;
+  background: rgba(10, 18, 40, .5); color: #e8f1ff; cursor: pointer; transition: border-color .2s, box-shadow .2s;
+}
+.tema:hover { border-color: #4de2ff; box-shadow: 0 0 18px rgba(77, 226, 255, .35); }
+.tema:focus-visible { outline: 2px solid #4de2ff; outline-offset: 3px; }
+.tema svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tema .icono-luna path { fill: currentColor; stroke: none; }
+:root[data-tema="oscuro"] .tema .icono-luna, :root:not([data-tema="oscuro"]) .tema .icono-sol { display: none; }
+.encabezado .boton { border-color: rgba(160, 200, 255, .45); background: rgba(10, 18, 40, .45); color: #e8f1ff; }
+.encabezado .boton:hover:not(:disabled) { border-color: #4de2ff; background: rgba(77, 226, 255, .1); }
+.encabezado .boton:focus-visible { outline-color: #4de2ff; }
+.encabezado .estado-enlace { color: rgba(200, 220, 245, .75); }
 body:not(.modo-estudio) .solo-estudio { display: none !important; }
 .bajada { color: var(--secundario); text-align: left; hyphens: manual; }
-.concepto { background: #f8f6fb; border: 1px solid #e3dcec; border-left: 4px solid var(--violeta); border-radius: 10px; padding: 12px 16px 4px; margin: 6px 0 16px; }
+.concepto { background: var(--concepto-fondo); border: 1px solid var(--concepto-borde); border-left: 4px solid var(--violeta); border-radius: 10px; padding: 12px 16px 4px; margin: 6px 0 16px; }
 .concepto-titulo { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-bottom: 8px; }
 .concepto-titulo strong { color: var(--violeta); font-size: 1.05rem; }
 details.porque { margin-top: 2px; }
@@ -514,15 +692,15 @@ details.porque p { margin: 0; }
 .nota details.porque[open] { display: block; margin-top: 4px; }
 
 /* Gráficos de las pantallas */
-svg .t-curva { font-size: 10px; fill: #59717c; }
-svg .t-diagrama { font-size: 14px; fill: #163e50; font-weight: 600; }
-svg .t-diagrama.violeta { fill: #5f5078; font-size: 12px; }
+svg .t-curva { font-size: 10px; fill: var(--secundario); }
+svg .t-diagrama { font-size: 14px; fill: var(--titulo); font-weight: 600; }
+svg .t-diagrama.violeta { fill: var(--violeta); font-size: 12px; }
 svg .t-diagrama.grande { font-size: 22px; }
 .icono-tarea { width: 100%; max-width: 150px; height: 70px; display: block; margin-bottom: 4px; }
 .histogramas { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px 14px; margin: 8px 0 6px; }
 .histograma { margin: 0; min-width: 0; }
 .histograma figcaption { font-size: .85rem; color: var(--secundario); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.histograma svg { width: 100%; height: 56px; display: block; border-bottom: 1px solid #b9cfd7; }
+.histograma svg { width: 100%; height: 56px; display: block; border-bottom: 1px solid var(--linea); }
 .histograma .extremos { display: flex; justify-content: space-between; font-size: .75rem; color: var(--secundario); font-variant-numeric: tabular-nums; }
 .objetivo-dist { margin: 6px 0 14px; max-width: 520px; }
 .objetivo-dist figcaption { font-weight: 600; color: var(--titulo); font-size: .95rem; margin-bottom: 6px; }
@@ -534,18 +712,18 @@ svg .t-diagrama.grande { font-size: 22px; }
 .opciones-perdida { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 .opciones-perdida .opcion.con-curva { flex-direction: column; align-items: flex-start; gap: 6px; }
 .tabla.muestra { width: auto; }
-.tabla.muestra tbody th { background: #fff; font-weight: 400; }
+.tabla.muestra tbody th { background: var(--superficie); font-weight: 400; }
 .tabla.muestra .unidad { color: var(--secundario); font-size: .85em; }
 .tabla.muestra tr.grupo th { color: var(--violeta); font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding-top: 10px; }
 .tabla tr.objetivo th, .tabla tr.objetivo td { background: var(--violeta-suave); color: var(--violeta); font-weight: 600; }
-.tabla tr.sin-uso th, .tabla tr.sin-uso td { color: #a2b2b8; }
+.tabla tr.sin-uso th, .tabla tr.sin-uso td { color: var(--tenue); }
 .curvas-ref { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 6px 0 12px; }
 .curvas-ref figure { margin: 0; }
 .curvas-ref figcaption { font-size: .82rem; color: var(--secundario); line-height: 1.3; }
 .diagrama { width: 100%; max-width: 330px; height: auto; display: block; margin: 4px 0 8px; }
-.ilustracion { max-width: 460px; margin: 4px 0 10px; background: #fff; }
+.ilustracion { max-width: 460px; margin: 4px 0 10px; background: var(--superficie); }
 .ciclo { list-style: none; padding: 0; margin: 4px 0 12px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; counter-reset: ciclo; }
-.ciclo li { background: #fff; border: 1px solid #e3dcec; border-radius: 10px; padding: 8px 10px; font-size: .88rem; position: relative; counter-increment: ciclo; }
+.ciclo li { background: var(--superficie); border: 1px solid var(--concepto-borde); border-radius: 10px; padding: 8px 10px; font-size: .88rem; position: relative; counter-increment: ciclo; }
 .ciclo li strong { display: block; color: var(--violeta); }
 .ciclo li strong::before { content: counter(ciclo) ". "; }
 .ciclo li span { color: var(--secundario); }
@@ -556,10 +734,10 @@ svg .t-diagrama.grande { font-size: 22px; }
   .vista { position: static; order: -1; max-height: none; overflow: visible; }
   .precio-movil {
     display: flex; justify-content: space-between; align-items: baseline; gap: 10px; position: sticky; top: 0; z-index: 10;
-    background: rgba(255, 255, 255, .96); border-bottom: 1px solid var(--borde); padding: 8px 16px; margin-top: 10px;
+    background: var(--velo); border-bottom: 1px solid var(--borde); padding: 8px 16px; margin-top: 10px;
     color: var(--secundario); font-size: .95rem;
   }
-  .precio-movil strong { color: var(--titulo); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+  .precio-movil strong { color: var(--titulo); font-family: var(--fuente-titulos); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
   .graficos { grid-template-columns: minmax(0, 1fr); }
   .tablero-vivo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tablero-vivo > *, .tablero-vivo > .panel-red, .tablero-vivo > .panel-registro, .tablero-vivo > .panel-diagnostico { grid-column: 1 / -1; }
@@ -585,7 +763,8 @@ svg .t-diagrama.grande { font-size: 22px; }
   .navegacion { flex-wrap: wrap; }
   .navegacion .estado { order: -1; flex-basis: 100%; text-align: left; font-size: .85rem; }
   .ciclo { grid-template-columns: minmax(0, 1fr); }
-  .modo { max-width: none; width: 100%; }
+  .encabezado-controles { width: 100%; }
+  .modo { max-width: none; flex: 1; }
   .encabezado-acciones { align-items: stretch; width: 100%; }
   .compartir { justify-content: space-between; }
   .encabezado-titulo { align-items: flex-start; gap: 12px; }
@@ -614,10 +793,16 @@ svg .t-diagrama.grande { font-size: 22px; }
         </div>
       </div>
       <div class="encabezado-acciones">
-        <div class="modo" role="radiogroup" aria-label="Modo de uso">
-          <label class="modo-opcion"><input type="radio" name="modo" value="configuracion"><span>Configuración</span></label>
-          <label class="modo-opcion"><input type="radio" name="modo" value="estudio"><span>Estudio</span></label>
-          <p class="modo-ayuda" id="modo-ayuda"></p>
+        <div class="encabezado-controles">
+          <div class="modo" role="radiogroup" aria-label="Modo de uso">
+            <label class="modo-opcion"><input type="radio" name="modo" value="configuracion"><span>Configuración</span></label>
+            <label class="modo-opcion"><input type="radio" name="modo" value="estudio"><span>Estudio</span></label>
+            <p class="modo-ayuda" id="modo-ayuda"></p>
+          </div>
+          <button type="button" class="tema" data-accion="tema" aria-pressed="false" aria-label="Cambiar a modo oscuro" title="Modo claro u oscuro">
+            <svg class="icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6a8.6 8.6 0 1 0 11 11Z"/></svg>
+            <svg class="icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M5.4 18.6 7 17M17 7l1.6-1.6"/></svg>
+          </button>
         </div>
         <div class="compartir"><span class="estado-enlace" aria-live="polite"></span><button type="button" class="boton chico" data-accion="copiar-enlace">Copiar enlace a esta red</button></div>
       </div>
@@ -895,7 +1080,7 @@ function definirTarea(cfg = E) {
   return def;
 }
 
-const colorClase = (k, total) => (total === 2 ? ["#8eb9c3", "#d08c2f"][k] : COLORES[k % COLORES.length]);
+const colorClase = (k, total) => (total === 2 ? C.clases[k] : COLORES[k % COLORES.length]);
 
 // Tamaños sobre el total de filas, con aritmética entera para que 10% de 1.500
 // sean 150. El código Keras le pasa los mismos tamaños a train_test_split.
@@ -1019,9 +1204,32 @@ const NEURONAS_OCULTAS = [2, 4, 8, 16, 32, 64, 128];
 const TASAS = [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1];
 const BATCHES = [16, 32, 64, 128];
 const VALORES_L2 = [0, 0.0001, 0.001, 0.01];
-const COLORES = ["#163e50", "#d08c2f", "#5f5078", "#3d8f7c", "#b9524a", "#6fa6b4", "#8a6d3b", "#b07aa1"];
-const COLOR_TRAIN = "#8eb9c3";
-const COLOR_VAL = "#163e50";
+
+// Colores de los gráficos: salen de las variables CSS del tema activo y se
+// vuelven a leer al cambiar entre claro y oscuro.
+const C = {};
+const COLORES = [];
+const COLORES_CAPAS = [];
+function leerPaleta() {
+  const estilo = getComputedStyle(document.documentElement);
+  const v = (nombre) => estilo.getPropertyValue(`--${nombre}`).trim();
+  const nombres = {
+    dato: "dato", datoSuave: "dato-suave", naranja: "naranja", violeta: "violeta", violetaSuave: "violeta-suave",
+    titulo: "titulo", texto: "texto", secundario: "secundario", tenue: "tenue", apagado: "apagado",
+    superficie: "superficie", superficieAlterna: "superficie-alterna", suave: "suave", borde: "borde", linea: "linea", guia: "guia",
+    corte: "corte", bandaPaciencia: "banda-paciencia", ambarTexto: "ambar-texto", sobrePrimario: "sobre-primario",
+  };
+  for (const [clave, nombre] of Object.entries(nombres)) C[clave] = v(nombre);
+  C.clases = [v("clase-0"), v("clase-1")];
+  C.partes = { entrenamiento: v("parte-entrenamiento"), validacion: v("parte-validacion"), prueba: v("parte-prueba") };
+  C.base = rgb(C.superficie);
+  C.datoRgb = rgb(C.dato).join(", ");
+  C.velo = (a) => `rgba(${C.base.join(", ")}, ${a})`;
+  COLORES.splice(0, COLORES.length, ...[1, 2, 3, 4, 5, 6, 7, 8].map((i) => v(`grupo-${i}`)));
+  COLORES_CAPAS.splice(0, COLORES_CAPAS.length, ...[1, 2, 3, 4, 5, 6].map((i) => v(`capa-${i}`)));
+  AZUL = rgb(C.dato);
+  AMBAR = rgb(C.naranja);
+}
 
 // =====================================================================
 // Estado de la configuración
@@ -1347,7 +1555,7 @@ function dibujarRed() {
         if (a.apagadas.has(sa)) continue;
         if (W && tope > 0) {
           const w = W.valores[neurona(a, sa) * W.neuronas + neurona(b, sb)], f = Math.abs(w) / tope;
-          pesadas += `<line x1="${a.x}" y1="${a.y(sa)}" x2="${b.x}" y2="${b.y(sb)}" stroke="${w >= 0 ? "#163e50" : "#d08c2f"}" stroke-width="${(0.3 + 3.2 * f).toFixed(2)}" opacity="${(0.2 + 0.7 * f).toFixed(2)}"/>`;
+          pesadas += `<line x1="${a.x}" y1="${a.y(sa)}" x2="${b.x}" y2="${b.y(sb)}" stroke="${w >= 0 ? C.dato : C.naranja}" stroke-width="${(0.3 + 3.2 * f).toFixed(2)}" opacity="${(0.2 + 0.7 * f).toFixed(2)}"/>`;
         } else {
           aristas += `<line x1="${a.x}" y1="${a.y(sa)}" x2="${b.x}" y2="${b.y(sb)}"${b.desconocida ? ' stroke-dasharray="3 3"' : ""}/>`;
         }
@@ -1357,18 +1565,18 @@ function dibujarRed() {
   }
   columnas.forEach((c, i) => {
     if (i < nc - 1) {
-      nodos += `<circle cx="${c.x}" cy="${yBias}" r="${R + 2}" fill="#efebf4" stroke="#5f5078" stroke-width="1.5"/>`;
+      nodos += `<circle cx="${c.x}" cy="${yBias}" r="${R + 2}" fill="${C.violetaSuave}" stroke="${C.violeta}" stroke-width="1.5"/>`;
       textos += `<text x="${c.x}" y="${yBias + 4}" text-anchor="middle" class="t-sesgo">+1</text>`;
     }
-    const relleno = c.tipo === "entrada" ? "#edf5f7" : c.tipo === "salida" ? "#8eb9c3" : "#ffffff";
-    const borde = c.tipo === "entrada" ? "#59717c" : "#163e50";
+    const relleno = c.tipo === "entrada" ? C.suave : c.tipo === "salida" ? C.datoSuave : C.superficie;
+    const borde = c.tipo === "entrada" ? C.secundario : C.dato;
     for (const s of c.slots) {
       const y = c.y(s);
       if (c.desconocida) {
-        nodos += `<circle cx="${c.x}" cy="${y}" r="${R}" fill="#fff" stroke="#8eb9c3" stroke-width="1.5" stroke-dasharray="3 2"/>`;
+        nodos += `<circle cx="${c.x}" cy="${y}" r="${R}" fill="${C.superficie}" stroke="${C.datoSuave}" stroke-width="1.5" stroke-dasharray="3 2"/>`;
         textos += `<text x="${c.x}" y="${y + 4}" text-anchor="middle" class="t-pregunta">?</text>`;
       } else if (c.apagadas.has(s)) {
-        nodos += `<circle cx="${c.x}" cy="${y}" r="${R}" fill="#f3f6f7" stroke="#9fb3bb" stroke-width="1.2" stroke-dasharray="2.5 2" opacity=".55"/>`;
+        nodos += `<circle cx="${c.x}" cy="${y}" r="${R}" fill="${C.superficieAlterna}" stroke="${C.tenue}" stroke-width="1.2" stroke-dasharray="2.5 2" opacity=".55"/>`;
       } else {
         nodos += `<circle cx="${c.x}" cy="${y}" r="${R}" fill="${relleno}" stroke="${borde}" stroke-width="1.5"/>`;
       }
@@ -1399,18 +1607,18 @@ function dibujarRed() {
   const fuente = compacto ? 10.5 : 11;
   contenedor.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Red ${arquitectura(E)}">
     <style>
-      .t-nombre { font-size: ${fuente - 0.5}px; fill: #22333a; }
-      .t-titulo { font-size: ${fuente + 1}px; font-weight: 700; fill: #163e50; }
-      .t-sub { font-size: ${fuente}px; fill: #59717c; }
-      .t-act { font-size: ${fuente}px; fill: #163e50; font-weight: 600; }
-      .t-sesgo { font-size: ${fuente - 1}px; font-weight: 700; fill: #5f5078; }
-      .t-dropout { font-size: ${fuente}px; font-weight: 600; fill: #5f5078; }
-      .t-puntos { font-size: 18px; font-weight: 700; fill: #163e50; }
-      .t-pregunta { font-size: 13px; font-weight: 700; fill: #8eb9c3; }
+      .t-nombre { font-size: ${fuente - 0.5}px; fill: var(--texto); }
+      .t-titulo { font-size: ${fuente + 1}px; font-weight: 700; fill: var(--titulo); }
+      .t-sub { font-size: ${fuente}px; fill: var(--secundario); }
+      .t-act { font-size: ${fuente}px; fill: var(--titulo); font-weight: 600; }
+      .t-sesgo { font-size: ${fuente - 1}px; font-weight: 700; fill: var(--violeta); }
+      .t-dropout { font-size: ${fuente}px; font-weight: 600; fill: var(--violeta); }
+      .t-puntos { font-size: 18px; font-weight: 700; fill: var(--titulo); }
+      .t-pregunta { font-size: 13px; font-weight: 700; fill: var(--dato-suave); }
     </style>
-    <g stroke="#b7cdd5" stroke-width=".8" opacity=".8">${aristas}</g>
+    <g stroke="${C.linea}" stroke-width=".8" opacity=".8">${aristas}</g>
     <g stroke-linecap="round">${pesadas}</g>
-    <g stroke="#5f5078" stroke-width=".8" stroke-dasharray="2 3" opacity=".45">${sesgos}</g>
+    <g stroke="${C.violeta}" stroke-width=".8" stroke-dasharray="2 3" opacity=".45">${sesgos}</g>
     ${nodos}${textos}
   </svg>`;
 
@@ -1479,11 +1687,6 @@ function renderPrecio() {
 // =====================================================================
 // Elementos visuales de las pantallas
 // =====================================================================
-const COLORES_CLASE = {
-  binaria: ["#8eb9c3", "#d08c2f"],
-  multiclase: COLORES.slice(0, 5),
-};
-
 // Íconos de cada tarea: puntos sintéticos con una semilla fija.
 function svgIconoTarea(clave) {
   const rng = mulberry32({ binaria: 3, multiclase: 7, regresion: 11, clustering: 5 }[clave]);
@@ -1491,19 +1694,19 @@ function svgIconoTarea(clave) {
   const nube = (cx, cy, n, d, color) => Array.from({ length: n }, () => `<circle cx="${(cx + normal() * d).toFixed(1)}" cy="${(cy + normal() * d).toFixed(1)}" r="2.3" fill="${color}"/>`).join("");
   let cuerpo = "";
   if (clave === "binaria") {
-    cuerpo = nube(36, 44, 16, 7, "#8eb9c3") + nube(84, 22, 16, 7, "#d08c2f") + '<line x1="22" y1="8" x2="100" y2="62" stroke="#163e50" stroke-width="1.5" stroke-dasharray="4 3"/>';
+    cuerpo = nube(36, 44, 16, 7, C.datoSuave) + nube(84, 22, 16, 7, C.naranja) + `<line x1="22" y1="8" x2="100" y2="62" stroke="${C.dato}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
   } else if (clave === "multiclase") {
-    cuerpo = '<path d="M62 36 L62 2 M62 36 L22 66 M62 36 L110 62" stroke="#163e50" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>'
+    cuerpo = `<path d="M62 36 L62 2 M62 36 L22 66 M62 36 L110 62" stroke="${C.dato}" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>`
       + nube(36, 22, 11, 6, COLORES[0]) + nube(90, 22, 11, 6, COLORES[1]) + nube(64, 54, 11, 6, COLORES[2]);
   } else if (clave === "regresion") {
     for (let i = 0; i < 22; i++) {
       const x = 14 + i * 4.3, y = 58 - 0.45 * (x - 10) + normal() * 4;
-      cuerpo += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.3" fill="#59717c"/>`;
+      cuerpo += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.3" fill="${C.secundario}"/>`;
     }
-    cuerpo += '<line x1="10" y1="60" x2="112" y2="14" stroke="#163e50" stroke-width="2"/>';
+    cuerpo += `<line x1="10" y1="60" x2="112" y2="14" stroke="${C.dato}" stroke-width="2"/>`;
   } else {
-    cuerpo = nube(30, 22, 10, 5, "#9fb3bb") + nube(86, 20, 10, 5, "#9fb3bb") + nube(58, 50, 10, 5, "#9fb3bb")
-      + [[30, 22], [86, 20], [58, 50]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="15" fill="none" stroke="#5f5078" stroke-width="1.3" stroke-dasharray="3 3"/>`).join("");
+    cuerpo = nube(30, 22, 10, 5, C.tenue) + nube(86, 20, 10, 5, C.tenue) + nube(58, 50, 10, 5, C.tenue)
+      + [[30, 22], [86, 20], [58, 50]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="15" fill="none" stroke="${C.violeta}" stroke-width="1.3" stroke-dasharray="3 3"/>`).join("");
   }
   return `<svg class="icono-tarea" viewBox="0 0 120 70" aria-hidden="true">${cuerpo}</svg>`;
 }
@@ -1513,11 +1716,11 @@ function svgCurvaActivacion(clave, ancho = 96, alto = 60) {
   const m = 5, xMin = -4, xMax = 4, yMin = -1.4, yMax = 1.4;
   const X = (x) => m + ((x - xMin) / (xMax - xMin)) * (ancho - 2 * m);
   const Y = (y) => m + (1 - (y - yMin) / (yMax - yMin)) * (alto - 2 * m);
-  const ejes = `<line x1="${m}" x2="${ancho - m}" y1="${Y(0)}" y2="${Y(0)}" stroke="#d7e6eb"/><line x1="${X(0)}" x2="${X(0)}" y1="${m}" y2="${alto - m}" stroke="#d7e6eb"/>`;
+  const ejes = `<line x1="${m}" x2="${ancho - m}" y1="${Y(0)}" y2="${Y(0)}" stroke="${C.borde}"/><line x1="${X(0)}" x2="${X(0)}" y1="${m}" y2="${alto - m}" stroke="${C.borde}"/>`;
   if (clave === "softmax") {
     const p = [0.58, 0.27, 0.15], base = alto - m - 2, barra = (ancho - 2 * m) / 5;
-    const barras = p.map((v, i) => `<rect x="${(m + barra * (0.6 + i * 1.4)).toFixed(1)}" y="${(base - v * (alto - 2 * m - 6)).toFixed(1)}" width="${barra.toFixed(1)}" height="${(v * (alto - 2 * m - 6)).toFixed(1)}" fill="#163e50" rx="1.5"/>`).join("");
-    return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true"><line x1="${m}" x2="${ancho - m}" y1="${base}" y2="${base}" stroke="#d7e6eb"/>${barras}<text x="${ancho - m}" y="${m + 9}" text-anchor="end" class="t-curva">Σ = 1</text></svg>`;
+    const barras = p.map((v, i) => `<rect x="${(m + barra * (0.6 + i * 1.4)).toFixed(1)}" y="${(base - v * (alto - 2 * m - 6)).toFixed(1)}" width="${barra.toFixed(1)}" height="${(v * (alto - 2 * m - 6)).toFixed(1)}" fill="${C.dato}" rx="1.5"/>`).join("");
+    return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true"><line x1="${m}" x2="${ancho - m}" y1="${base}" y2="${base}" stroke="${C.borde}"/>${barras}<text x="${ancho - m}" y="${m + 9}" text-anchor="end" class="t-curva">Σ = 1</text></svg>`;
   }
   const f = { relu: (x) => Math.max(0, x), tanh: Math.tanh, sigmoide: (x) => 1 / (1 + Math.exp(-1.6 * x)), lineal: (x) => x }[clave];
   const banda = { relu: [0, yMax], tanh: [-1, 1], sigmoide: [0, 1], lineal: null }[clave];
@@ -1527,8 +1730,8 @@ function svgCurvaActivacion(clave, ancho = 96, alto = 60) {
     if (y < yMin || y > yMax) continue;
     d += `${d ? "L" : "M"}${X(x).toFixed(1)},${Y(y).toFixed(1)}`;
   }
-  const sombra = banda ? `<rect x="${m}" y="${Y(banda[1]).toFixed(1)}" width="${ancho - 2 * m}" height="${(Y(banda[0]) - Y(banda[1])).toFixed(1)}" fill="#efebf4"/>` : `<rect x="${m}" y="${m}" width="${ancho - 2 * m}" height="${alto - 2 * m}" fill="#efebf4"/>`;
-  return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true">${sombra}${ejes}<path d="${d}" fill="none" stroke="#163e50" stroke-width="2"/></svg>`;
+  const sombra = banda ? `<rect x="${m}" y="${Y(banda[1]).toFixed(1)}" width="${ancho - 2 * m}" height="${(Y(banda[0]) - Y(banda[1])).toFixed(1)}" fill="${C.violetaSuave}"/>` : `<rect x="${m}" y="${m}" width="${ancho - 2 * m}" height="${alto - 2 * m}" fill="${C.violetaSuave}"/>`;
+  return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true">${sombra}${ejes}<path d="${d}" fill="none" stroke="${C.dato}" stroke-width="2"/></svg>`;
 }
 
 // Pérdida en función de la predicción: cuánto castiga cada error.
@@ -1543,22 +1746,22 @@ function svgCurvaPerdida(clave, ancho = 150, alto = 84) {
     }
     return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2"/>`;
   };
-  const base = `<line x1="${m.izq}" x2="${ancho - m.der}" y1="${m.sup + util.alto}" y2="${m.sup + util.alto}" stroke="#b9cfd7"/>`;
+  const base = `<line x1="${m.izq}" x2="${ancho - m.der}" y1="${m.sup + util.alto}" y2="${m.sup + util.alto}" stroke="${C.linea}"/>`;
   const rotulo = (x, texto, ancla = "middle") => `<text x="${x}" y="${alto - 3}" text-anchor="${ancla}" class="t-curva">${texto}</text>`;
   let cuerpo = "";
   if (clave === "bce") {
-    cuerpo = curva((p) => -Math.log(p), 0.01, 0.99, 4.6, "#163e50") + curva((p) => -Math.log(1 - p), 0.01, 0.99, 4.6, "#d08c2f")
-      + `<text x="${m.izq + 4}" y="${m.sup + 9}" class="t-curva" fill="#163e50">y = 1</text><text x="${ancho - m.der - 4}" y="${m.sup + 9}" text-anchor="end" class="t-curva" fill="#d08c2f">y = 0</text>`
+    cuerpo = curva((p) => -Math.log(p), 0.01, 0.99, 4.6, C.dato) + curva((p) => -Math.log(1 - p), 0.01, 0.99, 4.6, C.naranja)
+      + `<text x="${m.izq + 4}" y="${m.sup + 9}" class="t-curva" fill="${C.dato}">y = 1</text><text x="${ancho - m.der - 4}" y="${m.sup + 9}" text-anchor="end" class="t-curva" fill="${C.naranja}">y = 0</text>`
       + rotulo(m.izq, "p = 0", "start") + rotulo(ancho - m.der, "p = 1", "end");
   } else if (clave === "cce") {
-    cuerpo = curva((p) => -Math.log(p), 0.01, 0.99, 4.6, "#163e50") + rotulo(m.izq, "0", "start") + rotulo(ancho / 2, "p de la clase correcta") + rotulo(ancho - m.der, "1", "end");
+    cuerpo = curva((p) => -Math.log(p), 0.01, 0.99, 4.6, C.dato) + rotulo(m.izq, "0", "start") + rotulo(ancho / 2, "p de la clase correcta") + rotulo(ancho - m.der, "1", "end");
   } else if (clave === "mse" || clave === "mae") {
-    cuerpo = curva(clave === "mse" ? (e) => e * e : (e) => Math.abs(e), -2, 2, 4, "#163e50")
-      + `<line x1="${ancho / 2}" x2="${ancho / 2}" y1="${m.sup}" y2="${m.sup + util.alto}" stroke="#d7e6eb"/>` + rotulo(ancho / 2, "error ŷ − y");
+    cuerpo = curva(clave === "mse" ? (e) => e * e : (e) => Math.abs(e), -2, 2, 4, C.dato)
+      + `<line x1="${ancho / 2}" x2="${ancho / 2}" y1="${m.sup}" y2="${m.sup + util.alto}" stroke="${C.borde}"/>` + rotulo(ancho / 2, "error ŷ − y");
   } else {
     const x = [40, 44], centros = [[16, 18, 0.7], [118, 26, 0.2], [96, 62, 0.1]];
-    cuerpo = centros.map(([cx, cy, q]) => `<line x1="${x[0]}" y1="${x[1]}" x2="${cx}" y2="${cy}" stroke="#5f5078" stroke-width="${(0.6 + q * 5).toFixed(1)}" opacity=".7"/><rect x="${cx - 5}" y="${cy - 5}" width="10" height="10" fill="#5f5078" transform="rotate(45 ${cx} ${cy})"/>`).join("")
-      + `<circle cx="${x[0]}" cy="${x[1]}" r="5" fill="#163e50"/>` + rotulo(ancho / 2, "grosor = pertenencia q");
+    cuerpo = centros.map(([cx, cy, q]) => `<line x1="${x[0]}" y1="${x[1]}" x2="${cx}" y2="${cy}" stroke="${C.violeta}" stroke-width="${(0.6 + q * 5).toFixed(1)}" opacity=".7"/><rect x="${cx - 5}" y="${cy - 5}" width="10" height="10" fill="${C.violeta}" transform="rotate(45 ${cx} ${cy})"/>`).join("")
+      + `<circle cx="${x[0]}" cy="${x[1]}" r="5" fill="${C.dato}"/>` + rotulo(ancho / 2, "grosor = pertenencia q");
   }
   return `<svg class="curva" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" aria-hidden="true">${base}${cuerpo}</svg>`;
 }
@@ -1577,15 +1780,15 @@ function svgPaciencia(paciencia, activo) {
   const Y = (v) => m.sup + (1 - (v - lo) / (hi - lo)) * (alto - m.sup - m.inf);
   const tramo = (desde, hasta) => val.slice(desde - 1, hasta).map((v, i) => `${i ? "L" : "M"}${X(desde + i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
   return `<svg class="esquema" viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Early stopping con paciencia ${paciencia}" style="opacity:${activo ? 1 : 0.45}">
-    <rect x="${X(mejor)}" y="${m.sup}" width="${X(corte) - X(mejor)}" height="${alto - m.sup - m.inf}" fill="#fdf1dc"/>
-    <text x="${(X(mejor) + X(corte)) / 2}" y="${m.sup + 14}" text-anchor="middle" class="t-curva" fill="#8a5a12">paciencia: ${paciencia} épocas</text>
-    <path d="${tramo(1, corte)}" fill="none" stroke="#163e50" stroke-width="2"/>
-    ${corte < n ? `<path d="${tramo(corte, n)}" fill="none" stroke="#9fb3bb" stroke-width="1.5" stroke-dasharray="4 4"/>` : ""}
-    <line x1="${X(mejor)}" x2="${X(mejor)}" y1="${m.sup - 6}" y2="${alto - m.inf}" stroke="#5f5078" stroke-width="1.5" stroke-dasharray="4 3"/>
-    <text x="${X(mejor) - 4}" y="${m.sup - 10}" text-anchor="end" class="marca-texto" fill="#5f5078">mejor época</text>
-    <line x1="${X(corte)}" x2="${X(corte)}" y1="${m.sup - 6}" y2="${alto - m.inf}" stroke="#b0781c" stroke-width="1.5" stroke-dasharray="4 3"/>
-    <text x="${X(corte) + 4}" y="${m.sup - 10}" class="marca-texto" fill="#b0781c">corte</text>
-    <line x1="${m.izq}" x2="${ancho - m.der}" y1="${alto - m.inf}" y2="${alto - m.inf}" stroke="#b9cfd7"/>
+    <rect x="${X(mejor)}" y="${m.sup}" width="${X(corte) - X(mejor)}" height="${alto - m.sup - m.inf}" fill="${C.bandaPaciencia}"/>
+    <text x="${(X(mejor) + X(corte)) / 2}" y="${m.sup + 14}" text-anchor="middle" class="t-curva" fill="${C.ambarTexto}">paciencia: ${paciencia} épocas</text>
+    <path d="${tramo(1, corte)}" fill="none" stroke="${C.dato}" stroke-width="2"/>
+    ${corte < n ? `<path d="${tramo(corte, n)}" fill="none" stroke="${C.tenue}" stroke-width="1.5" stroke-dasharray="4 4"/>` : ""}
+    <line x1="${X(mejor)}" x2="${X(mejor)}" y1="${m.sup - 6}" y2="${alto - m.inf}" stroke="${C.violeta}" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="${X(mejor) - 4}" y="${m.sup - 10}" text-anchor="end" class="marca-texto" fill="${C.violeta}">mejor época</text>
+    <line x1="${X(corte)}" x2="${X(corte)}" y1="${m.sup - 6}" y2="${alto - m.inf}" stroke="${C.corte}" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="${X(corte) + 4}" y="${m.sup - 10}" class="marca-texto" fill="${C.corte}">corte</text>
+    <line x1="${m.izq}" x2="${ancho - m.der}" y1="${alto - m.inf}" y2="${alto - m.inf}" stroke="${C.linea}"/>
     <text x="${ancho / 2}" y="${alto - 5}" text-anchor="middle" class="eje">época (pérdida de validación ilustrativa)</text>
   </svg>`;
 }
@@ -1610,7 +1813,7 @@ function svgOptimizador(opt, lr) {
   const ancho = 440, alto = 170, x0 = -10.5, x1 = 2.5, y0 = -3.4, y1 = 3.4;
   const X = (x) => ((x - x0) / (x1 - x0)) * ancho, Y = (y) => alto - ((y - y0) / (y1 - y0)) * alto;
   const sx = ancho / (x1 - x0), sy = alto / (y1 - y0);
-  const curvas = [0.08, 0.35, 0.9, 1.8, 3, 4.6].map((c) => `<ellipse cx="${X(0)}" cy="${Y(0)}" rx="${(Math.sqrt((2 * c) / a) * sx).toFixed(1)}" ry="${(Math.sqrt((2 * c) / b) * sy).toFixed(1)}" fill="none" stroke="#d7e6eb"/>`).join("");
+  const curvas = [0.08, 0.35, 0.9, 1.8, 3, 4.6].map((c) => `<ellipse cx="${X(0)}" cy="${Y(0)}" rx="${(Math.sqrt((2 * c) / a) * sx).toFixed(1)}" ry="${(Math.sqrt((2 * c) / b) * sy).toFixed(1)}" fill="none" stroke="${C.borde}"/>`).join("");
   const trazo = puntos.map(([p, q], i) => `${i ? "L" : "M"}${X(p).toFixed(1)},${Y(q).toFixed(1)}`).join("");
   const final = Math.hypot(...puntos.at(-1)), inicial = Math.hypot(...puntos[0]);
   const lectura = diverge ? "Diverge: los pasos son tan grandes que se aleja del mínimo."
@@ -1619,22 +1822,21 @@ function svgOptimizador(opt, lr) {
     : "Se acerca al mínimo, pero todavía está en camino.";
   return `<svg class="esquema" viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="Trayectoria del optimizador">
     <defs><clipPath id="recorte-optimizador"><rect x="0" y="0" width="${ancho}" height="${alto}"/></clipPath></defs>
-    <rect x="0" y="0" width="${ancho}" height="${alto}" fill="#fbfdfd"/>
+    <rect x="0" y="0" width="${ancho}" height="${alto}" fill="${C.superficieAlterna}"/>
     <g clip-path="url(#recorte-optimizador)">${curvas}
-      <path d="${trazo}" fill="none" stroke="#d08c2f" stroke-width="1.6"/>
-      ${puntos.map(([p, q]) => `<circle cx="${X(p).toFixed(1)}" cy="${Y(q).toFixed(1)}" r="2" fill="#d08c2f"/>`).join("")}
+      <path d="${trazo}" fill="none" stroke="${C.naranja}" stroke-width="1.6"/>
+      ${puntos.map(([p, q]) => `<circle cx="${X(p).toFixed(1)}" cy="${Y(q).toFixed(1)}" r="2" fill="${C.naranja}"/>`).join("")}
     </g>
-    <circle cx="${X(puntos[0][0])}" cy="${Y(puntos[0][1])}" r="4.5" fill="#163e50"/><text x="${X(puntos[0][0]) + 8}" y="${Y(puntos[0][1]) + 4}" class="t-curva">inicio</text>
+    <circle cx="${X(puntos[0][0])}" cy="${Y(puntos[0][1])}" r="4.5" fill="${C.dato}"/><text x="${X(puntos[0][0]) + 8}" y="${Y(puntos[0][1]) + 4}" class="t-curva">inicio</text>
     <text x="${X(0)}" y="${Y(0) + 5}" text-anchor="middle" class="t-diagrama violeta">★</text>
   </svg><p class="leyenda">${OPTIMIZADORES[opt].nombre} con learning rate ${decimal(lr)}, ${pasos} pasos: ${lectura} Es una ilustración en una función de dos pesos con forma de valle alargado; no es la pérdida de esta red.</p>`;
 }
 
-const COLORES_CAPAS = ["#163e50", "#2b5569", "#3d6e83", "#56899c", "#6fa6b4", "#8eb9c3"];
 function colorSegmento(fila) {
-  if (fila.tipo === "centroides") return "#5f5078";
-  if (fila.nombre === "Salida") return "#d08c2f";
+  if (fila.tipo === "centroides") return C.violeta;
+  if (fila.nombre === "Salida") return C.naranja;
   const i = Number(fila.nombre.replace("Oculta ", "")) - 1;
-  return COLORES_CAPAS[i] || "#163e50";
+  return COLORES_CAPAS[i] || C.dato;
 }
 
 // =====================================================================
@@ -1649,12 +1851,12 @@ function porque(clave, html) {
 
 function conceptoNeurona() {
   return `<svg class="diagrama" viewBox="0 0 330 112" role="img" aria-label="Neurona: entradas por pesos, más sesgo, función de activación">
-    ${[24, 56, 88].map((y, i) => `<text x="14" y="${y + 4}" class="t-diagrama">x${"₁₂₃"[i]}</text><line x1="30" y1="${y}" x2="140" y2="56" stroke="#8eb9c3" stroke-width="1.6"/><text x="${70}" y="${y + (i === 0 ? 10 : i === 2 ? -4 : -5)}" class="t-diagrama violeta">w${"₁₂₃"[i]}</text>`).join("")}
-    <circle cx="160" cy="56" r="22" fill="#fff" stroke="#163e50" stroke-width="1.8"/><text x="160" y="62" text-anchor="middle" class="t-diagrama grande">Σ</text>
-    <line x1="160" y1="10" x2="160" y2="34" stroke="#5f5078" stroke-dasharray="3 3"/><text x="160" y="9" text-anchor="middle" class="t-diagrama violeta">+ b</text>
-    <line x1="182" y1="56" x2="214" y2="56" stroke="#163e50" stroke-width="1.6"/>
-    <rect x="214" y="38" width="44" height="36" rx="8" fill="#edf5f7" stroke="#163e50" stroke-width="1.6"/><text x="236" y="61" text-anchor="middle" class="t-diagrama">f</text>
-    <line x1="258" y1="56" x2="296" y2="56" stroke="#163e50" stroke-width="1.6"/><text x="302" y="61" class="t-diagrama">a</text>
+    ${[24, 56, 88].map((y, i) => `<text x="14" y="${y + 4}" class="t-diagrama">x${"₁₂₃"[i]}</text><line x1="30" y1="${y}" x2="140" y2="56" stroke="${C.datoSuave}" stroke-width="1.6"/><text x="${70}" y="${y + (i === 0 ? 10 : i === 2 ? -4 : -5)}" class="t-diagrama violeta">w${"₁₂₃"[i]}</text>`).join("")}
+    <circle cx="160" cy="56" r="22" fill="${C.superficie}" stroke="${C.dato}" stroke-width="1.8"/><text x="160" y="62" text-anchor="middle" class="t-diagrama grande">Σ</text>
+    <line x1="160" y1="10" x2="160" y2="34" stroke="${C.violeta}" stroke-dasharray="3 3"/><text x="160" y="9" text-anchor="middle" class="t-diagrama violeta">+ b</text>
+    <line x1="182" y1="56" x2="214" y2="56" stroke="${C.dato}" stroke-width="1.6"/>
+    <rect x="214" y="38" width="44" height="36" rx="8" fill="${C.suave}" stroke="${C.dato}" stroke-width="1.6"/><text x="236" y="61" text-anchor="middle" class="t-diagrama">f</text>
+    <line x1="258" y1="56" x2="296" y2="56" stroke="${C.dato}" stroke-width="1.6"/><text x="302" y="61" class="t-diagrama">a</text>
   </svg>`;
 }
 
@@ -1663,8 +1865,8 @@ function conceptoSobreajuste() {
   const tr = e.map((x) => 0.55 * Math.exp(-x / 12) + 0.08);
   const va = e.map((x) => 0.3 + 0.28 * Math.exp(-x / 5) + 0.0045 * Math.max(0, x - 10));
   const mejor = va.indexOf(Math.min(...va)) + 1;
-  return `<figure class="grafico ilustracion">${graficoLineas({ series: [{ valores: tr, color: COLOR_TRAIN }, { valores: va, color: COLOR_VAL }], marcas: [{ epoca: mejor, color: "#5f5078", texto: "mejor punto de validación" }], xMax: 60, ancho: 420, alto: 170, etiqueta: "Curvas típicas de sobreajuste" })}
-    ${leyendaGrafico([{ nombre: "entrenamiento", color: COLOR_TRAIN }, { nombre: "validación", color: COLOR_VAL }])}</figure>`;
+  return `<figure class="grafico ilustracion">${graficoLineas({ series: [{ valores: tr, color: C.datoSuave }, { valores: va, color: C.dato }], marcas: [{ epoca: mejor, color: C.violeta, texto: "mejor punto de validación" }], xMax: 60, ancho: 420, alto: 170, etiqueta: "Curvas típicas de sobreajuste" })}
+    ${leyendaGrafico([{ nombre: "entrenamiento", color: C.datoSuave }, { nombre: "validación", color: C.dato }])}</figure>`;
 }
 
 function conceptoAdaptacion() {
@@ -1774,7 +1976,7 @@ function histogramasVariables() {
     let cuerpo = "";
     if (regresion) {
       const yRango = def.max - def.min || 1;
-      cuerpo = muestra.map((i) => `<circle cx="${(3 + ((col[v.columna][i] - minimo) / rango) * (ancho - 6)).toFixed(1)}" cy="${(alto - 3 - ((col[def.objetivo][i] - def.min) / yRango) * (alto - 6)).toFixed(1)}" r="1.7" fill="#163e50" fill-opacity=".3"/>`).join("");
+      cuerpo = muestra.map((i) => `<circle cx="${(3 + ((col[v.columna][i] - minimo) / rango) * (ancho - 6)).toFixed(1)}" cy="${(alto - 3 - ((col[def.objetivo][i] - def.min) / yRango) * (alto - 6)).toFixed(1)}" r="1.7" fill="${C.dato}" fill-opacity=".3"/>`).join("");
     } else {
       const cuentas = Array.from({ length: bins }, () => Array(nClases).fill(0));
       for (const i of filas) {
@@ -1788,7 +1990,7 @@ function histogramasVariables() {
           if (!n) return;
           const h = (n / tope) * (alto - 4);
           y -= h;
-          cuerpo += `<rect x="${(b * anchoBin + 0.5).toFixed(1)}" y="${y.toFixed(1)}" width="${(anchoBin - 1).toFixed(1)}" height="${h.toFixed(1)}" fill="${colClase ? colorClase(k, nClases) : "#9fb3bb"}"/>`;
+          cuerpo += `<rect x="${(b * anchoBin + 0.5).toFixed(1)}" y="${y.toFixed(1)}" width="${(anchoBin - 1).toFixed(1)}" height="${h.toFixed(1)}" fill="${colClase ? colorClase(k, nClases) : C.tenue}"/>`;
         });
       });
     }
@@ -1820,20 +2022,19 @@ function distribucionObjetivo() {
     const cuentas = Array(bins).fill(0);
     valores.forEach((v) => { cuentas[Math.min(bins - 1, Math.floor((v - minimo) / paso))]++; });
     const tope = Math.max(...cuentas), ancho = 360, alto = 70, unidad = def.unidad ? ` ${def.unidad}` : "";
-    cuerpo = `<svg class="histograma-objetivo" viewBox="0 0 ${ancho} ${alto + 16}" aria-hidden="true">${cuentas.map((n, b) => `<rect x="${(b * ancho) / bins + 1}" y="${alto - (n / tope) * (alto - 4)}" width="${ancho / bins - 2}" height="${(n / tope) * (alto - 4)}" fill="#163e50"/>`).join("")}
+    cuerpo = `<svg class="histograma-objetivo" viewBox="0 0 ${ancho} ${alto + 16}" aria-hidden="true">${cuentas.map((n, b) => `<rect x="${(b * ancho) / bins + 1}" y="${alto - (n / tope) * (alto - 4)}" width="${ancho / bins - 2}" height="${(n / tope) * (alto - 4)}" fill="${C.dato}"/>`).join("")}
       <text x="0" y="${alto + 13}" class="t-curva">${valorColumna(def.objetivo, minimo)}${unidad}</text><text x="${ancho}" y="${alto + 13}" text-anchor="end" class="t-curva">${valorColumna(def.objetivo, maximo)}${unidad}</text></svg>`;
   }
   return `<figure class="objetivo-dist"><figcaption>Variable objetivo: <code>${esc(def.objetivo)}</code>, en entrenamiento</figcaption>${cuerpo}</figure>`;
 }
 // La partición se elige estirando los límites de la barra: lo que gana un
 // conjunto lo pierde su vecino, en pasos de 5% y con al menos 5% cada uno.
-const COLORES_PARTES = { entrenamiento: "#163e50", validacion: "#6fa6b4", prueba: "#5f5078" };
 const NOMBRES_PARTES = { entrenamiento: "Entrenamiento", validacion: "Validación", prueba: "Prueba" };
 const NOMBRES_CORTOS = { entrenamiento: "Entren.", validacion: "Valid.", prueba: "Prueba" };
 
 function controlesParticion() {
   const p = E.particion;
-  const segmentos = PARTES.map((k) => `<div class="segmento" data-parte="${k}" style="background:${COLORES_PARTES[k]}"><div class="rotulo"><strong><span class="largo">${NOMBRES_PARTES[k]}</span><span class="corto">${NOMBRES_CORTOS[k]}</span></strong><span class="largo cantidad"></span><span class="corto cantidad"></span></div></div>`).join("");
+  const segmentos = PARTES.map((k) => `<div class="segmento" data-parte="${k}" style="background:${C.partes[k]}"><div class="rotulo"><strong><span class="largo">${NOMBRES_PARTES[k]}</span><span class="corto">${NOMBRES_CORTOS[k]}</span></strong><span class="largo cantidad"></span><span class="corto cantidad"></span></div></div>`).join("");
   const tirador = (i, etiqueta) => `<div class="tirador" role="slider" tabindex="0" data-limite="${i}" aria-label="${etiqueta}" aria-valuemin="5" aria-valuemax="95"></div>`;
   return `<div class="particion-control" id="control-particion">${segmentos}${tirador(0, "Límite entre entrenamiento y validación")}${tirador(1, "Límite entre validación y prueba")}</div>
     <div class="particion-pie">
@@ -1903,7 +2104,7 @@ function asociacionEntradas(ancho) {
   medidas.forEach(({ c, v }, i) => {
     const y0 = 6 + i * fila, elegida = E.entradas.includes(c);
     svg += `<text class="eje" x="${mIzq - 8}" y="${y0 + 11}" text-anchor="end">${esc(c.length > 18 ? `${c.slice(0, 17)}.` : c)}</text>
-      <rect x="${mIzq}" y="${y0 + 2}" width="${Math.max(1, X(v) - mIzq).toFixed(1)}" height="12" rx="3" fill="${elegida ? "#163e50" : "#c8d6db"}"/>
+      <rect x="${mIzq}" y="${y0 + 2}" width="${Math.max(1, X(v) - mIzq).toFixed(1)}" height="12" rx="3" fill="${elegida ? C.dato : C.apagado}"/>
       <text class="eje" x="${(X(v) + 5).toFixed(1)}" y="${y0 + 12}">${num(v, 2)}</text>`;
   });
   const explicacion = multiclase
@@ -1920,11 +2121,11 @@ function svgIconoDatos(tipo) {
     const celdas = [];
     for (let f = 0; f < 4; f++) for (let c = 0; c < 5; c++) {
       const objetivo = c === 4 && f > 0;
-      celdas.push(`<rect x="${12 + c * 20}" y="${7 + f * 14}" width="18" height="12" rx="2" fill="${f === 0 ? "#163e50" : objetivo ? "#efebf4" : "#edf5f7"}" stroke="${objetivo ? "#5f5078" : "#b9cfd7"}" stroke-width=".8"/>`);
+      celdas.push(`<rect x="${12 + c * 20}" y="${7 + f * 14}" width="18" height="12" rx="2" fill="${f === 0 ? C.dato : objetivo ? C.violetaSuave : C.suave}" stroke="${objetivo ? C.violeta : C.linea}" stroke-width=".8"/>`);
     }
     return `<svg class="icono-tarea" viewBox="0 0 120 70" aria-hidden="true">${celdas.join("")}</svg>`;
   }
-  return `<svg class="icono-tarea" viewBox="0 0 120 70" aria-hidden="true"><path d="M40 6 h28 l14 14 v44 h-42 z" fill="#edf5f7" stroke="#163e50" stroke-width="1.6" stroke-linejoin="round"/><path d="M68 6 v14 h14" fill="none" stroke="#163e50" stroke-width="1.6" stroke-linejoin="round"/><path d="M61 54 V30 M51 40 l10 -10 l10 10" fill="none" stroke="#d08c2f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  return `<svg class="icono-tarea" viewBox="0 0 120 70" aria-hidden="true"><path d="M40 6 h28 l14 14 v44 h-42 z" fill="${C.suave}" stroke="${C.dato}" stroke-width="1.6" stroke-linejoin="round"/><path d="M68 6 v14 h14" fill="none" stroke="${C.dato}" stroke-width="1.6" stroke-linejoin="round"/><path d="M61 54 V30 M51 40 l10 -10 l10 10" fill="none" stroke="${C.naranja}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
 // Bloque secundario: plegado en Configuración y abierto en Estudio.
@@ -2097,18 +2298,18 @@ function svgCapaEntrada(ancho) {
   textos += `<text x="${d.xEntrada}" y="16" text-anchor="middle" class="t-encabezado">entrada</text>`;
   return `<svg viewBox="0 0 ${ancho} ${d.alto}" data-ancho="${ancho}" role="img" aria-label="Capa de entrada con ${E.entradas.length} variables">
     <style>
-      .escala { stroke: #8eb9c3; stroke-width: 9; stroke-linecap: round; }
-      .escala-media { fill: #163e50; }
-      .nodo-entrada { fill: #edf5f7; stroke: #163e50; stroke-width: 1.8; }
-      .nodo-atenuado { fill: #fff; stroke: #c8d6db; stroke-width: 1.2; }
-      .guia { stroke: #e3ecef; }
-      .hacia-neurona { stroke: #b9cfd7; stroke-width: 1.2; stroke-dasharray: 2 3; }
-      .aristas line { stroke: #dfe8eb; stroke-width: .8; }
-      .t-variable { font-size: 12.5px; fill: #22333a; font-family: SFMono-Regular, Menlo, Consolas, monospace; }
-      .t-eje { font-size: 11px; fill: #59717c; }
-      .t-encabezado { font-size: 11.5px; fill: #59717c; font-weight: 600; }
-      .t-capa { font-size: 11.5px; fill: #9fb0b7; font-weight: 600; }
-      .t-puntos { font-size: 18px; font-weight: 700; fill: #163e50; }
+      .escala { stroke: var(--dato-suave); stroke-width: 9; stroke-linecap: round; }
+      .escala-media { fill: var(--dato); }
+      .nodo-entrada { fill: var(--suave); stroke: var(--dato); stroke-width: 1.8; }
+      .nodo-atenuado { fill: var(--superficie); stroke: var(--apagado); stroke-width: 1.2; }
+      .guia { stroke: var(--guia); }
+      .hacia-neurona { stroke: var(--linea); stroke-width: 1.2; stroke-dasharray: 2 3; }
+      .aristas line { stroke: var(--guia); stroke-width: .8; }
+      .t-variable { font-size: 12.5px; fill: var(--texto); font-family: var(--mono); }
+      .t-eje { font-size: 11px; fill: var(--secundario); }
+      .t-encabezado { font-size: 11.5px; fill: var(--secundario); font-weight: 600; }
+      .t-capa { font-size: 11.5px; fill: var(--tenue); font-weight: 600; }
+      .t-puntos { font-size: 18px; font-weight: 700; fill: var(--titulo); }
     </style>
     <g class="ticks">${ticksEntrada(d, eje)}</g>
     <g class="aristas">${aristas}</g>
@@ -2889,7 +3090,7 @@ function graficoLineas({ series, marcas = [], log = false, formatoY = numEje, xM
   for (const t of ticksLindos(1, nx, 5).filter((t) => t >= 1 && Number.isInteger(t))) {
     svg += `<text class="eje" x="${X(t).toFixed(1)}" y="${alto - m.inf + 16}" text-anchor="middle">${t}</text>`;
   }
-  svg += `<line x1="${m.izq}" x2="${ancho - m.der}" y1="${m.sup + util.alto}" y2="${m.sup + util.alto}" stroke="#b9cfd7"/>`;
+  svg += `<line x1="${m.izq}" x2="${ancho - m.der}" y1="${m.sup + util.alto}" y2="${m.sup + util.alto}" stroke="${C.linea}"/>`;
   svg += `<text class="eje" x="${m.izq + util.ancho / 2}" y="${alto - 4}" text-anchor="middle">Época</text>`;
   marcas.forEach((mk, i) => {
     const x = X(mk.epoca).toFixed(1);
@@ -2927,7 +3128,7 @@ function graficoDispersion({ puntos, etiquetaX, etiquetaY, diagonal = false, anc
   let svg = "";
   for (const t of ticksLindos(y0, y1, 4)) svg += `<line class="grilla" x1="${m.izq}" x2="${ancho - m.der}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}"/><text class="eje" x="${m.izq - 6}" y="${(Y(t) + 4).toFixed(1)}" text-anchor="end">${numEje(t)}</text>`;
   for (const t of ticksLindos(x0, x1, 4)) svg += `<text class="eje" x="${X(t).toFixed(1)}" y="${alto - m.inf + 16}" text-anchor="middle">${numEje(t)}</text>`;
-  if (diagonal) svg += `<line x1="${X(x0)}" y1="${Y(x0)}" x2="${X(x1)}" y2="${Y(x1)}" stroke="#8eb9c3" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  if (diagonal) svg += `<line x1="${X(x0)}" y1="${Y(x0)}" x2="${X(x1)}" y2="${Y(x1)}" stroke="${C.datoSuave}" stroke-width="1.5" stroke-dasharray="5 4"/>`;
   for (const p of puntos) svg += `<circle cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="3.2" fill="${p.color}" fill-opacity=".7"/>`;
   svg += `<text class="eje" x="${m.izq + (ancho - m.izq - m.der) / 2}" y="${alto - 6}" text-anchor="middle">${esc(etiquetaX)}</text>`;
   svg += `<text class="eje" transform="translate(13 ${m.sup + (alto - m.sup - m.inf) / 2}) rotate(-90)" text-anchor="middle">${esc(etiquetaY)}</text>`;
@@ -2941,7 +3142,7 @@ function matrizConfusion(reales, predichos, nombres, nombresColumnas = nombres, 
     const total = fila.reduce((a, b) => a + b, 0) || 1;
     return `<tr><th>${esc(nombres[i])}</th>${fila.map((v, j) => {
       const a = v / total;
-      return `<td class="num" style="background: rgba(22, 62, 80, ${(a * 0.85).toFixed(3)}); color: ${a > 0.45 ? "#fff" : "inherit"}">${v}</td>`;
+      return `<td class="num" style="background: rgba(${C.datoRgb}, ${(a * 0.85).toFixed(3)}); color: ${a > 0.45 ? C.sobrePrimario : "inherit"}">${v}</td>`;
     }).join("")}</tr>`;
   }).join("");
   return `<div class="tabla-scroll ajustada"><table class="tabla matriz"><thead><tr><th>${encabezado}</th>${nombresColumnas.map((n) => `<th class="num">${esc(n)}</th>`).join("")}</tr></thead><tbody>${filas}</tbody></table></div>`;
@@ -2988,8 +3189,8 @@ function medidas(figura) {
 
 function marcasDe(datos) {
   const marcas = [];
-  if (datos.mejorEpoca) marcas.push({ epoca: datos.mejorEpoca, color: "#5f5078", texto: `mejor época ${datos.mejorEpoca}` });
-  if (datos.corte) marcas.push({ epoca: datos.corte, color: "#b0781c", texto: `corte ${datos.corte}` });
+  if (datos.mejorEpoca) marcas.push({ epoca: datos.mejorEpoca, color: C.violeta, texto: `mejor época ${datos.mejorEpoca}` });
+  if (datos.corte) marcas.push({ epoca: datos.corte, color: C.corte, texto: `corte ${datos.corte}` });
   return marcas;
 }
 
@@ -3009,11 +3210,11 @@ function dibujarCurvas() {
   const marcas = marcasDe(datos);
   const { ancho, alto } = medidas(gp);
   gp.innerHTML = `<figcaption>Pérdida${log ? " (escala logarítmica)" : ""}</figcaption>`
-    + graficoLineas({ series: [{ valores: h.perdida, color: COLOR_TRAIN }, { valores: h.perdidaVal, color: COLOR_VAL }], marcas, log, xMax, ancho, alto, etiqueta: "Pérdida por época" })
-    + leyendaGrafico([{ nombre: "entrenamiento", color: COLOR_TRAIN }, { nombre: "validación", color: COLOR_VAL }]);
+    + graficoLineas({ series: [{ valores: h.perdida, color: C.datoSuave }, { valores: h.perdidaVal, color: C.dato }], marcas, log, xMax, ancho, alto, etiqueta: "Pérdida por época" })
+    + leyendaGrafico([{ nombre: "entrenamiento", color: C.datoSuave }, { nombre: "validación", color: C.dato }]);
   gm.innerHTML = `<figcaption>${nombreMetrica(m)}</figcaption>`
-    + graficoLineas({ series: [{ valores: h.metrica, color: COLOR_TRAIN }, { valores: h.metricaVal, color: COLOR_VAL }], marcas, xMax, ancho, alto, formatoY: formatoMetrica(m), etiqueta: `${nombreMetrica(m)} por época` })
-    + leyendaGrafico([{ nombre: "entrenamiento", color: COLOR_TRAIN }, { nombre: "validación", color: COLOR_VAL }]);
+    + graficoLineas({ series: [{ valores: h.metrica, color: C.datoSuave }, { valores: h.metricaVal, color: C.dato }], marcas, xMax, ancho, alto, formatoY: formatoMetrica(m), etiqueta: `${nombreMetrica(m)} por época` })
+    + leyendaGrafico([{ nombre: "entrenamiento", color: C.datoSuave }, { nombre: "validación", color: C.dato }]);
 }
 
 function actualizarEstimacion() {
@@ -3095,7 +3296,7 @@ function renderResultado() {
       <div class="cifra"><span class="valor">${num(r.prueba.metrica, 1)}${unidad}</span><span class="rotulo">MAE en prueba</span></div>
       <div class="cifra secundaria"><span class="valor">${num(r.entrenamiento.metrica, 1)}${unidad}</span><span class="rotulo">en entrenamiento</span></div>
       <div class="cifra secundaria"><span class="valor">${num(r.validacion.metrica, 1)}${unidad}</span><span class="rotulo">en validación</span></div></div>`;
-    const puntos = pred.map((f, i) => ({ x: datos.y.prueba[i], y: f[0], color: COLOR_VAL }));
+    const puntos = pred.map((f, i) => ({ x: datos.y.prueba[i], y: f[0], color: C.dato }));
     cuerpo += `<h4>Valor real contra predicho en prueba</h4><div class="dispersion-cont">${graficoDispersion({ puntos, ancho: anchoDispersion, alto: Math.round(anchoDispersion * 0.75), etiquetaX: `${def.objetivo} real`, etiquetaY: `${def.objetivo} predicho`, diagonal: true })}</div>
       <p class="leyenda solo-estudio">Cada punto es un ejemplo de prueba. Sobre la diagonal punteada, la predicción coincide con el valor real.</p>`;
   } else {
@@ -3116,7 +3317,7 @@ function renderResultado() {
     const puntos = estandar.X.prueba.map((f, i) => {
       const [x, y] = proyectar(f);
       const indice = porEstado ? datos.referencia.prueba[i] : grupos[i];
-      return { x, y, color: indice >= 0 ? COLORES[indice % COLORES.length] : "#c8d6db" };
+      return { x, y, color: indice >= 0 ? COLORES[indice % COLORES.length] : C.apagado };
     });
     const leyendaColores = (porEstado ? def.nombresClases : tamanos.map((_, g) => `grupo ${g + 1}`)).slice(0, 12).map((nombre, i) => ({ nombre, color: COLORES[i % COLORES.length] }));
     cuerpo += `<h4>Dispersión en las 2 primeras componentes principales</h4>
@@ -3160,7 +3361,8 @@ const CAMPOS_BASICOS = ["Red", "Optimizador", "Learning rate", "Batch"];
 function registrarCorrida(c) {
   const tarea = c.config.tarea, lista = E.historial[tarea];
   const numero = (E.cuentaHistorial[tarea] = (E.cuentaHistorial[tarea] || 0) + 1);
-  lista.push({ numero, color: COLORES[(numero - 1) % COLORES.length], corrida: c, visible: true });
+  // El color sale de la paleta al dibujar, para que acompañe al tema.
+  lista.push({ numero, get color() { return COLORES[(numero - 1) % COLORES.length]; }, corrida: c, visible: true });
   if (lista.length > MAXIMO_HISTORIAL) lista.shift();
   // En los gráficos quedan los 4 últimos entrenamientos visibles.
   const visibles = lista.filter((g) => g.visible);
@@ -3223,16 +3425,15 @@ function renderHistorial() {
 // =====================================================================
 const VELOCIDADES = { lenta: { nombre: "Lenta", ms: 450 }, normal: { nombre: "Normal", ms: 110 }, maxima: { nombre: "Máxima", ms: 0 } };
 const TITULOS_APRENDE = { binaria: "Regiones de decisión", multiclase: "Regiones de decisión", regresion: "Real contra predicho", clustering: "Grupos y centroides" };
-const COLOR_POSITIVO = "#163e50", COLOR_NEGATIVO = "#d08c2f", COLOR_RECORRIDO = "#5f5078";
 const FUENTE = '"Source Sans Pro", "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif';
 const dormir = (ms) => new Promise((r) => setTimeout(r, ms));
 const tablero = { cuadro: null, chicos: new Map(), previa: null };
 let contadorCorridas = 0;
 
 const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
-// Mezcla el blanco con un color: t = 0 es blanco y t = 1, el color pleno.
-const tinte = (color, t) => color.map((v) => Math.round(255 + (v - 255) * Math.max(0, Math.min(1, t))));
-const AZUL = rgb(COLOR_POSITIVO), AMBAR = rgb(COLOR_NEGATIVO);
+// Mezcla el fondo de los gráficos con un color: t = 0 es el fondo y t = 1, el color pleno.
+const tinte = (color, t) => color.map((v, i) => Math.round(C.base[i] + (v - C.base[i]) * Math.max(0, Math.min(1, t))));
+let AZUL, AMBAR;
 const divergente = (t) => (t >= 0 ? tinte(AZUL, t) : tinte(AMBAR, -t));
 
 // Las capas como vistas sobre theta, en el orden de las variables de TensorFlow.js.
@@ -3408,7 +3609,7 @@ function lienzo(cont, alto) {
 const letra = (tam, peso = 400) => `${peso} ${tam}px ${FUENTE}`;
 
 function textoVacio(ctx, ancho, alto, texto) {
-  ctx.fillStyle = "#59717c";
+  ctx.fillStyle = C.secundario;
   ctx.font = letra(14);
   ctx.textAlign = "center";
   ctx.fillText(texto, ancho / 2, alto / 2);
@@ -3438,7 +3639,7 @@ function pintarGrilla(ctx, GX, GY, color, x, y, ancho, alto, suave = true) {
 const colorDe = (tel, j) => (tel.config.tarea === "clustering" ? COLORES[j % COLORES.length] : colorClase(j, tel.def?.clases?.length || tel.k));
 
 // Color de la salida en una celda: la clase o el grupo que predice la red,
-// más intenso cuanto más segura está. En regresión, más oscuro es un valor mayor.
+// más intenso cuanto más segura está. En regresión, más intenso es un valor mayor.
 function colorSalida(tel, salida, g, intensidad = 1) {
   const k = tel.k;
   if (tel.config.tarea === "regresion") return tinte(AZUL, (intensidad * (salida[g] - tel.def.min)) / (tel.def.max - tel.def.min || 1));
@@ -3674,11 +3875,11 @@ function pintarRedGrande(cont, { editable = false } = {}) {
       const ua = a.neurona(sa), ub = b.neurona(sb), atenuar = relacionada(i, ua, ub) ? 1 : 0.15;
       if (capa && tope > 0) {
         const v = fuerza(ua, ub), t = Math.abs(v) / tope;
-        ctx.strokeStyle = v >= 0 ? COLOR_POSITIVO : COLOR_NEGATIVO;
+        ctx.strokeStyle = v >= 0 ? C.dato : C.naranja;
         ctx.globalAlpha = (0.12 + 0.75 * t) * atenuar;
         ctx.lineWidth = 0.3 + 3.6 * t;
       } else {
-        ctx.strokeStyle = "#b7cdd5";
+        ctx.strokeStyle = C.linea;
         ctx.globalAlpha = 0.8 * atenuar;
         ctx.lineWidth = 0.8;
       }
@@ -3695,7 +3896,7 @@ function pintarRedGrande(cont, { editable = false } = {}) {
     const a = g.columnas[marcada.columna - 1], b = g.columnas[marcada.columna];
     const sa = a?.slots.find((s) => a.neurona(s) === marcada.desde), sb = b?.slots.find((s) => b.neurona(s) === marcada.hasta);
     if (sa !== undefined && sb !== undefined) {
-      ctx.strokeStyle = COLOR_RECORRIDO;
+      ctx.strokeStyle = C.violeta;
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(a.x + S / 2, a.y(sa));
@@ -3709,25 +3910,25 @@ function pintarRedGrande(cont, { editable = false } = {}) {
     for (const s of c.slots) {
       const x0 = c.x - S / 2, y0 = c.y(s) - S / 2, u = c.neurona(s);
       if (c.desconocida) {
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = C.superficie;
         ctx.fillRect(x0, y0, S, S);
         ctx.setLineDash([3, 2]);
-        ctx.strokeStyle = "#8eb9c3";
+        ctx.strokeStyle = C.datoSuave;
         ctx.lineWidth = 1.4;
         ctx.strokeRect(x0 + 0.5, y0 + 0.5, S - 1, S - 1);
         ctx.setLineDash([]);
-        ctx.fillStyle = "#8eb9c3";
+        ctx.fillStyle = C.datoSuave;
         ctx.font = letra(14, 700);
         ctx.textAlign = "center";
         ctx.fillText("?", c.x, c.y(s) + 5);
         continue;
       }
       if (vista && (i === 0 || vista.grilla[i - 1])) pintarGrilla(ctx, tel.GX, tel.GY, colorNeurona(tel, vista, i, u), x0, y0, S, S);
-      else { ctx.fillStyle = i === 0 ? "#edf5f7" : "#fff"; ctx.fillRect(x0, y0, S, S); }
+      else { ctx.fillStyle = i === 0 ? C.suave : C.superficie; ctx.fillRect(x0, y0, S, S); }
       const apagada = E.entrenando && c.oculta !== undefined && tel?.mascaras?.[c.oculta]?.[u] === 0;
-      if (apagada) { ctx.fillStyle = "rgba(255, 255, 255, .8)"; ctx.fillRect(x0, y0, S, S); ctx.setLineDash([3, 2]); }
+      if (apagada) { ctx.fillStyle = C.velo(0.8); ctx.fillRect(x0, y0, S, S); ctx.setLineDash([3, 2]); }
       const elegida = sel?.tipo === "neurona" && sel.columna === i && sel.unidad === u;
-      ctx.strokeStyle = elegida ? COLOR_RECORRIDO : i === 0 ? "#59717c" : COLOR_POSITIVO;
+      ctx.strokeStyle = elegida ? C.violeta : i === 0 ? C.secundario : C.dato;
       ctx.lineWidth = elegida ? 3 : 1.2;
       ctx.strokeRect(x0 + 0.5, y0 + 0.5, S - 1, S - 1);
       ctx.setLineDash([]);
@@ -3736,18 +3937,18 @@ function pintarRedGrande(cont, { editable = false } = {}) {
         const texto = num(valor, 2);
         ctx.font = letra(g.compacto ? 9.5 : 10.5, 600);
         const w = ctx.measureText(texto).width + 6;
-        ctx.fillStyle = "rgba(255, 255, 255, .92)";
+        ctx.fillStyle = C.velo(0.92);
         ctx.fillRect(c.x - w / 2, y0 + S + 1, w, 13);
-        ctx.fillStyle = "#22333a";
+        ctx.fillStyle = C.texto;
         ctx.textAlign = "center";
         ctx.fillText(texto, c.x, y0 + S + 11);
       }
     }
-    ctx.fillStyle = COLOR_POSITIVO;
+    ctx.fillStyle = C.dato;
     ctx.textAlign = "center";
     if (c.n > 8) { ctx.font = letra(17, 700); ctx.fillText("⋮", c.x, c.y(6) + 6); }
     ctx.font = letra(g.compacto ? 10.5 : 11.5);
-    ctx.fillStyle = "#22333a";
+    ctx.fillStyle = C.texto;
     if (c.nombres) c.slots.forEach((s) => {
       const nombre = c.nombres[c.neurona(s)];
       if (!nombre) return;
@@ -3759,10 +3960,10 @@ function pintarRedGrande(cont, { editable = false } = {}) {
     if (editable && c.tipo === "oculta") return;
     ctx.textAlign = "center";
     ctx.font = letra(g.compacto ? 11.5 : 12.5, 700);
-    ctx.fillStyle = COLOR_POSITIVO;
+    ctx.fillStyle = C.dato;
     ctx.fillText(c.titulo, c.x, g.alto - g.inf + 22);
     ctx.font = letra(g.compacto ? 10.5 : 11.5);
-    ctx.fillStyle = "#59717c";
+    ctx.fillStyle = C.secundario;
     ctx.fillText(c.sub, c.x, g.alto - g.inf + 38);
   });
   ctx.textAlign = "start";
@@ -3934,9 +4135,9 @@ function barrasPesos(items) {
   const barras = filas.map((f, j) => {
     const y = j * fila + 3, largo = (Math.abs(f.valor) / tope) * mitad;
     return `<text x="${izq - 6}" y="${y + 10}" text-anchor="end" class="t-peso">${esc(f.nombre)}</text>
-      <rect x="${(f.valor >= 0 ? medio : medio - largo).toFixed(1)}" y="${y}" width="${Math.max(1, largo).toFixed(1)}" height="${fila - 6}" rx="2" fill="${f.valor >= 0 ? COLOR_POSITIVO : COLOR_NEGATIVO}" opacity=".8"/>`;
+      <rect x="${(f.valor >= 0 ? medio : medio - largo).toFixed(1)}" y="${y}" width="${Math.max(1, largo).toFixed(1)}" height="${fila - 6}" rx="2" fill="${f.valor >= 0 ? C.dato : C.naranja}" opacity=".8"/>`;
   }).join("");
-  return `<svg viewBox="0 0 ${ancho} ${filas.length * fila + 4}" role="img" aria-label="Pesos de entrada, de mayor a menor magnitud"><style>.t-peso { font-size: 10.5px; fill: #22333a; }</style><line x1="${medio}" x2="${medio}" y1="0" y2="${filas.length * fila + 4}" stroke="#b9cfd7"/>${barras}</svg>`;
+  return `<svg viewBox="0 0 ${ancho} ${filas.length * fila + 4}" role="img" aria-label="Pesos de entrada, de mayor a menor magnitud"><style>.t-peso { font-size: 10.5px; fill: var(--texto); }</style><line x1="${medio}" x2="${medio}" y1="0" y2="${filas.length * fila + 4}" stroke="${C.linea}"/>${barras}</svg>`;
 }
 
 function formulaNeurona(cfg, columna, u, capa, act) {
@@ -3984,7 +4185,7 @@ function renderInspectorRed() {
     const x = ejemplo?.capas[sel.columna - 1]?.[sel.desde];
     html = `<div class="inspector-cabecera"><strong>${esc(nombreUnidad(cfg, sel.columna - 1, sel.desde))} → ${esc(nombreUnidad(cfg, sel.columna, sel.hasta))}</strong>${cerrar}</div>
       <p>${w === null ? "Esta conexión todavía no tiene peso: aparece cuando la red está completa." : `Peso ${num(w, 3)} (${estadoPesos})${inicial !== null && fuente.estado !== "inicial" ? `; al empezar valía ${num(inicial, 3)}` : ""}.`}${w !== null && x !== undefined ? ` Con el ejemplo que seguís, aporta ${num(w, 3)} × ${num(x, 3)} = ${num(w * x, 3)} a la suma de la neurona.` : ""}</p>`;
-    if (indice !== null) grafico.push(evolucion([{ valores: porEpoca.map((t) => t[indice]), color: COLOR_RECORRIDO }], "Su peso al final de cada época"));
+    if (indice !== null) grafico.push(evolucion([{ valores: porEpoca.map((t) => t[indice]), color: C.violeta }], "Su peso al final de cada época"));
   } else if (sel.columna === 0) {
     const col = cfg.entradas[sel.unidad], unidad = DATASET.unidades[col], j = sel.unidad;
     const fila = ejemplo && tel.puntos.filas ? tel.puntos.filas[ejemplo.indice] : null;
@@ -4015,7 +4216,7 @@ function renderInspectorRed() {
       grafico.push(`<figure class="barras-pesos"><figcaption>Pesos de entrada, de mayor a menor magnitud${entradas > 12 ? " (los 12 mayores)" : ""}</figcaption>${barrasPesos(items)}</figure>`);
       const d = desplazamientos(tel.estructura)[c - 1];
       const series = items.slice(0, 6).map((it, k) => ({ nombre: it.nombre, color: COLORES[k % COLORES.length], valores: porEpoca.map((t) => t[d.W + it.e * capa.salidas + u]) }));
-      series.push({ nombre: "sesgo", color: "#9fb3bb", punteada: true, valores: porEpoca.map((t) => t[d.b + u]) });
+      series.push({ nombre: "sesgo", color: C.tenue, punteada: true, valores: porEpoca.map((t) => t[d.b + u]) });
       grafico.push(evolucion(series, "Sus pesos al final de cada época"));
     }
   }
@@ -4090,10 +4291,10 @@ function pintarAprende(cont, f) {
     const error = vista && asignado !== real;
     ctx.beginPath();
     ctx.arc(X(a), Y(b), error ? 3.4 : 2.9, 0, 2 * Math.PI);
-    ctx.fillStyle = real < 0 ? "#9fb3bb" : colorDe(tel, real);
+    ctx.fillStyle = real < 0 ? C.tenue : colorDe(tel, real);
     ctx.fill();
     ctx.lineWidth = error ? 1.8 : 0.9;
-    ctx.strokeStyle = error ? "#22333a" : "#fff";
+    ctx.strokeStyle = error ? C.texto : C.superficie;
     ctx.stroke();
   });
   if (m === "clustering" && vista?.red.centroides) {
@@ -4101,7 +4302,7 @@ function pintarAprende(cont, f) {
     for (let j = 0; j < k; j++) {
       const [a, b] = tel.plano.proyectar(vista.red.centroides.subarray(j * d, j * d + d));
       const x = X(a), y = Y(b);
-      for (const [color, grosor] of [["#fff", 5], [colorDe(tel, j), 2.4]]) {
+      for (const [color, grosor] of [[C.superficie, 5], [colorDe(tel, j), 2.4]]) {
         ctx.strokeStyle = color;
         ctx.lineWidth = grosor;
         ctx.beginPath();
@@ -4121,10 +4322,10 @@ function pintarAprende(cont, f) {
 }
 
 function ejesPlano(ctx, r, x, y) {
-  ctx.strokeStyle = "#b9cfd7";
+  ctx.strokeStyle = C.linea;
   ctx.lineWidth = 1;
   ctx.strokeRect(r.x + 0.5, r.y + 0.5, r.ancho - 1, r.alto - 1);
-  ctx.fillStyle = "#59717c";
+  ctx.fillStyle = C.secundario;
   ctx.font = letra(11.5);
   ctx.textAlign = "center";
   ctx.fillText(x, r.x + r.ancho / 2, r.y + r.alto + 20);
@@ -4144,23 +4345,23 @@ function pintarRealPredicho(ctx, tel, vista, r) {
   const m = { x: r.x + 14, y: r.y, ancho: r.ancho - 14, alto: r.alto };
   const X = (v) => m.x + ((v - lo) / (hi - lo)) * m.ancho, Y = (v) => m.y + (1 - (v - lo) / (hi - lo)) * m.alto;
   ctx.font = letra(11);
-  ctx.fillStyle = "#59717c";
+  ctx.fillStyle = C.secundario;
   for (const t of ticksLindos(lo, hi, 4)) {
-    ctx.strokeStyle = "#e3ecef";
+    ctx.strokeStyle = C.guia;
     ctx.beginPath(); ctx.moveTo(m.x, Y(t)); ctx.lineTo(m.x + m.ancho, Y(t)); ctx.stroke();
     ctx.textAlign = "end"; ctx.fillText(numEje(t), m.x - 4, Y(t) + 4);
     ctx.textAlign = "center"; ctx.fillText(numEje(t), X(t), m.y + m.alto + 13);
   }
-  ctx.strokeStyle = "#8eb9c3";
+  ctx.strokeStyle = C.datoSuave;
   ctx.setLineDash([5, 4]);
   ctx.beginPath(); ctx.moveTo(X(lo), Y(lo)); ctx.lineTo(X(hi), Y(hi)); ctx.stroke();
   ctx.setLineDash([]);
   ctx.save();
   ctx.beginPath(); ctx.rect(m.x, m.y, m.ancho, m.alto); ctx.clip();
-  ctx.fillStyle = "rgba(22, 62, 80, .55)";
+  ctx.fillStyle = `rgba(${C.datoRgb}, .55)`;
   reales.forEach((v, i) => { ctx.beginPath(); ctx.arc(X(v), Y(Math.max(lo, Math.min(hi, pred[i]))), 2.7, 0, 2 * Math.PI); ctx.fill(); });
   ctx.restore();
-  ctx.fillStyle = "#59717c";
+  ctx.fillStyle = C.secundario;
   ctx.textAlign = "center";
   ctx.fillText(`${tel.def.objetivo} real`, m.x + m.ancho / 2, m.y + m.alto + 28);
   ctx.save();
@@ -4327,7 +4528,7 @@ function pintarOptimizador(cont, f) {
   const lo = finitos[0] ?? 0, hi = finitos[Math.floor(0.95 * (finitos.length - 1))] ?? 1, rango = hi - lo || 1;
   const normal = logs.map((v) => (Number.isFinite(v) ? (v - lo) / rango : 1));
   pintarGrilla(ctx, p.G, p.G, (g) => colorPerdida(normal[g]), r.x, r.y, r.ancho, r.alto);
-  ctx.strokeStyle = "rgba(22, 62, 80, .35)";
+  ctx.strokeStyle = `rgba(${C.datoRgb}, .35)`;
   ctx.lineWidth = 0.8;
   curvasDeNivel(ctx, normal, p.G, r, [0.08, 0.18, 0.3, 0.44, 0.6, 0.8]);
   const pr = proyeccionRecorrido(tel);
@@ -4336,26 +4537,26 @@ function pintarOptimizador(cont, f) {
   ctx.beginPath();
   ctx.rect(r.x, r.y, r.ancho, r.alto);
   ctx.clip();
-  ctx.strokeStyle = COLOR_RECORRIDO;
+  ctx.strokeStyle = C.violeta;
   ctx.lineWidth = 1.4;
   ctx.lineJoin = "round";
   ctx.beginPath();
   pr.a.forEach((a, i) => (i ? ctx.lineTo(X(a), Y(pr.b[i])) : ctx.moveTo(X(a), Y(pr.b[i]))));
   ctx.stroke();
-  ctx.fillStyle = COLOR_RECORRIDO;
+  ctx.fillStyle = C.violeta;
   for (let i = 1; i < pr.a.length; i++) {
     if (rec.epocas[i] === rec.epocas[i + 1]) continue;
     ctx.beginPath(); ctx.arc(X(pr.a[i]), Y(pr.b[i]), 1.9, 0, 2 * Math.PI); ctx.fill();
   }
   const marca = (a, b, radio, relleno, borde) => { ctx.beginPath(); ctx.arc(X(a), Y(b), radio, 0, 2 * Math.PI); ctx.fillStyle = relleno; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = borde; ctx.stroke(); };
-  marca(pr.a[0], pr.b[0], 4.5, "#fff", COLOR_RECORRIDO);
+  marca(pr.a[0], pr.b[0], 4.5, C.superficie, C.violeta);
   const actual = tel.theta ? proyectarTheta(tel.theta, p.base) : [pr.a.at(-1), pr.b.at(-1)];
   if (f.restaurada && f.mejorEpoca && f.mejorEpoca !== f.epocasCorridas) {
     const fin = [pr.a.at(-1), pr.b.at(-1)];
-    ctx.fillStyle = "#b0781c";
+    ctx.fillStyle = C.corte;
     ctx.beginPath(); ctx.arc(X(fin[0]), Y(fin[1]), 3.2, 0, 2 * Math.PI); ctx.fill();
   }
-  marca(actual[0], actual[1], 5, COLOR_RECORRIDO, "#fff");
+  marca(actual[0], actual[1], 5, C.violeta, C.superficie);
   ctx.restore();
   ejesPlano(ctx, r, `dirección 1 (${num(100 * p.base.var1, 0)}% del movimiento)`, `dirección 2 (${num(100 * p.base.var2, 0)}%)`);
 }
@@ -4429,9 +4630,9 @@ function histogramaPesos(W, tope) {
   const maximo = Math.max(...cuentas, 1);
   const barras = cuentas.map((c, i) => {
     const h = (c / maximo) * (alto - 2);
-    return `<rect x="${(i * b + 0.4).toFixed(1)}" y="${(alto - h).toFixed(1)}" width="${(b - 0.8).toFixed(1)}" height="${h.toFixed(1)}" fill="${i >= (bins - 1) / 2 ? COLOR_POSITIVO : COLOR_NEGATIVO}" opacity=".75"/>`;
+    return `<rect x="${(i * b + 0.4).toFixed(1)}" y="${(alto - h).toFixed(1)}" width="${(b - 0.8).toFixed(1)}" height="${h.toFixed(1)}" fill="${i >= (bins - 1) / 2 ? C.dato : C.naranja}" opacity=".75"/>`;
   }).join("");
-  return `<svg viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none" role="img" aria-label="Distribución de los pesos entre −${numeroCorto(tope)} y ${numeroCorto(tope)}">${barras}<line x1="${ancho / 2}" x2="${ancho / 2}" y1="0" y2="${alto}" stroke="#9fb3bb" stroke-dasharray="2 2"/></svg>`;
+  return `<svg viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none" role="img" aria-label="Distribución de los pesos entre −${numeroCorto(tope)} y ${numeroCorto(tope)}">${barras}<line x1="${ancho / 2}" x2="${ancho / 2}" y1="0" y2="${alto}" stroke="${C.tenue}" stroke-dasharray="2 2"/></svg>`;
 }
 
 // Por capa: cómo se reparten los pesos, cuánto los mueve el gradiente y cuántas ReLU dejaron de aprender.
@@ -4476,17 +4677,17 @@ function renderLeyendasTablero() {
   if (!$("#claves-aprende") || !m) return;
   const clave = (color, texto, forma = "") => `<span><i class="${forma}" style="${forma ? `border-color:${color}; color:${color}` : `background:${color}`}"></i>${esc(texto)}</span>`;
   let claves = "";
-  if (m === "binaria" || m === "multiclase") claves = def.nombresClases.slice(0, 12).map((nombre, j) => clave(colorClase(j, def.clases.length), nombre)).join("") + clave("#22333a", "mal clasificado", "anillo");
-  else if (m === "clustering") claves = Array.from({ length: E.salida.neuronas || 0 }, (_, j) => clave(COLORES[j % COLORES.length], `grupo ${j + 1}`)).join("") + clave("#59717c", "centroide", "cruz");
-  else claves = clave("#8eb9c3", "predicción perfecta", "punteada");
+  if (m === "binaria" || m === "multiclase") claves = def.nombresClases.slice(0, 12).map((nombre, j) => clave(colorClase(j, def.clases.length), nombre)).join("") + clave(C.texto, "mal clasificado", "anillo");
+  else if (m === "clustering") claves = Array.from({ length: E.salida.neuronas || 0 }, (_, j) => clave(COLORES[j % COLORES.length], `grupo ${j + 1}`)).join("") + clave(C.secundario, "centroide", "cruz");
+  else claves = clave(C.datoSuave, "predicción perfecta", "punteada");
   $("#claves-aprende").innerHTML = claves;
   $("#leyenda-aprende").textContent = {
     binaria: "Cada punto es un ejemplo de validación, ubicado según las 2 primeras componentes principales de sus entradas. El fondo es la clase que predice la red en cada lugar del plano, más intenso cuanto más segura está. El plano es un corte: la red trabaja con todas las entradas.",
     regresion: "Cada punto es un ejemplo de validación: el valor real en el eje horizontal y la predicción en el vertical. Al principio las predicciones se amontonan cerca de un valor; a medida que la red aprende, se acercan a la diagonal.",
     clustering: "Ejemplos de validación en las 2 primeras componentes principales, con el color del grupo que les asigna la red. El fondo muestra el grupo de cada zona del plano y las cruces, dónde están los centroides.",
   }[m === "multiclase" ? "binaria" : m];
-  $("#claves-optimizador").innerHTML = clave(COLOR_RECORRIDO, "recorrido, lote a lote") + clave(COLOR_RECORRIDO, "inicio", "anillo") + clave(COLOR_RECORRIDO, "posición actual", "punto")
-    + (E.early.activo && E.early.restaurar ? clave("#b0781c", "donde cortó early stopping", "punto") : "");
+  $("#claves-optimizador").innerHTML = clave(C.violeta, "recorrido, lote a lote") + clave(C.violeta, "inicio", "anillo") + clave(C.violeta, "posición actual", "punto")
+    + (E.early.activo && E.early.restaurar ? clave(C.corte, "donde cortó early stopping", "punto") : "");
   $("#leyenda-optimizador").textContent = "La pérdida depende de todos los parámetros a la vez. El gráfico muestra un corte en el plano de las 2 direcciones en que más se movieron los pesos (las componentes principales del recorrido), centrado en la posición actual. El fondo y las curvas de nivel son la pérdida de entrenamiento en ese plano, calculada sobre una muestra: más claro es más baja. Lejos del centro, el corte deja de representar lo recorrido, porque los demás parámetros también cambiaron.";
 }
 
@@ -4968,6 +5169,11 @@ const ACCIONES = {
   "modo-referencia"() { E.modoHead = "referencia"; renderPaso(); refrescar(); },
   "modo-entradas"() { E.modoHead = "entradas"; renderPaso(); refrescar(); },
   "volver-datos"() { irA(0); },
+  tema() {
+    const tema = document.documentElement.dataset.tema === "oscuro" ? "claro" : "oscuro";
+    try { localStorage.setItem("configurador-tema", tema); } catch { /* sin almacenamiento: el tema vale solo para esta visita */ }
+    aplicarTema(tema);
+  },
   "usar-taller"() {
     E.datosElegidos = true;
     renderPaso();
@@ -5146,6 +5352,20 @@ function aplicarModo() {
   $(".logo").href = urlInicio();
 }
 
+// Tema claro u oscuro. Los gráficos se redibujan con la paleta nueva; durante un
+// entrenamiento, el tablero la toma cuadro a cuadro y se redibuja entero al terminar.
+function aplicarTema(tema, redibujar = true) {
+  document.documentElement.dataset.tema = tema;
+  const boton = $(".tema");
+  boton.setAttribute("aria-pressed", String(tema === "oscuro"));
+  boton.setAttribute("aria-label", tema === "oscuro" ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
+  leerPaleta();
+  if (!redibujar) return;
+  if (E.entrenando) { dibujarRed(); renderLeyendasTablero(); return; }
+  renderPaso();
+  refrescar();
+}
+
 function cambiarCampo(el) {
   const campo = el.dataset.campo, i = Number(el.dataset.indice);
   switch (campo) {
@@ -5204,6 +5424,13 @@ function cambiarCampo(el) {
 }
 
 function iniciar() {
+  aplicarTema(document.documentElement.dataset.tema === "oscuro" ? "oscuro" : "claro", false);
+  // Si nadie eligió un tema en este navegador, sigue al del sistema.
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (ev) => {
+    let elegido = null;
+    try { elegido = localStorage.getItem("configurador-tema"); } catch { /* sin almacenamiento */ }
+    if (!elegido) aplicarTema(ev.matches ? "oscuro" : "claro");
+  });
   const panel = $("#panel");
   panel.addEventListener("click", (ev) => {
     const b = ev.target.closest("[data-accion]");
