@@ -628,6 +628,7 @@ button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2p
 .datos-nombre strong { color: var(--titulo); font-size: 1.05rem; overflow-wrap: anywhere; }
 .datos-nombre span { color: var(--secundario); font-size: .92rem; }
 .datos-acciones { display: flex; gap: 14px; font-size: .92rem; }
+.lectura-csv { margin: 0 0 10px; color: var(--secundario); font-size: .92rem; }
 .indicacion { text-align: left; margin: 6px 0 8px; color: var(--secundario); }
 .indicacion.pendiente { color: var(--violeta); font-weight: 600; background: var(--violeta-suave); border-radius: 8px; padding: 8px 12px; }
 .tabla.head { width: auto; min-width: 100%; }
@@ -1036,22 +1037,41 @@ function leerCSV(texto) {
   return { separador, filas: filas.filter((f) => f.some((c) => c.trim() !== "")) };
 }
 
-function datasetDesdeCSV(nombre, texto) {
+// La primera fila es de encabezado salvo que traiga un número en cada columna que, desde la
+// segunda fila, es numérica. Sin columnas numéricas no hay con qué compararla y se supone que sí.
+function pareceEncabezado(filas, comoNumero) {
+  const resto = filas.slice(1, 501);
+  let numericas = 0;
+  for (let j = 0; j < filas[0].length; j++) {
+    const valores = resto.map((f) => (f[j] ?? "").trim()).filter((t) => !NULOS.has(t.toLowerCase()));
+    if (!valores.length || !valores.every((t) => Number.isFinite(comoNumero(t)))) continue;
+    const primera = filas[0][j].trim();
+    if (NULOS.has(primera.toLowerCase())) continue;
+    if (!Number.isFinite(comoNumero(primera))) return true;
+    numericas += 1;
+  }
+  return numericas === 0;
+}
+
+// encabezado: true si la primera fila tiene los nombres de las columnas, false si ya es de datos
+// (las columnas se llaman columna_1, columna_2, …) y null para detectarlo.
+function datasetDesdeCSV(nombre, texto, encabezado = null) {
   const { separador, filas } = leerCSV(texto);
-  if (filas.length < 11) throw new Error("El archivo necesita una fila de encabezado y al menos 10 filas de datos.");
+  const decimal = separador === ";" && filas.some((f) => f.some((v) => /^-?\d+,\d+$/.test(v.trim()))) ? "," : ".";
+  const comoNumero = (t) => Number(decimal === "," ? t.replace(/\./g, "").replace(",", ".") : t);
+  if (encabezado === null) encabezado = filas.length < 2 || pareceEncabezado(filas, comoNumero);
+  if (filas.length < (encabezado ? 11 : 10)) throw new Error(`El archivo necesita al menos 10 filas de datos${encabezado ? ", además del encabezado" : ""}.`);
   const vistos = {};
   const orden = filas[0].map((h, j) => {
-    const base = h.trim() || `columna_${j + 1}`;
+    const base = (encabezado && h.trim()) || `columna_${j + 1}`;
     vistos[base] = (vistos[base] || 0) + 1;
     return vistos[base] > 1 ? `${base}_${vistos[base]}` : base;
   });
   if (orden.length < 2) throw new Error("No se reconocieron columnas: revisá que el separador sea coma, punto y coma o tabulación.");
   if (orden.length > LIMITES.columnasMaximas) throw new Error(`El archivo tiene ${orden.length} columnas; el máximo es ${LIMITES.columnasMaximas}.`);
-  const datos = filas.slice(1);
+  const datos = encabezado ? filas.slice(1) : filas;
   if (datos.length > LIMITES.filasMaximas) throw new Error(`El archivo tiene ${num(datos.length)} filas; el máximo es ${num(LIMITES.filasMaximas)}.`);
   const crudas = orden.map((_, j) => datos.map((f) => (f[j] ?? "").trim()));
-  const decimal = separador === ";" && crudas.some((c) => c.some((v) => /^-?\d+,\d+$/.test(v))) ? "," : ".";
-  const comoNumero = (t) => Number(decimal === "," ? t.replace(/\./g, "").replace(",", ".") : t);
   const columnas = {};
   orden.forEach((c, j) => {
     const vacio = crudas[j].map((t) => NULOS.has(t.toLowerCase()));
@@ -1070,16 +1090,17 @@ function datasetDesdeCSV(nombre, texto) {
   };
   sugeridos.clustering = sugeridos.multiclase || sugeridos.binaria;
   const textos = orden.length - numericas.length;
-  return crearDataset({
+  // El texto queda en el dataset para volver a leerlo con o sin encabezado.
+  return Object.assign(crearDataset({
     nombre,
     descripcion: `${num(datos.length)} filas y ${orden.length} columnas: ${numericas.length} numéricas${textos ? ` y ${textos} de texto` : ""}`,
     columnas,
     orden,
-    variables: numericas.map((c) => ({ columna: c, unidad: "", corto: c.length > 7 ? `${c.slice(0, 6)}.` : c, decimales: info[c].decimales })),
+    variables: numericas.map((c) => ({ columna: c, unidad: "", corto: /^columna_\d+$/.test(c) ? `col_${c.slice(8)}` : c.length > 7 ? `${c.slice(0, 6)}.` : c, decimales: info[c].decimales })),
     entradasPorDefecto: numericas.filter((c) => !pareceId(c)).slice(0, LIMITES.entradasRecomendadas),
     sugeridos,
-    fuente: { tipo: "archivo", nombre, separador, decimal },
-  });
+    fuente: { tipo: "archivo", nombre, separador, decimal, encabezado },
+  }), { texto });
 }
 
 // ---------------------------------------------------------------------
@@ -2245,7 +2266,7 @@ function pasoDatos() {
       <p class="bajada">Subí los datos con los que va a trabajar la red.</p>
       ${concepto(0)}
       <label class="carga" id="zona-archivo">${svgIconoDatos("archivo")}<strong>Subir un CSV</strong>
-        <span>Arrastralo acá o hacé clic para elegirlo. Con encabezado, separado por coma, punto y coma o tabulación.</span>
+        <span>Arrastralo acá o hacé clic para elegirlo. Con o sin encabezado, separado por coma, punto y coma o tabulación.</span>
         <span class="carga-nota">Se lee en tu navegador y no se sube a ningún servidor. Recomendado: hasta ${LIMITES.entradasRecomendadas} variables de entrada y ${num(LIMITES.filasRecomendadas)} filas.</span>
         <input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>
       <div id="error-archivo" aria-live="polite"></div>
@@ -2265,6 +2286,7 @@ function pasoDatos() {
       <div class="datos-nombre"><strong>${esc(DATASET.nombre)}</strong><span>${num(DATASET.n)} filas y ${DATASET.orden.length} columnas</span></div>
       <div class="datos-acciones"><label class="enlace">Subir otro CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" data-campo="archivo" class="sr"></label>${DATASET.embebido ? "" : '<button type="button" class="enlace" data-accion="dataset-taller">Usar los datos de ejemplo</button>'}</div>
     </div>
+    ${DATASET.fuente.tipo === "archivo" ? `<label class="casilla lectura-csv"><input type="checkbox" data-campo="encabezado" ${DATASET.fuente.encabezado ? "checked" : ""}>La primera fila tiene los nombres de las columnas</label>` : ""}
     <div id="error-archivo" aria-live="polite"></div>
     ${indicacionHead()}
     ${cabezaDatos()}
@@ -2642,8 +2664,9 @@ function seccionesCodigo() {
     datos.push(`URL = "${DATASET.fuente.url}"`, "df = pd.read_csv(URL)");
   } else {
     const f = DATASET.fuente;
-    const opciones = [f.separador !== "," ? `sep=${py(f.separador)}` : null, f.decimal !== "." ? `decimal=${py(f.decimal)}` : null].filter(Boolean);
+    const opciones = [f.separador !== "," ? `sep=${py(f.separador)}` : null, f.decimal !== "." ? `decimal=${py(f.decimal)}` : null, f.encabezado ? null : "header=None"].filter(Boolean);
     datos.push("# Subí el archivo al entorno antes de ejecutar (en Colab, desde el panel Archivos)", `ARCHIVO = ${py(f.nombre)}`, `df = pd.read_csv(ARCHIVO${opciones.length ? `, ${opciones.join(", ")}` : ""})`);
+    if (!f.encabezado) datos.push('df.columns = [f"columna_{j + 1}" for j in range(df.shape[1])]  # el CSV no tiene encabezado');
   }
   datos.push("");
   datos.push(`SEMILLA = ${E.particion.semilla}`);
@@ -5288,7 +5311,10 @@ let hashEscrito = null;
 function hashDeConfiguracion() {
   const partes = [];
   const poner = (clave, valor) => partes.push(`${clave}=${valor}`);
-  if (!DATASET.embebido) poner("archivo", cod(DATASET.nombre));
+  if (!DATASET.embebido) {
+    poner("archivo", cod(DATASET.nombre));
+    poner("encabezado", DATASET.fuente.encabezado ? "si" : "no");
+  }
   if (E.tarea) {
     poner("tarea", E.tarea);
     poner("objetivo", E.objetivo ? cod(E.objetivo) : "");
@@ -5340,6 +5366,7 @@ function aplicarConfiguracion(c) {
   const ignorados = [];
   const acepta = (clave, ok) => { if (!ok) ignorados.push(clave); return ok; };
   const tiene = (clave) => clave in c;
+  if (tiene("encabezado")) acepta("encabezado", !DATASET.embebido && ["si", "no"].includes(c.encabezado));
   if (tiene("tarea") && acepta("tarea", Object.hasOwn(TAREAS, c.tarea) && (c.tarea === "clustering" || columnasCompatibles(c.tarea).length > 0))) {
     E.tarea = c.tarea;
     E.objetivo = objetivoPorDefecto(c.tarea);
@@ -5414,6 +5441,17 @@ function cargarDesdeEnlace(hash, dibujar = true) {
       E.paso = 0;
       if (dibujar) { aplicarModo(); renderPaso(); refrescar(); }
       return;
+    }
+    const encabezado = encabezadoDelEnlace(c);
+    if (encabezado !== null && encabezado !== DATASET.fuente.encabezado) {
+      // El archivo ya está cargado, pero el enlace lo lee con o sin encabezado: se vuelve a leer.
+      E.configPendiente = { nombre, c };
+      try {
+        cargarDataset(datasetDesdeCSV(nombre, DATASET.texto, encabezado));
+        return;
+      } catch {
+        E.configPendiente = null;
+      }
     }
   } else if (!DATASET.embebido) {
     DATASET = cargarDatosEmbebidos();
@@ -5807,15 +5845,32 @@ function cargarDataset(ds) {
   refrescar();
 }
 
+const errorArchivo = (texto) => { $("#error-archivo").innerHTML = `<div class="mensaje error"><strong>No se pudo usar el archivo</strong><p>${esc(texto)}</p></div>`; };
+// Lo que dice un enlace sobre el encabezado del archivo: true, false o null si no lo dice.
+const encabezadoDelEnlace = (c) => (c.encabezado === "si" ? true : c.encabezado === "no" ? false : null);
+
 async function leerArchivo(archivo) {
-  const fallar = (texto) => { $("#error-archivo").innerHTML = `<div class="mensaje error"><strong>No se pudo usar el archivo</strong><p>${esc(texto)}</p></div>`; };
   if (!archivo) return;
-  if (E.entrenando) return fallar("Esperá a que termine el entrenamiento.");
-  if (archivo.size > LIMITES.megasMaximos * 1048576) return fallar(`Pesa ${num(archivo.size / 1048576, 1)} MB y el máximo es ${LIMITES.megasMaximos} MB.`);
+  if (E.entrenando) return errorArchivo("Esperá a que termine el entrenamiento.");
+  if (archivo.size > LIMITES.megasMaximos * 1048576) return errorArchivo(`Pesa ${num(archivo.size / 1048576, 1)} MB y el máximo es ${LIMITES.megasMaximos} MB.`);
   try {
-    cargarDataset(datasetDesdeCSV(archivo.name, await archivo.text()));
+    // Si un enlace espera este archivo y dice si tiene encabezado, se lee así; si no, se detecta.
+    const encabezado = E.configPendiente?.nombre === archivo.name ? encabezadoDelEnlace(E.configPendiente.c) : null;
+    cargarDataset(datasetDesdeCSV(archivo.name, await archivo.text(), encabezado));
   } catch (e) {
-    fallar(e.message);
+    errorArchivo(e.message);
+  }
+}
+
+// La casilla del encabezado vuelve a leer el archivo: cambian las columnas y se reinician
+// las decisiones que dependen de ellas, como al subir otro archivo.
+function releerArchivo(casilla) {
+  try {
+    if (E.entrenando) throw new Error("Esperá a que termine el entrenamiento.");
+    cargarDataset(datasetDesdeCSV(DATASET.nombre, DATASET.texto, casilla.checked));
+  } catch (e) {
+    casilla.checked = !casilla.checked;
+    errorArchivo(e.message);
   }
 }
 
@@ -5856,6 +5911,7 @@ function cambiarCampo(el) {
       break;
     case "muestra": E.muestra = el.checked; actualizarParticion(); break;
     case "archivo": leerArchivo(el.files[0]); el.value = ""; return;
+    case "encabezado": releerArchivo(el); return;
     case "normalizar": E.normalizar = el.checked; animarEscalas(); break;
     case "neuronas": E.ocultas[i].neuronas = Number(el.value); break;
     case "activacion": E.ocultas[i].activacion = el.value; break;
