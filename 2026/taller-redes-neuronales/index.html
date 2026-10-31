@@ -513,6 +513,15 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .boton.activo:hover:not(:disabled) { background: var(--primario-hover); }
 .red-navegar { display: inline-flex; gap: 4px; }
 .red-ejemplo { color: var(--secundario); font-size: .9rem; }
+.red-sentido { display: inline-flex; gap: 4px; }
+.red-retro { flex-basis: 100%; display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--borde); border-left: 3px solid var(--violeta); border-radius: 10px; background: var(--superficie-alterna); }
+.retro-etapas { display: flex; flex-wrap: wrap; gap: 6px; }
+.retro-etapa { padding: 3px 11px; border: 1px solid var(--borde); border-radius: 999px; background: var(--superficie); color: var(--secundario); font-size: .84rem; cursor: pointer; }
+.retro-etapa:hover { border-color: var(--primario); color: var(--titulo); }
+.retro-etapa.actual { border-color: var(--violeta); background: var(--violeta-suave); color: var(--violeta); font-weight: 600; }
+.retro-etapa:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.retro-texto { margin: 0; text-align: left; hyphens: manual; font-size: .93rem; }
+.retro-acciones { display: flex; flex-wrap: wrap; gap: 8px; }
 .red-desplazable { overflow-x: auto; }
 .red-desliza { margin: 4px 0 0; }
 .red-escena { position: relative; margin: 0 auto; }
@@ -1306,6 +1315,7 @@ const E = {
   colorearPor: "grupo",
   redSeleccion: null,
   redEjemplo: null,
+  retro: null,
   capaAbierta: null,
   modo: modoInicial(),
   abiertos: new Set(),
@@ -3733,7 +3743,7 @@ function textoAjustado(ctx, texto, x, y, maximo) {
 // está bajo el puntero. Con un clic se inspecciona una neurona o una conexión.
 // =====================================================================
 const MAXIMO_OCULTAS = 6;
-const interaccion = { geometria: null, hover: null, cuadro: null, iniciales: null, inspector: 0, claveBotones: "" };
+const interaccion = { geometria: null, hover: null, cuadro: null, iniciales: null, inspector: 0, claveBotones: "", pasoAutomatico: null, retroHtml: "", mayorError: null };
 const subindice = (n) => String(n).replace(/\d/g, (d) => "₀₁₂₃₄₅₆₇₈₉"[d]);
 
 // Pesos iniciales con la misma construcción y la misma semilla que entrenarRed:
@@ -3832,6 +3842,206 @@ function valoresEjemplo(fuente, vista) {
   return tel.ejemplo;
 }
 
+// =====================================================================
+// Paso hacia atrás del ejemplo que se sigue
+// La retropropagación de una fila con la misma pérdida que el entrenamiento,
+// sin dropout: el δ de cada neurona y el gradiente de cada parámetro.
+// =====================================================================
+
+// Derivada de cada activación, a partir de z y de a = f(z).
+const DERIVADA = { relu: (z) => (z > 0 ? 1 : 0), tanh: (z, a) => 1 - a * a, sigmoide: (z, a) => a * (1 - a), lineal: () => 1 };
+const NOMBRE_PERDIDA = { bce: "BCE", cce: "CCE", mse: "MSE", mae: "MAE", centroides: "la pérdida contra los centroides" };
+// Números de las cuentas: con signo menos tipográfico y, como factor, entre paréntesis si son negativos.
+const signo = (texto) => texto.replace(/^-/, "−");
+const corto = (x) => signo(numeroCorto(x));
+const factor = (x) => { const t = corto(x); return x < 0 || t.includes("×") ? `(${t})` : t; };
+
+// Valor real de la fila en el formato de la salida, como en la muestra de entrenamiento.
+function objetivoEjemplo(cfg, tel, i, k) {
+  if (cfg.perdida === "centroides" || !tel.puntos.y) return null;
+  const v = tel.puntos.y[i];
+  if (cfg.tarea === "regresion" || k === 1) return Float64Array.of(v);
+  const y = new Float64Array(k);
+  y[v] = 1;
+  return y;
+}
+
+// La red tiene salida y pérdida: se puede calcular el error de cada fila.
+const conPerdida = (cfg) => Boolean(cfg.salida.neuronas && cfg.salida.activacion && cfg.perdida);
+
+// Pérdida de una fila a partir de la salida p de la red y su derivada respecto de cada salida, g = ∂L/∂ŷ.
+function perdidaFila(cfg, p, y, x, centroides) {
+  const k = p.length, g = new Float64Array(k);
+  const recorte = (v) => Math.min(1 - 1e-7, Math.max(1e-7, v));
+  let perdida = 0, distancias = null;
+  if (cfg.perdida === "bce") {
+    for (let j = 0; j < k; j++) {
+      const q = recorte(p[j]);
+      perdida -= (y[j] * Math.log(q) + (1 - y[j]) * Math.log(1 - q)) / k;
+      g[j] = (q - y[j]) / (q * (1 - q)) / k;
+    }
+  } else if (cfg.perdida === "cce") {
+    const suma = p.reduce((s, v) => s + v, 0), sy = y.reduce((s, v) => s + v, 0);
+    for (let j = 0; j < k; j++) {
+      if (y[j]) perdida -= y[j] * Math.log(recorte(p[j] / suma));
+      g[j] = -y[j] / recorte(p[j]) + sy / suma;
+    }
+  } else if (cfg.perdida === "mse" || cfg.perdida === "mae") {
+    for (let j = 0; j < k; j++) {
+      const e = p[j] - y[j];
+      perdida += (cfg.perdida === "mse" ? e * e : Math.abs(e)) / k;
+      g[j] = (cfg.perdida === "mse" ? 2 * e : Math.sign(e)) / k;
+    }
+  } else {
+    // Clustering: la pérdida es Σ q × d², con d² la distancia al cuadrado a cada centroide.
+    const d = x.length;
+    distancias = new Float64Array(k);
+    for (let j = 0; j < k; j++) {
+      let d2 = 0;
+      for (let e = 0; e < d; e++) d2 += (x[e] - centroides[j * d + e]) ** 2;
+      distancias[j] = d2;
+      perdida += p[j] * d2;
+      g[j] = d2;
+    }
+  }
+  return { perdida, g, distancias };
+}
+
+// Hacia adelante guardando z y a de cada capa; hacia atrás, δ = ∂L/∂z de cada neurona
+// y los gradientes ∂L/∂w = a × δ y ∂L/∂b = δ. Sin el término de L2, que se suma al dar el paso.
+function retropropagar(cfg, red, x, y) {
+  const capas = red.capas, L = capas.length;
+  const a = [Float64Array.from(x)], z = [null];
+  for (const c of capas) {
+    const entrada = a.at(-1), zc = Float64Array.from(c.b);
+    for (let e = 0; e < c.entradas; e++) {
+      const v = entrada[e];
+      if (v === 0) continue;
+      for (let j = 0; j < c.salidas; j++) zc[j] += v * c.W[e * c.salidas + j];
+    }
+    let ac;
+    if (c.act === "softmax") {
+      const maximo = Math.max(...zc);
+      ac = zc.map((v) => Math.exp(v - maximo));
+      const suma = ac.reduce((s, v) => s + v, 0);
+      ac = ac.map((v) => v / suma);
+    } else ac = zc.map(ACTIVAR[c.act] || ((v) => v));
+    z.push(zc);
+    a.push(ac);
+  }
+
+  // Pérdida de la fila y su derivada respecto de cada salida, g = ∂L/∂ŷ.
+  const p = a[L], k = p.length, { perdida, g, distancias } = perdidaFila(cfg, p, y, x, red.centroides);
+
+  // δ de la salida: g por la derivada de la activación (con softmax, por su jacobiano).
+  const delta = Array(L + 1).fill(null), sumas = Array(L + 1).fill(null), ultima = capas[L - 1];
+  if (ultima.act === "softmax" && cfg.perdida === "cce") {
+    const suma = p.reduce((s, v) => s + v, 0), sy = y.reduce((s, v) => s + v, 0);
+    delta[L] = p.map((v, j) => (v * sy) / suma - y[j]);
+  } else if (ultima.act === "softmax") {
+    const promedio = p.reduce((s, v, j) => s + v * g[j], 0);
+    delta[L] = p.map((v, j) => v * (g[j] - promedio));
+  } else {
+    const df = DERIVADA[ultima.act] || DERIVADA.lineal;
+    delta[L] = g.map((v, j) => v * df(z[L][j], p[j]));
+  }
+  // Capas ocultas, de derecha a izquierda: δⱼ = f′(zⱼ) × Σₖ wⱼₖ δₖ.
+  for (let l = L - 1; l >= 1; l--) {
+    const siguiente = capas[l], df = DERIVADA[capas[l - 1].act] || DERIVADA.lineal;
+    sumas[l] = new Float64Array(siguiente.entradas);
+    delta[l] = new Float64Array(siguiente.entradas);
+    for (let j = 0; j < siguiente.entradas; j++) {
+      let s = 0;
+      for (let m = 0; m < siguiente.salidas; m++) s += siguiente.W[j * siguiente.salidas + m] * delta[l + 1][m];
+      sumas[l][j] = s;
+      delta[l][j] = df(z[l][j], a[l][j]) * s;
+    }
+  }
+  const gradW = capas.map((c, i) => {
+    const G = new Float64Array(c.entradas * c.salidas);
+    for (let e = 0; e < c.entradas; e++) for (let j = 0; j < c.salidas; j++) G[e * c.salidas + j] = a[i][e] * delta[i + 1][j];
+    return G;
+  });
+  const gradB = capas.map((_, i) => Float64Array.from(delta[i + 1]));
+  let gradCentroides = null;
+  if (distancias) {
+    const d = capas[0].entradas, C = red.centroides;
+    gradCentroides = new Float64Array(k * d);
+    for (let j = 0; j < k; j++) for (let e = 0; e < d; e++) gradCentroides[j * d + e] = -2 * p[j] * (x[e] - C[j * d + e]);
+  }
+  return { a, z, delta, sumas, g, gradW, gradB, gradCentroides, perdida, distancias, y, k };
+}
+
+// Filas de validación de mayor a menor pérdida con los pesos de la vista, o null si la red
+// todavía no tiene salida y pérdida. Se calcula una vez por cada theta.
+function ordenPorError(cfg, tel, vista) {
+  if (vista.orden) return vista.orden;
+  if (!conPerdida(cfg) || vista.red.capas.length !== cfg.ocultas.length + 1 || (cfg.perdida !== "centroides" && !tel.puntos.y)) return null;
+  const k = vista.red.capas.at(-1).salidas, d = tel.d, n = tel.puntos.n;
+  const perdidas = Float64Array.from({ length: n }, (_, i) => perdidaFila(cfg, vista.puntos.subarray(i * k, (i + 1) * k), objetivoEjemplo(cfg, tel, i, k), tel.puntos.X.subarray(i * d, (i + 1) * d), vista.red.centroides).perdida);
+  vista.orden = Array.from({ length: n }, (_, i) => i).sort((a, b) => perdidas[b] - perdidas[a] || a - b);
+  return vista.orden;
+}
+
+// Gradiente total de un peso: el de la pérdida de la fila más 2λw si la capa es oculta (L2).
+const gradienteTotal = (cfg, red, calculo, i, t) => calculo.gradW[i][t] + (cfg.l2 > 0 && i < red.capas.length - 1 ? 2 * cfg.l2 * red.capas[i].W[t] : 0);
+
+// Un paso de descenso por gradiente con esta sola fila: θ ← θ − η ∇L.
+function pasoDescenso(cfg, red, estructura, theta, calculo) {
+  const nuevo = Float32Array.from(theta), d = desplazamientos(estructura);
+  estructura.capas.forEach((c, i) => {
+    for (let t = 0; t < c.entradas * c.salidas; t++) nuevo[d[i].W + t] -= cfg.lr * gradienteTotal(cfg, red, calculo, i, t);
+    for (let j = 0; j < c.salidas; j++) nuevo[d[i].b + j] -= cfg.lr * calculo.gradB[i][j];
+  });
+  if (calculo.gradCentroides) {
+    const o = d.at(-1).b + estructura.capas.at(-1).salidas;
+    calculo.gradCentroides.forEach((v, t) => { nuevo[o + t] -= cfg.lr * v; });
+  }
+  return nuevo;
+}
+
+// Etapas del recorrido hacia atrás: el error en la salida, el δ de cada oculta de
+// derecha a izquierda, los gradientes y la actualización.
+function etapasRetro(cfg) {
+  const H = cfg.ocultas.length;
+  return [
+    { tipo: "salida", titulo: "Error en la salida", columna: H + 1 },
+    ...Array.from({ length: H }, (_, s) => ({ tipo: "oculta", titulo: `δ de Oculta ${H - s}`, columna: H - s })),
+    { tipo: "gradiente", titulo: "Gradientes", columna: 1 },
+    { tipo: "paso", titulo: "Actualización", columna: 1 },
+  ];
+}
+
+// Estado del paso hacia atrás para lo que muestra la red. Los pasos de descenso se dan
+// sobre una copia de los pesos, que se descarta si cambian los pesos de la red o el ejemplo.
+function estadoRetro(fuente, real) {
+  const r = E.retro;
+  if (!r || E.redEjemplo === null || !real || !fuente.tel) return null;
+  const { cfg, tel } = fuente, n = tel.puntos.n, i = ((E.redEjemplo % n) + n) % n;
+  const etapas = etapasRetro(cfg);
+  r.etapa = Math.max(0, Math.min(r.etapa, etapas.length - 1));
+  if (r.base !== real.theta || r.indice !== i) Object.assign(r, { base: real.theta, indice: i, theta: null, vista: null, calculo: null, perdidas: [] });
+  const completa = conPerdida(cfg) && real.red.capas.length === cfg.ocultas.length + 1;
+  if (!completa) return { etapas, etapa: etapas[r.etapa], indice: i, vista: real, calculo: null, falta: true };
+  if (r.theta && !r.vista) {
+    const red = redPlana(tel.estructura, r.theta);
+    r.vista = { theta: r.theta, red, grilla: propagarPlano(red, tel.grilla, tel.GX * tel.GY) };
+  }
+  const vista = r.vista || real;
+  if (!r.calculo || r.calculo.theta !== vista.theta) {
+    const x = tel.puntos.X.subarray(i * tel.d, (i + 1) * tel.d);
+    r.calculo = { theta: vista.theta, ...retropropagar(cfg, vista.red, x, objetivoEjemplo(cfg, tel, i, real.red.capas.at(-1).salidas)) };
+  }
+  return { etapas, etapa: etapas[r.etapa], indice: i, vista, calculo: r.calculo, falta: false };
+}
+
+// Lo que muestra la red: la vista de sus pesos o, si se dieron pasos hacia atrás, la de la copia.
+function vistaRed(fuente) {
+  const real = fuente.tel && fuente.theta ? evaluarVista(fuente.tel, fuente.theta) : null;
+  const retro = estadoRetro(fuente, real);
+  return { vista: retro?.vista || real, retro };
+}
+
 function distanciaSegmento(px, py, x1, y1, x2, y2) {
   const dx = x2 - x1, dy = y2 - y1, t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy || 1)));
   return Math.hypot(px - x1 - t * dx, py - y1 - t * dy);
@@ -3857,18 +4067,22 @@ function pesoDe(vista, con) {
   return capa ? capa.W[con.desde * capa.salidas + con.hasta] : null;
 }
 
-function textoConexion(fuente, vista, con, ejemplo) {
+function textoConexion(fuente, vista, con, ejemplo, retro) {
   const { cfg } = fuente, w = pesoDe(vista, con);
   let texto = `${nombreUnidad(cfg, con.columna - 1, con.desde)} → ${nombreUnidad(cfg, con.columna, con.hasta)}`;
   if (w !== null) texto += `: peso ${num(w, 3)}`;
+  const calc = retro?.calculo;
+  if (calc && w !== null) {
+    const capa = vista.red.capas[con.columna - 1], a = calc.a[con.columna - 1][con.desde], d = calc.delta[con.columna][con.hasta];
+    return `${texto}, gradiente a × δ = ${corto(a)} × ${factor(d)} = ${corto(calc.gradW[con.columna - 1][con.desde * capa.salidas + con.hasta])}`;
+  }
   const x = ejemplo?.capas[con.columna - 1]?.[con.desde];
   if (w !== null && x !== undefined) texto += `, aporte ${num(w, 2)} × ${num(x, 2)} = ${num(w * x, 2)}`;
   return texto;
 }
 
 function pintarRedGrande(cont, { editable = false } = {}) {
-  const fuente = fuenteRed(), { cfg, tel, theta } = fuente;
-  const vista = tel && theta ? evaluarVista(tel, theta) : null;
+  const fuente = fuenteRed(), { cfg, tel } = fuente, { vista, retro } = vistaRed(fuente);
   validarSeleccion(cfg);
   let escena = cont.querySelector(".red-escena");
   if (!escena) {
@@ -3895,25 +4109,42 @@ function pintarRedGrande(cont, { editable = false } = {}) {
   const { S } = g, nc = g.columnas.length;
 
   // Conexiones: color y grosor según el peso o, si se sigue un ejemplo, según su aporte (peso × valor de entrada).
+  // Hacia atrás, según la etapa: el error que lleva cada una (w × δ), el gradiente de su peso o su cambio en un paso.
+  const calc = retro?.calculo, etapa = calc ? retro.etapa : null;
+  const fuerzas = g.columnas.slice(0, -1).map((_, i) => {
+    const capa = vista?.red.capas[i];
+    if (!capa) return null;
+    const indice = (ua, ub) => ua * capa.salidas + ub;
+    if (etapa?.tipo === "salida" || (etapa?.tipo === "oculta" && i < etapa.columna)) return null;
+    if (etapa?.tipo === "oculta") return (ua, ub) => capa.W[indice(ua, ub)] * calc.delta[i + 1][ub];
+    if (etapa?.tipo === "gradiente") return (ua, ub) => calc.gradW[i][indice(ua, ub)];
+    if (etapa?.tipo === "paso") return (ua, ub) => -cfg.lr * gradienteTotal(cfg, vista.red, calc, i, indice(ua, ub));
+    const valores = ejemplo?.capas[i];
+    return (ua, ub) => capa.W[indice(ua, ub)] * (valores ? valores[ua] : 1);
+  });
+  const maximo = (i) => {
+    const a = g.columnas[i], b = g.columnas[i + 1];
+    let m = 0;
+    if (fuerzas[i]) for (const sa of a.slots) for (const sb of b.slots) m = Math.max(m, Math.abs(fuerzas[i](a.neurona(sa), b.neurona(sb))));
+    return m;
+  };
+  // Los gradientes y los cambios van en la misma escala para todas las capas: así se ve si se desvanecen.
+  const comun = etapa?.tipo === "gradiente" || etapa?.tipo === "paso" ? Math.max(...fuerzas.map((_, i) => maximo(i))) : null;
   ctx.lineCap = "round";
   for (let i = 0; i < nc - 1; i++) {
-    const a = g.columnas[i], b = g.columnas[i + 1], capa = vista?.red.capas[i], valores = ejemplo?.capas[i];
-    const fuerza = (ua, ub) => {
-      const w = capa.W[ua * capa.salidas + ub];
-      return valores ? w * valores[ua] : w;
-    };
-    let tope = 0;
-    if (capa) for (const sa of a.slots) for (const sb of b.slots) tope = Math.max(tope, Math.abs(fuerza(a.neurona(sa), b.neurona(sb))));
+    const a = g.columnas[i], b = g.columnas[i + 1], fuerza = fuerzas[i], tope = comun ?? maximo(i);
+    // Hacia atrás, las capas ya recorridas quedan más tenues que la de la etapa.
+    const recorrida = etapa?.tipo === "oculta" && i > etapa.columna ? 0.45 : 1;
     for (const sb of b.slots) for (const sa of a.slots) {
       const ua = a.neurona(sa), ub = b.neurona(sb), atenuar = relacionada(i, ua, ub) ? 1 : 0.15;
-      if (capa && tope > 0) {
+      if (fuerza && tope > 0) {
         const v = fuerza(ua, ub), t = Math.abs(v) / tope;
         ctx.strokeStyle = v >= 0 ? C.dato : C.naranja;
-        ctx.globalAlpha = (0.12 + 0.75 * t) * atenuar;
+        ctx.globalAlpha = (0.12 + 0.75 * t) * atenuar * recorrida;
         ctx.lineWidth = 0.3 + 3.6 * t;
       } else {
         ctx.strokeStyle = C.linea;
-        ctx.globalAlpha = 0.8 * atenuar;
+        ctx.globalAlpha = (etapa ? 0.35 : 0.8) * atenuar;
         ctx.lineWidth = 0.8;
       }
       ctx.setLineDash(b.desconocida ? [3, 3] : []);
@@ -3939,6 +4170,8 @@ function pintarRedGrande(cont, { editable = false } = {}) {
   }
 
   // Neuronas: cada una con su salida sobre el plano de las componentes principales.
+  let topeDelta = 0;
+  if (calc) g.columnas.forEach((c, i) => { if (i >= 1 && i >= etapa.columna && !c.desconocida) for (const s of c.slots) topeDelta = Math.max(topeDelta, Math.abs(calc.delta[i][c.neurona(s)])); });
   g.columnas.forEach((c, i) => {
     for (const s of c.slots) {
       const x0 = c.x - S / 2, y0 = c.y(s) - S / 2, u = c.neurona(s);
@@ -3958,6 +4191,8 @@ function pintarRedGrande(cont, { editable = false } = {}) {
       }
       if (vista && (i === 0 || vista.grilla[i - 1])) pintarGrilla(ctx, tel.GX, tel.GY, colorNeurona(tel, vista, i, u), x0, y0, S, S);
       else { ctx.fillStyle = i === 0 ? C.suave : C.superficie; ctx.fillRect(x0, y0, S, S); }
+      // Hacia atrás, las capas que el error todavía no alcanzó quedan tenues.
+      if (calc && i >= 1 && i < etapa.columna) { ctx.fillStyle = C.velo(0.6); ctx.fillRect(x0, y0, S, S); }
       const apagada = E.entrenando && c.oculta !== undefined && tel?.mascaras?.[c.oculta]?.[u] === 0;
       if (apagada) { ctx.fillStyle = C.velo(0.8); ctx.fillRect(x0, y0, S, S); ctx.setLineDash([3, 2]); }
       const elegida = sel?.tipo === "neurona" && sel.columna === i && sel.unidad === u;
@@ -3965,9 +4200,19 @@ function pintarRedGrande(cont, { editable = false } = {}) {
       ctx.lineWidth = elegida ? 3 : 1.2;
       ctx.strokeRect(x0 + 0.5, y0 + 0.5, S - 1, S - 1);
       ctx.setLineDash([]);
+      // Hacia atrás, el δ de cada neurona ya alcanzada: borde según su signo, más grueso cuanto mayor.
+      const dl = calc && i >= 1 && i >= etapa.columna ? calc.delta[i][u] : undefined;
+      if (dl) {
+        const t = topeDelta > 0 ? Math.abs(dl) / topeDelta : 0;
+        ctx.strokeStyle = dl >= 0 ? C.dato : C.naranja;
+        ctx.globalAlpha = 0.3 + 0.7 * t;
+        ctx.lineWidth = 1 + 3 * t;
+        ctx.strokeRect(x0 - 3.5, y0 - 3.5, S + 7, S + 7);
+        ctx.globalAlpha = 1;
+      }
       const valor = ejemplo?.capas[i]?.[u];
-      if (valor !== undefined) {
-        const texto = num(valor, 2);
+      const texto = calc && i >= 1 ? (dl !== undefined ? `δ ${corto(dl)}` : null) : valor !== undefined ? num(valor, 2) : null;
+      if (texto) {
         ctx.font = letra(g.compacto ? 9.5 : 10.5, 600);
         const w = ctx.measureText(texto).width + 6;
         ctx.fillStyle = C.velo(0.92);
@@ -4003,17 +4248,27 @@ function pintarRedGrande(cont, { editable = false } = {}) {
   renderBotonesRed(escena, g, cfg, editable);
   if (editable) renderMenuCapa(escena, g, cfg);
   const globo = escena.querySelector(".red-globo");
-  if (interaccion.hover) globo.textContent = textoConexion(fuente, vista, interaccion.hover, ejemplo);
+  if (interaccion.hover) globo.textContent = textoConexion(fuente, vista, interaccion.hover, ejemplo, retro);
   const textoEj = $("#red-ejemplo");
   if (textoEj) textoEj.textContent = ejemplo ? textoDelEjemplo(fuente, ejemplo) : E.redEjemplo !== null ? "Los valores aparecen cuando la red tiene pesos." : "";
   const dato = $("#dato-red");
   if (dato) dato.textContent = E.entrenando && tel?.lotes ? `época ${tel.epoca}, lote ${tel.lote} de ${tel.lotes}` : `${num(desglose(cfg).total)} parámetros`;
   const leyenda = $("#leyenda-red");
-  if (leyenda) leyenda.textContent = textoLeyendaRed(fuente, Boolean(ejemplo));
+  if (leyenda) leyenda.textContent = textoLeyendaRed(fuente, Boolean(ejemplo), retro);
 }
 
-function textoLeyendaRed(fuente, conEjemplo) {
+function textoLeyendaRed(fuente, conEjemplo, retro) {
   const { cfg, estado } = fuente, m = cfg.tarea;
+  if (retro?.calculo) {
+    const conexiones = {
+      salida: "Las conexiones todavía no intervienen.",
+      oculta: "Las conexiones llevan el error hacia atrás: cada una aporta w × δ a la suma de la neurona de la izquierda; azul, positivo; ámbar, negativo.",
+      gradiente: "Las conexiones muestran el gradiente de su peso, a × δ, con el mismo grosor para la misma magnitud en todas las capas: así se ve si el gradiente se desvanece.",
+      paso: "Las conexiones muestran cuánto cambia cada peso con un paso: azul, sube; ámbar, baja.",
+    }[retro.etapa.tipo];
+    const dropout = cfg.ocultas.some((c) => c.dropout > 0) ? " Sin dropout, como al predecir." : "";
+    return `Hacia atrás: el borde de cada neurona muestra su δ, cuánto cambia la pérdida de este ejemplo si sube la suma z de la neurona; azul, positivo; ámbar, negativo; más grueso, mayor. ${conexiones}${dropout} Con un clic en una neurona o en una conexión se ven las cuentas.`;
+  }
   const pesos = {
     entrenando: `Pesos de la época ${fuente.tel?.epoca || 0}.`,
     entrenada: "Pesos del último entrenamiento.",
@@ -4047,7 +4302,9 @@ function textoDelEjemplo(fuente, ejemplo) {
       red = `${def.nombresClases[clase]} (${num(k === 1 ? salida[0] : salida[clase], 2)})`;
     }
   }
-  return `Ejemplo ${i + 1} de ${tel.puntos.n} de validación.${real ? ` Real: ${real}.` : ""} La red: ${red}.`;
+  const puesto = interaccion.mayorError === i && fuente.theta ? ordenPorError(cfg, tel, evaluarVista(tel, fuente.theta))?.indexOf(i) : -1;
+  const rango = puesto > 0 ? `, el ${puesto + 1}.º con mayor error` : puesto === 0 ? ", el de mayor error" : "";
+  return `Ejemplo ${i + 1} de ${tel.puntos.n} de validación${rango}.${real ? ` Real: ${real}.` : ""} La red: ${red}.`;
 }
 
 // Botones transparentes sobre las neuronas y, en el editor, los controles de cada capa.
@@ -4145,6 +4402,7 @@ function dibujarRedGrande() {
   if (!E.entrenando || ahora - interaccion.inspector > 300) {
     interaccion.inspector = ahora;
     renderInspectorRed();
+    renderRetro();
   }
   if (editor) $("#parametros-editor").innerHTML = resumenParametros();
 }
@@ -4162,7 +4420,7 @@ function thetaPorEpoca(tel) {
   return rec.puntos.filter((_, i) => rec.epocas[i] > 0 && rec.epocas[i] !== rec.epocas[i + 1]);
 }
 
-function barrasPesos(items) {
+function barrasPesos(items, etiqueta = "Pesos de entrada, de mayor a menor magnitud") {
   const filas = items.slice(0, 12), tope = Math.max(...filas.map((f) => Math.abs(f.valor)), 1e-9);
   const ancho = 330, fila = 18, izq = 120, medio = izq + (ancho - izq) / 2, mitad = (ancho - izq) / 2 - 4;
   const barras = filas.map((f, j) => {
@@ -4170,7 +4428,7 @@ function barrasPesos(items) {
     return `<text x="${izq - 6}" y="${y + 10}" text-anchor="end" class="t-peso">${esc(f.nombre)}</text>
       <rect x="${(f.valor >= 0 ? medio : medio - largo).toFixed(1)}" y="${y}" width="${Math.max(1, largo).toFixed(1)}" height="${fila - 6}" rx="2" fill="${f.valor >= 0 ? C.dato : C.naranja}" opacity=".8"/>`;
   }).join("");
-  return `<svg viewBox="0 0 ${ancho} ${filas.length * fila + 4}" role="img" aria-label="Pesos de entrada, de mayor a menor magnitud"><style>.t-peso { font-size: 10.5px; fill: var(--texto); }</style><line x1="${medio}" x2="${medio}" y1="0" y2="${filas.length * fila + 4}" stroke="${C.linea}"/>${barras}</svg>`;
+  return `<svg viewBox="0 0 ${ancho} ${filas.length * fila + 4}" role="img" aria-label="${etiqueta}"><style>.t-peso { font-size: 10.5px; fill: var(--texto); }</style><line x1="${medio}" x2="${medio}" y1="0" y2="${filas.length * fila + 4}" stroke="${C.linea}"/>${barras}</svg>`;
 }
 
 function formulaNeurona(cfg, columna, u, capa, act) {
@@ -4196,12 +4454,15 @@ function renderInspectorRed() {
   if (!cont) return;
   const sel = E.redSeleccion;
   if (!sel) {
-    cont.innerHTML = '<p class="pista">Hacé clic en una neurona para ver su fórmula y sus pesos, o en una conexión para ver cómo cambió su peso. Pasá el mouse por una conexión para ver su valor.</p>';
+    cont.innerHTML = E.retro
+      ? '<p class="pista">Hacé clic en una neurona para ver cómo se calcula su δ, o en una conexión para ver el gradiente de su peso.</p>'
+      : '<p class="pista">Hacé clic en una neurona para ver su fórmula y sus pesos, o en una conexión para ver cómo cambió su peso. Pasá el mouse por una conexión para ver su valor.</p>';
     return;
   }
-  const fuente = fuenteRed(), { cfg, tel, theta } = fuente, vista = tel && theta ? evaluarVista(tel, theta) : null;
+  const fuente = fuenteRed(), { cfg, tel } = fuente, { vista, retro } = vistaRed(fuente);
   const ejemplo = valoresEjemplo(fuente, vista);
   const cerrar = '<button type="button" class="boton chico" data-accion="red-cerrar-inspector">Cerrar</button>';
+  if (retro?.calculo) { cont.innerHTML = inspectorRetro(fuente, vista, retro, sel, cerrar); return; }
   const estadoPesos = { entrenando: `pesos de la época ${tel?.epoca || 0}`, entrenada: "pesos del último entrenamiento", inicial: `pesos iniciales con la semilla ${cfg.semillaPesos}`, "sin-pesos": "sin pesos todavía" }[fuente.estado];
   const porEpoca = thetaPorEpoca(tel), grafico = [];
   const evolucion = (series, etiqueta) => {
@@ -4262,6 +4523,169 @@ function renderInspectorRed() {
   }
 }
 
+// Textos de cada etapa del paso hacia atrás, con las cuentas del ejemplo.
+function textoSalidaRetro(fuente, calc) {
+  const { cfg, tel } = fuente, def = tel.def, p = calc.a.at(-1), dl = calc.delta.at(-1), k = p.length, act = cfg.salida.activacion, v = corto;
+  const sentido = (d) => (d < 0 ? "la pérdida baja si sube la suma z de la salida" : d > 0 ? "la pérdida baja si baja la suma z de la salida" : "esta salida ya no empuja");
+  if (cfg.perdida === "centroides") {
+    const lista = (valores) => `(${Array.from(valores).slice(0, 4).map((x) => num(x, 2)).join("; ")}${valores.length > 4 ? "; …" : ""})`;
+    return `La red reparte la fila entre los grupos con pertenencias q = ${lista(p)}, y las distancias al cuadrado a los centroides son d² = ${lista(calc.distancias)}. La pérdida es Σ q × d² = ${v(calc.perdida)}. En cada salida, δ<sub>j</sub> = q<sub>j</sub> (d²<sub>j</sub> − ${v(calc.perdida)}): la pertenencia tiene que subir en los grupos más cercanos que ese promedio y bajar en los más lejanos.`;
+  }
+  if (k === 1) {
+    const y = calc.y[0], unidad = cfg.tarea === "regresion" && def.unidad ? ` ${esc(def.unidad)}` : "";
+    const real = cfg.tarea === "regresion" ? `${signo(num(y, 1))}${unidad}` : `${num(y, 0)} (${esc(def.nombresClases[y])})`;
+    const red = cfg.tarea === "regresion" ? `${signo(num(p[0], 1))}${unidad}` : num(p[0], 3);
+    const formula = { bce: `BCE = −log(${y === 1 ? "ŷ" : "1 − ŷ"}) = ${v(calc.perdida)}`, mse: `MSE = (ŷ − y)² = ${v(calc.perdida)}`, mae: `MAE = |ŷ − y| = ${v(calc.perdida)}` }[cfg.perdida] || `${NOMBRE_PERDIDA[cfg.perdida]} = ${v(calc.perdida)}`;
+    const df = DERIVADA[act] ? DERIVADA[act](calc.z.at(-1)[0], p[0]) : 1;
+    const delta = cfg.perdida === "bce" && act === "sigmoide" ? `δ = ŷ − y = ${v(dl[0])}`
+      : cfg.perdida === "mse" && act === "lineal" ? `δ = 2 (ŷ − y) = ${v(dl[0])}`
+      : cfg.perdida === "mae" && act === "lineal" ? `δ = signo(ŷ − y) = ${v(dl[0])}`
+      : `δ = ∂L/∂ŷ × f′(z) = ${v(calc.g[0])} × ${factor(df)} = ${v(dl[0])}`;
+    return `La red da ŷ = ${red} y el valor real es y = ${real}. La pérdida de esta fila es ${formula}. En la salida, ${delta}: ${sentido(dl[0])}.`;
+  }
+  const nombres = etiquetasSalida(false, cfg);
+  if (cfg.perdida === "cce" && act === "softmax") {
+    const real = argmax(Array.from(calc.y)), otra = argmax(Array.from(p, (x, j) => (j === real ? -1 : x)));
+    return `La red le da p = ${num(p[real], 3)} a la clase real, ${esc(def.nombresClases[real])}. La pérdida de esta fila es CCE = −log(${num(p[real], 3)}) = ${v(calc.perdida)}. En cada salida, δ = p − y: ${v(dl[real])} en la clase real, que tiene que subir, y la p de cada una de las demás, que tienen que bajar; la mayor es ${esc(def.nombresClases[otra])}, con ${v(dl[otra])}.`;
+  }
+  const filas = Array.from(p).slice(0, 4).map((x, j) => `${esc(nombres[j] || `salida ${j + 1}`)}, ŷ = ${signo(num(x, 3))}${calc.y ? ` e y = ${num(calc.y[j], 0)}` : ""}: δ = ${v(dl[j])}`);
+  return `La pérdida de esta fila es ${NOMBRE_PERDIDA[cfg.perdida]} = ${v(calc.perdida)}. En cada salida, δ = ∂L/∂z: ${filas.join("; ")}${k > 4 ? "; …" : ""}.`;
+}
+
+function textoOcultaRetro(fuente, calc, c) {
+  const { cfg } = fuente, act = cfg.ocultas[c - 1].activacion, dl = calc.delta[c], n = dl.length;
+  const tope = (valores) => Math.max(...Array.from(valores, Math.abs));
+  const nulas = Array.from(calc.z[c]).filter((z) => z <= 0).length;
+  const derivada = {
+    relu: `Con ReLU, f′ vale 1 si la neurona estaba activa (z > 0) y 0 si no: ${nulas ? `${num(nulas)} de las ${num(n)} no reciben error en este ejemplo` : "en este ejemplo todas reciben error"}.`,
+    tanh: "Con tanh, f′ = 1 − a²: cerca de ±1 la neurona está saturada y deja pasar poco error.",
+    sigmoide: "Con sigmoide, f′ = a (1 − a), que vale como mucho 0,25: tiende a achicar el error en cada capa.",
+    lineal: "Con lineal, f′ = 1: el error pasa sin cambios.",
+  }[act];
+  return `Cada neurona de Oculta ${c} recibe el error de la capa de la derecha por los mismos pesos que usó hacia adelante: δ<sub>j</sub> = f′(z<sub>j</sub>) × Σ<sub>k</sub> w<sub>jk</sub> δ<sub>k</sub>. ${derivada} El mayor |δ| de esta capa es ${corto(tope(dl))}; en la de la derecha, ${corto(tope(calc.delta[c + 1]))}.`;
+}
+
+function textoGradienteRetro(fuente, calc, red) {
+  const { cfg } = fuente, cuadrados = (valores) => valores.reduce((s, v) => s + v * v, 0);
+  const normas = red.capas.map((_, i) => `${i < cfg.ocultas.length ? `Oculta ${i + 1}` : "salida"}, ${numeroCorto(Math.sqrt(cuadrados(calc.gradW[i]) + cuadrados(calc.gradB[i])))}`);
+  const l2 = cfg.l2 > 0 && cfg.ocultas.length ? ` Con L2, al gradiente de cada peso de las ocultas se le suma 2λw = ${decimal(2 * cfg.l2)} × w.` : "";
+  const centroides = calc.gradCentroides ? " Los centroides también tienen gradiente: −2 q (x − centroide)." : "";
+  return `Con los δ ya se tienen todos los gradientes: ∂L/∂w<sub>ij</sub> = a<sub>i</sub> × δ<sub>j</sub>, lo que entra por la conexión por el δ de la neurona de destino, y ∂L/∂b<sub>j</sub> = δ<sub>j</sub>. Norma del gradiente por capa en este ejemplo: ${normas.join("; ")}.${l2}${centroides}`;
+}
+
+function textoPasoRetro(fuente, calc) {
+  const { cfg } = fuente, r = E.retro, cifra = (x) => signo(num(x, Math.max(0, Math.min(8, 3 - Math.floor(Math.log10(Math.abs(x) || 1))))));
+  const optimizador = cfg.optimizador === "sgd" ? "" : ` El entrenamiento usa ${OPTIMIZADORES[cfg.optimizador].nombre}, que además ajusta el tamaño de cada paso; acá se ve el paso básico.`;
+  let estado;
+  if (E.entrenando) estado = "Mientras la red entrena, sus pesos cambian solos: para dar pasos con esta fila, esperá a que termine.";
+  else if (r.perdidas.length < 2) estado = `Pérdida de esta fila: ${cifra(calc.perdida)}. «Dar un paso» actualiza los pesos solo con este ejemplo y vuelve a calcular la pérdida.`;
+  else {
+    const p = r.perdidas, lista = p.length <= 6 ? p.map(cifra) : [cifra(p[0]), "…", ...p.slice(-4).map(cifra)];
+    estado = `Pérdida de esta fila después de cada paso: ${lista.join(" → ")}. Los pasos se dan sobre una copia de los pesos; «Volver a los pesos de la red» la descarta.`;
+    if (p[0] > 0 && (p[0] - p.at(-1)) / p[0] < 0.01) estado += " Esta fila ya está bien predicha: su gradiente es chico y cada paso la cambia poco; «Mayor error» lleva a la peor predicha.";
+  }
+  return `Cada parámetro se mueve en contra de su gradiente: w ← w − η × ∂L/∂w, con η = ${decimal(cfg.lr)}, el learning rate elegido.${optimizador} ${estado}`;
+}
+
+// Etapas del paso hacia atrás y las cuentas de la etapa actual, bajo la barra de la red.
+function renderRetro() {
+  const cont = $("#red-retro");
+  if (!cont) return;
+  const fuente = fuenteRed(), { vista, retro } = vistaRed(fuente);
+  let html;
+  if (!retro) html = '<p class="retro-texto">El paso hacia atrás aparece cuando la red tiene pesos.</p>';
+  else if (retro.falta) html = '<p class="retro-texto">Para ir hacia atrás hacen falta la salida, la función de pérdida y la variable objetivo: se eligen en los pasos 1, 4 y 5.</p>';
+  else {
+    const { etapas, etapa, calculo } = retro, actual = E.retro.etapa, andando = Boolean(interaccion.pasoAutomatico);
+    const botones = etapas.map((e, s) => `<button type="button" class="retro-etapa${s === actual ? " actual" : ""}" data-accion="retro-etapa" data-etapa="${s}"${s === actual ? ' aria-current="step"' : ""}>${s + 1}. ${e.titulo}</button>`).join("");
+    const texto = { salida: () => textoSalidaRetro(fuente, calculo), oculta: () => textoOcultaRetro(fuente, calculo, etapa.columna), gradiente: () => textoGradienteRetro(fuente, calculo, vista.red), paso: () => textoPasoRetro(fuente, calculo) }[etapa.tipo]();
+    const acciones = [`<button type="button" class="boton chico" data-accion="retro-recorrer" aria-pressed="${andando}">${andando ? "■ Detener" : "▶ Recorrer"}</button>`];
+    if (etapa.tipo === "paso") {
+      acciones.push(`<button type="button" class="boton chico primario" data-accion="retro-paso"${E.entrenando ? " disabled" : ""}>Dar un paso</button>`);
+      if (E.retro.theta) acciones.push('<button type="button" class="boton chico" data-accion="retro-reiniciar">Volver a los pesos de la red</button>');
+    }
+    html = `<div class="retro-etapas" role="group" aria-label="Etapas del paso hacia atrás">${botones}</div><p class="retro-texto" aria-live="polite">${texto}</p><div class="retro-acciones">${acciones.join("")}</div>`;
+  }
+  if (html === interaccion.retroHtml && cont.firstChild) return;
+  interaccion.retroHtml = html;
+  const activo = document.activeElement, clave = (b) => `${b.dataset.accion}${b.dataset.etapa ?? ""}`;
+  const recordar = activo && cont.contains(activo) && activo.dataset.accion ? clave(activo) : null;
+  cont.innerHTML = html;
+  if (recordar) [...cont.querySelectorAll("[data-accion]")].find((b) => clave(b) === recordar && !b.disabled)?.focus({ preventScroll: true });
+}
+
+// «Recorrer»: avanza solo por las etapas, de la salida hacia la entrada.
+function recorrerRetro() {
+  detenerRecorrido();
+  E.retro.etapa = 0;
+  const avanzar = () => {
+    const total = E.retro ? etapasRetro(fuenteRed().cfg).length : 0;
+    if (!E.retro || E.retro.etapa >= total - 1) { detenerRecorrido(); dibujarRedGrande(); return; }
+    E.retro.etapa += 1;
+    interaccion.pasoAutomatico = E.retro.etapa < total - 1 ? setTimeout(avanzar, 1500) : null;
+    dibujarRedGrande();
+  };
+  interaccion.pasoAutomatico = setTimeout(avanzar, 1500);
+  dibujarRedGrande();
+}
+
+function detenerRecorrido() {
+  clearTimeout(interaccion.pasoAutomatico);
+  interaccion.pasoAutomatico = null;
+}
+
+// Un paso de descenso con la fila que se sigue, sobre la copia de los pesos.
+function darPasoRetro() {
+  const fuente = fuenteRed(), { vista, retro } = vistaRed(fuente);
+  if (!retro?.calculo || E.entrenando) return;
+  const r = E.retro;
+  if (!r.perdidas.length) r.perdidas.push(retro.calculo.perdida);
+  r.theta = pasoDescenso(fuente.cfg, vista.red, fuente.tel.estructura, vista.theta, retro.calculo);
+  r.vista = null;
+  r.perdidas.push(estadoRetro(fuente, evaluarVista(fuente.tel, fuente.theta)).calculo.perdida);
+  dibujarRedGrande();
+}
+
+// Inspector hacia atrás: las cuentas del δ de la neurona o del gradiente de la conexión elegida.
+function inspectorRetro(fuente, vista, retro, sel, cerrar) {
+  const { cfg } = fuente, calc = retro.calculo, v = corto, eta = decimal(cfg.lr);
+  if (sel.tipo === "conexion") {
+    const i = sel.columna - 1, capa = vista.red.capas[i], t = sel.desde * capa.salidas + sel.hasta;
+    const w = capa.W[t], gw = calc.gradW[i][t], total = gradienteTotal(cfg, vista.red, calc, i, t);
+    const l2 = total !== gw ? ` Con L2 se le suma 2λw = ${v(total - gw)} y el gradiente queda en ${v(total)}.` : "";
+    return `<div class="inspector-cabecera"><strong>${esc(nombreUnidad(cfg, i, sel.desde))} → ${esc(nombreUnidad(cfg, sel.columna, sel.hasta))}</strong>${cerrar}</div>
+      <p class="formula">∂L/∂w = a × δ = ${v(calc.a[i][sel.desde])} × ${factor(calc.delta[sel.columna][sel.hasta])} = ${v(gw)}</p>
+      <p>a es lo que entra por la conexión en este ejemplo y δ, el error de la neurona de destino.${l2} Con η = ${eta}, un paso cambia el peso en −η × ∂L/∂w = ${v(-cfg.lr * total)}: de ${signo(num(w, 4))} a ${signo(num(w - cfg.lr * total, 4))}.</p>`;
+  }
+  if (sel.columna === 0) {
+    return `<div class="inspector-cabecera"><strong>Entrada: <code>${esc(cfg.entradas[sel.unidad])}</code></strong>${cerrar}</div>
+      <p>Las entradas no tienen pesos propios. Su valor en este ejemplo, x = ${v(calc.a[0][sel.unidad])}, multiplica el δ de cada neurona de la capa siguiente para dar el gradiente de esos pesos: ∂L/∂w = x × δ.</p>`;
+  }
+  const c = sel.columna, u = sel.unidad, esSalida = c === cfg.ocultas.length + 1, dl = calc.delta[c][u];
+  const act = esSalida ? cfg.salida.activacion : cfg.ocultas[c - 1].activacion;
+  let formula, explicacion;
+  if (!esSalida) {
+    const siguiente = vista.red.capas[c], n = siguiente.salidas, visibles = Math.min(n, 6);
+    const terminos = Array.from({ length: visibles }, (_, m) => `${v(siguiente.W[u * n + m])} × ${factor(calc.delta[c + 1][m])}`).join(" + ");
+    const fp = DERIVADA[act](calc.z[c][u], calc.a[c][u]);
+    formula = `δ = f′(z) × Σ<sub>k</sub> w<sub>k</sub> δ<sub>k</sub> = ${v(fp)} × (${terminos}${n > visibles ? " + …" : ""}) = ${v(fp)} × ${factor(calc.sumas[c][u])} = ${v(dl)}`;
+    explicacion = `Los w<sub>k</sub> son los pesos que salen de esta neurona hacia ${c === cfg.ocultas.length ? "la salida" : `Oculta ${c + 1}`} y los δ<sub>k</sub>, el error de cada neurona de destino. Con z = ${v(calc.z[c][u])}, la derivada de ${ACTIVACIONES[act].nombre} vale ${v(fp)}.`;
+  } else {
+    const p = calc.a.at(-1)[u];
+    formula = act === "softmax" && cfg.perdida === "cce" ? `δ = p − y = ${v(p)} − ${num(calc.y[u], 0)} = ${v(dl)}`
+      : act === "sigmoide" && cfg.perdida === "bce" && calc.k === 1 ? `δ = ŷ − y = ${v(p)} − ${num(calc.y[u], 0)} = ${v(dl)}`
+      : `δ = ∂L/∂z = ${v(dl)}`;
+    explicacion = `${cfg.perdida === "centroides" ? `d² = ${v(calc.distancias[u])} es la distancia al cuadrado al centroide de este grupo, y ∂L/∂q = d². ` : `∂L/∂ŷ = ${v(calc.g[u])}. `}El δ de la salida es el punto de partida del paso hacia atrás.`;
+  }
+  const capa = vista.red.capas[c - 1], entradas = capa.entradas;
+  const items = Array.from({ length: entradas }, (_, e) => ({ nombre: terminoEntrada(cfg, c, e), valor: calc.gradW[c - 1][e * capa.salidas + u] })).sort((p, q) => Math.abs(q.valor) - Math.abs(p.valor));
+  const titulo = esSalida ? `Salida: ${esc(nombreUnidad(cfg, c, u).replace(/^salida:? ?/, ""))}` : `Oculta ${c}, neurona ${u + 1}`;
+  return `<div class="inspector-cabecera"><strong>${titulo}</strong><span class="dato">δ = ${v(dl)}</span>${cerrar}</div>
+    <p class="formula">${formula}</p>
+    <p>${explicacion} Sus pesos de entrada tienen gradiente ∂L/∂w = a × δ y su sesgo, ∂L/∂b = δ: con η = ${eta}, el sesgo cambia en ${v(-cfg.lr * dl)}.</p>
+    <div class="inspector-graficos"><figure class="barras-pesos"><figcaption>Gradiente de sus pesos de entrada${entradas > 12 ? " (los 12 mayores)" : ""}</figcaption>${barrasPesos(items, "Gradiente de los pesos de entrada, de mayor a menor magnitud")}</figure></div>`;
+}
+
 // Total y desglose de parámetros, bajo la red del editor.
 function resumenParametros() {
   const { filas, total, completo } = desglose();
@@ -4274,12 +4698,14 @@ function resumenParametros() {
 }
 
 function panelRed(editable) {
-  const siguiendo = E.redEjemplo !== null;
+  const siguiendo = E.redEjemplo !== null, atras = Boolean(E.retro);
   const contador = editable ? `<div class="red-contador"><span>Capas ocultas</span><button type="button" class="boton chico" data-accion="quitar-ultima-capa" ${E.ocultas.length ? "" : "disabled"} aria-label="Quitar la última capa oculta">−</button><strong>${E.ocultas.length}</strong><button type="button" class="boton chico" data-accion="agregar-capa" ${E.ocultas.length >= MAXIMO_OCULTAS ? "disabled" : ""} aria-label="Agregar una capa oculta">+</button></div>` : "";
   return `<div class="red-herramientas">${contador}
       <button type="button" class="boton chico${siguiendo ? " activo" : ""}" data-accion="seguir-ejemplo" aria-pressed="${siguiendo}">Seguir un ejemplo</button>
-      ${siguiendo ? '<span class="red-navegar"><button type="button" class="boton chico" data-accion="ejemplo-anterior" aria-label="Ejemplo anterior">◀</button><button type="button" class="boton chico" data-accion="ejemplo-siguiente" aria-label="Ejemplo siguiente">▶</button><button type="button" class="boton chico" data-accion="ejemplo-azar">Al azar</button></span>' : ""}
+      ${siguiendo ? `<span class="red-navegar"><button type="button" class="boton chico" data-accion="ejemplo-anterior" aria-label="Ejemplo anterior">◀</button><button type="button" class="boton chico" data-accion="ejemplo-siguiente" aria-label="Ejemplo siguiente">▶</button><button type="button" class="boton chico" data-accion="ejemplo-azar">Al azar</button><button type="button" class="boton chico" data-accion="ejemplo-error" ${conPerdida(configActual()) ? 'title="La fila de validación peor predicha; con otro clic, la siguiente"' : 'disabled title="Hacen falta la salida y la función de pérdida (pasos 4 y 5)"'}>Mayor error</button></span>` : ""}
+      ${siguiendo ? `<span class="red-sentido" role="group" aria-label="Sentido del recorrido"><button type="button" class="boton chico${atras ? "" : " activo"}" data-accion="sentido-adelante" aria-pressed="${!atras}">Hacia adelante</button><button type="button" class="boton chico${atras ? " activo" : ""}" data-accion="sentido-atras" aria-pressed="${atras}">Hacia atrás</button></span>` : ""}
       <span class="red-ejemplo" id="red-ejemplo" aria-live="polite"></span>
+      ${atras ? '<div class="red-retro" id="red-retro"></div>' : ""}
     </div>
     <div class="red-grande" id="${editable ? "red-editor" : "red-viva"}" role="group" aria-label="Red neuronal: cada neurona es un botón que muestra qué calcula"></div>
     <p class="leyenda red-desliza" id="red-desliza" hidden>Deslizá de costado para ver toda la red.</p>
@@ -5281,11 +5707,26 @@ const ACCIONES = {
   },
   "seguir-ejemplo"() {
     E.redEjemplo = E.redEjemplo === null ? 0 : null;
+    if (E.redEjemplo === null) { detenerRecorrido(); E.retro = null; }
     renderHerramientasRed();
   },
+  "sentido-adelante"() { detenerRecorrido(); E.retro = null; renderHerramientasRed("sentido-adelante"); },
+  "sentido-atras"() { E.retro ||= { etapa: 0, perdidas: [] }; renderHerramientasRed("sentido-atras"); },
+  "retro-etapa"(b) { detenerRecorrido(); E.retro.etapa = Number(b.dataset.etapa); dibujarRedGrande(); },
+  "retro-recorrer"() { if (interaccion.pasoAutomatico) { detenerRecorrido(); dibujarRedGrande(); } else recorrerRetro(); },
+  "retro-paso"() { darPasoRetro(); },
+  "retro-reiniciar"() { Object.assign(E.retro, { theta: null, vista: null, calculo: null, perdidas: [] }); dibujarRedGrande(); },
   "ejemplo-anterior"() { E.redEjemplo -= 1; dibujarRedGrande(); },
   "ejemplo-siguiente"() { E.redEjemplo += 1; dibujarRedGrande(); },
   "ejemplo-azar"() { E.redEjemplo = Math.floor(Math.random() * 400); dibujarRedGrande(); },
+  "ejemplo-error"() {
+    // La fila con mayor pérdida y, con otro clic sobre ella, la que le sigue en el orden.
+    const f = fuenteRed(), orden = f.tel && f.theta ? ordenPorError(f.cfg, f.tel, evaluarVista(f.tel, f.theta)) : null;
+    if (!orden) return;
+    const n = orden.length, actual = ((E.redEjemplo % n) + n) % n;
+    E.redEjemplo = interaccion.mayorError = orden[interaccion.mayorError === actual ? (orden.indexOf(actual) + 1) % n : 0];
+    dibujarRedGrande();
+  },
   simular() {
     simularDropout();
     renderPaso();
@@ -5325,13 +5766,14 @@ function cambiarNeuronas(i, paso) {
 }
 
 // La barra de herramientas cambia al seguir un ejemplo: se vuelve a armar sin tocar la red.
-function renderHerramientasRed() {
+function renderHerramientasRed(foco = "seguir-ejemplo") {
   const barra = $(".red-herramientas"), editable = Boolean($("#red-editor"));
   if (!barra) return;
   const molde = document.createElement("div");
   molde.innerHTML = panelRed(editable);
   barra.replaceWith(molde.querySelector(".red-herramientas"));
-  $('[data-accion="seguir-ejemplo"]')?.focus({ preventScroll: true });
+  $(`[data-accion="${foco}"]`)?.focus({ preventScroll: true });
+  interaccion.retroHtml = "";
   dibujarRedGrande();
 }
 
@@ -5586,7 +6028,7 @@ function iniciar() {
 }
 
 // Acceso para depurar desde la consola y para las pruebas automáticas.
-window.configurador = { estado: E, dataset: () => DATASET, conteo, prepararDatos, entrenarRed, codigoKeras, notebookKeras, desglose, diagnosticar };
+window.configurador = { estado: E, dataset: () => DATASET, conteo, prepararDatos, entrenarRed, codigoKeras, notebookKeras, desglose, diagnosticar, retropropagar, redPlana, perdidaPlana, pasoDescenso, fuenteRed };
 iniciar();
 </script>
 </body>
