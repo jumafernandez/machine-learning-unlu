@@ -637,6 +637,9 @@ button.enlace:focus-visible, label.enlace:has(input:focus-visible) { outline: 2p
 .tabla.head th button:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }
 .tabla.head .col-nombre { font-weight: 700; color: var(--titulo); font-family: var(--mono); font-size: .86rem; }
 .tabla.head .col-detalle { display: block; font-weight: 400; font-size: .76rem; color: var(--secundario); }
+.tabla.head th.renombrando { min-width: 9em; }
+.tabla.head .col-renombre { box-sizing: border-box; width: 100%; padding: 2px 6px; border: 1px solid var(--acento); border-radius: 6px; background: var(--superficie); color: var(--titulo); font: 700 .86rem var(--mono); }
+.tabla.head .col-renombre:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
 .tabla.head .chip { margin-top: 3px; }
 .tabla.head td { color: var(--texto); text-align: right; }
 .tabla.head td.indice, .tabla.head th.indice { color: var(--tenue); font-size: .8rem; text-align: right; background: var(--superficie); }
@@ -976,6 +979,7 @@ function crearDataset({ nombre, descripcion, columnas, orden, variables, entrada
   for (const [c, valores] of Object.entries(ordenClases)) info[c].distintos = valores.filter((v) => info[c].distintos.includes(v));
   return {
     id: Math.random().toString(36).slice(2), nombre, descripcion, n: columnas[orden[0]].length, columnas, orden, info, variables,
+    originales: [...orden], cortos: Object.fromEntries(variables.map((v) => [v.columna, v.corto])),
     entradasPorDefecto: entradasPorDefecto || variables.map((v) => v.columna), sugeridos, etiquetas, unidades,
     fuente, embebido: fuente.tipo === "url",
   };
@@ -1053,6 +1057,9 @@ function pareceEncabezado(filas, comoNumero) {
   return numericas === 0;
 }
 
+// Nombre corto para la red en pantallas angostas.
+const nombreCorto = (c) => (/^columna_\d+$/.test(c) ? `col_${c.slice(8)}` : c.length > 7 ? `${c.slice(0, 6)}.` : c);
+
 // encabezado: true si la primera fila tiene los nombres de las columnas, false si ya es de datos
 // (las columnas se llaman columna_1, columna_2, …) y null para detectarlo.
 function datasetDesdeCSV(nombre, texto, encabezado = null) {
@@ -1096,7 +1103,7 @@ function datasetDesdeCSV(nombre, texto, encabezado = null) {
     descripcion: `${num(datos.length)} filas y ${orden.length} columnas: ${numericas.length} numéricas${textos ? ` y ${textos} de texto` : ""}`,
     columnas,
     orden,
-    variables: numericas.map((c) => ({ columna: c, unidad: "", corto: /^columna_\d+$/.test(c) ? `col_${c.slice(8)}` : c.length > 7 ? `${c.slice(0, 6)}.` : c, decimales: info[c].decimales })),
+    variables: numericas.map((c) => ({ columna: c, unidad: "", corto: nombreCorto(c), decimales: info[c].decimales })),
     entradasPorDefecto: numericas.filter((c) => !pareceId(c)).slice(0, LIMITES.entradasRecomendadas),
     sugeridos,
     fuente: { tipo: "archivo", nombre, separador, decimal, encabezado },
@@ -2210,6 +2217,10 @@ function faseHead() {
 
 const esCandidata = (c) => DATASET.variables.some((v) => v.columna === c);
 
+// Columna cuyo nombre se está cambiando y, para deshacerlo si llega un doble clic, lo que
+// había antes del primer clic sobre un encabezado.
+let columnaRenombrando = null, clicColumna = null;
+
 function cabezaDatos() {
   const def = definirTarea(), col = DATASET.columnas, fase = faseHead();
   const filas = [...Array(Math.min(6, DATASET.n)).keys()];
@@ -2232,7 +2243,8 @@ function cabezaDatos() {
     const unidad = DATASET.variables.find((v) => v.columna === c)?.unidad;
     const rol = marcada(c) ? (def.objetivo ? "objetivo" : "referencia") : "";
     const contenido = `<span class="col-nombre">${esc(c)}</span><span class="col-detalle">${info.tipo === "numero" ? "número" : "texto"}${unidad ? `, ${esc(unidad)}` : ""}</span>${rol ? `<span class="chip rol-objetivo">${rol}</span>` : ""}`;
-    return `<th class="${clase(c)}"${activa(c) ? ` data-accion="columna" data-columna="${esc(c)}"` : ""}>${activa(c) ? `<button type="button" data-accion="columna" data-columna="${esc(c)}" aria-pressed="${marcada(c) || (fase === "entradas" && E.entradas.includes(c))}" title="${esc(titulo(c))}">${contenido}</button>` : contenido}</th>`;
+    if (c === columnaRenombrando) return `<th class="${clase(c)} renombrando" data-columna="${esc(c)}"><input class="col-renombre" data-columna="${esc(c)}" value="${esc(c)}" maxlength="60" spellcheck="false" autocomplete="off" aria-label="Nuevo nombre de ${esc(c)}"><span class="col-detalle">Enter guarda, Esc cancela</span></th>`;
+    return `<th class="${clase(c)}" data-columna="${esc(c)}"${activa(c) ? ' data-accion="columna"' : ""}>${activa(c) ? `<button type="button" data-accion="columna" data-columna="${esc(c)}" aria-pressed="${marcada(c) || (fase === "entradas" && E.entradas.includes(c))}" title="${esc(titulo(c))}">${contenido}</button>` : contenido}</th>`;
   }).join("");
   const cuerpo = filas.map((i) => `<tr><td class="indice">${i}</td>${DATASET.orden.map((c) => {
     const v = col[c][i], info = DATASET.info[c];
@@ -2240,7 +2252,8 @@ function cabezaDatos() {
     return activa(c) ? `<td class="${clase(c)}" data-accion="columna" data-columna="${esc(c)}">${texto}</td>` : `<td class="${clase(c)}">${texto}</td>`;
   }).join("")}</tr>`).join("");
   const leyenda = fase === "entradas" ? `<p class="leyenda-roles">${def.objetivo ? '<span><i class="rol-objetivo"></i>objetivo</span>' : def.referencia ? '<span><i class="rol-objetivo"></i>referencia</span>' : ""}<span><i class="rol-entrada"></i>entrada</span><span><i class="rol-sin-uso"></i>no se usa</span></p>` : "";
-  return `<div class="tabla-scroll cabeza"><table class="tabla head"><thead><tr><th class="indice"></th>${encabezados}</tr></thead><tbody>${cuerpo}</tbody></table></div>${leyenda}`;
+  return `<div class="tabla-scroll cabeza"><table class="tabla head"><thead><tr><th class="indice"></th>${encabezados}</tr></thead><tbody>${cuerpo}</tbody></table></div>${leyenda}
+    <p class="leyenda">Doble clic en el nombre de una columna para cambiarlo.</p>`;
 }
 
 function indicacionHead() {
@@ -2668,6 +2681,9 @@ function seccionesCodigo() {
     datos.push("# Subí el archivo al entorno antes de ejecutar (en Colab, desde el panel Archivos)", `ARCHIVO = ${py(f.nombre)}`, `df = pd.read_csv(ARCHIVO${opciones.length ? `, ${opciones.join(", ")}` : ""})`);
     if (!f.encabezado) datos.push('df.columns = [f"columna_{j + 1}" for j in range(df.shape[1])]  # el CSV no tiene encabezado');
   }
+  const cambiados = renombres();
+  if (cambiados.length > 3) datos.push("df = df.rename(columns={  # nombres cambiados en el configurador", ...cambiados.map(([o, n]) => `    ${py(o)}: ${py(n)},`), "})");
+  else if (cambiados.length) datos.push(`df = df.rename(columns={${cambiados.map(([o, n]) => `${py(o)}: ${py(n)}`).join(", ")}})  # nombres cambiados en el configurador`);
   datos.push("");
   datos.push(`SEMILLA = ${E.particion.semilla}`);
   datos.push(`ENTRADAS = ${listaPython(E.entradas, 12)}`);
@@ -5315,6 +5331,8 @@ function hashDeConfiguracion() {
     poner("archivo", cod(DATASET.nombre));
     poner("encabezado", DATASET.fuente.encabezado ? "si" : "no");
   }
+  const cambiados = renombres();
+  if (cambiados.length) poner("nombres", cambiados.map(([o, n]) => `${cod(o)}:${cod(n)}`).join(","));
   if (E.tarea) {
     poner("tarea", E.tarea);
     poner("objetivo", E.objetivo ? cod(E.objetivo) : "");
@@ -5367,6 +5385,20 @@ function aplicarConfiguracion(c) {
   const acepta = (clave, ok) => { if (!ok) ignorados.push(clave); return ok; };
   const tiene = (clave) => clave in c;
   if (tiene("encabezado")) acepta("encabezado", !DATASET.embebido && ["si", "no"].includes(c.encabezado));
+  // Nombres de las columnas: los de los datos y, encima, los que cambia el enlace.
+  const nombres = [...DATASET.originales];
+  if (tiene("nombres")) {
+    const desconocidos = [];
+    for (const par of c.nombres ? c.nombres.split(",") : []) {
+      const [original, nuevo = ""] = par.split(":").map(dec), j = DATASET.originales.indexOf(original);
+      if (j >= 0 && nuevo.trim()) nombres[j] = nuevo.trim(); else desconocidos.push(original);
+    }
+    if (new Set(nombres).size < nombres.length) {
+      ignorados.push("nombres");
+      nombres.splice(0, nombres.length, ...DATASET.originales);
+    } else if (desconocidos.length) ignorados.push(`nombres (${desconocidos.join(", ")})`);
+  }
+  renombrarColumnas(nombres);
   if (tiene("tarea") && acepta("tarea", Object.hasOwn(TAREAS, c.tarea) && (c.tarea === "clustering" || columnasCompatibles(c.tarea).length > 0))) {
     E.tarea = c.tarea;
     E.objetivo = objetivoPorDefecto(c.tarea);
@@ -5849,6 +5881,72 @@ const errorArchivo = (texto) => { $("#error-archivo").innerHTML = `<div class="m
 // Lo que dice un enlace sobre el encabezado del archivo: true, false o null si no lo dice.
 const encabezadoDelEnlace = (c) => (c.encabezado === "si" ? true : c.encabezado === "no" ? false : null);
 
+// Nombres que cambió quien arma la red: pares [nombre en los datos, nombre nuevo].
+const renombres = () => DATASET.originales.map((o, j) => [o, DATASET.orden[j]]).filter(([o, n]) => o !== n);
+
+// Pone nombres nuevos a las columnas (en su orden) en el dataset y en las decisiones que los
+// usan. La red entrenada se descarta, como al cambiar las entradas.
+function renombrarColumnas(nuevos) {
+  const mapa = new Map(DATASET.orden.map((c, j) => [c, nuevos[j]]));
+  if ([...mapa].every(([viejo, nuevo]) => viejo === nuevo)) return;
+  const re = (c) => mapa.get(c) ?? c;
+  const claves = (o) => Object.fromEntries(Object.entries(o).map(([c, v]) => [re(c), v]));
+  Object.assign(DATASET, {
+    columnas: claves(DATASET.columnas), info: claves(DATASET.info), etiquetas: claves(DATASET.etiquetas), unidades: claves(DATASET.unidades),
+    variables: DATASET.variables.map((v) => {
+      const j = DATASET.orden.indexOf(v.columna), nombre = nuevos[j];
+      return { ...v, columna: nombre, corto: nombre === DATASET.originales[j] ? DATASET.cortos[nombre] : nombreCorto(nombre) };
+    }),
+    entradasPorDefecto: DATASET.entradasPorDefecto.map(re),
+    sugeridos: Object.fromEntries(Object.entries(DATASET.sugeridos).map(([t, c]) => [t, c && re(c)])),
+    orden: [...nuevos],
+  });
+  E.objetivo = E.objetivo && re(E.objetivo);
+  E.entradasElegidas = E.entradasElegidas.map(re);
+  sincronizarEntradas();
+  // El historial muestra la configuración de cada entrenamiento con los nombres nuevos.
+  for (const lista of Object.values(E.historial)) {
+    for (const { corrida: { config } } of lista) Object.assign(config, { objetivo: config.objetivo && re(config.objetivo), entradas: config.entradas.map(re) });
+  }
+  E.corrida = null;
+}
+
+function empezarRenombre(c) {
+  if (E.entrenando || !DATASET.orden.includes(c)) return;
+  // El primer clic del doble clic eligió o quitó la columna: se deshace.
+  if (clicColumna?.columna === c) {
+    const { objetivo, modoHead, entradasElegidas, corrida } = clicColumna;
+    Object.assign(E, { objetivo, modoHead, entradasElegidas, corrida });
+    sincronizarEntradas();
+  }
+  clicColumna = null;
+  columnaRenombrando = c;
+  renderPaso();
+  refrescar();
+  const campo = $(".col-renombre");
+  campo?.focus();
+  campo?.select();
+}
+
+// como: "enter", "cancelar" (Esc) o "salir" (el campo pierde el foco).
+function terminarRenombre(campo, como) {
+  const viejo = columnaRenombrando;
+  if (viejo === null || campo.dataset.columna !== viejo) return;
+  const nuevo = campo.value.trim(), repetido = nuevo !== viejo && DATASET.orden.includes(nuevo);
+  // Con Enter, un nombre repetido se avisa y se sigue editando; al salir del campo, queda el anterior.
+  if (como === "enter" && repetido) {
+    campo.setCustomValidity(`Ya hay una columna que se llama ${nuevo}.`);
+    campo.reportValidity();
+    return;
+  }
+  columnaRenombrando = null;
+  const guardar = como !== "cancelar" && nuevo && nuevo !== viejo && !repetido;
+  if (guardar) renombrarColumnas(DATASET.orden.map((c) => (c === viejo ? nuevo : c)));
+  renderPaso();
+  refrescar();
+  if (como !== "salir") $(`.tabla.head th[data-columna="${CSS.escape(guardar ? nuevo : viejo)}"] button`)?.focus({ preventScroll: true });
+}
+
 async function leerArchivo(archivo) {
   if (!archivo) return;
   if (E.entrenando) return errorArchivo("Esperá a que termine el entrenamiento.");
@@ -5965,9 +6063,30 @@ function iniciar() {
   const panel = $("#panel");
   panel.addEventListener("click", (ev) => {
     const b = ev.target.closest("[data-accion]");
-    if (b && !b.disabled && ACCIONES[b.dataset.accion]) ACCIONES[b.dataset.accion](b);
+    if (ev.detail <= 1) clicColumna = null;
+    if (!b || b.disabled || !ACCIONES[b.dataset.accion]) return;
+    if (b.dataset.accion === "columna") {
+      // El segundo clic de un doble clic no vuelve a elegir: el doble clic es para el nombre.
+      if (ev.detail >= 2) return;
+      if (b.closest("thead")) clicColumna = { columna: b.dataset.columna, objetivo: E.objetivo, modoHead: E.modoHead, entradasElegidas: [...E.entradasElegidas], corrida: E.corrida };
+    }
+    ACCIONES[b.dataset.accion](b);
   });
-  panel.addEventListener("input", (ev) => { if ((ev.target.type === "range" || ev.target.type === "number") && ev.target.dataset.campo) cambiarCampo(ev.target); });
+  // Doble clic en el encabezado de una columna de los datos: cambiarle el nombre.
+  panel.addEventListener("dblclick", (ev) => {
+    const th = ev.target.closest(".tabla.head th[data-columna]");
+    if (th && !th.classList.contains("renombrando")) empezarRenombre(th.dataset.columna);
+  });
+  panel.addEventListener("keydown", (ev) => {
+    if (!ev.target.matches?.(".col-renombre") || (ev.key !== "Enter" && ev.key !== "Escape")) return;
+    ev.preventDefault();
+    terminarRenombre(ev.target, ev.key === "Enter" ? "enter" : "cancelar");
+  });
+  panel.addEventListener("focusout", (ev) => { if (ev.target.matches?.(".col-renombre")) terminarRenombre(ev.target, "salir"); });
+  panel.addEventListener("input", (ev) => {
+    if (ev.target.matches?.(".col-renombre")) ev.target.setCustomValidity("");
+    else if ((ev.target.type === "range" || ev.target.type === "number") && ev.target.dataset.campo) cambiarCampo(ev.target);
+  });
   // Escape cierra el menú de una capa o deja de inspeccionar.
   panel.addEventListener("keydown", (ev) => {
     if (ev.key !== "Escape" || (E.capaAbierta === null && !E.redSeleccion)) return;

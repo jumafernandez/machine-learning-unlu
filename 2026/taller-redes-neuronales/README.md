@@ -45,12 +45,13 @@ La configuración queda en el enlace, en un formato legible que se puede editar 
 
 - [`#tarea=binaria&objetivo=alerta_real&ocultas=16:relu:0.2&salida=1:sigmoide&perdida=bce&early=10:restaura&paso=7`](https://jumafernandez.github.io/machine-learning-unlu/2026/taller-redes-neuronales/#tarea=binaria&objetivo=alerta_real&ocultas=16:relu:0.2&salida=1:sigmoide&perdida=bce&early=10:restaura&paso=7)
 
-Lo que el enlace no indica toma el valor por defecto, y lo que no se reconoce se ignora con un aviso. Con un CSV propio, el enlace guarda el nombre del archivo y si tiene encabezado: quien lo abra tiene que subir ese archivo, y entonces se aplica la configuración. Para empezar de cero, el logo del LICDIA, arriba a la izquierda, vuelve al inicio sin la configuración del enlace.
+Lo que el enlace no indica toma el valor por defecto, y lo que no se reconoce se ignora con un aviso. Con un CSV propio, el enlace guarda el nombre del archivo y si tiene encabezado: quien lo abra tiene que subir ese archivo, y entonces se aplica la configuración. Los nombres cambiados de las columnas también viajan en el enlace. Para empezar de cero, el logo del LICDIA, arriba a la izquierda, vuelve al inicio sin la configuración del enlace.
 
 ## Datos propios
 
 En la primera pantalla se puede subir un CSV, con o sin encabezado, separado por coma, punto y coma o tabulación, y con decimales con punto o con coma. El archivo se procesa en el navegador y no se sube a ningún servidor.
 
+- Con doble clic en el nombre de una columna se lo puede cambiar, también en los datos de ejemplo. El código Keras aplica los nombres nuevos con `df.rename` después de leer los datos.
 - El configurador detecta si la primera fila tiene los nombres de las columnas: la toma como datos si trae números en todas las columnas numéricas. Una casilla en la pantalla de datos permite corregirlo. Sin encabezado, las columnas se llaman `columna_1`, `columna_2`, etc., y el código Keras las lee con los mismos nombres.
 - Las columnas numéricas pueden ser entradas; las de texto solo pueden ser variable objetivo.
 - Cada tarea habilita las columnas compatibles como variable objetivo: dos valores para la clasificación binaria, de 3 a 20 para la multiclase y una numérica para la regresión. En clustering, una columna opcional sirve para interpretar los grupos.
