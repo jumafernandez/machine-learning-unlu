@@ -554,7 +554,25 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .inspector-cabecera strong { color: var(--titulo); }
 .inspector-cabecera .boton { margin-left: auto; }
 .formula { padding: 6px 10px; border-radius: 8px; background: var(--violeta-suave); color: var(--violeta); font-family: var(--mono); font-size: .84rem; overflow-wrap: anywhere; }
-.inspector .calculo { color: var(--titulo); font-variant-numeric: tabular-nums; }
+.cuenta-neurona { display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: flex-start; margin: 10px 0 6px; }
+.cuenta-neurona figure { margin: 0; min-width: 0; }
+.cuenta-neurona figure:first-child { flex: 0 1 460px; }
+.cuenta-neurona figure + figure { flex: 0 1 280px; }
+.cuenta-neurona figcaption { margin-bottom: 4px; color: var(--titulo); font-size: .84rem; font-weight: 600; }
+.cuenta-neurona .leyenda { margin-top: 4px; }
+.tabla-cuenta-marco { overflow-x: auto; }
+.tabla-cuenta { border-collapse: collapse; font-size: .84rem; font-variant-numeric: tabular-nums; }
+.tabla-cuenta th { padding: 0 5px 3px; border-bottom: 1px solid var(--borde); color: var(--secundario); font-weight: 500; text-align: right; }
+.tabla-cuenta td { padding: 2px 5px; text-align: right; white-space: nowrap; }
+.tabla-cuenta th:first-child, .tabla-cuenta td:first-child { text-align: left; }
+.tabla-cuenta .nombre { display: inline-block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+.tabla-cuenta .op { padding: 0 1px; color: var(--tenue); }
+.tabla-cuenta .aporte { width: 64px; background: linear-gradient(var(--linea), var(--linea)) center / 1px 100% no-repeat; }
+.tabla-cuenta .aporte i { display: block; height: 10px; border-radius: 2px; opacity: .85; }
+.tabla-cuenta .resto td, .tabla-cuenta .sesgo td { color: var(--secundario); }
+.tabla-cuenta .total td { border-top: 1px solid var(--linea); color: var(--titulo); font-weight: 600; }
+.tabla-cuenta .elegida td { background: var(--violeta-suave); color: var(--titulo); font-weight: 600; }
+.curva-punto { display: block; width: 100%; max-width: 280px; height: auto; }
 .inspector-graficos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 340px)); gap: 12px 24px; margin-top: 6px; }
 .inspector-graficos figure { margin: 0; min-width: 0; }
 .inspector-graficos figcaption { margin-bottom: 4px; color: var(--titulo); font-size: .84rem; font-weight: 600; }
@@ -794,6 +812,9 @@ svg .t-diagrama.grande { font-size: 22px; }
 }
 @media (max-width: 640px) {
   body { font-size: 16px; }
+  .tabla-cuenta th, .tabla-cuenta td { padding-left: 3px; padding-right: 3px; }
+  .tabla-cuenta .nombre { max-width: 90px; }
+  .tabla-cuenta .aporte { width: 40px; }
   .contenedor { padding: 0 16px; }
   h1 { font-size: 1.7rem; }
   h2 { font-size: 1.35rem; }
@@ -4487,6 +4508,100 @@ function formulaNeurona(cfg, columna, u, capa, act) {
   return `a = ${f}(${terminos.join("")}${resto}${sesgo})`;
 }
 
+// Números de la cuenta de una neurona: con la misma cantidad de decimales, para que la suma cierre a la vista.
+const cifraCuenta = (x) => (Math.abs(x) < 5e-4 ? num(0, 3) : signo(num(x, Math.abs(x) >= 100 ? 1 : 3)));
+
+// La cuenta de una neurona con el ejemplo que se sigue: cada entrada por su peso, ordenadas
+// por su aporte, el sesgo y la suma z; al lado, la activación que lleva z a la salida a.
+function cuentaNeurona(cfg, c, u, capa, valores, salida, act, indice) {
+  const k = capa.salidas, v = cifraCuenta;
+  const terminos = Array.from({ length: capa.entradas }, (_, e) => {
+    const x = valores[e], w = capa.W[e * k + u];
+    return { e, x, w, p: x * w };
+  }).sort((p, q) => Math.abs(q.p) - Math.abs(p.p));
+  // Con más de 9 entradas se ven las 8 que más aportan y el resto va sumado en una fila.
+  const visibles = terminos.length > 9 ? terminos.slice(0, 8) : terminos, resto = terminos.slice(visibles.length);
+  const b = capa.b[u], z = terminos.reduce((s, t) => s + t.p, b);
+  const tope = Math.max(Math.abs(b), ...terminos.map((t) => Math.abs(t.p)), 1e-12);
+  const barra = (p) => {
+    const largo = (Math.abs(p) / tope) * 50;
+    return `<td class="aporte"><i style="margin-left:${(p >= 0 ? 50 : 50 - largo).toFixed(1)}%; width:${Math.max(0.5, largo).toFixed(1)}%; background:var(--${p >= 0 ? "dato" : "naranja"})"></i></td>`;
+  };
+  const filas = visibles.map((t) => {
+    const nombre = esc(terminoEntrada(cfg, c, t.e));
+    return `<tr><td><span class="nombre" title="${nombre}">${nombre}</span></td><td>${v(t.x)}</td><td class="op">×</td><td>${v(t.w)}</td><td class="op">=</td><td>${v(t.p)}</td>${barra(t.p)}</tr>`;
+  });
+  if (resto.length) {
+    const suma = resto.reduce((s, t) => s + t.p, 0);
+    filas.push(`<tr class="resto"><td colspan="5">otras ${num(resto.length)} entradas, sumadas</td><td>${v(suma)}</td>${barra(suma)}</tr>`);
+  }
+  filas.push(`<tr class="sesgo"><td colspan="5">sesgo b</td><td>${v(b)}</td>${barra(b)}</tr>`);
+  filas.push(`<tr class="total"><td colspan="5">z = Σ w × x + b</td><td>${v(z)}</td><td></td></tr>`);
+  const origen = c === 1 ? `el valor de cada entrada en este ejemplo${cfg.normalizar ? ", estandarizado como lo recibe la red" : ""}` : `la salida de cada neurona de Oculta ${c - 1} en este ejemplo`;
+  const tabla = `<figure><figcaption>La cuenta con el ejemplo ${num(indice + 1)}</figcaption>
+    <div class="tabla-cuenta-marco"><table class="tabla-cuenta"><thead><tr><th>entrada</th><th>x</th><th></th><th>w</th><th></th><th>w × x</th><th></th></tr></thead><tbody>${filas.join("")}</tbody></table></div>
+    <p class="leyenda">x: ${origen}. Ordenadas por su aporte, w × x: azul, positivo; ámbar, negativo.</p></figure>`;
+  return `<div class="cuenta-neurona">${tabla}${act === "softmax" ? cuentaSoftmax(cfg, capa, valores, salida, u) : figuraActivacion(act, z, salida[u])}</div>`;
+}
+
+// La activación de la neurona: la curva con el punto (z, a) del ejemplo que se sigue.
+function figuraActivacion(act, z, a) {
+  const saturada = DERIVADA[act](z, a) < 0.02 ? " Con |z| tan grande está saturada: si z cambia, a casi no cambia." : "";
+  const nota = {
+    relu: z > 0 ? "z es positiva: ReLU la deja pasar igual." : "z ≤ 0: ReLU da 0 y la neurona queda apagada en este ejemplo.",
+    sigmoide: `La sigmoide lleva z a un valor entre 0 y 1.${saturada}`,
+    tanh: `tanh lleva z a un valor entre −1 y 1.${saturada}`,
+    lineal: "Con activación lineal, a = z.",
+  }[act];
+  return `<figure><figcaption>a = ${ACTIVACIONES[act].nombre}(z) = ${cifraCuenta(a)}</figcaption>${svgActivacionPunto(act, z, a)}<p class="leyenda">${nota}</p></figure>`;
+}
+
+// Curva de la activación con el punto (z, a). La sigmoide y tanh se ven al menos entre −4 y 4,
+// donde se curvan; ReLU y la lineal, entre −1 y 1. El rango crece si el punto no entra.
+function svgActivacionPunto(act, z, a, ancho = 260, alto = 150) {
+  const m = { izq: 8, der: 8, sup: 10, inf: 22 };
+  const L = act === "relu" || act === "lineal" ? Math.max(1, Math.ceil(Math.abs(z) * 1.3)) : Math.max(4, Math.ceil(Math.abs(z) * 1.2));
+  const f = { relu: (x) => Math.max(0, x), tanh: Math.tanh, sigmoide: (x) => 1 / (1 + Math.exp(-x)), lineal: (x) => x }[act];
+  const [yMin, yMax] = { relu: [-0.2 * L, L], tanh: [-1.3, 1.3], sigmoide: [-0.2, 1.2], lineal: [-L, L] }[act];
+  const X = (x) => (m.izq + ((x + L) / (2 * L)) * (ancho - m.izq - m.der)).toFixed(1);
+  const Y = (y) => (m.sup + ((yMax - y) / (yMax - yMin)) * (alto - m.sup - m.inf)).toFixed(1);
+  let d = "";
+  for (let i = 0; i <= 120; i++) { const x = -L + (i / 60) * L; d += `${d ? "L" : "M"}${X(x)},${Y(f(x))}`; }
+  const px = X(z), py = Y(a), x0 = X(0), y0 = Y(0);
+  const rotuloZ = Math.max(m.izq + 26, Math.min(ancho - m.der - 26, Number(px)));
+  const rotuloA = Number(px) >= Number(x0) ? `x="${Number(x0) - 5}" text-anchor="end"` : `x="${Number(x0) + 5}" text-anchor="start"`;
+  // El rótulo de a va junto al eje, del lado de la línea punteada donde no pasa la curva: arriba
+  // si z ≥ 0 y abajo si z < 0. Si a cae sobre el eje (a = 0), queda solo en el título.
+  const altoA = Math.max(m.sup + 9, Math.min(alto - m.inf - 2, Number(py) + (Number(px) >= Number(x0) ? -5 : 11)));
+  const sobreEje = Math.abs(Number(py) - Number(y0)) < 6;
+  return `<svg class="curva-punto" viewBox="0 0 ${ancho} ${alto}" role="img" aria-label="${ACTIVACIONES[act].nombre}: con z = ${cifraCuenta(z)}, a = ${cifraCuenta(a)}">
+    <line x1="${m.izq}" x2="${ancho - m.der}" y1="${y0}" y2="${y0}" stroke="${C.borde}"/><line x1="${x0}" x2="${x0}" y1="${m.sup}" y2="${alto - m.inf}" stroke="${C.borde}"/>
+    <path d="${d}" fill="none" stroke="${C.dato}" stroke-width="2"/>
+    <path d="M${px},${y0}V${py}H${x0}" fill="none" stroke="${C.violeta}" stroke-dasharray="3 3"/>
+    <circle cx="${px}" cy="${py}" r="4.5" fill="${C.violeta}"/>
+    <text x="${rotuloZ}" y="${alto - 6}" text-anchor="middle" class="t-curva">z = ${cifraCuenta(z)}</text>
+    ${sobreEje ? "" : `<text ${rotuloA} y="${altoA}" class="t-curva">a = ${cifraCuenta(a)}</text>`}</svg>`;
+}
+
+// Softmax: cada salida divide su eᶻ por la suma de las de todas las salidas.
+function cuentaSoftmax(cfg, capa, valores, salida, u) {
+  const k = capa.salidas, v = cifraCuenta, nombres = etiquetasSalida(false, cfg);
+  const z = Array.from({ length: k }, (_, j) => {
+    let s = capa.b[j];
+    for (let e = 0; e < capa.entradas; e++) s += capa.W[e * k + j] * valores[e];
+    return s;
+  });
+  // Con un z muy grande, eᶻ se desborda: se resta el mayor, que no cambia el resultado.
+  const resta = Math.max(...z) > 30 ? Math.max(...z) : 0;
+  const ez = z.map((x) => Math.exp(x - resta)), suma = ez.reduce((s, x) => s + x, 0);
+  const potencia = resta ? "e<sup>z − máx</sup>" : "e<sup>z</sup>";
+  const filas = z.map((x, j) => `<tr${j === u ? ' class="elegida"' : ""}><td><span class="nombre">${esc(nombres[j] || `salida ${j + 1}`)}</span></td><td>${v(x)}</td><td>${v(ez[j])}</td><td>${v(salida[j])}</td></tr>`).join("");
+  const nota = resta ? ` Antes de elevar se resta el mayor z, ${v(resta)}: el resultado no cambia y los números no se desbordan.` : "";
+  return `<figure><figcaption>a = softmax(z) = ${v(salida[u])}</figcaption>
+    <div class="tabla-cuenta-marco"><table class="tabla-cuenta"><thead><tr><th>salida</th><th>z</th><th>${potencia}</th><th>a</th></tr></thead><tbody>${filas}<tr class="total"><td>suma</td><td></td><td>${v(suma)}</td><td>${v(salida.reduce((s, x) => s + x, 0))}</td></tr></tbody></table></div>
+    <p class="leyenda">Cada salida divide su ${potencia} por la suma de todas, ${v(suma)}: por eso las a suman 1.${nota}</p></figure>`;
+}
+
 // Panel bajo la red: qué calcula la neurona o la conexión elegida.
 function renderInspectorRed() {
   const cont = $("#inspector-red");
@@ -4495,7 +4610,7 @@ function renderInspectorRed() {
   if (!sel) {
     cont.innerHTML = E.retro
       ? '<p class="pista">Hacé clic en una neurona para ver cómo se calcula su δ, o en una conexión para ver el gradiente de su peso.</p>'
-      : '<p class="pista">Hacé clic en una neurona para ver su fórmula y sus pesos, o en una conexión para ver cómo cambió su peso. Pasá el mouse por una conexión para ver su valor.</p>';
+      : '<p class="pista">Hacé clic en una neurona para ver la cuenta que hace con un ejemplo, o en una conexión para ver cómo cambió su peso. Pasá el mouse por una conexión para ver su valor.</p>';
     return;
   }
   const fuente = fuenteRed(), { cfg, tel } = fuente, { vista, retro } = vistaRed(fuente);
@@ -4532,13 +4647,8 @@ function renderInspectorRed() {
     const c = sel.columna, u = sel.unidad, esSalida = c === cfg.ocultas.length + 1;
     const act = esSalida ? cfg.salida.activacion : cfg.ocultas[c - 1].activacion;
     const capa = vista?.red.capas[c - 1], entradas = c === 1 ? cfg.entradas.length : cfg.ocultas[c - 2].neuronas;
-    let calculo = "";
     const valores = ejemplo?.capas[c - 1], salida = ejemplo?.capas[c];
-    if (capa && valores && salida) {
-      let z = capa.b[u];
-      for (let e = 0; e < entradas; e++) z += capa.W[e * capa.salidas + u] * valores[e];
-      calculo = `<p class="calculo">Con el ejemplo que seguís: z = Σ wᵢxᵢ + b = ${num(z, 3)}; ${act === "softmax" ? `después de softmax, a = ${num(salida[u], 3)}` : `a = ${ACTIVACIONES[act].nombre}(${num(z, 3)}) = ${num(salida[u], 3)}`}.</p>`;
-    }
+    const calculo = capa && valores && salida ? cuentaNeurona(cfg, c, u, capa, valores, salida, act, ejemplo.indice) : "";
     const titulo = esSalida ? `Salida: ${esc(nombreUnidad(cfg, c, u).replace(/^salida:? ?/, ""))}` : `Oculta ${c}, neurona ${u + 1}`;
     html = `<div class="inspector-cabecera"><strong>${titulo}</strong><span class="dato">${act ? ACTIVACIONES[act].nombre : ""}</span>${cerrar}</div>
       <p class="formula">${esc(formulaNeurona(cfg, c, u, capa, act))}</p>
@@ -5769,7 +5879,11 @@ const ACCIONES = {
   "red-neurona"(b) {
     const columna = Number(b.dataset.columna), unidad = Number(b.dataset.unidad), s = E.redSeleccion;
     E.redSeleccion = s?.tipo === "neurona" && s.columna === columna && s.unidad === unidad ? null : { tipo: "neurona", columna, unidad };
-    dibujarRedGrande();
+    // Al elegir una neurona se sigue un ejemplo, para que la cuenta tenga números.
+    if (E.redSeleccion && E.redEjemplo === null) {
+      E.redEjemplo = 0;
+      renderHerramientasRed(null);
+    } else dibujarRedGrande();
   },
   "red-cerrar-inspector"() {
     E.redSeleccion = null;
@@ -5842,7 +5956,7 @@ function renderHerramientasRed(foco = "seguir-ejemplo") {
   const molde = document.createElement("div");
   molde.innerHTML = panelRed(editable);
   barra.replaceWith(molde.querySelector(".red-herramientas"));
-  $(`[data-accion="${foco}"]`)?.focus({ preventScroll: true });
+  if (foco) $(`[data-accion="${foco}"]`)?.focus({ preventScroll: true });
   interaccion.retroHtml = "";
   dibujarRedGrande();
 }
