@@ -577,7 +577,7 @@ svg .marca-texto { font-size: 11px; font-weight: 600; }
 .inspector-graficos figure { margin: 0; min-width: 0; }
 .inspector-graficos figcaption { margin-bottom: 4px; color: var(--titulo); font-size: .84rem; font-weight: 600; }
 .inspector-graficos svg { width: 100%; height: auto; display: block; }
-.mapa-neurona { display: block; width: 100%; max-width: 280px; height: auto; border: 1px solid var(--borde); border-radius: 6px; }
+.mapa-neurona { display: block; width: 100%; max-width: 240px; height: auto; border: 1px solid var(--borde); border-radius: 6px; }
 .parametros-editor { display: grid; gap: 4px; margin-top: 14px; }
 .parametros-total { display: flex; align-items: baseline; gap: 10px; color: var(--secundario); }
 .parametros-total strong { color: var(--titulo); font-family: var(--fuente-titulos); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
@@ -3527,7 +3527,7 @@ function renderHistorial() {
 // que pasar por TensorFlow.js y no frena el entrenamiento.
 // =====================================================================
 const VELOCIDADES = { lenta: { nombre: "Lenta", ms: 450 }, normal: { nombre: "Normal", ms: 110 }, maxima: { nombre: "Máxima", ms: 0 } };
-const TITULOS_APRENDE = { binaria: "Regiones de decisión", multiclase: "Regiones de decisión", regresion: "Real contra predicho", clustering: "Grupos y centroides" };
+const TITULOS_APRENDE = { binaria: "Predicciones en el mapa t-SNE", multiclase: "Predicciones en el mapa t-SNE", regresion: "Real contra predicho", clustering: "Grupos y centroides" };
 const FUENTE = '"Source Sans Pro", "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif';
 const dormir = (ms) => new Promise((r) => setTimeout(r, ms));
 const tablero = { cuadro: null, chicos: new Map(), previa: null };
@@ -3614,41 +3614,142 @@ function perdidaPlana(cfg, red, muestra) {
   return total;
 }
 
-// Plano de las 2 primeras componentes principales de las entradas estandarizadas
-// de entrenamiento. Cada punto (a, b) del plano es una entrada posible de la red.
-function planoEntradas(cfg, datos) {
-  const est = cfg.normalizar ? datos : prepararDatos({ ...cfg, normalizar: true });
-  const { vectores } = vectoresPrincipales(est.X.entrenamiento);
-  const d = datos.d, v1 = vectores[0], v2 = vectores[1] || Array(d).fill(0);
-  const aZ = (x) => (cfg.normalizar ? x : Array.from(x, (v, j) => (v - datos.media[j]) / datos.desvio[j]));
-  const proyectar = (x) => {
-    const z = aZ(x);
-    let a = 0, b = 0;
-    for (let j = 0; j < d; j++) { a += z[j] * v1[j]; b += z[j] * v2[j]; }
-    return [a, b];
+// Mapa t-SNE de las filas: ubica cerca las filas con entradas (estandarizadas) parecidas,
+// para dibujar sobre los datos lo que calcula cada neurona. Se calcula una vez por datos,
+// entradas y partición, de a partes para no trabar la página.
+const LADO_MAPA = 64;
+const mapasDatos = new Map();
+const ceder = () => new Promise((listo) => { const canal = new MessageChannel(); canal.port1.onmessage = listo; canal.port2.postMessage(0); });
+
+// t-SNE exacto (perplejidad 30, 1000 iteraciones), desde las 2 primeras componentes principales.
+async function calcularTSNE(Z, seguir) {
+  const n = Z.length, d = Z[0]?.length || 0, H = Math.log(Math.min(30, Math.max(2, (n - 1) / 3)));
+  const base = (i) => (i * (2 * n - i - 1)) / 2 - i - 1;
+  const P = new Float64Array((n * (n - 1)) / 2), Q = new Float64Array(P.length), D = new Float64Array(n);
+  let marca = performance.now();
+  const pausa = async () => {
+    if (performance.now() - marca < 12) return true;
+    await ceder();
+    marca = performance.now();
+    return seguir();
   };
-  const proyectados = datos.X.entrenamiento.map(proyectar);
-  const rango = (c) => {
-    const v = proyectados.map((p) => p[c]).sort((x, y) => x - y);
-    const bajo = v[Math.floor(0.01 * (v.length - 1))], alto = v[Math.ceil(0.99 * (v.length - 1))], margen = (alto - bajo) * 0.12 || 1;
-    return [bajo - margen, alto + margen];
-  };
-  const entrada = (a, b) => Float32Array.from({ length: d }, (_, j) => {
-    const z = a * v1[j] + b * v2[j];
-    return cfg.normalizar ? z : datos.media[j] + datos.desvio[j] * z;
-  });
-  return { v1, v2, ra: rango(0), rb: rango(1), proyectar, entrada };
+  // Probabilidades condicionales, con el ancho de cada fila ajustado a la perplejidad.
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) { let s = 0; for (let e = 0; e < d; e++) s += (Z[i][e] - Z[j][e]) ** 2; D[j] = s; }
+    let beta = 1, bajo = 0, alto = Infinity;
+    for (let it = 0; it < 50; it++) {
+      let suma = 0, ponderada = 0;
+      for (let j = 0; j < n; j++) if (j !== i) { const p = Math.exp(-D[j] * beta); suma += p; ponderada += D[j] * p; }
+      const h = suma > 0 ? Math.log(suma) + (beta * ponderada) / suma : 0;
+      if (Math.abs(h - H) < 1e-5) break;
+      if (h > H) { bajo = beta; beta = alto === Infinity ? beta * 2 : (beta + alto) / 2; } else { alto = beta; beta = (beta + bajo) / 2; }
+    }
+    let total = 0;
+    for (let j = 0; j < n; j++) total += D[j] = j === i ? 0 : Math.exp(-D[j] * beta);
+    for (let j = 0; j < n; j++) if (j !== i) P[j > i ? base(i) + j : base(j) + i] += D[j] / (total || 1);
+    if (!(await pausa())) return null;
+  }
+  for (let k = 0; k < P.length; k++) P[k] = Math.max(P[k] / (2 * n), 1e-12);
+  // Arranque determinista: las 2 primeras componentes principales, achicadas.
+  const { vectores } = vectoresPrincipales(Z), azar = mulberry32(7);
+  const Y = new Float64Array(2 * n), U = new Float64Array(2 * n), G = new Float64Array(2 * n), ganancia = new Float64Array(2 * n).fill(1);
+  for (let c = 0; c < 2; c++) {
+    const v = vectores[c], p = Z.map((f) => (v ? f.reduce((s, x, j) => s + x * v[j], 0) : 0));
+    const desvio = Math.sqrt(p.reduce((s, x) => s + x * x, 0) / n) || 1;
+    p.forEach((x, i) => { Y[2 * i + c] = 1e-4 * (x / desvio + 0.01 * (azar() - 0.5)); });
+  }
+  for (let it = 0; it < 1000; it++) {
+    const exagerar = it < 250 ? 12 : 1, momento = it < 250 ? 0.5 : 0.8;
+    let suma = 0;
+    for (let i = 0, k = 0; i < n; i++) {
+      const xi = Y[2 * i], yi = Y[2 * i + 1];
+      for (let j = i + 1; j < n; j++, k++) { const dx = xi - Y[2 * j], dy = yi - Y[2 * j + 1]; suma += Q[k] = 1 / (1 + dx * dx + dy * dy); }
+    }
+    G.fill(0);
+    for (let i = 0, k = 0; i < n; i++) {
+      const xi = Y[2 * i], yi = Y[2 * i + 1];
+      let gx = 0, gy = 0;
+      for (let j = i + 1; j < n; j++, k++) {
+        const q = Q[k], m = (exagerar * P[k] - q / (2 * suma)) * q, dx = xi - Y[2 * j], dy = yi - Y[2 * j + 1];
+        gx += m * dx; gy += m * dy; G[2 * j] -= m * dx; G[2 * j + 1] -= m * dy;
+      }
+      G[2 * i] += gx; G[2 * i + 1] += gy;
+    }
+    for (let t = 0; t < 2 * n; t++) {
+      ganancia[t] = Math.sign(G[t]) !== Math.sign(U[t]) ? ganancia[t] + 0.2 : Math.max(0.01, ganancia[t] * 0.8);
+      U[t] = momento * U[t] - 800 * ganancia[t] * G[t];
+      Y[t] += U[t];
+    }
+    if (!(await pausa())) return null;
+  }
+  return Y;
 }
 
-// Lo que las vistas necesitan de una corrida y no cambia mientras entrena:
-// el plano, la grilla de entradas y muestras de validación y de entrenamiento.
+// Marco cuadrado del mapa y, para cada celda, el peso de las filas cercanas (núcleo gaussiano):
+// cada celda vale el promedio de las filas de alrededor y, donde no hay filas, se desvanece.
+function armarMapa(Y, Z) {
+  const n = Z.length, d = Z[0]?.length || 0, M = LADO_MAPA;
+  const limites = (c) => {
+    const v = Array.from({ length: n }, (_, i) => Y[2 * i + c]).sort((a, b) => a - b);
+    return [v[Math.floor(0.005 * (n - 1))], v[Math.ceil(0.995 * (n - 1))]];
+  };
+  const [x0, x1] = limites(0), [y0, y1] = limites(1), lado = Math.max(x1 - x0, y1 - y0) * 1.12 || 1, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  const pos = new Float32Array(2 * n);
+  for (let i = 0; i < n; i++) { pos[2 * i] = (Y[2 * i] - cx) / lado + 0.5; pos[2 * i + 1] = 0.5 - (Y[2 * i + 1] - cy) / lado; }
+  const h = 0.035, inicio = new Int32Array(M * M + 1), indices = [], pesos = [], densidad = new Float32Array(M * M);
+  for (let g = 0; g < M * M; g++) {
+    const gx = ((g % M) + 0.5) / M, gy = (Math.floor(g / M) + 0.5) / M, desde = pesos.length;
+    let s = 0;
+    for (let i = 0; i < n; i++) {
+      const d2 = (pos[2 * i] - gx) ** 2 + (pos[2 * i + 1] - gy) ** 2;
+      if (d2 < 9 * h * h) { const w = Math.exp(-d2 / (2 * h * h)); indices.push(i); pesos.push(w); s += w; }
+    }
+    for (let t = desde; t < pesos.length; t++) pesos[t] /= s;
+    densidad[g] = s;
+    inicio[g + 1] = pesos.length;
+  }
+  const ocupadas = [...densidad].filter((s) => s > 1e-6).sort((a, b) => a - b), referencia = 0.35 * (ocupadas[Math.floor(0.75 * (ocupadas.length - 1))] || 1);
+  const mapa = { pos, inicio, indices: Int32Array.from(indices), pesos: Float32Array.from(pesos), alfa: Float32Array.from(densidad, (s) => Math.min(1, s / referencia)) };
+  mapa.entradas = suavizar(mapa, Float32Array.from(Z.flat()), d);
+  return mapa;
+}
+
+// Valores por fila (n × ancho) promediados en cada celda del mapa.
+function suavizar(mapa, valores, ancho) {
+  const celdas = LADO_MAPA * LADO_MAPA, salida = new Float32Array(celdas * ancho);
+  for (let g = 0; g < celdas; g++) {
+    const o = g * ancho;
+    for (let t = mapa.inicio[g]; t < mapa.inicio[g + 1]; t++) {
+      const w = mapa.pesos[t], i = mapa.indices[t] * ancho;
+      for (let j = 0; j < ancho; j++) salida[o + j] += w * valores[i + j];
+    }
+  }
+  return salida;
+}
+
+// El mapa de las filas de una telemetría si ya está; si no, lo empieza a calcular
+// (uno a la vez) y redibuja al terminar.
+function mapaDe(tel) {
+  const clave = tel.filasMapa.clave, actual = mapasDatos.get(clave);
+  if (actual) return actual.listo ? actual : null;
+  const entrada = { listo: false };
+  for (const [otra, m] of mapasDatos) if (!m.listo) mapasDatos.delete(otra);
+  mapasDatos.set(clave, entrada);
+  while (mapasDatos.size > 6) mapasDatos.delete(mapasDatos.keys().next().value);
+  const Z = tel.filasMapa.Z;
+  calcularTSNE(Z, () => mapasDatos.get(clave) === entrada).then((Y) => {
+    if (!Y || mapasDatos.get(clave) !== entrada) return;
+    Object.assign(entrada, armarMapa(Y, Z), { listo: true });
+    if (E.paso === 6 && $("#red-viva")) dibujarTablero();
+    else dibujarRedGrande();
+  }).catch((e) => console.error(e));
+  return null;
+}
+
+// Lo que las vistas necesitan de una corrida y no cambia mientras entrena: muestras de
+// validación (los puntos que se dibujan) y de entrenamiento, y las filas del mapa t-SNE.
 function crearTelemetria(cfg, datos) {
   const d = datos.d, def = datos.tarea, k = cfg.salida.neuronas;
-  const plano = planoEntradas(cfg, datos);
-  const GX = 56, GY = 42, grilla = new Float32Array(GX * GY * d);
-  const ca = Float32Array.from({ length: GX }, (_, fx) => plano.ra[0] + ((fx + 0.5) / GX) * (plano.ra[1] - plano.ra[0]));
-  const cb = Float32Array.from({ length: GY }, (_, fy) => plano.rb[1] - ((fy + 0.5) / GY) * (plano.rb[1] - plano.rb[0]));
-  for (let fy = 0; fy < GY; fy++) for (let fx = 0; fx < GX; fx++) grilla.set(plano.entrada(ca[fx], cb[fy]), (fy * GX + fx) * d);
   const elegir = (total, maximo) => Array.from({ length: Math.min(total, maximo) }, (_, i) => Math.floor((i * total) / Math.min(total, maximo)));
   const plana = (filas, indices) => {
     const M = new Float32Array(indices.length * d);
@@ -3657,11 +3758,14 @@ function crearTelemetria(cfg, datos) {
   };
   const iv = elegir(datos.X.validacion.length, 400);
   const puntos = {
-    n: iv.length, X: plana(datos.X.validacion, iv), pos: iv.map((i) => plano.proyectar(datos.X.validacion[i])),
+    n: iv.length, X: plana(datos.X.validacion, iv),
     y: def?.objetivo ? iv.map((i) => datos.y.validacion[i]) : null,
     referencia: def?.referencia ? iv.map((i) => datos.referencia.validacion[i]) : null,
     filas: iv.map((i) => datos.filas.validacion[i]),
   };
+  // El mapa ubica primero los puntos de validación y después una muestra de entrenamiento, que hace más denso el fondo.
+  const filasMapa = [...iv.map((i) => datos.X.validacion[i]), ...elegir(datos.X.entrenamiento.length, 300).map((i) => datos.X.entrenamiento[i])];
+  const estandarizar = (x) => (cfg.normalizar ? Array.from(x) : Array.from(x, (v, j) => (v - datos.media[j]) / datos.desvio[j]));
   const ie = elegir(datos.X.entrenamiento.length, 256);
   let Y = null;
   if (def?.objetivo && k) {
@@ -3670,7 +3774,8 @@ function crearTelemetria(cfg, datos) {
     ie.forEach((i, r) => { const v = datos.y.entrenamiento[i]; if (unaColumna) Y[r] = v; else Y[r * k + v] = 1; });
   }
   return {
-    id: ++contadorCorridas, config: cfg, d, k, def, plano, GX, GY, ca, cb, grilla, puntos, media: datos.media, desvio: datos.desvio,
+    id: ++contadorCorridas, config: cfg, d, k, def, puntos, media: datos.media, desvio: datos.desvio,
+    filasMapa: { clave: JSON.stringify([DATASET.id, datos.entradas, def?.objetivo ?? null, cfg.particion, cfg.muestra]), n: filasMapa.length, X: plana(filasMapa, filasMapa.map((_, r) => r)), Z: filasMapa.map(estandarizar) },
     muestra: { n: ie.length, X: plana(datos.X.entrenamiento, ie), Y }, estructura: null, recorrido: null, mascaras: {}, theta: null,
   };
 }
@@ -3683,12 +3788,20 @@ function fuenteTablero() {
   return c && !c.error && c.telemetria?.recorrido ? c : null;
 }
 
-// Salidas de la red en la grilla del plano y en los puntos de validación; solo se recalculan si cambió theta.
+// Salidas de la red en las filas del mapa (las primeras son los puntos de validación) y,
+// promediadas, en cada celda del mapa t-SNE. Las ocultas se pintan con una escala común
+// por capa: 1 o, si la capa la supera, el percentil 95 de sus salidas.
+function calcularVista(tel, theta) {
+  const red = redPlana(tel.estructura, theta), f = tel.filasMapa, mapa = mapaDe(tel);
+  const capas = propagarPlano(red, f.X, f.n), k = red.capas.at(-1).salidas;
+  const escalas = capas.map((Z) => { const v = Float32Array.from(Z, Math.abs).sort(); return Math.max(1, v[Math.floor(0.95 * (v.length - 1))] || 0); });
+  return { theta, red, mapa, escalas, puntos: capas.at(-1).subarray(0, tel.puntos.n * k), grilla: mapa ? capas.map((Z, c) => suavizar(mapa, Z, red.capas[c].salidas)) : null };
+}
+
+// Se recalcula solo si cambió theta o si llegó el mapa.
 function evaluarVista(tel, theta) {
-  if (tel.vista?.theta === theta) return tel.vista;
-  const red = redPlana(tel.estructura, theta);
-  tel.vista = { theta, red, grilla: propagarPlano(red, tel.grilla, tel.GX * tel.GY), puntos: propagarPlano(red, tel.puntos.X, tel.puntos.n).at(-1) };
-  return tel.vista;
+  if (tel.vista?.theta === theta && tel.vista.mapa === mapaDe(tel)) return tel.vista;
+  return (tel.vista = calcularVista(tel, theta));
 }
 
 // Lienzo del ancho del contenedor, nítido en pantallas de alta densidad.
@@ -3769,24 +3882,32 @@ function telemetriaPrevia() {
   return tel;
 }
 
-// Color de una neurona en cada celda del plano: entradas y ocultas en azul
-// (positivo) o ámbar (negativo); la salida, con los colores de cada clase.
+// Color de una neurona en cada celda del mapa: entradas y ocultas en azul (positivo)
+// o ámbar (negativo); la salida, con los colores de cada clase. Sin datos, blanco.
 function colorNeurona(tel, vista, columna, u) {
+  const alfa = vista.mapa.alfa;
   if (columna === 0) {
-    const v1 = tel.plano.v1[u], v2 = tel.plano.v2[u];
-    const tope = Math.max(...[0, tel.GX - 1].flatMap((fx) => [0, tel.GY - 1].map((fy) => Math.abs(tel.ca[fx] * v1 + tel.cb[fy] * v2)))) || 1;
-    return (g) => divergente((tel.ca[g % tel.GX] * v1 + tel.cb[Math.floor(g / tel.GX)] * v2) / tope);
+    const valores = vista.mapa.entradas, d = tel.d;
+    return (g) => tinte(divergente(valores[g * d + u] / 2), alfa[g]);
   }
   const salidas = vista.grilla[columna - 1], ancho = tel.estructura.capas[columna - 1].salidas;
   if (columna === tel.config.ocultas.length + 1) {
-    if (tel.config.tarea === "regresion" || ancho === 1) return (g) => colorSalida(tel, salidas, g);
+    if (tel.config.tarea === "regresion" || ancho === 1) return (g) => tinte(colorSalida(tel, salidas, g), alfa[g]);
     const color = rgb(colorDe(tel, u));
-    return (g) => tinte(color, salidas[g * ancho + u]);
+    return (g) => tinte(color, salidas[g * ancho + u] * alfa[g]);
   }
-  let tope = 0;
-  for (let g = 0; g < tel.GX * tel.GY; g++) tope = Math.max(tope, Math.abs(salidas[g * ancho + u]));
-  return (g) => (tope > 0 ? divergente(salidas[g * ancho + u] / tope) : [255, 255, 255]);
+  const escala = vista.escalas[columna - 1];
+  return (g) => tinte(divergente(salidas[g * ancho + u] / escala), alfa[g]);
 }
+
+// La neurona bajo el puntero en la red del tablero, si está en esta red.
+function neuronaEnMapa(cfg) {
+  const h = interaccion.neuronaHover;
+  const tamanos = [cfg.entradas.length, ...cfg.ocultas.map((c) => c.neuronas), cfg.salida.neuronas];
+  return h && h.columna < tamanos.length && h.unidad < tamanos[h.columna] ? h : null;
+}
+
+const rotuloNeurona = (cfg, c, u) => (c === 0 ? cfg.entradas[u] : c === cfg.ocultas.length + 1 ? `Salida: ${nombreUnidad(cfg, c, u).replace(/^salida:? ?/, "")}` : `Oculta ${c}, neurona ${u + 1}`);
 
 function textoAjustado(ctx, texto, x, y, maximo) {
   if (ctx.measureText(texto).width <= maximo || !texto.includes(" ")) { ctx.fillText(texto, x, y); return; }
@@ -3803,7 +3924,7 @@ function textoAjustado(ctx, texto, x, y, maximo) {
 // está bajo el puntero. Con un clic se inspecciona una neurona o una conexión.
 // =====================================================================
 const MAXIMO_OCULTAS = 6;
-const interaccion = { geometria: null, hover: null, cuadro: null, iniciales: null, inspector: 0, claveBotones: "", pasoAutomatico: null, retroHtml: "", mayorError: null };
+const interaccion = { geometria: null, hover: null, neuronaHover: null, cuadro: null, iniciales: null, inspector: 0, claveBotones: "", pasoAutomatico: null, retroHtml: "", mayorError: null };
 const subindice = (n) => String(n).replace(/\d/g, (d) => "₀₁₂₃₄₅₆₇₈₉"[d]);
 
 // Pesos iniciales con la misma construcción y la misma semilla que entrenarRed:
@@ -4083,10 +4204,7 @@ function estadoRetro(fuente, real) {
   if (r.base !== real.theta || r.indice !== i) Object.assign(r, { base: real.theta, indice: i, theta: null, vista: null, calculo: null, perdidas: [] });
   const completa = conPerdida(cfg) && real.red.capas.length === cfg.ocultas.length + 1;
   if (!completa) return { etapas, etapa: etapas[r.etapa], indice: i, vista: real, calculo: null, falta: true };
-  if (r.theta && !r.vista) {
-    const red = redPlana(tel.estructura, r.theta);
-    r.vista = { theta: r.theta, red, grilla: propagarPlano(red, tel.grilla, tel.GX * tel.GY) };
-  }
+  if (r.theta && (!r.vista || r.vista.mapa !== mapaDe(tel))) r.vista = calcularVista(tel, r.theta);
   const vista = r.vista || real;
   if (!r.calculo || r.calculo.theta !== vista.theta) {
     const x = tel.puntos.X.subarray(i * tel.d, (i + 1) * tel.d);
@@ -4229,7 +4347,7 @@ function pintarRedGrande(cont, { editable = false } = {}) {
     }
   }
 
-  // Neuronas: cada una con su salida sobre el plano de las componentes principales.
+  // Neuronas: cada una con su salida sobre el mapa t-SNE de los datos.
   let topeDelta = 0;
   if (calc) g.columnas.forEach((c, i) => { if (i >= 1 && i >= etapa.columna && !c.desconocida) for (const s of c.slots) topeDelta = Math.max(topeDelta, Math.abs(calc.delta[i][c.neurona(s)])); });
   g.columnas.forEach((c, i) => {
@@ -4249,7 +4367,7 @@ function pintarRedGrande(cont, { editable = false } = {}) {
         ctx.fillText("?", c.x, c.y(s) + 5);
         continue;
       }
-      if (vista && (i === 0 || vista.grilla[i - 1])) pintarGrilla(ctx, tel.GX, tel.GY, colorNeurona(tel, vista, i, u), x0, y0, S, S);
+      if (vista?.grilla && (i === 0 || vista.grilla[i - 1])) pintarGrilla(ctx, LADO_MAPA, LADO_MAPA, colorNeurona(tel, vista, i, u), x0, y0, S, S);
       else { ctx.fillStyle = i === 0 ? C.suave : C.superficie; ctx.fillRect(x0, y0, S, S); }
       // Hacia atrás, las capas que el error todavía no alcanzó quedan tenues.
       if (calc && i >= 1 && i < etapa.columna) { ctx.fillStyle = C.velo(0.6); ctx.fillRect(x0, y0, S, S); }
@@ -4339,7 +4457,7 @@ function textoLeyendaRed(fuente, conEjemplo, retro) {
     ? "Conexiones: el aporte de cada una para este ejemplo, peso por valor de entrada; azul, positivo; ámbar, negativo."
     : "Conexiones: azul, pesos positivos; ámbar, negativos; el grosor indica la magnitud.";
   const salida = { regresion: "En la salida, más oscuro es un valor predicho mayor.", clustering: "En la salida, cada neurona usa el color de su grupo." }[m] || "En la salida, el color es el de cada clase.";
-  const neuronas = estado === "sin-pesos" ? "" : ` Cada neurona muestra su salida en el plano de las componentes principales: azul, positiva; ámbar, negativa; blanco, cero. ${salida}`;
+  const neuronas = estado === "sin-pesos" ? "" : fuente.tel && mapaDe(fuente.tel) ? ` Cada neurona muestra su salida sobre el mapa t-SNE de los datos: azul, positiva; ámbar, negativa; blanco, cero o sin datos. ${salida}` : " Cada neurona va a mostrar su salida sobre el mapa t-SNE de los datos cuando termine de calcularse.";
   const dropout = E.entrenando && cfg.ocultas.some((c) => c.dropout > 0) ? " Las neuronas tenues están apagadas por dropout para el primer ejemplo del lote." : "";
   return `${pesos ? `${pesos} ` : ""}${conexiones}${neuronas}${dropout} Con un clic en una neurona o en una conexión se ve qué calcula.`;
 }
@@ -4443,6 +4561,16 @@ function prepararEscena(escena, cont, editable) {
     escena.querySelector(".red-globo").hidden = true;
     redibujar();
   });
+  // En el tablero, la neurona bajo el puntero se ve en grande en el panel del mapa.
+  const marcarNeurona = (b) => {
+    const nueva = b ? { columna: Number(b.dataset.columna), unidad: Number(b.dataset.unidad) } : null;
+    if (nueva?.columna === interaccion.neuronaHover?.columna && nueva?.unidad === interaccion.neuronaHover?.unidad) return;
+    interaccion.neuronaHover = nueva;
+    const panel = $("#vista-aprende");
+    if (panel) pintarAprende(panel, fuenteTablero());
+  };
+  escena.addEventListener("pointerover", (ev) => marcarNeurona(ev.target.closest('[data-accion="red-neurona"]')));
+  escena.addEventListener("pointerleave", () => marcarNeurona(null));
   escena.addEventListener("click", (ev) => {
     if (ev.target.closest("button, .red-menu, input, label")) return;
     const g = interaccion.geometria, [x, y] = punto(ev);
@@ -4610,7 +4738,7 @@ function renderInspectorRed() {
   if (!sel) {
     cont.innerHTML = E.retro
       ? '<p class="pista">Hacé clic en una neurona para ver cómo se calcula su δ, o en una conexión para ver el gradiente de su peso.</p>'
-      : '<p class="pista">Hacé clic en una neurona para ver la cuenta que hace con un ejemplo, o en una conexión para ver cómo cambió su peso. Pasá el mouse por una conexión para ver su valor.</p>';
+      : `<p class="pista">Hacé clic en una neurona para ver la cuenta que hace con un ejemplo, o en una conexión para ver cómo cambió su peso. Pasá el mouse por una conexión para ver su valor${E.paso === 6 && E.tarea !== "regresion" ? ` o por una neurona para ver su mapa en grande en «${TITULOS_APRENDE[E.tarea]}»` : ""}.</p>`;
     return;
   }
   const fuente = fuenteRed(), { cfg, tel } = fuente, { vista, retro } = vistaRed(fuente);
@@ -4663,12 +4791,21 @@ function renderInspectorRed() {
       grafico.push(evolucion(series, "Sus pesos al final de cada época"));
     }
   }
-  const conMapa = sel.tipo === "neurona" && vista && (sel.columna === 0 || vista.grilla[sel.columna - 1]);
-  if (conMapa) grafico.unshift('<figure><figcaption>Su salida en el plano de las componentes principales</figcaption><canvas class="mapa-neurona" width="280" height="210"></canvas></figure>');
+  const conMapa = sel.tipo === "neurona" && vista?.grilla && (sel.columna === 0 || vista.grilla[sel.columna - 1]);
+  if (conMapa) grafico.unshift('<figure><figcaption>Su salida sobre el mapa t-SNE de los datos</figcaption><canvas class="mapa-neurona" width="240" height="240"></canvas></figure>');
   cont.innerHTML = `${html}${grafico.filter(Boolean).length ? `<div class="inspector-graficos">${grafico.join("")}</div>` : ""}`;
   if (conMapa) {
     const lienzoMapa = $(".mapa-neurona", cont), ctx = lienzoMapa.getContext("2d");
-    pintarGrilla(ctx, tel.GX, tel.GY, colorNeurona(tel, vista, sel.columna, sel.unidad), 0, 0, 280, 210);
+    pintarGrilla(ctx, LADO_MAPA, LADO_MAPA, colorNeurona(tel, vista, sel.columna, sel.unidad), 0, 0, 240, 240);
+    // Los puntos de validación, para ver dónde hay datos y en cuáles la neurona no se activa.
+    ctx.fillStyle = C.texto;
+    ctx.globalAlpha = 0.35;
+    for (let i = 0; i < tel.puntos.n; i++) {
+      ctx.beginPath();
+      ctx.arc(vista.mapa.pos[2 * i] * 240, vista.mapa.pos[2 * i + 1] * 240, 1.3, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
   }
 }
 
@@ -4862,13 +4999,15 @@ function panelRed(editable) {
     <p class="leyenda" id="leyenda-red"></p>`;
 }
 
-// Puntos de validación sobre el plano y, de fondo, lo que predice la red en cada lugar.
+// Puntos de validación sobre el mapa t-SNE y, de fondo, lo que predice la red para las
+// filas de cada zona o, con el puntero sobre una neurona de la red, la salida de esa neurona.
 function pintarAprende(cont, f) {
   const cfg = f?.config || configActual(), m = cfg.tarea;
   const corrida = f?.telemetria, theta = thetaActual(f), vista = corrida && theta ? evaluarVista(corrida, theta) : null;
-  // Antes de entrenar se ven los datos de validación en el plano, sin lo que predice la red.
+  // Antes de entrenar se ven los datos de validación en el mapa, sin lo que predice la red.
   const tel = vista ? corrida : m !== "regresion" ? telemetriaPrevia() : null;
-  const alto = tel ? Math.round(Math.max(230, Math.min(350, (cont.clientWidth || 300) * 0.74))) : 140;
+  const regresion = vista && m === "regresion", disponible = cont.clientWidth || 300;
+  const alto = !tel ? 140 : regresion ? Math.round(Math.max(230, Math.min(350, disponible * 0.74))) : Math.round(Math.max(240, Math.min(460, disponible)));
   const { ctx, ancho } = lienzo(cont, alto);
   const dato = $("#dato-aprende");
   if (!tel) {
@@ -4877,39 +5016,51 @@ function pintarAprende(cont, f) {
     return;
   }
   const ultima = f?.historia?.metricaVal.at(-1);
-  const r = { x: 34, y: 6, ancho: ancho - 40, alto: alto - 38 };
   ctx.font = letra(11.5);
-  if (vista && m === "regresion") {
-    pintarRealPredicho(ctx, tel, vista, r);
+  if (regresion) {
+    pintarRealPredicho(ctx, tel, vista, { x: 34, y: 6, ancho: ancho - 40, alto: alto - 38 });
     if (dato) dato.textContent = Number.isFinite(ultima) ? `MAE en validación ${num(ultima, 1)}${tel.def.unidad ? ` ${tel.def.unidad}` : ""}` : "";
     return;
   }
-  const k = tel.k;
-  if (vista) pintarGrilla(ctx, tel.GX, tel.GY, (g) => colorSalida(tel, vista.grilla.at(-1), g, 0.55), r.x, r.y, r.ancho, r.alto);
-  const { ra, rb } = tel.plano;
-  const X = (a) => r.x + ((a - ra[0]) / (ra[1] - ra[0])) * r.ancho, Y = (b) => r.y + ((rb[1] - b) / (rb[1] - rb[0])) * r.alto;
+  const mapa = mapaDe(tel);
+  if (!mapa) {
+    textoVacio(ctx, ancho, alto, "Calculando el mapa t-SNE de los datos…");
+    if (dato) dato.textContent = "";
+    return;
+  }
+  const k = tel.k, lado = Math.min(ancho, alto) - 2, r = { x: Math.round((ancho - lado) / 2), y: 1, ancho: lado, alto: lado };
+  const resaltada = vista && neuronaEnMapa(cfg);
+  if (resaltada) pintarGrilla(ctx, LADO_MAPA, LADO_MAPA, colorNeurona(tel, vista, resaltada.columna, resaltada.unidad), r.x, r.y, r.ancho, r.alto);
+  else if (vista) pintarGrilla(ctx, LADO_MAPA, LADO_MAPA, (g) => tinte(colorSalida(tel, vista.grilla.at(-1), g, 0.85), mapa.alfa[g]), r.x, r.y, r.ancho, r.alto);
+  const X = (a) => r.x + a * r.ancho, Y = (b) => r.y + b * r.alto;
   ctx.save();
   ctx.beginPath();
   ctx.rect(r.x, r.y, r.ancho, r.alto);
   ctx.clip();
   const pred = vista?.puntos;
-  tel.puntos.pos.forEach(([a, b], i) => {
+  for (let i = 0; i < tel.puntos.n; i++) {
     const asignado = !vista ? -1 : k === 1 ? (pred[i] >= 0.5 ? 1 : 0) : argmax(Array.from(pred.subarray(i * k, i * k + k)));
     const real = m === "clustering" ? asignado : tel.puntos.y[i];
     const error = vista && asignado !== real;
     ctx.beginPath();
-    ctx.arc(X(a), Y(b), error ? 3.4 : 2.9, 0, 2 * Math.PI);
+    ctx.arc(X(mapa.pos[2 * i]), Y(mapa.pos[2 * i + 1]), error ? 3.4 : 2.9, 0, 2 * Math.PI);
     ctx.fillStyle = real < 0 ? C.tenue : colorDe(tel, real);
     ctx.fill();
     ctx.lineWidth = error ? 1.8 : 0.9;
     ctx.strokeStyle = error ? C.texto : C.superficie;
     ctx.stroke();
-  });
+  }
   if (m === "clustering" && vista?.red.centroides) {
-    const d = tel.d;
+    // t-SNE no ubica puntos nuevos: cada cruz va sobre la fila más parecida a su centroide.
+    const d = tel.d, F = tel.filasMapa, Cn = vista.red.centroides;
     for (let j = 0; j < k; j++) {
-      const [a, b] = tel.plano.proyectar(vista.red.centroides.subarray(j * d, j * d + d));
-      const x = X(a), y = Y(b);
+      let cerca = 0, menor = Infinity;
+      for (let i = 0; i < F.n; i++) {
+        let s = 0;
+        for (let e = 0; e < d; e++) s += (F.X[i * d + e] - Cn[j * d + e]) ** 2;
+        if (s < menor) { menor = s; cerca = i; }
+      }
+      const x = X(mapa.pos[2 * cerca]), y = Y(mapa.pos[2 * cerca + 1]);
       for (const [color, grosor] of [[C.superficie, 5], [colorDe(tel, j), 2.4]]) {
         ctx.strokeStyle = color;
         ctx.lineWidth = grosor;
@@ -4921,11 +5072,14 @@ function pintarAprende(cont, f) {
     }
   }
   ctx.restore();
-  ejesPlano(ctx, r, "Componente principal 1", "Componente principal 2");
+  ctx.strokeStyle = C.linea;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(r.x + 0.5, r.y + 0.5, r.ancho - 1, r.alto - 1);
   if (dato) {
-    dato.textContent = !vista ? "datos de validación, antes de entrenar"
-      : m === "clustering" ? (tel.def.referencia && Number.isFinite(ultima) ? `ARI en validación ${num(ultima, 2)}` : `${k} grupos`)
-        : Number.isFinite(ultima) ? `exactitud en validación ${porcentaje(ultima)}` : "";
+    dato.textContent = resaltada ? rotuloNeurona(cfg, resaltada.columna, resaltada.unidad)
+      : !vista ? "datos de validación, antes de entrenar"
+        : m === "clustering" ? (tel.def.referencia && Number.isFinite(ultima) ? `ARI en validación ${num(ultima, 2)}` : `${k} grupos`)
+          : Number.isFinite(ultima) ? `exactitud en validación ${porcentaje(ultima)}` : "";
   }
 }
 
@@ -5290,9 +5444,9 @@ function renderLeyendasTablero() {
   else claves = clave(C.datoSuave, "predicción perfecta", "punteada");
   $("#claves-aprende").innerHTML = claves;
   $("#leyenda-aprende").textContent = {
-    binaria: "Cada punto es un ejemplo de validación, ubicado según las 2 primeras componentes principales de sus entradas. El fondo es la clase que predice la red en cada lugar del plano, más intenso cuanto más segura está. El plano es un corte: la red trabaja con todas las entradas.",
+    binaria: "Cada punto es un ejemplo de validación. t-SNE ubica cerca las filas con entradas parecidas: los ejes no tienen unidades y la distancia entre grupos alejados no significa nada. El fondo es la clase que predice la red para las filas de cada zona, más intenso cuanto más segura está, y queda en blanco donde no hay datos.",
     regresion: "Cada punto es un ejemplo de validación: el valor real en el eje horizontal y la predicción en el vertical. Al principio las predicciones se amontonan cerca de un valor; a medida que la red aprende, se acercan a la diagonal.",
-    clustering: "Ejemplos de validación en las 2 primeras componentes principales, con el color del grupo que les asigna la red. El fondo muestra el grupo de cada zona del plano y las cruces, dónde están los centroides.",
+    clustering: "Ejemplos de validación en el mapa t-SNE de sus entradas, con el color del grupo que les asigna la red. El fondo muestra el grupo de las filas de cada zona y cada cruz marca la fila más parecida a un centroide.",
   }[m === "multiclase" ? "binaria" : m];
   $("#claves-optimizador").innerHTML = clave(C.violeta, "recorrido, lote a lote") + clave(C.violeta, "inicio", "anillo") + clave(C.violeta, "posición actual", "punto")
     + (E.early.activo && E.early.restaurar ? clave(C.corte, "donde cortó early stopping", "punto") : "");
